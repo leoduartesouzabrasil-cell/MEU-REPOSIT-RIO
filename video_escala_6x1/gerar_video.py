@@ -13,7 +13,7 @@ import efeitos_sonoros
 W, H = 1080, 1920
 FPS = 30
 DURACAO = 20
-SAIDA = Path(__file__).with_name("escala_6x1.mp4")
+SAIDA = Path(__file__).with_name("escala_6x1_com_som.mp4")
 
 FONTE_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONTE = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -196,7 +196,7 @@ def main():
         ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
          "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", str(audio),
          "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20",
-         "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", str(SAIDA)],
+         "-c:a", "aac", "-ac", "2", "-ar", "48000", "-b:a", "192k", "-shortest", "-movflags", "+faststart", str(SAIDA)],
         stdin=subprocess.PIPE,
     )
     for n in range(FPS * DURACAO):
