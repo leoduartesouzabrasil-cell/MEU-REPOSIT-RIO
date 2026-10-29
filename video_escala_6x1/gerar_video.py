@@ -1,12 +1,14 @@
 """Gera um vídeo vertical de 20 segundos explicando a escala 6x1.
 
-Uso: python3 gerar_video.py  (requer Pillow e ffmpeg)
+Uso: python3 gerar_video.py  (requer Pillow, numpy e ffmpeg)
 """
 import math
 import subprocess
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+
+import efeitos_sonoros
 
 W, H = 1080, 1920
 FPS = 30
@@ -188,16 +190,20 @@ def quadro(t):
 
 
 def main():
+    audio = SAIDA.with_suffix(".wav")
+    efeitos_sonoros.gerar(audio, DURACAO)
     ffmpeg = subprocess.Popen(
         ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
-         "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-c:v", "libx264",
-         "-pix_fmt", "yuv420p", "-crf", "20", "-movflags", "+faststart", str(SAIDA)],
+         "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", str(audio),
+         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20",
+         "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", str(SAIDA)],
         stdin=subprocess.PIPE,
     )
     for n in range(FPS * DURACAO):
         ffmpeg.stdin.write(quadro(n / FPS).tobytes())
     ffmpeg.stdin.close()
     ffmpeg.wait()
+    audio.unlink()
     print(f"Vídeo salvo em {SAIDA}")
 
 
