@@ -46,7 +46,7 @@ Os tamanhos são pequenos e discretos. O destaque vem do contraste e do espaço 
 
 # Base de estilo: "cartaz soviético / construtivista"
 
-Inspirada nos cartaces de referência enviados (propaganda soviética e o post "O Camarada").
+Inspirada nos cartazes de referência enviados (propaganda soviética e o post "O Camarada").
 Implementada em `gerar_video_cartaz.py`.
 
 - **Paleta:** vermelho `#CC2220`, mostarda `#EAB426`, creme `#EEE2C6` e preto `#1E1916`.
