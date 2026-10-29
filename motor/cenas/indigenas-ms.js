@@ -1,10 +1,12 @@
 // "Veneno na água" — ameaças a indígenas Guarani Kaiowá em MS após a eleição (out/2026).
 // Tempos vêm de indigenas-ms.tempos.js (gerado por audio/indigenas-ms/montar.py a partir da narração).
 // Render: node motor/render.js indigenas-ms saida/indigenas-ms.mp4 --audio audio/indigenas-ms/mix.wav
+// Versão de 60 s: mesma cena com outros tempos → ... --tempos indigenas-ms-60 --audio audio/indigenas-ms/mix-60.wav
+// Blocos cuja marca não existe na versão (frase cortada da narração) simplesmente não entram.
 const M = window.TEMPOS.marcas;
 const PAL = window.TEMPOS.legendas.flatMap(l => l.p);
 // tempo da palavra falada (primeira que começa com `w` depois de `depois`)
-const W = (w, depois = 0) => (PAL.find(([p, t]) => t >= depois && p.toLowerCase().startsWith(w.toLowerCase())) || [0, 0])[1];
+const W = (w, depois = 0) => (PAL.find(([p, t]) => t >= depois && p.toLowerCase().startsWith(w.toLowerCase())) || [0, 1e9])[1];
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: window.TEMPOS.dur,
@@ -18,15 +20,12 @@ window.CENA = {
     const { COR, FONTE, seg, lerp, ease } = L, W_ = 1080;
     let legenda = true, legCor = COR.tinta, arquivo = true;
 
-    const blocos = [
-      [0, M.gravacao, abertura], [M.gravacao, M.cartaz1, gravacao], [M.cartaz1, M.sassoro, cartazVeneno],
-      [M.sassoro, M.pararam, aldeia], [M.pararam, M.ministerio, agua], [M.ministerio, M.medo, ministerio],
-      [M.medo, M.isolado, medo], [M.isolado, M.rodovia, isolado], [M.rodovia, M.caminhonetes, rodovia],
-      [M.caminhonetes, M.permanente, caminhonetes], [M.permanente, M.apib, permanente], [M.apib, M.cartaz2, contagem],
-      [M.cartaz2, M.prefeitura, cartazSeis], [M.prefeitura, M.cacique, dossie], [M.cacique, M.cartaz3, cacique],
-      [M.cartaz3, M.favor, cartazMedo], [M.favor, M.fim, dever], [M.fim, Infinity, final],
-    ];
-    const [b0, , fn] = blocos.find(([a, b]) => t >= a && t < b);
+    const ordem = [[0, abertura], [M.gravacao, gravacao], [M.cartaz1, cartazVeneno], [M.sassoro, aldeia],
+      [M.pararam, agua], [M.ministerio, ministerio], [M.medo, medo], [M.isolado, isolado], [M.rodovia, rodovia],
+      [M.caminhonetes, caminhonetes], [M.permanente, permanente], [M.apib, contagem], [M.cartaz2, cartazSeis],
+      [M.prefeitura, dossie], [M.cacique, cacique], [M.cartaz3, cartazMedo], [M.favor, dever], [M.fim, final]]
+      .filter(([a]) => a !== undefined);
+    const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
     fn(t - b0, t);
 
     // cortes diagonais nas viradas de registro (batem com o "whoosh" da trilha)
@@ -201,13 +200,13 @@ window.CENA = {
       L.camera(ctx, { zoom: 1 + lt * 0.003 }, () => L.planta(ctx, 12, COR.tinta, 0.12));
       L.texto(ctx, 'O QUE ACONTECEU DEPOIS', 90, 290, { familia: FONTE.sub, peso: 600, tam: 44, cor: COR.vermelho, tracking: 5 });
       const itens = [
-        [M.prefeitura, 'PREFEITURA DE TACURU', 'afastou o servidor e abriu processo administrativo', COR.vermelho],
+        [W('Diante', M.prefeitura - 0.5), 'PREFEITURA DE TACURU', 'afastou o servidor e abriu processo administrativo', COR.vermelho],
         [M.mpf, 'MINISTÉRIO PÚBLICO FEDERAL', 'deu 24 horas para a prefeitura explicar o áudio', COR.vermelho],
         [M.pf, 'POLÍCIA FEDERAL', 'acionada para investigar', COR.vermelho],
         [M.deputadas, 'SÔNIA GUAJAJARA E CÉLIA XAKRIABÁ', 'deputadas cobram investigação e proteção', COR.vermelho],
         [M.governo, 'GOVERNO DE MATO GROSSO DO SUL', 'diz que não há genocídio no estado', COR.azul],
       ];
-      itens.forEach(([T, tit, desc, cor], i) => {
+      itens.filter(([T]) => T !== undefined && T < 1e8).forEach(([T, tit, desc, cor], i) => {
         if (t < T) return;
         const y = 420 + i * 200;
         L.texto(ctx, L.datilografar(tit, seg(t, T + 0.1, T + 0.75)), 90, y, { familia: FONTE.grotesca, peso: 700, tam: 44,

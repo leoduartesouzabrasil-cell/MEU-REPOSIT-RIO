@@ -1,8 +1,8 @@
 """Monta a narração, a trilha e os efeitos do vídeo "Veneno na água" e gera a linha do tempo
 que a cena (motor/cenas/indigenas-ms.js) usa. É a fonte única dos tempos: som e imagem batem.
 
-Uso: python3 audio/indigenas-ms/montar.py
-Saídas: audio/indigenas-ms/mix.wav e motor/cenas/indigenas-ms.tempos.js
+Uso: python3 audio/indigenas-ms/montar.py [60|completo]
+Saídas: audio/indigenas-ms/mix[-60].wav e motor/cenas/indigenas-ms[-60].tempos.js
 """
 import json
 import sys
@@ -16,18 +16,30 @@ sys.path.insert(0, str(RAIZ / "motor"))
 import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
-# ---------------------------------------------------------------- narração em trechos
-# (arquivo, início, fim, pausa depois). As pausas abrem espaço para os momentos CARTAZ.
-ENTRADA = 1.5
-PECAS = [
-    (1, 0.00, 18.10, 2.0),    # ... votado em Lula. → CARTAZ "VENENO NA ÁGUA"
-    (1, 18.10, None, 0.6),
-    (2, 0.00, None, 0.6),
-    (3, 0.00, 15.30, 2.2),    # ... assassinados em MS. → CARTAZ "6"
-    (3, 15.30, None, 0.6),
-    (4, 0.00, 22.25, 0.8),    # ... em quem votar. → CARTAZ final
-    (4, 22.25, None, 4.0),    # cartela final
-]
+# ---------------------------------------------------------------- versões
+# trechos da narração: (arquivo, início, fim, pausa depois), cortes sempre dentro de silêncios.
+# As pausas abrem espaço para os momentos CARTAZ.
+VERSOES = {
+    "completo": dict(entrada=1.5, sufixo="", pecas=[
+        (1, 0.00, 18.10, 2.0),    # ... votado em Lula. → CARTAZ "VENENO NA ÁGUA"
+        (1, 18.10, None, 0.6),
+        (2, 0.00, None, 0.6),
+        (3, 0.00, 15.30, 2.2),    # ... assassinados em MS. → CARTAZ "6"
+        (3, 15.30, None, 0.6),
+        (4, 0.00, 22.25, 0.8),    # ... em quem votar. → CARTAZ final
+        (4, 22.25, None, 4.0),    # cartela final
+    ]),
+    "60": dict(entrada=0.6, sufixo="-60", pecas=[
+        (1, 0.00, 18.10, 1.5),    # o áudio da ameaça → CARTAZ "VENENO NA ÁGUA"
+        (1, 18.10, 22.50, 0.3),   # aldeia Sassoró, Guarani Kaiowá
+        (1, 28.82, 32.95, 0.5),   # MPI: não há comprovação de contaminação
+        (2, 0.00, 10.90, 0.5),    # não foi caso isolado · 5 assassinatos (Cimi)
+        (3, 21.40, None, 0.6),    # MPF 24 horas · PF acionada
+        (4, 22.17, None, 2.6),    # quem tem medo... Constituição → cartela final
+    ]),
+}
+VERSAO = sys.argv[1] if len(sys.argv) > 1 else "completo"
+CFG = VERSOES[VERSAO]
 
 # correções da transcrição automática (sequência de palavras → texto certo)
 CORRECOES = [
@@ -56,8 +68,8 @@ def corrigir(pal):
 def montar_narracao():
     brutas = json.loads((AQUI / "palavras.json").read_text())
     audios = {k: som.ler_audio(str(AQUI / f"narracao-{k}.mp3")) for k in range(1, 5)}
-    trechos, palavras, t = [], [], ENTRADA
-    for k, a, b, pausa in PECAS:
+    trechos, palavras, t = [], [], CFG["entrada"]
+    for k, a, b, pausa in CFG["pecas"]:
         x = audios[k]
         b = b if b is not None else len(x) / SR
         pedaco = x[int(a * SR):int(b * SR)].copy()
@@ -66,21 +78,13 @@ def montar_narracao():
         pedaco[-f:] *= np.linspace(1, 0, f)
         trechos.append((t, pedaco))
         for w, w0, w1 in corrigir(brutas[str(k)]):
-            if a <= w0 < b:
-                palavras.append([w, round(t + w0 - a, 3), round(t + min(w1, b) - a, 3)])
+            if w1 > a + 0.05 and w0 < b - 0.05:     # a transcrição às vezes marca o início um pouco cedo
+                palavras.append([w, round(t + max(w0, a) - a, 3), round(t + min(w1, b) - a, 3)])
         t += (b - a) + pausa
     voz = som.segundos(t)
     for t0, p in trechos:
         soma(voz, p, t0)
-    return voz, palavras, trechos, t
-
-
-def quando(palavras, inicio, depois=0.0):
-    """Tempo absoluto da primeira palavra que começa com `inicio`, depois de `depois`."""
-    for w, t0, _ in palavras:
-        if t0 >= depois and w.lower().startswith(inicio.lower()):
-            return t0
-    raise KeyError(inicio)
+    return voz, palavras, t
 
 
 def legendas(palavras, max_car=30):
@@ -102,62 +106,84 @@ def legendas(palavras, max_car=30):
 
 
 # ---------------------------------------------------------------- linha do tempo
-voz, PAL, TRECHOS, FIM_VOZ = montar_narracao()
+voz, PAL, FIM_VOZ = montar_narracao()
 DUR = round(FIM_VOZ, 2)
-Q = lambda w, d=0.0: quando(PAL, w, d)
-fim_trecho = lambda i: TRECHOS[i][0] + len(TRECHOS[i][1]) / SR
 
-M = {}  # marcas nomeadas (segundos)
-M["domingo"] = Q("domingo")
-M["audio"] = Q("áudio")
-M["gravacao"] = Q("Na")
-M["veneno"] = Q("veneno")
-M["motivo"] = Q("motivo")
-M["lula"] = Q("Lula")
-M["cartaz1"] = round(fim_trecho(0) + 0.05, 3)
-M["sassoro"] = TRECHOS[1][0]
-M["pipa"] = Q("Ali")
-M["pararam"] = Q("Depois", M["pipa"])
-M["ministerio"] = Q("Ministério")
-M["medo"] = Q("Mas", M["ministerio"])
-M["isolado"] = TRECHOS[2][0]
-M["cimi5"] = Q("Segundo", M["isolado"])
-M["cinco"] = Q("5")
-M["rodovia"] = Q("rodovia")
-M["circunst"] = Q("circunstâncias")
-M["caminhonetes"] = Q("Durante")
-M["permanente"] = TRECHOS[3][0]
-M["apib"] = Q("Apib")
-M["cartaz2"] = round(fim_trecho(3) + 0.05, 3)
-M["prefeitura"] = TRECHOS[4][0]
-M["mpf"] = Q("Ministério", M["prefeitura"])
-M["pf"] = Q("Polícia")
-M["deputadas"] = TRECHOS[5][0]
-M["governo"] = Q("Já", M["deputadas"])
-M["cacique"] = Q("O cacique")
-M["direito"] = Q("lembra")
-M["cartaz3"] = TRECHOS[6][0] - 0.5
-M["democracia"] = Q("democracia")
-M["favor"] = Q("Proteger")
-M["dever"] = Q("dever")
-M["constituicao"] = Q("Constituição")
-M["fim"] = round(fim_trecho(6) + 0.2, 3)
-M = {k: round(v, 3) for k, v in M.items()}
 
-(RAIZ / "motor" / "cenas" / "indigenas-ms.tempos.js").write_text(
+def frase(texto, depois=0.0, fim=False):
+    """Tempo absoluto em que a frase começa (ou termina, com fim=True). None se não estiver nesta versão."""
+    limpa = lambda w: w.lower().strip(".,?!")
+    for i in range(len(PAL)):
+        if PAL[i][1] < depois:
+            continue
+        junto, j = "", i                     # as correções juntam palavras ("Durante a eleição,"): compara o texto
+        while j < len(PAL) and len(junto) < len(texto):
+            junto = (junto + " " + " ".join(limpa(x) for x in PAL[j][0].split())).strip()
+            j += 1
+        if junto == texto.lower() or junto.startswith(texto.lower() + " "):
+            return PAL[j - 1][2] if fim else PAL[i][1]
+    return None
+
+
+M = {}  # marcas nomeadas (segundos); ausentes nesta versão ficam de fora
+
+
+def marca(nome, valor):
+    if valor is not None:
+        M[nome] = round(valor, 3)
+
+
+marca("domingo", frase("domingo"))
+marca("audio", frase("áudio começou"))
+marca("gravacao", frase("na gravação"))
+marca("veneno", frase("veneno"))
+marca("motivo", frase("o motivo"))
+marca("cartaz1", (frase("em lula", fim=True) or -1) + 0.05)
+marca("sassoro", frase("a água abastece"))
+marca("pipa", frase("ali"))
+marca("pararam", frase("depois do áudio"))
+marca("ministerio", frase("o ministério dos povos"))
+marca("medo", frase("mas o medo"))
+marca("isolado", frase("e não foi"))
+marca("cinco", frase("5"))
+marca("rodovia", frase("na rodovia"))
+marca("circunst", frase("as circunstâncias"))
+marca("caminhonetes", frase("durante a eleição"))
+marca("permanente", frase("para o cimi"))
+marca("apib", frase("segundo a apib"))
+if "apib" in M:
+    marca("cartaz2", frase("mato grosso do sul", M["apib"], fim=True) + 0.05)
+marca("prefeitura", frase("diante das") or frase("o ministério público"))
+marca("mpf", frase("o ministério público"))
+marca("pf", frase("a polícia federal"))
+marca("deputadas", frase("as deputadas"))
+marca("governo", frase("já o governo"))
+marca("cacique", frase("o cacique"))
+marca("direito", frase("e lembra"))
+marca("cartaz3", frase("quem tem medo") - 0.5)
+marca("democracia", frase("democracia"))
+marca("favor", frase("proteger os povos"))
+marca("dever", frase("dever do estado"))
+marca("constituicao", frase("constituição"))
+marca("fim", PAL[-1][2] + 0.4)
+M = {k: v for k, v in M.items() if v >= 0}
+
+(RAIZ / "motor" / "cenas" / f"indigenas-ms{CFG['sufixo']}.tempos.js").write_text(
     "// GERADO por audio/indigenas-ms/montar.py — não editar à mão\n"
     f"window.TEMPOS = {json.dumps({'dur': DUR, 'marcas': M, 'legendas': legendas(PAL)}, ensure_ascii=False)};\n")
 
 # ---------------------------------------------------------------- trilha
-mus = np.zeros(len(voz), np.float32)
-amb = np.zeros(len(voz), np.float32)
+N = len(voz)
+mus = np.zeros(N, np.float32)
+amb = np.zeros(N, np.float32)
 
-# bordão: Lá nas partes calmas, Mi grave nas tensas
-secoes = [(0, M["gravacao"], 55.0, "calmo"), (M["gravacao"], M["cartaz1"], 41.2, "tenso"),
-          (M["cartaz1"], M["sassoro"], 41.2, "golpe"), (M["sassoro"], M["isolado"], 55.0, "triste"),
-          (M["isolado"], M["permanente"], 41.2, "tenso"), (M["permanente"], M["cartaz2"], 41.2, "tenso"),
-          (M["cartaz2"], M["prefeitura"], 41.2, "golpe"), (M["prefeitura"], M["cacique"], 55.0, "pulso"),
-          (M["cacique"], M["cartaz3"], 55.0, "quente"), (M["cartaz3"], DUR, 55.0, "climax")]
+# seções na ordem do vídeo: bordão em Lá nas partes calmas, Mi grave nas tensas
+ordem = [(0.0, 55.0, "calmo"), (M.get("gravacao"), 41.2, "tenso"), (M.get("cartaz1"), 41.2, "golpe"),
+         (M.get("sassoro"), 55.0, "triste"), (M.get("isolado"), 41.2, "tenso"), (M.get("permanente"), 41.2, "tenso"),
+         (M.get("cartaz2"), 41.2, "golpe"), (M.get("prefeitura"), 55.0, "pulso"), (M.get("cacique"), 55.0, "quente"),
+         (M.get("cartaz3"), 55.0, "climax")]
+ordem = [o for o in ordem if o[0] is not None]
+secoes = [(a, b, base, tipo) for (a, base, tipo), (b, _, _) in zip(ordem, ordem[1:] + [(DUR, 0, "")])]
 for a, b, base, tipo in secoes:
     d = som.drone(b - a + 1.0, base, 0.6 if tipo in ("climax", "quente") else 0.2)
     f = int(0.8 * SR)
@@ -165,10 +191,8 @@ for a, b, base, tipo in secoes:
     d[-f:] *= np.linspace(1, 0, f)
     soma(mus, d, a - 0.2, 0.9 if tipo != "golpe" else 0.5)
 
-    bpm = 92
-    batida = 60 / bpm
-    t = a
-    i = 0
+    batida = 60 / 92
+    t, i = a, 0
     while t < b:
         if tipo in ("pulso", "climax", "quente"):                  # maracá constante, acento no tempo
             soma(mus, som.maraca(1.0 if i % 2 == 0 else 0.55), t)
@@ -188,51 +212,64 @@ for a, b, base, tipo in secoes:
 
 # frases de flauta (pentatônica de Lá): só nas partes calmas, tristes, quentes e no clímax
 frases = [
-    (0.1, [5, 4, 3, 1, 2], [0.5, 0.35, 0.35, 0.6, 1.4], 1.0),
-    (M["sassoro"] + 0.3, [3, 2, 1, 0], [0.7, 0.5, 0.6, 2.0], 1.0),
-    (M["pararam"], [2, 3, 1, 0], [0.6, 0.6, 0.8, 1.8], 1.0),
-    (M["medo"] - 0.2, [4, 3, 1], [0.6, 0.6, 2.4], 0.5),
-    (M["cacique"], [0, 1, 2, 3, 2], [0.6, 0.5, 0.5, 0.9, 1.6], 1.0),
-    (M["direito"] + 1.0, [3, 4, 5, 4], [0.5, 0.5, 0.9, 1.8], 1.0),
-    (M["cartaz3"] + 0.2, [5, 6, 7, 6, 5, 4], [0.45, 0.45, 0.7, 0.45, 0.45, 1.2], 1.0),
-    (M["favor"], [4, 5, 7, 8], [0.6, 0.6, 0.6, 2.2], 1.0),
-    (M["constituicao"] + 0.4, [5, 4, 3, 5], [0.5, 0.5, 0.6, 2.5], 1.0),
+    (0.1, [5, 4, 3, 1, 2], [0.5, 0.35, 0.35, 0.6, 1.4]),
+    ("sassoro", [3, 2, 1, 0], [0.7, 0.5, 0.6, 2.0], 0.3),
+    ("pararam", [2, 3, 1, 0], [0.6, 0.6, 0.8, 1.8], 0.0),
+    ("medo", [4, 3, 1], [0.6, 0.6, 2.4], -0.2),
+    ("cacique", [0, 1, 2, 3, 2], [0.6, 0.5, 0.5, 0.9, 1.6], 0.0),
+    ("direito", [3, 4, 5, 4], [0.5, 0.5, 0.9, 1.8], 1.0),
+    ("cartaz3", [5, 6, 7, 6, 5, 4], [0.45, 0.45, 0.7, 0.45, 0.45, 1.2], 0.2),
+    ("favor", [4, 5, 7, 8], [0.6, 0.6, 0.6, 2.2], 0.0),
+    ("constituicao", [5, 4, 3, 5], [0.5, 0.5, 0.6, 2.5], 0.4),
 ]
-for t0, graus, ritmo, oit in frases:
-    soma(mus, som.frase_flauta(graus, ritmo, oit, 0.55), t0)
+for t0, graus, ritmo, *desl in frases:
+    if isinstance(t0, str):
+        if t0 not in M:
+            continue
+        t0 = M[t0] + desl[0]
+    soma(mus, som.frase_flauta(graus, ritmo, 1.0, 0.55), t0)
 
 # ambiente de mata nas partes calmas
+fim_secao = {a: b for a, b, _, _ in secoes}
+for nome in ["sassoro", "cacique"]:
+    if nome in M:
+        soma(amb, som.grilos(fim_secao[M[nome]] - M[nome]), M[nome], 0.8)
+        for d in (2.0, 6.5):
+            soma(amb, som.passaro(), M[nome] + d)
+            soma(amb, som.passaro(0.18, 3000, 4200), M[nome] + d + 0.3)
 soma(amb, som.grilos(M["gravacao"] + 1), 0, 1.0)
-soma(amb, som.grilos(M["isolado"] - M["sassoro"]), M["sassoro"], 0.8)
-soma(amb, som.grilos(M["cartaz3"] - M["cacique"]), M["cacique"], 0.8)
-for t0 in [0.6, 3.2, M["sassoro"] + 2.0, M["sassoro"] + 6.5, M["cacique"] + 1.5, M["cacique"] + 7.0]:
+for t0 in [0.6, 3.2]:
     soma(amb, som.passaro(), t0)
-    soma(amb, som.passaro(0.18, 3000, 4200), t0 + 0.3)
 
 # ---------------------------------------------------------------- efeitos
-sfx = np.zeros(len(voz), np.float32)
-for t0 in [M["cartaz1"], M["cartaz2"], M["cartaz3"] + 0.9, M["democracia"] + 0.2, M["favor"] + 0.1, M["dever"]]:
+sfx = np.zeros(N, np.float32)
+em = lambda *nomes: [M[n] for n in nomes if n in M]
+for t0 in em("cartaz1", "cartaz2", "favor", "dever") + [M["cartaz3"] + 0.9, M["democracia"] + 0.2]:
     soma(sfx, som.carimbo_sfx(), t0, 0.9)
-for t0 in [M["cartaz1"] - 0.35, M["sassoro"] - 0.35, M["cartaz2"] - 0.35, M["prefeitura"] - 0.35, M["cartaz3"] - 0.4,
-           M["fim"] - 0.35]:
-    soma(sfx, som.whoosh(), t0, 0.8)
+for t0 in em("cartaz1", "sassoro", "cartaz2", "prefeitura", "cartaz3", "fim"):
+    soma(sfx, som.whoosh(), t0 - 0.35, 0.8)
 soma(sfx, som.estatica(M["veneno"] - M["gravacao"] + 1.5), M["gravacao"], 1.0)   # chiado da gravação
 for k in range(4):
     soma(sfx, som.gota(), M["cartaz1"] + 0.5 + k * 0.32, 0.8 - k * 0.15)
-for k in range(3):
-    soma(sfx, som.gota(), M["pararam"] + 0.4 + k * 0.5, 0.6)
-soma(sfx, som.maquina(22, 0.045), M["domingo"] - 0.3, 0.9)
-soma(sfx, som.maquina(18, 0.05), M["ministerio"] + 0.2, 0.8)
-soma(sfx, som.maquina(14, 0.05), M["circunst"], 0.8)
-for nome in ["prefeitura", "mpf", "pf", "deputadas", "governo"]:
-    soma(sfx, som.maquina(16, 0.04), M[nome] + 0.1, 0.8)
-for k in range(5):                                                        # contador 2022 → 2026
-    soma(sfx, som.tique(), M["apib"] + 1.2 + k * 0.6, 1.0)
-for nome in ["isolado", "rodovia"]:
+for t0 in em("pararam"):
     for k in range(3):
-        soma(sfx, som.tique(), M[nome] + 0.4 + k * 0.35, 0.8)
+        soma(sfx, som.gota(), t0 + 0.4 + k * 0.5, 0.6)
+soma(sfx, som.maquina(22, 0.045), M["domingo"] - 0.3, 0.9)
+for t0 in em("ministerio"):
+    soma(sfx, som.maquina(18, 0.05), t0 + 0.2, 0.8)
+for t0 in em("circunst"):
+    soma(sfx, som.maquina(14, 0.05), t0, 0.8)
+for t0 in em("prefeitura", "mpf", "pf", "deputadas", "governo"):
+    soma(sfx, som.maquina(16, 0.04), t0 + 0.1, 0.8)
+for t0 in em("apib"):                                                     # contador 2022 → 2026
+    for k in range(5):
+        soma(sfx, som.tique(), t0 + 1.2 + k * 0.6, 1.0)
+for t0 in em("isolado", "rodovia"):
+    for k in range(3):
+        soma(sfx, som.tique(), t0 + 0.4 + k * 0.35, 0.8)
 soma(sfx, som.sino_grave(), M["fim"] - 0.2, 1.0)
-soma(sfx, som.sino_grave(), M["medo"] + 0.3, 0.5)
+for t0 in em("medo"):
+    soma(sfx, som.sino_grave(), t0 + 0.3, 0.5)
 
 # ---------------------------------------------------------------- mixagem com ducking
 e = som.envelope_voz(voz)
@@ -246,5 +283,5 @@ esq = voz_mix + mus_mix * 0.95 + amb * 0.1 + sfx_mix
 dir = voz_mix + mus_mix * 0.85 - amb * 0.1 + sfx_mix
 pico = max(np.max(np.abs(esq)), np.max(np.abs(dir)))
 esq, dir = esq / pico * 0.95, dir / pico * 0.95
-som.salvar_wav(str(AQUI / "mix.wav"), esq, dir)
-print(f"duração {DUR:.2f}s · {len(PAL)} palavras · marcas: {json.dumps(M)}")
+som.salvar_wav(str(AQUI / f"mix{CFG['sufixo']}.wav"), esq, dir)
+print(f"versão {VERSAO}: {DUR:.2f}s · {len(PAL)} palavras · marcas: {json.dumps(M)}")

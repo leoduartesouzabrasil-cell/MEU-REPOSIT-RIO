@@ -1,5 +1,5 @@
 // Renderiza uma cena em MP4 (H.264) frame a frame, em paralelo.
-// Uso: node motor/render.js <cena> [saida.mp4] [--audio trilha.wav] [--still 3.2] [--partes 4] [--de 10 --ate 20]
+// Uso: node motor/render.js <cena> [saida.mp4] [--audio trilha.wav] [--tempos nome] [--still 3.2] [--partes 4] [--de 10 --ate 20]
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -10,13 +10,13 @@ const args = process.argv.slice(2);
 const cena = args[0] || 'demo';
 const opt = n => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const saida = (args[1] && !args[1].startsWith('--')) ? args[1] : `saida/${cena}.mp4`;
-const audio = opt('--audio'), still = opt('--still');
+const audio = opt('--audio'), still = opt('--still'), tempos = opt('--tempos');
 const partes = parseInt(opt('--partes') || Math.min(4, os.cpus().length), 10);
 
 async function abrir(browser) {
   const page = await browser.newPage();
   page.on('pageerror', e => console.error('erro na cena:', e.message));
-  await page.goto('file://' + path.resolve(__dirname, 'player.html') + `?cena=${cena}`);
+  await page.goto('file://' + path.resolve(__dirname, 'player.html') + `?cena=${cena}` + (tempos ? `&tempos=${tempos}` : ''));
   const info = await page.evaluate(() => window.pronto.then(c => ({ w: c.w, h: c.h, fps: c.fps, dur: c.dur })));
   return { page, ...info };
 }

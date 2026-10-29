@@ -24,7 +24,7 @@
   // cenas/<nome>.tempos.js (opcional, gerado pelo script de áudio) carrega antes da cena
   const nome = q.get('cena') || 'demo', s = document.createElement('script');
   const tempos = document.createElement('script');
-  tempos.src = `cenas/${nome}.tempos.js`;
+  tempos.src = `cenas/${q.get('tempos') || nome}.tempos.js`;   // ?tempos= troca a versão (ex.: corte de 60 s)
   tempos.onload = tempos.onerror = () => { s.src = `cenas/${nome}.js`; document.body.appendChild(s); };
   document.body.appendChild(tempos);
 
