@@ -8,6 +8,9 @@
   @font-face { font-family: "Russo One"; src: url("../identidade/fontes/RussoOne-Regular.ttf"); }
   @font-face { font-family: "Oswald"; src: url("../identidade/fontes/Oswald[wght].ttf"); font-weight: 200 700; }
   @font-face { font-family: "Special Elite"; src: url("../identidade/fontes/SpecialElite-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; src: url("../identidade/fontes/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../identidade/fontes/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Archivo"; src: url("../identidade/fontes/Archivo[wdth,wght].ttf"); font-weight: 100 900; }
   html, body { margin: 0; background: #1C1714; }
   canvas { display: block; max-height: 100vh; max-width: 100vw; margin: auto; }
 </style>
@@ -27,8 +30,14 @@
       const cena = window.CENA, tela = document.getElementById('tela');
       tela.width = cena.w; tela.height = cena.h;
       const ctx = tela.getContext('2d');
-      await Promise.all(['900 10px "Big Shoulders Display"', '10px "Russo One"', '600 10px "Oswald"', '10px "Special Elite"']
+      await Promise.all(['900 10px "Big Shoulders Display"', '10px "Russo One"', '600 10px "Oswald"', '10px "Special Elite"',
+        'italic 400 10px "Instrument Serif"', '400 10px "Instrument Serif"', '700 10px "Archivo"']
         .map(f => document.fonts.load(f)));
+      // imagens da cena: CENA.imagens = { nome: 'caminho relativo a motor/' } → L.img.nome
+      await Promise.all(Object.entries(cena.imagens || {}).map(([nome, src]) => new Promise((ok2, erro) => {
+        const im = new Image(); im.onload = () => { CT.img[nome] = im; ok2(); };
+        im.onerror = () => erro(new Error('imagem não carregou: ' + src)); im.src = src;
+      })));
       window.renderAt = t => { cena.desenhar(ctx, t, CT); };
       window.frameData = t => { renderAt(t); return tela.toDataURL('image/png'); };
       if (q.has('t')) renderAt(parseFloat(q.get('t')));
