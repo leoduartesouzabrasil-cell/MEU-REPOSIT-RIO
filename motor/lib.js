@@ -178,6 +178,7 @@ function aplicarCarimbo(ctx, p, cx, cy, desenhar, seed) {
 
 // datilografia: parte visível da string + cursor
 function datilografar(txt, p) {
+  if (p <= 0) return '';
   const n = Math.floor(txt.length * clamp(p));
   return txt.slice(0, n) + (p < 1 && Math.floor(p * 40) % 2 === 0 ? '▌' : '');
 }
@@ -187,10 +188,15 @@ function datilografar(txt, p) {
 // ======================================================================
 
 // linhas de varredura de TV/VHS + leve tremulação de brilho (12 fps)
+let _linhas = null;
 function varredura(ctx, t, forca = 0.10) {
   const { width: w, height: h } = ctx.canvas;
-  ctx.save(); ctx.fillStyle = COR.tinta; ctx.globalAlpha = forca;
-  for (let y = 0; y < h; y += 4) ctx.fillRect(0, y, w, 1.5);
+  if (!_linhas) {
+    _linhas = document.createElement('canvas'); _linhas.width = w; _linhas.height = h;
+    const g = _linhas.getContext('2d'); g.fillStyle = COR.tinta;
+    for (let y = 0; y < h; y += 4) g.fillRect(0, y, w, 1.5);
+  }
+  ctx.save(); ctx.globalAlpha = forca; ctx.drawImage(_linhas, 0, 0); ctx.fillStyle = COR.tinta;
   const f = rng(Math.floor(t * 12) + 7)();
   ctx.globalAlpha = 0.03 + f * 0.03; ctx.fillRect(0, 0, w, h);
   ctx.restore();
@@ -287,7 +293,16 @@ function sinal(ctx, cx, cy, t, cor = COR.vermelho, tam = 160) {
 }
 
 // planta técnica / patente procedural como fundo (linhas finas, hachuras, números)
+const _plantas = {};
 function planta(ctx, seed = 1, cor = COR.tinta, alfa = 0.22) {
+  const chave = `${seed}|${cor}|${alfa}`;
+  if (!_plantas[chave]) {
+    const c = document.createElement('canvas'); c.width = ctx.canvas.width; c.height = ctx.canvas.height;
+    _desenharPlanta(c.getContext('2d'), seed, cor, alfa); _plantas[chave] = c;
+  }
+  ctx.drawImage(_plantas[chave], 0, 0);
+}
+function _desenharPlanta(ctx, seed, cor, alfa) {
   const { width: w, height: h } = ctx.canvas, r = rng(seed);
   ctx.save(); ctx.globalAlpha = alfa; ctx.strokeStyle = cor; ctx.fillStyle = cor; ctx.lineWidth = 2;
   for (let k = 0; k < 9; k++) {
@@ -311,12 +326,34 @@ function planta(ctx, seed = 1, cor = COR.tinta, alfa = 0.22) {
 
 // foto de arquivo: P&B, contraste, desfoque de foco opcional, com retícula por cima
 // img = L.img.nome (pré-carregada via CENA.imagens)
+// seletiva: 'vermelho' mantém só os tons avermelhados da foto, puxados para o vermelho da paleta
+const _fotos = new Map();
+function _processar(img, pb, seletiva) {
+  const chave = img.src + pb + seletiva;
+  if (_fotos.has(chave)) return _fotos.get(chave);
+  const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+  const g = c.getContext('2d');
+  g.filter = pb ? 'grayscale(1) sepia(0.25) contrast(1.15)' : 'saturate(0.8)'; g.drawImage(img, 0, 0); g.filter = 'none';
+  if (seletiva) {
+    const o = document.createElement('canvas'); o.width = c.width; o.height = c.height;
+    const go = o.getContext('2d'); go.drawImage(img, 0, 0);
+    const src = go.getImageData(0, 0, c.width, c.height), dst = g.getImageData(0, 0, c.width, c.height);
+    for (let i = 0; i < src.data.length; i += 4) {
+      const r = src.data[i], gg = src.data[i + 1], b = src.data[i + 2];
+      const k = clamp((r - Math.max(gg, b) - 40) / 60);          // quanto "vermelho" é o pixel
+      if (k > 0) { dst.data[i] = lerp(dst.data[i], 200, k); dst.data[i + 1] = lerp(dst.data[i + 1], 32, k); dst.data[i + 2] = lerp(dst.data[i + 2], 30, k); }
+    }
+    g.putImageData(dst, 0, 0);
+  }
+  _fotos.set(chave, c); return c;
+}
+
 function foto(ctx, img, x, y, w, h, o = {}) {
-  const { pb = true, desfoque = 0, zoom = 1, retic = true } = o;
+  const { pb = true, desfoque = 0, zoom = 1, retic = true, seletiva = false, dx = 0, dy = 0 } = o;
   const s = Math.max(w / img.width, h / img.height) * zoom, iw = img.width * s, ih = img.height * s;
   ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-  ctx.filter = `${pb ? 'grayscale(1) sepia(0.25) contrast(1.15)' : 'saturate(0.8)'} ${desfoque ? `blur(${desfoque}px)` : ''}`;
-  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+  if (desfoque) ctx.filter = `blur(${desfoque}px)`;
+  ctx.drawImage(_processar(img, pb, seletiva), x + (w - iw) / 2 + dx, y + (h - ih) / 2 + dy, iw, ih);
   ctx.filter = 'none';
   if (retic) { ctx.globalAlpha = 0.12; reticula(ctx, x, y, w, h, COR.tinta, 6, 1.4); }
   ctx.restore();
@@ -332,6 +369,78 @@ function moldura(ctx, x, y, w, h, esp = 46) {
   ctx.restore();
 }
 
+// ======================================================================
+// Elementos de reportagem
+// ======================================================================
+
+// legenda da narração (registro Arquivo): linha atual, palavras surgindo no tempo da fala.
+// linhas = TEMPOS.legendas [{t0, t1, p:[[palavra, t]]}]
+function legenda(ctx, linhas, t, y = 1450, o = {}) {
+  const l = linhas.find(l => t >= l.t0 - 0.05 && t < l.t1);
+  if (!l) return;
+  const sai = clamp((l.t1 - t) / 0.15);
+  ctx.save(); ctx.globalAlpha = sai;
+  palavras(ctx, l.p.map(([w, t0]) => [w, t0 - 0.08]), t, ctx.canvas.width / 2, y,
+    { tam: 66, cor: COR.tinta, espaco: 0.28, ...o });
+  ctx.restore();
+}
+
+// crédito de foto/fonte, datilografado pequeno no canto
+function credito(ctx, txt, p, x = 60, y = 1820, cor = COR.tinta) {
+  if (p <= 0) return;
+  texto(ctx, datilografar(txt, p * 2), x, y, { familia: FONTE.maquina, peso: 400, tam: 28, cor });
+}
+
+// gota d'água
+function gota(ctx, cx, cy, r, cor = COR.azul) {
+  ctx.save(); ctx.fillStyle = cor; ctx.beginPath();
+  ctx.moveTo(cx, cy - r * 1.6);
+  ctx.bezierCurveTo(cx + r * 0.2, cy - r, cx + r, cy - r * 0.4, cx + r, cy + r * 0.15);
+  ctx.arc(cx, cy + r * 0.15, r, 0, Math.PI);
+  ctx.bezierCurveTo(cx - r, cy - r * 0.4, cx - r * 0.2, cy - r, cx, cy - r * 1.6);
+  ctx.fill(); ctx.restore();
+}
+
+// urna eletrônica estilizada (traço de gravura)
+function urna(ctx, cx, cy, esc = 1, cor = COR.tinta, fundo = COR.bege) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(esc, esc);
+  ctx.fillStyle = cor; ctx.fillRect(-210, -120, 420, 260);
+  ctx.fillStyle = fundo; ctx.fillRect(-180, -90, 190, 130);                  // tela
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 4; j++) ctx.fillRect(40 + i * 46, -90 + j * 46, 34, 34);  // teclado
+  ctx.fillStyle = COR.vermelho; ctx.fillRect(-180, 60, 190, 50);
+  texto(ctx, 'VOTO', -85, 98, { familia: FONTE.grotesca, peso: 700, tam: 38, cor: fundo, alinhar: 'center' });
+  ctx.restore();
+}
+
+// forma de onda de áudio (gravação), barras verticais pulsando
+function ondaSonora(ctx, cx, cy, largura, altura, t, cor = COR.vermelho, n = 48) {
+  const bw = largura / n, r = rng(11);
+  ctx.save(); ctx.fillStyle = cor;
+  for (let i = 0; i < n; i++) {
+    const base = 0.25 + 0.75 * Math.abs(Math.sin(i * 0.37 + r() * 3));
+    const v = base * (0.35 + 0.65 * Math.abs(Math.sin(t * 9 + i * 0.8 + r() * 6)));
+    const h = Math.max(6, altura * v);
+    ctx.fillRect(cx - largura / 2 + i * bw + bw * 0.2, cy - h / 2, bw * 0.6, h);
+  }
+  ctx.restore();
+}
+
+// estrada em perspectiva com faixa central andando
+function estrada(ctx, t, cor = COR.tinta, faixa = COR.amarelo) {
+  const { width: w, height: h } = ctx.canvas, hz = h * 0.42;
+  ctx.save(); ctx.fillStyle = cor; ctx.beginPath();
+  ctx.moveTo(w / 2 - 30, hz); ctx.lineTo(w / 2 + 30, hz); ctx.lineTo(w * 1.1, h); ctx.lineTo(-w * 0.1, h); ctx.fill();
+  ctx.fillStyle = faixa;
+  for (let k = 0; k < 9; k++) {
+    const f = ((k + (t * 0.9) % 1) / 9), y1 = hz + (h - hz) * f * f, y2 = hz + (h - hz) * Math.pow(f + 0.05, 2);
+    const w1 = 4 + 30 * f;
+    ctx.beginPath(); ctx.moveTo(w / 2 - w1 / 2, y1); ctx.lineTo(w / 2 + w1 / 2, y1);
+    ctx.lineTo(w / 2 + w1 * 0.6, y2); ctx.lineTo(w / 2 - w1 * 0.6, y2); ctx.fill();
+  }
+  ctx.restore();
+}
+
 window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
-  varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura, img: {} };
+  varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
+  legenda, credito, gota, urna, ondaSonora, estrada, img: {} };

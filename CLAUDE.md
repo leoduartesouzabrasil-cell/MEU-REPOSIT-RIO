@@ -25,6 +25,14 @@ baixadas com `python3 pesquisa/baixar_imagem.py <url> <tema>` (gera `CREDITOS.md
 2. Confira quadros: `node motor/render.js <nome> saida/q.png --still 2.5`
 3. Renderize: `node motor/render.js <nome> [saida/<nome>.mp4] [--audio trilha.mp3]`
 4. Fotos/imagens: declare em `CENA.imagens = { nome: 'caminho' }` e use `L.foto(ctx, L.img.nome, ...)`.
-5. Pré-visualização ao vivo: abra `motor/player.html?cena=<nome>` num navegador.
+5. **Narração + trilha + efeitos**: siga `audio/indigenas-ms/montar.py` como modelo. Ele transcreve a narração
+   (palavras com tempo, via faster-whisper), corta em trechos com pausas para os momentos CARTAZ, sintetiza a trilha e
+   os efeitos com `motor/som.py` (sem amostras de terceiros), faz o ducking e gera `motor/cenas/<nome>.tempos.js`
+   (marcas e legendas), que a cena usa. Assim som e imagem ficam sincronizados.
+   Trilha "indígena": maracá, tambor de pele, flauta de taquara (pentatônica), bordão e mata. É evocação sintetizada,
+   não música tradicional real; para música de verdade, licenciar artistas indígenas.
+6. Render paralelo: `node motor/render.js <nome> saida/<nome>.mp4 --audio audio/<nome>/mix.wav` (aceita `--de/--ate`
+   para testar um trecho). O áudio sai normalizado em -14 LUFS (padrão de Reels).
+7. Pré-visualização ao vivo: abra `motor/player.html?cena=<nome>` num navegador.
 
 Quando faltar algo na biblioteca (novo símbolo, transição), adicione em `motor/lib.js` e documente em `identidade/IDENTIDADE.md`, mantendo a identidade.

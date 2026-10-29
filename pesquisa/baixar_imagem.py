@@ -69,8 +69,9 @@ def imagem_pagina(url, dominio):
             inteiras.append((int(m.group(1)), html.unescape(m.group(0))))
     img = max(inteiras)[1] if inteiras else og
     desc = meta(pagina, "description") or meta(pagina, "og:title") or ""
-    autor = re.search(r"Foto:\s*([^.\n]+)", desc)
-    return img, desc[:300], autor.group(1).strip() if autor else "", FONTES[dominio]
+    # crédito: "Foto: ..." na descrição (páginas de foto) ou "© ..." na legenda (matérias)
+    autor = re.search(r"Foto:\s*([^.\n]+)", desc) or re.search(r"<figcaption[^>]*>[^<]*?©\s*([^<]+)</figcaption", pagina)
+    return img, desc[:300], html.unescape(autor.group(1)).strip() if autor else "", FONTES[dominio]
 
 
 def main():
@@ -88,10 +89,12 @@ def main():
 
     pasta = RAIZ / "midia" / tema
     pasta.mkdir(parents=True, exist_ok=True)
-    ext = Path(urllib.parse.urlparse(img).path).suffix.lower() or ".jpg"
+    dados = baixar(img)
+    # extensão pelo conteúdo (o servidor às vezes entrega WebP com nome .jpg)
+    ext = ".webp" if dados[8:12] == b"WEBP" else ".png" if dados[:4] == b"\x89PNG" else ".jpg"
     nome = (sys.argv[3] if len(sys.argv) > 3 else Path(urllib.parse.urlparse(img).path).stem) + ext
     destino = pasta / nome
-    destino.write_bytes(baixar(img))
+    destino.write_bytes(dados)
 
     creditos = pasta / "CREDITOS.md"
     if not creditos.exists():

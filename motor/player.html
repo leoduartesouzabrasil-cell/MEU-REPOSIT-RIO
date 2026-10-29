@@ -21,9 +21,12 @@
 <script>
   // ?cena=nome carrega motor/cenas/nome.js ; ?t=3.2 congela num instante
   const q = new URLSearchParams(location.search);
-  const s = document.createElement('script');
-  s.src = `cenas/${q.get('cena') || 'demo'}.js`;
-  document.body.appendChild(s);
+  // cenas/<nome>.tempos.js (opcional, gerado pelo script de áudio) carrega antes da cena
+  const nome = q.get('cena') || 'demo', s = document.createElement('script');
+  const tempos = document.createElement('script');
+  tempos.src = `cenas/${nome}.tempos.js`;
+  tempos.onload = tempos.onerror = () => { s.src = `cenas/${nome}.js`; document.body.appendChild(s); };
+  document.body.appendChild(tempos);
 
   window.pronto = new Promise(ok => {
     s.onload = async () => {
@@ -39,7 +42,7 @@
         im.onerror = () => erro(new Error('imagem não carregou: ' + src)); im.src = src;
       })));
       window.renderAt = t => { cena.desenhar(ctx, t, CT); };
-      window.frameData = t => { renderAt(t); return tela.toDataURL('image/png'); };
+      window.frameData = (t, tipo = 'image/png', q = 0.92) => { renderAt(t); return tela.toDataURL(tipo, q); };
       if (q.has('t')) renderAt(parseFloat(q.get('t')));
       else if (!navigator.webdriver) {   // pré-visualização ao vivo no navegador
         const t0 = performance.now();
