@@ -5,6 +5,8 @@ const COR = {
   bege: '#EDE0C4', begeEscuro: '#D6C29A',
   vermelho: '#C8201E', vermelhoEscuro: '#8A1411',
   amarelo: '#EBB52A', azul: '#1F3A5F', tinta: '#1C1714',
+  // modo TENSO (violência, morte, luto)
+  sangue: '#5E0B0A', carvao: '#0F0C0B',
 };
 
 const FONTE = {
@@ -440,7 +442,70 @@ function estrada(ctx, t, cor = COR.tinta, faixa = COR.amarelo) {
   ctx.restore();
 }
 
+// ======================================================================
+// Modo TENSO — sangue, choque, tremor
+// ======================================================================
+
+// sangue escorrendo de uma borda horizontal (y). p 0→1 = comprimento das gotas.
+function escorrer(ctx, x, y, w, p, cor = COR.vermelho, seed = 1, comprimento = 260) {
+  if (p <= 0) return;
+  const r = rng(seed), n = Math.max(3, Math.floor(w / 46));
+  ctx.save(); ctx.fillStyle = cor;
+  for (let i = 0; i < n; i++) {
+    const cx = x + (i + 0.2 + r() * 0.6) * (w / n), lw = 6 + r() * 16;
+    const len = comprimento * (0.25 + r() * 0.95) * ease.saida(clamp(p * (0.8 + r() * 0.5)));
+    ctx.fillRect(cx - lw / 2, y - 2, lw, len);
+    ctx.beginPath(); ctx.arc(cx, y + len, lw * 0.75, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// respingo de sangue: mancha central + gotas espalhadas
+function respingo(ctx, cx, cy, raio, p = 1, cor = COR.vermelho, seed = 3) {
+  if (p <= 0) return;
+  const r = rng(seed), e = ease.saida(clamp(p * 1.6));
+  ctx.save(); ctx.fillStyle = cor;
+  ctx.beginPath();
+  for (let i = 0; i <= 24; i++) {
+    const a = i / 24 * Math.PI * 2, rr = raio * (0.7 + r() * 0.5) * e;
+    ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+  }
+  ctx.fill();
+  for (let i = 0; i < 26; i++) {
+    const a = r() * Math.PI * 2, d = raio * (1 + r() * 2.2) * e, s = raio * (0.03 + r() * 0.12);
+    ctx.beginPath(); ctx.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d, s, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// clarão de cor na tela inteira, decai rápido depois de t0
+function flash(ctx, t, t0, cor = COR.vermelho, dur = 0.25, forca = 0.55) {
+  const k = (t - t0) / dur;
+  if (k < 0 || k > 1) return;
+  ctx.save(); ctx.globalAlpha = forca * (1 - k) * (1 - k); ctx.fillStyle = cor;
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); ctx.restore();
+}
+
+// tremor de câmera depois de um impacto: devolve {dx, dy}
+function tremor(t, impactos, forca = 22, dur = 0.35) {
+  let dx = 0, dy = 0;
+  for (const t0 of impactos) {
+    const k = (t - t0) / dur;
+    if (k >= 0 && k < 1) {
+      const r = rng(Math.floor(t * 60) + 13);
+      dx += (r() - 0.5) * 2 * forca * (1 - k); dy += (r() - 0.5) * 2 * forca * (1 - k);
+    }
+  }
+  return { dx, dy };
+}
+
+// imagem centralizada com largura dada (logos)
+function imagem(ctx, img, cx, cy, largura, alfa = 1) {
+  const h = largura * img.height / img.width;
+  ctx.save(); ctx.globalAlpha = alfa; ctx.drawImage(img, cx - largura / 2, cy - h / 2, largura, h); ctx.restore();
+}
+
 window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
-  legenda, credito, gota, urna, ondaSonora, estrada, img: {} };
+  legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem, img: {} };

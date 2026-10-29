@@ -214,3 +214,69 @@ def sino_grave():
     x = sum(a * np.sin(2 * np.pi * f * t) * np.exp(-t / d) for f, a, d in
             [(110, 1, 1.6), (220.7, 0.5, 1.0), (331, 0.3, 0.7), (523, 0.15, 0.4)])
     return (x * 0.25).astype(np.float32)
+
+
+# ---------------------------------------------------------------- modo TENSO
+# frígio de Lá, registro grave (a 2ª menor dá o desconforto): A Bb C D E F G A Bb
+FRIGIO = [110.0, 116.5, 130.8, 146.8, 164.8, 174.6, 196.0, 220.0, 233.1]
+
+
+def frase_tensa(graus, ritmo, vel=0.6):
+    """Flauta grave em escala frígia, notas longas com leve queda de afinação no fim."""
+    out = segundos(sum(ritmo) + 0.6)
+    t = 0
+    for g, d in zip(graus, ritmo):
+        n = flauta(FRIGIO[g] * 2, d * 1.2, vel)
+        soma(out, n, t)
+        t += d
+    return out
+
+
+def drone_tenso(dur, base=41.2):
+    """Bordão com segunda menor (dissonância) e tremolo lento: inquietação contínua."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    x = (np.sin(2 * np.pi * base * t) + 0.5 * np.sin(2 * np.pi * base * 2 * t)
+         + 0.28 * np.sin(2 * np.pi * base * 2 * 16 / 15 * t)          # 2ª menor
+         + 0.15 * np.sin(2 * np.pi * base * 3 * 1.0595 * t))
+    x *= 0.7 + 0.3 * np.sin(2 * np.pi * 0.23 * t) ** 2
+    return (x * 0.24).astype(np.float32)
+
+
+def vento(dur):
+    """Vento grave e oco (substitui pássaros e grilos)."""
+    x = banda(ruido(dur), 120, 700)
+    t = np.arange(len(x)) / SR
+    return (x * (0.5 + 0.5 * np.sin(2 * np.pi * 0.11 * t + 1) ** 2) * 0.05).astype(np.float32)
+
+
+def riser(dur=1.4):
+    """Subida de tensão antes do impacto: ruído e tom crescendo, corte seco."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    k = (t / dur) ** 2.2
+    r = ruido(dur)
+    x = banda(r, 400, 3000) * k * 0.5 + banda(r, 3000, 9000) * k ** 2 * 0.4
+    f = 80 + 400 * k
+    x += np.sin(2 * np.pi * np.cumsum(f) / SR) * k * 0.4
+    return norm(x.astype(np.float32), 0.5)
+
+
+def boom():
+    """Impacto grave (sub) com cauda longa."""
+    dur = 2.2
+    t = np.arange(int(dur * SR)) / SR
+    f = 30 + 70 * np.exp(-t / 0.08)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.7)
+    x += banda(ruido(dur), 40, 400) * np.exp(-t / 0.15) * 0.5
+    return norm(x.astype(np.float32), 0.95)
+
+
+def chocalho(dur=0.6, vel=0.6):
+    """Maracá em tremolo rápido e irregular (soa como cascavel): alerta."""
+    out = segundos(dur + 0.1)
+    t = 0.0
+    while t < dur:
+        soma(out, maraca(vel * (0.5 + 0.5 * _rng.random()), 0.05), t)
+        t += 0.028 + 0.02 * _rng.random()
+    return out * np.linspace(1, 0.3, len(out)).astype(np.float32)

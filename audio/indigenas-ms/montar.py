@@ -27,15 +27,15 @@ VERSOES = {
         (3, 0.00, 15.30, 2.2),    # ... assassinados em MS. → CARTAZ "6"
         (3, 15.30, None, 0.6),
         (4, 0.00, 22.25, 0.8),    # ... em quem votar. → CARTAZ final
-        (4, 22.25, None, 4.0),    # cartela final
+        (4, 22.25, None, 4.4),    # cartela final + logo
     ]),
-    "60": dict(entrada=0.6, sufixo="-60", pecas=[
-        (1, 0.00, 18.10, 1.5),    # o áudio da ameaça → CARTAZ "VENENO NA ÁGUA"
-        (1, 18.10, 22.50, 0.3),   # aldeia Sassoró, Guarani Kaiowá
-        (1, 28.82, 32.95, 0.5),   # MPI: não há comprovação de contaminação
-        (2, 0.00, 10.90, 0.5),    # não foi caso isolado · 5 assassinatos (Cimi)
-        (3, 21.40, None, 0.6),    # MPF 24 horas · PF acionada
-        (4, 22.17, None, 2.6),    # quem tem medo... Constituição → cartela final
+    "60": dict(entrada=0.3, sufixo="-60", pecas=[
+        (1, 0.00, 18.10, 1.3),    # o áudio da ameaça → CARTAZ "VENENO NA ÁGUA"
+        (1, 18.10, 22.50, 0.25),  # aldeia Sassoró, Guarani Kaiowá
+        (1, 28.82, 32.95, 0.35),  # MPI: não há comprovação de contaminação
+        (2, 0.00, 10.90, 0.35),   # não foi caso isolado · 5 assassinatos (Cimi)
+        (3, 21.40, None, 0.4),    # MPF 24 horas · PF acionada
+        (4, 22.17, None, 3.9),    # quem tem medo... Constituição → cartela final + logo
     ]),
 }
 VERSAO = sys.argv[1] if len(sys.argv) > 1 else "completo"
@@ -166,108 +166,98 @@ marca("favor", frase("proteger os povos"))
 marca("dever", frase("dever do estado"))
 marca("constituicao", frase("constituição"))
 marca("fim", PAL[-1][2] + 0.4)
+marca("logo", PAL[-1][2] + 2.0)
 M = {k: v for k, v in M.items() if v >= 0}
 
 (RAIZ / "motor" / "cenas" / f"indigenas-ms{CFG['sufixo']}.tempos.js").write_text(
     "// GERADO por audio/indigenas-ms/montar.py — não editar à mão\n"
     f"window.TEMPOS = {json.dumps({'dur': DUR, 'marcas': M, 'legendas': legendas(PAL)}, ensure_ascii=False)};\n")
 
-# ---------------------------------------------------------------- trilha
+# ---------------------------------------------------------------- trilha (modo TENSO)
 N = len(voz)
 mus = np.zeros(N, np.float32)
 amb = np.zeros(N, np.float32)
 
-# seções na ordem do vídeo: bordão em Lá nas partes calmas, Mi grave nas tensas
-ordem = [(0.0, 55.0, "calmo"), (M.get("gravacao"), 41.2, "tenso"), (M.get("cartaz1"), 41.2, "golpe"),
-         (M.get("sassoro"), 55.0, "triste"), (M.get("isolado"), 41.2, "tenso"), (M.get("permanente"), 41.2, "tenso"),
-         (M.get("cartaz2"), 41.2, "golpe"), (M.get("prefeitura"), 55.0, "pulso"), (M.get("cacique"), 55.0, "quente"),
-         (M.get("cartaz3"), 55.0, "climax")]
+# seções na ordem do vídeo
+ordem = [(0.0, "suspense"), (M.get("gravacao"), "tenso"), (M.get("cartaz1"), "golpe"), (M.get("sassoro"), "luto"),
+         (M.get("isolado"), "tenso"), (M.get("permanente"), "tenso"), (M.get("cartaz2"), "golpe"),
+         (M.get("prefeitura"), "marcha"), (M.get("cacique"), "luto"), (M.get("cartaz3"), "climax"), (M.get("logo"), "fim")]
 ordem = [o for o in ordem if o[0] is not None]
-secoes = [(a, b, base, tipo) for (a, base, tipo), (b, _, _) in zip(ordem, ordem[1:] + [(DUR, 0, "")])]
-for a, b, base, tipo in secoes:
-    d = som.drone(b - a + 1.0, base, 0.6 if tipo in ("climax", "quente") else 0.2)
-    f = int(0.8 * SR)
-    d[:f] *= np.linspace(0, 1, f)
-    d[-f:] *= np.linspace(1, 0, f)
-    soma(mus, d, a - 0.2, 0.9 if tipo != "golpe" else 0.5)
+secoes = [(a, b, tipo) for (a, tipo), (b, _) in zip(ordem, ordem[1:] + [(DUR, "")])]
 
-    batida = 60 / 92
+# bordão dissonante contínuo (Mi grave), mais forte nas partes de violência
+d = som.drone_tenso(DUR + 1)
+soma(mus, d, 0, 0.8)
+soma(amb, som.vento(DUR), 0, 1.0)
+
+coracao = 60 / 72
+for a, b, tipo in secoes:
     t, i = a, 0
-    while t < b:
-        if tipo in ("pulso", "climax", "quente"):                  # maracá constante, acento no tempo
-            soma(mus, som.maraca(1.0 if i % 2 == 0 else 0.55), t)
-            soma(mus, som.maraca(0.4), t + batida / 2)
-        if tipo == "triste" and i % 4 == 0:
-            soma(mus, som.maraca(0.35, 0.25), t)
-        if tipo == "tenso" and i % 2 == 0:                          # coração
-            soma(mus, som.batimento(), t, 0.8)
-        if tipo == "climax" and i % 2 == 0:
-            soma(mus, som.tambor(0.9), t)
-        if tipo == "climax" and i % 4 == 3:
-            soma(mus, som.tambor(0.6, 140, 70, 0.4), t + batida / 2)
-        if tipo == "pulso" and i % 4 == 0:
-            soma(mus, som.tambor(0.45), t)
-        t += batida
+    while t < b - 0.05:
+        if tipo in ("suspense", "tenso", "luto", "marcha"):          # coração o vídeo inteiro
+            soma(mus, som.batimento(), t, 0.9 if tipo == "tenso" else 0.6)
+        if tipo == "tenso" and i % 4 == 2:
+            soma(mus, som.chocalho(0.5, 0.5), t + coracao / 2)
+        if tipo == "marcha" and i % 2 == 0:                          # marcha pesada
+            soma(mus, som.tambor(0.8, 80, 38, 0.9), t)
+        if tipo == "marcha" and i % 2 == 1:
+            soma(mus, som.chocalho(0.35, 0.4), t)
+        if tipo == "climax":                                          # tambores graves + chocalho
+            soma(mus, som.tambor(1.0, 75, 34, 1.0), t)
+            if i % 2 == 1:
+                soma(mus, som.tambor(0.6, 120, 60, 0.5), t + coracao / 2)
+            if i % 4 == 3:
+                soma(mus, som.chocalho(0.6, 0.6), t)
+        t += coracao
         i += 1
 
-# frases de flauta (pentatônica de Lá): só nas partes calmas, tristes, quentes e no clímax
+# flauta grave em frígio: lamento, só onde a narração respira
 frases = [
-    (0.1, [5, 4, 3, 1, 2], [0.5, 0.35, 0.35, 0.6, 1.4]),
-    ("sassoro", [3, 2, 1, 0], [0.7, 0.5, 0.6, 2.0], 0.3),
-    ("pararam", [2, 3, 1, 0], [0.6, 0.6, 0.8, 1.8], 0.0),
-    ("medo", [4, 3, 1], [0.6, 0.6, 2.4], -0.2),
-    ("cacique", [0, 1, 2, 3, 2], [0.6, 0.5, 0.5, 0.9, 1.6], 0.0),
-    ("direito", [3, 4, 5, 4], [0.5, 0.5, 0.9, 1.8], 1.0),
-    ("cartaz3", [5, 6, 7, 6, 5, 4], [0.45, 0.45, 0.7, 0.45, 0.45, 1.2], 0.2),
-    ("favor", [4, 5, 7, 8], [0.6, 0.6, 0.6, 2.2], 0.0),
-    ("constituicao", [5, 4, 3, 5], [0.5, 0.5, 0.6, 2.5], 0.4),
+    (0.05, [0, 1, 0], [0.9, 0.6, 1.8]),
+    ("sassoro", [3, 2, 1, 0], [0.8, 0.6, 0.8, 2.2], 0.2),
+    ("medo", [4, 5, 4], [0.7, 0.7, 2.4], -0.2),
+    ("cacique", [0, 1, 3, 1], [0.8, 0.6, 0.9, 2.0], 0.0),
+    ("cartaz3", [7, 8, 7, 5, 4], [0.6, 0.6, 0.9, 0.6, 1.6], 0.3),
+    ("favor", [4, 5, 4, 1, 0], [0.7, 0.5, 0.8, 0.6, 2.4], 0.0),
 ]
 for t0, graus, ritmo, *desl in frases:
     if isinstance(t0, str):
         if t0 not in M:
             continue
         t0 = M[t0] + desl[0]
-    soma(mus, som.frase_flauta(graus, ritmo, 1.0, 0.55), t0)
-
-# ambiente de mata nas partes calmas
-fim_secao = {a: b for a, b, _, _ in secoes}
-for nome in ["sassoro", "cacique"]:
-    if nome in M:
-        soma(amb, som.grilos(fim_secao[M[nome]] - M[nome]), M[nome], 0.8)
-        for d in (2.0, 6.5):
-            soma(amb, som.passaro(), M[nome] + d)
-            soma(amb, som.passaro(0.18, 3000, 4200), M[nome] + d + 0.3)
-soma(amb, som.grilos(M["gravacao"] + 1), 0, 1.0)
-for t0 in [0.6, 3.2]:
-    soma(amb, som.passaro(), t0)
+    soma(mus, som.frase_tensa(graus, ritmo, 0.5), t0)
 
 # ---------------------------------------------------------------- efeitos
 sfx = np.zeros(N, np.float32)
 em = lambda *nomes: [M[n] for n in nomes if n in M]
-for t0 in em("cartaz1", "cartaz2", "favor", "dever") + [M["cartaz3"] + 0.9, M["democracia"] + 0.2]:
+impactos = em("cartaz1", "cinco", "cartaz2", "favor", "dever", "logo") + [M["cartaz3"] + 0.9, M["democracia"] + 0.2]
+for t0 in impactos:
     soma(sfx, som.carimbo_sfx(), t0, 0.9)
-for t0 in em("cartaz1", "sassoro", "cartaz2", "prefeitura", "cartaz3", "fim"):
+    soma(sfx, som.boom(), t0, 0.8)
+for t0 in em("cartaz1", "cartaz3", "logo"):                               # tensão sobe antes do golpe
+    soma(sfx, som.riser(1.4), t0 - 1.4, 0.7)
+for t0 in em("sassoro", "cartaz2", "prefeitura", "fim", "isolado", "ministerio"):
     soma(sfx, som.whoosh(), t0 - 0.35, 0.8)
-soma(sfx, som.estatica(M["veneno"] - M["gravacao"] + 1.5), M["gravacao"], 1.0)   # chiado da gravação
-for k in range(4):
-    soma(sfx, som.gota(), M["cartaz1"] + 0.5 + k * 0.32, 0.8 - k * 0.15)
+soma(sfx, som.estatica(M["veneno"] - M["gravacao"] + 1.5), M["gravacao"], 1.2)   # chiado da gravação
+for k in range(4):                                                        # gotas lentas, caindo no veneno
+    soma(sfx, som.gota(), M["cartaz1"] + 0.5 + k * 0.32, 0.7 - k * 0.12)
 for t0 in em("pararam"):
     for k in range(3):
-        soma(sfx, som.gota(), t0 + 0.4 + k * 0.5, 0.6)
-soma(sfx, som.maquina(22, 0.045), M["domingo"] - 0.3, 0.9)
+        soma(sfx, som.gota(), t0 + 0.4 + k * 0.5, 0.5)
+soma(sfx, som.maquina(22, 0.045), M["domingo"] - 0.3, 0.8)
 for t0 in em("ministerio"):
-    soma(sfx, som.maquina(18, 0.05), t0 + 0.2, 0.8)
+    soma(sfx, som.maquina(18, 0.05), t0 + 0.2, 0.7)
 for t0 in em("circunst"):
-    soma(sfx, som.maquina(14, 0.05), t0, 0.8)
+    soma(sfx, som.maquina(14, 0.05), t0, 0.7)
 for t0 in em("prefeitura", "mpf", "pf", "deputadas", "governo"):
-    soma(sfx, som.maquina(16, 0.04), t0 + 0.1, 0.8)
+    soma(sfx, som.maquina(16, 0.04), t0 + 0.1, 0.7)
 for t0 in em("apib"):                                                     # contador 2022 → 2026
     for k in range(5):
         soma(sfx, som.tique(), t0 + 1.2 + k * 0.6, 1.0)
 for t0 in em("isolado", "rodovia"):
     for k in range(3):
         soma(sfx, som.tique(), t0 + 0.4 + k * 0.35, 0.8)
-soma(sfx, som.sino_grave(), M["fim"] - 0.2, 1.0)
+soma(sfx, som.sino_grave(), M["fim"] - 0.1, 0.9)
 for t0 in em("medo"):
     soma(sfx, som.sino_grave(), t0 + 0.3, 0.5)
 

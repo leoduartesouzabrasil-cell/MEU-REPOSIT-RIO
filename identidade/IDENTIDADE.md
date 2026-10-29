@@ -119,3 +119,24 @@ Percussão marcial e/ou ritmo brasileiro (surdo, alfaia), um baque de impacto em
 - Ficar o vídeo inteiro num registro só.
 - Fotos coloridas inteiras no Arquivo (sempre P&B/sépia, com no máximo um elemento colorido).
 - Fundo cinza-frio ou verde-azulado da referência: no lugar deles use bege e tinta.
+
+---
+
+## 8. Modo TENSO (violência, morte, luto)
+
+Para temas de violência, o vídeo troca o clima sem sair da identidade:
+
+| Elemento | Padrão | Modo TENSO |
+|---|---|---|
+| Fundo | bege / amarelo | **carvão `#0F0C0B`** em quase tudo |
+| Texto | tinta / vermelho | bege `#EDE0C4` |
+| Ação | vermelho + amarelo | **vermelho `#C8201E` + sangue `#5E0B0A`**; amarelo sai |
+| Raios de sol | vermelho sobre amarelo | sangue sobre carvão, girando devagar |
+| Efeitos | carimbo | carimbo + **tremor de câmera + clarão vermelho**; sangue escorrendo (`escorrer`) e respingos (`respingo`) |
+| Fotos | P&B | P&B com **cor seletiva vermelha**, moldura vira filete vermelho |
+| Trilha | maracá, flauta pentatônica, pássaros | bordão grave dissonante, coração constante, chocalho em alerta (cascavel), flauta grave em frígio, vento; subida antes de cada impacto e estrondo grave |
+
+## 9. Marca da página
+
+Todo vídeo termina com o logo **O Camarada** (`identidade/marca/o-camarada-vermelho.png`, ou `-bege.png` sobre fundo vermelho),
+com carimbo, por ~2 s, depois da palavra de ordem final. Créditos de fontes e fotos ficam pequenos embaixo do logo.

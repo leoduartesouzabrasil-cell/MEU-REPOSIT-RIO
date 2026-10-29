@@ -12,7 +12,8 @@ Resumo rápido:
 - Movimento CARTAZ: carimbo, corte diagonal, sol nascente, escada, bandeira, contador.
 - Movimento ARQUIVO: palavra por palavra, digitação + seleção, câmera documental, foco entrando, ondas + etiquetas, cor seletiva, moldura; varredura de TV.
 - Papel com grão "fervendo" sempre ligado.
-- Formato padrão: 1080×1920, 30 fps.
+- Formato padrão: 1080×1920, 30 fps, **até ~60 s** salvo pedido contrário.
+- Temas de violência/morte: **modo TENSO** (seção 8 do guia). Todo vídeo termina com o **logo O Camarada** (seção 9).
 
 ## Pesquisa automática (fatos e imagens)
 Todo vídeo sobre tema real (ex.: Lula, uma lei, uma data histórica) começa com pesquisa, sem esperar o usuário pedir:
