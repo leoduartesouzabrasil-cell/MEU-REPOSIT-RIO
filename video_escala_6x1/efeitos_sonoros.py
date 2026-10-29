@@ -140,3 +140,77 @@ def gerar(caminho, duracao):
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes(pcm.tobytes())
+
+
+# --- sons extras do estilo "documentário editorial" (gerar_video_estilo.py) ---
+
+
+def tecla():
+    t = _t(0.04)
+    ruido = np.diff(rng.standard_normal(len(t) + 1))
+    clique = np.sin(2 * np.pi * rng.uniform(2200, 3200) * t)
+    return (ruido * 0.5 + clique * 0.3) * np.exp(-110 * t) * 0.35
+
+
+def risco(dur=0.18):
+    """Caneta riscando o papel."""
+    n = int(SR * dur)
+    t = np.arange(n) / SR
+    ruido = np.diff(rng.standard_normal(n + 1))
+    aspereza = 0.6 + 0.4 * np.sin(2 * np.pi * 55 * t)
+    return ruido * aspereza * np.sin(np.pi * t / dur) * 0.3
+
+
+def corte():
+    """Estalo curto de corte seco, com um grave por baixo."""
+    t = _t(0.12)
+    ruido = rng.standard_normal(len(t)) * np.exp(-60 * t) * 0.3
+    grave = np.sin(2 * np.pi * (70 + 60 * np.exp(-40 * t)) * t) * np.exp(-25 * t) * 0.6
+    return ruido + grave
+
+
+def drone(duracao):
+    """Cama sonora grave e tensa, com relógio tiquetaqueando."""
+    t = _t(duracao)
+    lento = 0.6 + 0.4 * np.sin(2 * np.pi * t / 7)
+    som = (np.sin(2 * np.pi * 55 * t) + 0.5 * np.sin(2 * np.pi * 82.4 * t)
+           + 0.25 * np.sin(2 * np.pi * 110.3 * t)) * lento * 0.18
+    entrada = np.minimum(1, t / 1.0)
+    som *= entrada
+    for k in range(int(duracao * 2)):
+        som_tick = tick(1200 if k % 2 == 0 else 900) * 0.6
+        i = int(k * 0.5 * SR)
+        som[i:i + len(som_tick)] += som_tick[: len(som) - i]
+    return som
+
+
+SONS = {
+    "corte": corte, "tecla": tecla, "risco": risco, "pop": pop, "blip": blip,
+    "tick": tick, "sino": sino, "impacto": impacto, "whoosh": whoosh,
+}
+
+
+def mixar(caminho, duracao, eventos):
+    """eventos: lista de (tempo, som, volume); som é um nome de SONS ou uma função."""
+    trilha = np.zeros(int(SR * duracao) + SR)
+
+    def add(som, inicio, vol=1.0):
+        i = int(inicio * SR)
+        trilha[i:i + len(som)] += som[: len(trilha) - i] * vol
+
+    add(drone(duracao), 0)
+    for inicio, som, vol in eventos:
+        add(som() if callable(som) else SONS[som](), inicio, vol)
+
+    trilha = trilha[: int(SR * duracao)]
+    n = int(SR * 0.6)
+    trilha[-n:] *= np.linspace(1, 0, n)
+    trilha = trilha / max(1e-9, np.percentile(np.abs(trilha), 99.5))
+    trilha = np.tanh(trilha * 0.9) * 0.95
+
+    pcm = (trilha * 32767).astype(np.int16)
+    with wave.open(str(caminho), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(SR)
+        w.writeframes(pcm.tobytes())
