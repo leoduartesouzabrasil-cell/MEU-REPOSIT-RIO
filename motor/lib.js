@@ -595,8 +595,53 @@ function capaSovietica(ctx, cfg) {
   papel(ctx, 1, 0.16); vinheta(ctx, 0.5);
 }
 
+// capa a partir de uma ARTE PRONTA (ilustração horizontal fornecida): mantém proporção, sem cortar a figura.
+// cfg = { arte, logo, linhas, destaque, credito, figuraX: [x0, x1] (limites da figura na arte, px), escala }
+function capaComArte(ctx, cfg) {
+  const W = ctx.canvas.width, H = ctx.canvas.height, a = cfg.arte;
+  const [fx0, fx1] = cfg.figuraX || [0, a.width];
+  const esc = cfg.escala || Math.min((W - 120) / (fx1 - fx0), H / a.height);
+  const aw = a.width * esc, ah = a.height * esc, ax = W / 2 - ((fx0 + fx1) / 2) * esc, ay = H - ah;
+
+  // fundo: a própria textura vermelha da arte (canto sem figura), em ladrilhos espelhados acima dela
+  const amostra = { x: 20, y: 60, w: 300, h: 300 };
+  fundo(ctx, cfg.corFundo || '#D3140A');
+  for (let y = 0, k = 0; y < ay + 40; y += amostra.h * esc, k++)
+    for (let x = 0, j = 0; x < W; x += amostra.w * esc, j++) {
+      ctx.save(); ctx.translate(x + (j % 2 ? amostra.w * esc : 0), y + (k % 2 ? amostra.h * esc : 0));
+      ctx.scale(j % 2 ? -1 : 1, k % 2 ? -1 : 1);
+      ctx.drawImage(a, amostra.x, amostra.y, amostra.w, amostra.h, 0, 0, amostra.w * esc, amostra.h * esc);
+      ctx.restore();
+    }
+
+  // arte com a borda de cima esfumada na textura (sem emenda visível)
+  const c = document.createElement('canvas'); c.width = W; c.height = Math.ceil(ah);
+  const g = c.getContext('2d'); g.drawImage(a, ax, 0, aw, ah);
+  // destination-in apaga tudo fora da forma desenhada: a máscara cobre a altura inteira
+  const m = g.createLinearGradient(0, 0, 0, ah); m.addColorStop(0, 'rgba(0,0,0,0)'); m.addColorStop(90 / ah, 'rgba(0,0,0,1)');
+  m.addColorStop(1, 'rgba(0,0,0,1)');
+  g.globalCompositeOperation = 'destination-in'; g.fillStyle = m; g.fillRect(0, 0, W, ah);
+  ctx.drawImage(c, 0, ay);
+
+  imagem(ctx, cfg.logo, W / 2, 285, 330);
+  const t1 = ajustar(ctx, cfg.linhas.join(' '), FONTE.manchete, W - 140);
+  texto(ctx, cfg.linhas.join(' '), W / 2, ay - 250, { tam: t1, cor: COR.bege, alinhar: 'center', erro: COR.tinta, desloc: 5 });
+  const t2 = ajustar(ctx, cfg.destaque, FONTE.bloco, W - 160, 400);
+  texto(ctx, cfg.destaque, W / 2, ay - 70, { familia: FONTE.bloco, peso: 400, tam: t2, cor: COR.amarelo, alinhar: 'center',
+    erro: COR.tinta, desloc: 8 });
+
+  if (cfg.credito) {
+    const base = ctx.createLinearGradient(0, H - 130, 0, H);
+    base.addColorStop(0, 'rgba(15,12,11,0)'); base.addColorStop(1, 'rgba(15,12,11,0.75)');
+    ctx.fillStyle = base; ctx.fillRect(0, H - 130, W, 130);
+    texto(ctx, cfg.credito, W / 2, H - 40, { familia: FONTE.maquina, peso: 400, cor: COR.bege, alinhar: 'center',
+      tam: Math.min(22, ajustar(ctx, cfg.credito, FONTE.maquina, W - 80, 400)) });
+  }
+  papel(ctx, 1, 0.1); vinheta(ctx, 0.35);
+}
+
 window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
-  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, img: {} };
+  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, capaComArte, img: {} };

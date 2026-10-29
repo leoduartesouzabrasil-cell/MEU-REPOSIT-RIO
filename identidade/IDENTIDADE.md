@@ -164,3 +164,8 @@ Todas as capas seguem o mesmo modelo de ilustração (refs. `ref-04-cartaz-lenin
 Como fazer: `python3 motor/ilustrar.py recorte.png ilustracao.png`, depois uma cena de 1 quadro chamando
 `L.capaSovietica(ctx, {figura, logo, linhas, destaque, credito})` (modelo: `motor/cenas/capa-indigenas-ms.js`) e
 `node motor/render.js <cena> saida/capa.png --still 1`.
+
+**Com arte pronta** (ilustração fornecida, em geral horizontal): `L.capaComArte(ctx, {arte, logo, linhas, destaque, credito, figuraX, escala})`
+(modelo: `motor/cenas/capa-indigenas-ms-arte.js`). A arte entra inteira e sem distorção, com a figura cabendo na largura;
+o fundo da própria arte é estendido para cima (textura espelhada, emenda esfumada) e ali entram o logo (versão bege sobre vermelho),
+o título em bege e a palavra de ordem em amarelo.
