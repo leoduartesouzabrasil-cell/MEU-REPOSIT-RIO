@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Construtivismo Tropical — player</title>
+<style>
+  @font-face { font-family: "Big Shoulders Display"; src: url("../identidade/fontes/BigShouldersDisplay[wght].ttf"); font-weight: 100 900; }
+  @font-face { font-family: "Russo One"; src: url("../identidade/fontes/RussoOne-Regular.ttf"); }
+  @font-face { font-family: "Oswald"; src: url("../identidade/fontes/Oswald[wght].ttf"); font-weight: 200 700; }
+  @font-face { font-family: "Special Elite"; src: url("../identidade/fontes/SpecialElite-Regular.ttf"); }
+  html, body { margin: 0; background: #1C1714; }
+  canvas { display: block; max-height: 100vh; max-width: 100vw; margin: auto; }
+</style>
+</head>
+<body>
+<canvas id="tela"></canvas>
+<script src="lib.js"></script>
+<script>
+  // ?cena=nome carrega motor/cenas/nome.js ; ?t=3.2 congela num instante
+  const q = new URLSearchParams(location.search);
+  const s = document.createElement('script');
+  s.src = `cenas/${q.get('cena') || 'demo'}.js`;
+  document.body.appendChild(s);
+
+  window.pronto = new Promise(ok => {
+    s.onload = async () => {
+      const cena = window.CENA, tela = document.getElementById('tela');
+      tela.width = cena.w; tela.height = cena.h;
+      const ctx = tela.getContext('2d');
+      await Promise.all(['900 10px "Big Shoulders Display"', '10px "Russo One"', '600 10px "Oswald"', '10px "Special Elite"']
+        .map(f => document.fonts.load(f)));
+      window.renderAt = t => { cena.desenhar(ctx, t, CT); };
+      window.frameData = t => { renderAt(t); return tela.toDataURL('image/png'); };
+      if (q.has('t')) renderAt(parseFloat(q.get('t')));
+      else if (!navigator.webdriver) {   // pré-visualização ao vivo no navegador
+        const t0 = performance.now();
+        const loop = () => { renderAt(((performance.now() - t0) / 1000) % cena.dur); requestAnimationFrame(loop); };
+        loop();
+      }
+      ok(cena);
+    };
+  });
+</script>
+</body>
+</html>
