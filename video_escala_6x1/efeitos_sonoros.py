@@ -184,13 +184,68 @@ def drone(duracao):
     return som
 
 
+# --- sons do estilo "cartaz soviético" (gerar_video_cartaz.py) ---
+
+
+def caixa():
+    """Tarol de marcha."""
+    t = _t(0.18)
+    ruido = rng.standard_normal(len(t)) * np.exp(-22 * t)
+    corpo = np.sin(2 * np.pi * 190 * t) * np.exp(-30 * t)
+    return (ruido * 0.55 + corpo * 0.5) * 0.7
+
+
+def metais(freq=196.0, dur=0.7):
+    """Acorde de metais (dente de serra com filtro que abre e fecha)."""
+    t = _t(dur)
+    onda = np.zeros_like(t)
+    for f in (freq, freq * 1.26, freq * 1.5, freq * 2):
+        for h in range(1, 9):
+            onda += np.sin(2 * np.pi * f * h * t + h) / h * (0.6 ** (h - 1))
+    brilho = np.minimum(1, t / 0.03) * np.exp(-3.5 * t)
+    return onda * brilho * 0.18
+
+
+def carimbo():
+    """Batida seca de carimbo no papel."""
+    t = _t(0.25)
+    grave = np.sin(2 * np.pi * (60 + 120 * np.exp(-50 * t)) * t) * np.exp(-18 * t)
+    papel = rng.standard_normal(len(t)) * np.exp(-50 * t) * 0.5
+    return grave + papel
+
+
+def marcha(duracao):
+    """Marcha a 120 bpm: bumbo nos tempos 1 e 3, tarol nos 2 e 4, rufo a cada 4 compassos."""
+    som = np.zeros(int(SR * duracao))
+
+    def add(s, inicio, vol):
+        i = int(inicio * SR)
+        if i < len(som):
+            som[i:i + len(s)] += s[: len(som) - i] * vol
+
+    batidas = int(duracao * 2)
+    for k in range(batidas):
+        b = k * 0.5
+        if k % 2 == 0:
+            add(kick(), b, 0.6)
+        else:
+            add(caixa(), b, 0.5)
+        if k % 16 == 15:
+            for r in range(8):
+                add(caixa(), b + r * 0.0625, 0.18 + r * 0.03)
+    t = np.arange(len(som)) / SR
+    pedal = np.sin(2 * np.pi * 49 * t) * 0.06 * np.minimum(1, t / 1.5)
+    return som + pedal
+
+
 SONS = {
     "corte": corte, "tecla": tecla, "risco": risco, "pop": pop, "blip": blip,
     "tick": tick, "sino": sino, "impacto": impacto, "whoosh": whoosh,
+    "caixa": caixa, "metais": metais, "carimbo": carimbo,
 }
 
 
-def mixar(caminho, duracao, eventos):
+def mixar(caminho, duracao, eventos, fundo=drone):
     """eventos: lista de (tempo, som, volume); som é um nome de SONS ou uma função."""
     trilha = np.zeros(int(SR * duracao) + SR)
 
@@ -198,7 +253,7 @@ def mixar(caminho, duracao, eventos):
         i = int(inicio * SR)
         trilha[i:i + len(som)] += som[: len(trilha) - i] * vol
 
-    add(drone(duracao), 0)
+    add(fundo(duracao), 0)
     for inicio, som, vol in eventos:
         add(som() if callable(som) else SONS[som](), inicio, vol)
 

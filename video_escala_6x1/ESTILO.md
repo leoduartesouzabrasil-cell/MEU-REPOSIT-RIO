@@ -41,3 +41,18 @@ Os tamanhos são pequenos e discretos. O destaque vem do contraste e do espaço 
 - Narração contínua (voz) sobre uma trilha de fundo grave.
 - Estalo curto em cada corte, cliques de tecla no texto digitado, "blips" nos rótulos.
 - No vídeo da 6x1 não há narração. A trilha é um drone grave com relógio tiquetaqueando (tema: tempo).
+
+---
+
+# Base de estilo: "cartaz soviético / construtivista"
+
+Inspirada nos cartaces de referência enviados (propaganda soviética e o post "O Camarada").
+Implementada em `gerar_video_cartaz.py`.
+
+- **Paleta:** vermelho `#CC2220`, mostarda `#EAB426`, creme `#EEE2C6` e preto `#1E1916`.
+- **Tipografia:** condensada em caixa alta (Bebas Neue) para títulos e bloco geométrico (Russo One) para apoio. As duas fontes estão em `fontes/`, com licença OFL.
+- **Composição:** diagonais de 6° a 12°, faixas que atravessam a tela, raios de sol girando atrás do tema e estrelas.
+- **Ícones chapados:** bandeira tremulando com foice e martelo, punho erguido, fábrica com chaminés, relógio e barras de calendário.
+- **Movimento:** textos que "carimbam" (caem de 1,8x para 1x), deslizam com passada e sobem de baixo.
+- **Impressão:** granulação forte, manchas de papel, vinheta e registro desalinhado (canal vermelho deslocado 3 px).
+- **Som:** marcha a 120 bpm (bumbo e tarol, com rufo), acordes de metais nos títulos, carimbos e sino.
