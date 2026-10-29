@@ -145,3 +145,22 @@ Para temas de violência, o vídeo troca o clima sem sair da identidade:
 
 Todo vídeo termina com o logo **O Camarada** (`identidade/marca/o-camarada-vermelho.png`, ou `-bege.png` sobre fundo vermelho),
 com carimbo, por ~2 s, depois da palavra de ordem final. Créditos de fontes e fotos ficam pequenos embaixo do logo.
+
+## 10. Capas de Reels — cartaz de propaganda soviética (modelo fixo)
+
+Todas as capas seguem o mesmo modelo de ilustração (refs. `ref-04-cartaz-lenin-bandeira.jpg` e `ref-05-urss-1917-1957-capa.jpg`):
+
+- **Figura ilustrada**, nunca foto crua: a foto (de fonte de uso livre) é recortada (`rembg`) e passa por
+  `motor/ilustrar.py`, que a transforma em guache de cartaz: pinceladas chapadas, cinzas quentes, pele em ocre,
+  vermelhos e amarelos da paleta, contorno de tinta e **contraluz vermelha** lateral.
+- **Bandeira vermelha** grande tremulando à esquerda, com **estrela e foice e martelo em amarelo**.
+- Lado direito **escuro com brasa vermelha**, como fumaça de batalha.
+- **Logo O Camarada** pequeno no topo.
+- **Título em escada inclinada** (~5°): linhas em Big Shoulders bege com sombra de tinta, e a palavra de ordem final
+  em Russo One amarela com exclamação.
+- Crédito da foto original em letra de máquina, pequeno, no rodapé.
+- Formato 1080×1920; logo, rosto e título dentro do miolo 1080×1440 (o que aparece no grid do perfil).
+
+Como fazer: `python3 motor/ilustrar.py recorte.png ilustracao.png`, depois uma cena de 1 quadro chamando
+`L.capaSovietica(ctx, {figura, logo, linhas, destaque, credito})` (modelo: `motor/cenas/capa-indigenas-ms.js`) e
+`node motor/render.js <cena> saida/capa.png --still 1`.

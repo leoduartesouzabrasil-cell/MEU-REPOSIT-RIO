@@ -14,6 +14,7 @@ Resumo rápido:
 - Papel com grão "fervendo" sempre ligado.
 - Formato padrão: 1080×1920, 30 fps, **até ~60 s** salvo pedido contrário.
 - Temas de violência/morte: **modo TENSO** (seção 8 do guia). Todo vídeo termina com o **logo O Camarada** (seção 9).
+- **Capa de todo Reels**: cartaz de propaganda soviética com a figura ilustrada (seção 10 do guia; `motor/ilustrar.py` + `L.capaSovietica`).
 
 ## Pesquisa automática (fatos e imagens)
 Todo vídeo sobre tema real (ex.: Lula, uma lei, uma data histórica) começa com pesquisa, sem esperar o usuário pedir:

@@ -505,7 +505,98 @@ function imagem(ctx, img, cx, cy, largura, alfa = 1) {
   ctx.save(); ctx.globalAlpha = alfa; ctx.drawImage(img, cx - largura / 2, cy - h / 2, largura, h); ctx.restore();
 }
 
+// ======================================================================
+// CAPA — cartaz de propaganda soviética (modelo fixo das capas de Reels)
+// ======================================================================
+
+// foice e martelo (símbolo clássico: foice abrindo à esquerda, martelo cruzando em diagonal)
+function foiceMartelo(ctx, cx, cy, s, cor = COR.amarelo) {
+  const g = Math.PI / 180;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s / 100, s / 100); ctx.fillStyle = cor;
+  // lâmina: crescente afinando na ponta (arco externo e interno com centros diferentes)
+  ctx.beginPath();
+  ctx.arc(4, -4, 64, 140 * g, 385 * g, false);
+  ctx.arc(-2, -14, 50, 375 * g, 150 * g, true);
+  ctx.closePath(); ctx.fill();
+  // cabo da foice, saindo para baixo à esquerda
+  ctx.save(); ctx.translate(-46, 40); ctx.rotate(45 * g); ctx.fillRect(-11, -8, 22, 52); ctx.restore();
+  // martelo: cabo de baixo-direita para cima-esquerda, cabeça perpendicular
+  ctx.save(); ctx.rotate(-45 * g);
+  ctx.fillRect(-10, -36, 20, 118); ctx.fillRect(-42, -70, 84, 36); ctx.restore();
+  ctx.restore();
+}
+
+// bandeira grande tremulando (tecido com dobras), presa no canto superior esquerdo
+function bandeiraCartaz(ctx, x, y, w, h, cor = COR.vermelho, sombra = COR.vermelhoEscuro) {
+  const borda = (k, amp) => Math.sin(k * 5.5) * amp + Math.sin(k * 13 + 1) * amp * 0.25;
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(x, y);
+  for (let i = 0; i <= 40; i++) { const k = i / 40; ctx.lineTo(x + w * k, y + borda(k, 40) * k); }
+  for (let i = 0; i <= 40; i++) { const k = i / 40; ctx.lineTo(x + w + borda(k, 50), y + h * k); }
+  for (let i = 40; i >= 0; i--) { const k = i / 40; ctx.lineTo(x + w * k, y + h + borda(k + 0.3, 55) * k); }
+  ctx.closePath(); ctx.fillStyle = cor; ctx.fill(); ctx.clip();
+  // dobras: faixas diagonais escuras e claras, borradas como guache
+  ctx.filter = 'blur(18px)';
+  for (let i = 0; i < 6; i++) {
+    ctx.fillStyle = i % 2 ? sombra : 'rgba(255,90,60,0.25)';
+    ctx.beginPath(); const x0 = x + w * (0.15 + i * 0.16);
+    ctx.moveTo(x0, y - 50); ctx.lineTo(x0 + 70, y - 50); ctx.lineTo(x0 - 160, y + h + 80); ctx.lineTo(x0 - 240, y + h + 80); ctx.fill();
+  }
+  ctx.filter = 'none'; ctx.restore();
+}
+
+// brasa/fumaça vermelha no escuro (canto inferior do cartaz)
+function brasa(ctx, x, y, w, h, seed = 5) {
+  const r = rng(seed);
+  ctx.save(); ctx.filter = 'blur(26px)';
+  for (let i = 0; i < 26; i++) {
+    ctx.fillStyle = `rgba(${150 + r() * 60},${20 + r() * 25},20,${0.15 + r() * 0.25})`;
+    ctx.beginPath(); ctx.ellipse(x + r() * w, y + h * (0.3 + r() * 0.7), 40 + r() * 120, 60 + r() * 160, 0, 0, 7); ctx.fill();
+  }
+  ctx.filter = 'none'; ctx.restore();
+}
+
+// capa completa. cfg = { figura: img, logo: img, linhas: ['PROTEJAM OS', 'NOSSOS POVOS'], destaque: 'INDÍGENAS!',
+//   credito: 'Na foto: ...', alturaFigura: 1350, yFigura: 560 }
+function capaSovietica(ctx, cfg) {
+  const W = ctx.canvas.width, H = ctx.canvas.height;
+  fundo(ctx, COR.carvao);
+  brasa(ctx, 0, H * 0.45, W, H * 0.55, 9);
+  bandeiraCartaz(ctx, -80, 420, 840, 920);
+  estrela(ctx, 175, 560, 50, 0, COR.amarelo);
+  foiceMartelo(ctx, 185, 760, 125, COR.amarelo);
+
+  // figura heroica (ilustração), com sombra de tinta
+  const f = cfg.figura, hF = cfg.alturaFigura || 1520, wF = f.width * hF / f.height, yF = cfg.yFigura || 420;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 40; ctx.shadowOffsetX = -14;
+  ctx.drawImage(f, W / 2 - wF / 2 + (cfg.dxFigura || 60), yF, wF, hF); ctx.restore();
+
+  // topo escuro com o logo
+  const topo = ctx.createLinearGradient(0, 0, 0, 380);
+  topo.addColorStop(0, COR.carvao); topo.addColorStop(1, 'rgba(15,12,11,0)');
+  ctx.fillStyle = topo; ctx.fillRect(0, 0, W, 380);
+  imagem(ctx, cfg.logo, W / 2, 270, 340);
+
+  // título em escada inclinada, letras com sombra de tinta (como os cartazes)
+  const base = ctx.createLinearGradient(0, H * 0.62, 0, H);
+  base.addColorStop(0, 'rgba(15,12,11,0)'); base.addColorStop(0.45, 'rgba(15,12,11,0.85)'); base.addColorStop(1, COR.carvao);
+  ctx.fillStyle = base; ctx.fillRect(0, H * 0.62, W, H * 0.38);
+  ctx.save(); ctx.translate(70, 1380); ctx.rotate(-0.09);
+  const tam = ajustar(ctx, cfg.linhas.reduce((a, b) => (a.length > b.length ? a : b)), FONTE.manchete, W - 260);
+  cfg.linhas.forEach((l, i) => texto(ctx, l, i * 34, i * tam * 0.88, { tam, cor: COR.bege, erro: COR.tinta, desloc: 7 }));
+  const yD = cfg.linhas.length * tam * 0.88 + 30;
+  const tD = ajustar(ctx, cfg.destaque, FONTE.bloco, W - 200, 400);
+  texto(ctx, cfg.destaque, cfg.linhas.length * 34, yD + tD * 0.25, { familia: FONTE.bloco, peso: 400, tam: tD, cor: COR.amarelo,
+    erro: COR.vermelhoEscuro, desloc: 8 });
+  ctx.restore();
+
+  if (cfg.credito) texto(ctx, cfg.credito, W / 2, H - 50, { familia: FONTE.maquina, peso: 400, cor: COR.begeEscuro, alinhar: 'center',
+    tam: Math.min(22, ajustar(ctx, cfg.credito, FONTE.maquina, W - 80, 400)) });
+  papel(ctx, 1, 0.16); vinheta(ctx, 0.5);
+}
+
 window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
-  legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem, img: {} };
+  legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
+  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, img: {} };
