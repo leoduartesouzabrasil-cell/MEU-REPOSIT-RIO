@@ -14,6 +14,12 @@ Resumo rápido:
 - Papel com grão "fervendo" sempre ligado.
 - Formato padrão: 1080×1920, 30 fps.
 
+## Pesquisa automática (fatos e imagens)
+Todo vídeo sobre tema real (ex.: Lula, uma lei, uma data histórica) começa com pesquisa, sem esperar o usuário pedir:
+siga `pesquisa/PROTOCOLO.md`. Em resumo: buscar com `WebSearch` só em fontes confiáveis, 2 fontes por fato,
+anotar em `midia/<tema>/FONTES.md`; imagens só de Agência Brasil, Wikimedia Commons, Agência Senado/Câmara,
+baixadas com `python3 pesquisa/baixar_imagem.py <url> <tema>` (gera `CREDITOS.md`), e crédito na tela.
+
 ## Como produzir
 1. Copie `motor/cenas/arquivo.js` (modelo com os dois registros; `demo.js` só tem o Cartaz) para `motor/cenas/<nome>.js` e escreva o roteiro usando as funções de `motor/lib.js` (objeto `CT`, recebido como `L`).
 2. Confira quadros: `node motor/render.js <nome> saida/q.png --still 2.5`
