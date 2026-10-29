@@ -261,17 +261,31 @@ soma(sfx, som.sino_grave(), M["fim"] - 0.1, 0.9)
 for t0 in em("medo"):
     soma(sfx, som.sino_grave(), t0 + 0.3, 0.5)
 
-# ---------------------------------------------------------------- mixagem com ducking
+# ---------------------------------------------------------------- mixagem: a voz manda
+# Níveis medidos pelo volume real (RMS) enquanto há fala, não pelo pico:
+# trilha ~18 dB abaixo da voz durante a fala (~8 dB nas pausas); efeitos também cedem à voz.
 e = som.envelope_voz(voz)
-duck = 1 - 0.72 * e                       # trilha cai ~11 dB quando há voz
-mus_mix = mus * duck * 0.55 + amb * (1 - 0.5 * e)
-sfx_mix = sfx * (1 - 0.35 * e) * 0.6
-voz_mix = som.norm(voz, 0.85)
+fala = e > 0.3
+rms = lambda x: float(np.sqrt(np.mean(x[fala] ** 2))) or 1e-9
+REF = 0.2                                        # RMS da voz durante a fala
+voz_mix = voz * (REF / rms(voz))
 
-# leve estéreo: maracá/ambiente um pouco abertos, voz no centro
-esq = voz_mix + mus_mix * 0.95 + amb * 0.1 + sfx_mix
-dir = voz_mix + mus_mix * 0.85 - amb * 0.1 + sfx_mix
-pico = max(np.max(np.abs(esq)), np.max(np.abs(dir)))
-esq, dir = esq / pico * 0.95, dir / pico * 0.95
+leito = (mus + amb) * (1 - 0.7 * e)              # ducking ~10 dB
+leito *= REF * 10 ** (-18 / 20) / rms(leito)
+efeitos = sfx * (1 - 0.75 * e)
+efeitos *= REF * 10 ** (-20 / 20) / max(rms(efeitos), 1e-9)
+efeitos = np.clip(efeitos, -0.6, 0.6) if np.max(np.abs(efeitos)) > 0.6 else efeitos
+
+
+def limitar(x, teto=0.7):
+    """Limitador suave: acima do teto os picos (estrondos) são comprimidos, a voz fica intacta."""
+    a = np.abs(x)
+    y = np.where(a > teto, np.sign(x) * (teto + 0.28 * np.tanh((a - teto) / 0.28)), x)
+    return y.astype(np.float32)
+
+
+# leve estéreo: trilha um pouco aberta, voz no centro
+esq = limitar(voz_mix + leito * 1.05 + amb * 0.05 + efeitos)
+dir = limitar(voz_mix + leito * 0.95 - amb * 0.05 + efeitos)
 som.salvar_wav(str(AQUI / f"mix{CFG['sufixo']}.wav"), esq, dir)
 print(f"versão {VERSAO}: {DUR:.2f}s · {len(PAL)} palavras · marcas: {json.dumps(M)}")

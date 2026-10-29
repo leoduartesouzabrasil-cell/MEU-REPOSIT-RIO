@@ -110,6 +110,11 @@ Regras:
 
 Percussão marcial e/ou ritmo brasileiro (surdo, alfaia), um baque de impacto em cada **carimbo** e uma batida de máquina de escrever na **datilografia**.
 
+## 6b. Mixagem (regra fixa)
+
+A **voz do narrador sempre manda**: durante a fala, trilha + efeitos ficam ~16–18 dB abaixo da voz (medido em RMS),
+e ~8 dB abaixo nas pausas. Estrondos e carimbos passam por limitador e nunca abaixam a voz. Volume final -14 LUFS.
+
 ## 7. Não fazer
 
 - Fontes arredondadas, script ou "tech".
