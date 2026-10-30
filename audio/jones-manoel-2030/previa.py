@@ -66,17 +66,19 @@ def trilha(T, N):
         soma(sfx, amostra("deep-boom-hit"), t0, 0.7)
     for t0 in [T["concilia"], T["virada"], T["diferencas"], T["votos"]]:
         soma(sfx, amostra("fast-whoosh-chop"), t0 - 0.35, 0.75)
-    for k in range(6):                                               # etiquetas do "o que mais Jones defende"
-        soma(sfx, som.carimbo_sfx(), T["mais"] + 0.45 + k * 0.75, 0.5)
+    for k in range(5):                                               # etiquetas do "o que mais Jones defende"
+        soma(sfx, som.carimbo_sfx(), T.get(f"m{k + 1}", T["mais"] + 0.4 + k * 0.9) + 0.05, 0.5)
     soma(sfx, amostra("fast-whoosh-chop"), T["mais"] - 0.35, 0.75)
     for k in ["d1", "d2", "d3", "d4", "d5"]:
         soma(sfx, som.whoosh(0.3), T[k], 0.6)
         soma(sfx, som.tique(), T[k] + 0.5, 0.9)
-        soma(sfx, som.negacao(), T[k] + 0.9, 0.5)                    # ✗ do governo
-        soma(sfx, som.check(), T[k] + 2.0, 1.0)                      # ✓ do Jones
-    soma(sfx, som.contador(1.2, 10), T["d1"] + 0.5, 0.6)
+        n = k[1]
+        soma(sfx, som.negacao(), T.get("g" + n, T[k] + 0.5) + 0.5, 0.5)    # ✗ do governo
+        soma(sfx, som.check(), T.get("j" + n, T[k] + 1.5) + 0.5, 1.0)      # ✓ do Jones
+    soma(sfx, som.contador(1.2, 10), T.get("g1", T["d1"] + 0.5), 0.6)
     soma(sfx, som.contador(1.4, 16), T["votos"] + 0.2, 0.8)
     soma(sfx, amostra("fast-cloth-flap"), T["jones2030"] + 0.05, 0.6)
+    soma(sfx, som.carimbo_sfx(), T.get("comente", T["logo"]), 0.8)
     soma(sfx, som.sino_grave(), T["logo"] - 0.1, 0.9)
     return mus, sfx
 

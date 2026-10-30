@@ -10,6 +10,10 @@ const T = Object.assign({
   diferencas: 25.6, d1: 26.0, d2: 29.6, d3: 34.6, d4: 39.6, d5: 43.0, mais: 46.6, votos: 52.4, eterno: 56.0,
   jones2030: 58.2, organize: 60.6, logo: 64.0, dur: 67.4,
 }, (window.TEMPOS || {}).marcas || {});
+// marcas finas (a narração define; na prévia ficam relativas às principais)
+T.mercado ??= T.novaVia + 2.6; T.comente ??= T.logo;
+['d1', 'd2', 'd3', 'd4', 'd5'].forEach((d, i) => { T['g' + (i + 1)] ??= T[d] + 0.5; T['j' + (i + 1)] ??= T[d] + 1.5; });
+[0, 1, 2, 3, 4].forEach(k => { T['m' + (k + 1)] ??= T.mais + 0.4 + k * 0.9; });
 
 // ponto do rosto em cada foto (fração da largura/altura) e zoom, para os retratos redondos
 const ROSTO = { lula: [0.535, 0.30, 2.4], jones: [0.43, 0.47, 2.2] };
@@ -221,7 +225,8 @@ window.CENA = {
           L.texto(ctx, 'UMA', CX, 370, { familia: FONTE.bloco, peso: 400, tam: 70, cor: TINTA, alinhar: 'center' });
           L.texto(ctx, 'NOVA VIA', CX, 520, { tam: Math.min(170, L.ajustar(ctx, 'NOVA VIA', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 8 });
         }, 85);
-        linha('O PODER NAS MÃOS DE QUEM TRABALHA', 590, seg(t, T.novaVia + 1.2, T.novaVia + 2.2), TINTA, 44);
+        if (t < T.mercado) linha('O PODER NAS MÃOS DE QUEM TRABALHA', 590, seg(t, T.novaVia + 1.2, T.novaVia + 2.2), TINTA, 44);
+        else linha('E QUE NÃO SE RENDE AO MERCADO', 590, seg(t, T.mercado, T.mercado + 0.8), VERM, 44);
         jonesCartaz(CX + 20, 1405, 800, seg(t, T.novaVia + 0.4, T.novaVia + 1.3));
         cred('Foto: Agência Brasil', seg(t, T.novaVia + 1.0, T.novaVia + 1.8), TINTA, 1452);
       }
@@ -255,9 +260,10 @@ window.CENA = {
       L.texto(ctx, tema, CX, 640, { tam: tamMax(tema, FONTE.manchete, 110, 900), cor: TINTA, alinhar: 'center', erro: AMA, desloc: 5 });
       ctx.restore();
       // valores: governo (azul, ✗) entra primeiro; Jones (vermelho, ✓) carimba depois
-      const pE = seg(li, 0.5, 0.8), pD = seg(li, 1.5, 1.8);
+      const tG = T['g' + (i + 1)], tJ = T['j' + (i + 1)];                // cada coluna entra quando a fala chega nela
+      const pE = seg(t, tG, tG + 0.3), pD = seg(t, tJ, tJ + 0.3);
       if (i === 0) {                                                    // jornada: contador 44 → 40 e 44 → 30
-        const n1 = Math.round(lerp(44, 40, ease.saida(seg(li, 0.5, 1.3)))), n2 = Math.round(lerp(44, 30, ease.saida(seg(li, 1.5, 2.5))));
+        const n1 = Math.round(lerp(44, 40, ease.saida(seg(t, tG, tG + 0.8)))), n2 = Math.round(lerp(44, 30, ease.saida(seg(t, tJ, tJ + 1.0))));
         if (pE > 0) L.texto(ctx, n1 + 'H', xL, 900, { tam: 200, cor: AZUL, alinhar: 'center', erro: TINTA, desloc: 5 });
         if (pD > 0) L.texto(ctx, n2 + 'H', xR, 900, { tam: 200, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 5 });
         if (pE > 0) L.texto(ctx, 'por semana', xL, 960, { familia: FONTE.maquina, peso: 400, tam: 30, cor: TINTA, alinhar: 'center' });
@@ -269,8 +275,8 @@ window.CENA = {
             linhas.forEach((s, k) => L.texto(ctx, s, x, 840 + k * 80, { familia: FONTE.bloco, peso: 400, tam, cor, alinhar: 'center' }));
           }, seed + i));
       }
-      marca(xL, 1080, false, seg(li, 0.9, 1.2));
-      marca(xR, 1080, true, seg(li, 2.0, 2.3));
+      marca(xL, 1080, false, seg(t, tG + 0.5, tG + 0.8));
+      marca(xR, 1080, true, seg(t, tJ + 0.5, tJ + 0.8));
       // placar: 4 bolinhas mostrando em qual diferença estamos
       temas.forEach((_, k) => {
         ctx.fillStyle = k <= i ? VERM : 'rgba(28,23,20,0.2)'; ctx.beginPath(); ctx.arc(CX - 100 + k * 50, 1230, 12, 0, 7); ctx.fill();
@@ -284,11 +290,11 @@ window.CENA = {
       titulo('O QUE MAIS JONES DEFENDE', seg(lt, 0, 0.6), BEGE);
       cred('fontes: O Povo (07/03/2026) · Diario de PE (05/10/2026) · propostas de campanha (set/2026)', seg(lt, 0.4, 1.2), BEGE);
       const itens = [['REFORMA AGRÁRIA DE VERDADE', AMA, TINTA], ['TRANSPORTE PÚBLICO ESTATAL', TINTA, AMA], ['SANEAMENTO PÚBLICO', AMA, TINTA],
-        ['TERRAS INDÍGENAS E QUILOMBOLAS', TINTA, AMA], ['FIM DA DÍVIDA ABUSIVA DOS ESTADOS', AMA, TINTA], ['VOZ PARA SINDICATOS E MOVIMENTOS', TINTA, AMA]];
+        ['TERRAS INDÍGENAS E QUILOMBOLAS', TINTA, AMA], ['FIM DA DÍVIDA QUE SUFOCA OS ESTADOS', AMA, TINTA]];
       L.fonte(ctx, FONTE.grotesca, 40, 700);                                       // um tamanho só para todas as etiquetas
       const tam = Math.min(40, ...itens.map(([s]) => 40 * 780 / (ctx.measureText(s).width + 44)));
       itens.forEach(([s, cor, corTexto], k) =>
-        L.etiqueta(ctx, s, CX, 520 + k * 140, seg(lt, 0.4 + k * 0.75, 0.7 + k * 0.75), { cor, corTexto, tam }));
+        L.etiqueta(ctx, s, CX, 560 + k * 160, seg(t, T['m' + (k + 1)], T['m' + (k + 1)] + 0.3), { cor, corTexto, tam }));
     }
 
     // ------------------------------------------------ E. o chamado
@@ -308,8 +314,10 @@ window.CENA = {
       } else {
         L.aplicarCarimbo(ctx, seg(t, T.jones2030, T.jones2030 + 0.3), CX, 1150, () =>
           L.texto(ctx, 'JONES 2030?', CX, 1190, { tam: L.ajustar(ctx, 'JONES 2030?', FONTE.manchete, LARG), cor: AMA, alinhar: 'center', erro: VERM, desloc: 8 }), 93);
-        L.aplicarCarimbo(ctx, seg(t, T.organize, T.organize + 0.3), CX, 1310, () =>
+        if (t < T.comente) L.aplicarCarimbo(ctx, seg(t, T.organize, T.organize + 0.3), CX, 1310, () =>
           bloco('ORGANIZE-SE.', 1345, VERM, 100, [AMA, 1250, 140]), 95);
+        else L.aplicarCarimbo(ctx, seg(t, T.comente, T.comente + 0.3), CX, 1310, () =>
+          bloco('COMENTE #JONES2030', 1345, AMA, 84, [VERM, 1250, 140]), 99);
       }
     }
 
