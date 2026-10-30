@@ -7,7 +7,7 @@
 //   conteúdo ................ entre y = 420 e y = 1360, centralizado em x = 540, largura máx. 840 (x 120–960)
 //   fonte dos dados ......... y = 384, logo abaixo do título, máquina de escrever até 24px (cred())
 //   crédito de foto ......... logo ABAIXO da foto correspondente, no vão antes do próximo elemento (nunca sobre a foto)
-//   legenda da narração ..... tarja escura centrada em y = 1460 (sempre, em todos os blocos)
+//   legenda da narração ..... tarja escura em y 1466–1542, texto 48px (sempre, em todos os blocos)
 //   nada importante fora de x 120–960 e y 250–1500 (margem segura do Reels)
 const T = Object.assign({
   inicio: 0, turno1: 2.2, mapa: 6.2, mapaVira: 9.4, turno2: 12.0, golpe: 16.0, contas: 18.0,
@@ -75,11 +75,11 @@ window.CENA = {
         L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');
         return pal.reduce((s, [p]) => s + ctx.measureText(p).width, 0) + tam * 0.28 * (pal.length - 1);
       };
-      const tam = Math.min(58, 58 * 780 / largura(58)), w = largura(tam);   // a tarja nunca passa de x 120–960
+      const tam = Math.min(48, 48 * 760 / largura(48)), w = largura(tam);   // a tarja nunca passa de x 120–960
       ctx.save(); ctx.globalAlpha = L.clamp((l.t1 - t) / 0.15) * L.clamp((t - l.t0 + 0.05) / 0.12);
-      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 30, 1412, w + 60, 92);
-      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 30, 1412, 8, 92);
-      L.palavras(ctx, pal, t, CX, 1475, { tam, cor: BEGE, espaco: 0.28, rgb: 0 });
+      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 26, 1466, w + 52, 76);
+      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 26, 1466, 7, 76);
+      L.palavras(ctx, pal, t, CX, 1517, { tam, cor: BEGE, espaco: 0.28, rgb: 0 });
       ctx.restore();
     }
 
@@ -493,8 +493,10 @@ window.CENA = {
       titulo(t >= T.cuba ? 'A HISTÓRIA ENSINA' : 'E NÃO É SÓ AQUI', t >= T.cuba ? seg(t, T.cuba, T.cuba + 0.5) : seg(lt, 0, 0.6), AMA);
       if (idx < 0) return;
       const [X, cod, img, nome, sub, credito] = itens[idx], li = t - X, e = ease.saida(seg(li, 0, 0.45));
+      // bandeira ACIMA da foto, sem nunca encostar nela: desenhada antes, e o zoom da foto é limitado
+      bandeiraPais(cod, CX - 135, lerp(-260, 395, ease.saida(seg(li, 0.05, 0.5))), 270, 180, t);
       ctx.save(); ctx.globalAlpha = e;
-      zoomBase(1158, 1.0 + li * 0.012, () => {
+      zoomBase(1158, Math.min(1.035, 1.0 + li * 0.012), () => {
         if (img) quadro(img, 630, 520, { pb: true, seletiva: true, zoom: 1.08 });
         else {
           ctx.fillStyle = VERM; ctx.fillRect(X0 - 8, 622, LARG + 16, 536); ctx.fillStyle = TINTA; ctx.fillRect(X0, 630, LARG, 520);
@@ -503,7 +505,6 @@ window.CENA = {
         }
       });
       ctx.restore();
-      bandeiraPais(cod, CX - 150, lerp(-260, 410, ease.saida(seg(li, 0.05, 0.5))), 300, 200, t);
       L.aplicarCarimbo(ctx, seg(li, 0.3, 0.6), CX, 1270, () => bloco(nome, 1310, AMA, 90), 31 + idx);
       linha(sub, 1375, seg(li, 0.6, 1.2), BEGE, 40);
       cred(credito, seg(li, 0.5, 1.2), BEGE, 1208);                        // sob a foto, antes do nome do país
