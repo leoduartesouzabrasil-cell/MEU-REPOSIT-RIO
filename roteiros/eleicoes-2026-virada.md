@@ -43,7 +43,7 @@ NA TELA: contador 21,08% → 19,22% · etiquetas CE 13,9% · PE 15,2% · PB 15,5
 > Nenhuma grande transformação veio de cima. Veio do povo organizado.
 > A eleição acabou. A mobilização, não.
 
-NA TELA: bandeira + foto de cada país (Paris 2026, Madri 2026, Havana 1959; China só bandeira) · bandeira vermelha com foice e martelo · "A ELEIÇÃO ACABOU. / A MOBILIZAÇÃO, NÃO." → logo
+NA TELA: bandeira + foto de cada país (Paris 2026, Madri 2026, Havana 1959, camponeses chineses) · Fidel e Che, depois Mao, recortados com seta e nome · 4 bandeiras + "NADA VEIO DE CIMA. / VEIO DO POVO ORGANIZADO." · bandeira vermelha com estrela, foice e martelo · "A ELEIÇÃO ACABOU. / A MOBILIZAÇÃO, NÃO." → logo
 
 ---
 
