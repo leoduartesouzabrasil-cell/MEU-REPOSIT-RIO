@@ -5,8 +5,9 @@
 // DIAGRAMAÇÃO PADRÃO (vale para todos os blocos):
 //   título do bloco ......... y = 330, centralizado, Archivo 700 até 48px (titulo())
 //   conteúdo ................ entre y = 420 e y = 1360, centralizado em x = 540, largura máx. 840 (x 120–960)
-//   crédito/fonte ........... y = 384, logo abaixo do título, máquina de escrever até 24px (cred())
-//   legenda da narração ..... faixa semitransparente de lado a lado em y 1395–1505 (sempre, até o logo)
+//   fonte dos dados ......... y = 384, logo abaixo do título, máquina de escrever até 24px (cred())
+//   crédito de foto ......... logo ABAIXO da foto correspondente, no vão antes do próximo elemento (nunca sobre a foto)
+//   legenda da narração ..... tarja escura centrada em y = 1460 (sempre, em todos os blocos)
 //   nada importante fora de x 120–960 e y 250–1500 (margem segura do Reels)
 const T = Object.assign({
   inicio: 0, turno1: 2.2, mapa: 6.2, mapaVira: 9.4, turno2: 12.0, golpe: 16.0, contas: 18.0,
@@ -60,16 +61,26 @@ window.CENA = {
     [[T.turno1, AMA, -24], [T.mapa, BEGE, 24], [T.turno2, BEGE, -24], [T.golpe, VERM, 24], [T.contas, BEGE, -24],
       [T.checklist, BEGE, 24], [T.soberania, TINTA, -24], [T.povo, VERM, 24], [T.mundo, AMA, -24], [T.cubaLideres, VERM, 24], [T.china, AMA, -24], [T.chinaLider, VERM, 24], [T.organizado, AMA, -24], [T.acabou, VERM, 24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
-    legenda();
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.35));
     L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.35);
+    legenda();
 
-    // legenda da narração (estilo dos vídeos anteriores): faixa semitransparente de lado a lado, texto bege palavra a palavra
+    // legenda da narração: tarja de tinta fixa (lê em fundo claro e escuro), palavras surgindo no tempo da fala
     function legenda() {
-      if (t >= T.logo || !(window.TEMPOS || {}).legendas) return;
-      ctx.save(); ctx.fillStyle = 'rgba(15,12,11,0.55)'; ctx.fillRect(0, 1395, 1080, 110); ctx.restore();
-      L.legenda(ctx, window.TEMPOS.legendas, t, 1473, { cor: BEGE, cx: CX, tam: 60, rgb: 0 });
+      const LEG = (window.TEMPOS || {}).legendas;
+      const l = LEG && LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
+      if (!l) return;
+      const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
+        L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');
+        return pal.reduce((s, [p]) => s + ctx.measureText(p).width, 0) + tam * 0.28 * (pal.length - 1);
+      };
+      const tam = Math.min(58, 58 * 780 / largura(58)), w = largura(tam);   // a tarja nunca passa de x 120–960
+      ctx.save(); ctx.globalAlpha = L.clamp((l.t1 - t) / 0.15) * L.clamp((t - l.t0 + 0.05) / 0.12);
+      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 30, 1412, w + 60, 92);
+      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 30, 1412, 8, 92);
+      L.palavras(ctx, pal, t, CX, 1475, { tam, cor: BEGE, espaco: 0.28, rgb: 0 });
+      ctx.restore();
     }
 
     // ------------------------------------------------ componentes padronizados
@@ -78,9 +89,9 @@ window.CENA = {
       L.texto(ctx, L.datilografar(txt, p), CX, 330, { familia: FONTE.grotesca, peso: 700, tam: tamMax(txt, FONTE.grotesca, 48),
         cor, alinhar: 'center', rgb: 1.5 });
     }
-    function cred(txt, p, cor = TINTA) {                                // crédito/fonte: sempre y 384, sob o título
+    function cred(txt, p, cor = TINTA, y = 384) {                       // fonte dos dados: y 384; crédito de foto: y sob a foto
       if (p <= 0) return;
-      L.texto(ctx, L.datilografar(txt, p * 2), CX, 384, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 24, 400),
+      L.texto(ctx, L.datilografar(txt, p * 2), CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 22, 400),
         cor, alinhar: 'center' });
     }
     function linha(txt, y, p, cor = TINTA, tam = 46) {                  // linha de apoio centralizada
@@ -122,6 +133,9 @@ window.CENA = {
       L.texto(ctx, txt1, x + 330, y + 64, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: BEGE });
       L.texto(ctx, txt2, x + 330, y + 108, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: BEGE });
       ctx.restore();
+    }
+    function zoomBase(yBase, z, desenhar) {                             // zoom lento com a base fixa: a foto só cresce para cima
+      ctx.save(); ctx.translate(CX, yBase); ctx.scale(z, z); ctx.translate(-CX, -yBase); desenhar(); ctx.restore();
     }
     function quadro(img, y, h, o = {}) {                                // foto larga com filete, na largura padrão
       ctx.fillStyle = o.filete || VERM; ctx.fillRect(X0 - 8, y - 8, LARG + 16, h + 16);
@@ -362,7 +376,7 @@ window.CENA = {
       ctx.globalAlpha = 1;
       L.aplicarCarimbo(ctx, seg(t, T.soberano, T.soberano + 0.3), CX, 1205, () =>
         bloco('O BRASIL É SOBERANO.', 1250, BEGE, 120, [VERM, 1120, 170]), 37);
-      cred('montagem · fotos: Joédson Alves/Agência Brasil e Casa Branca (dom. público)', seg(lt, 0.8, 2), BEGE);
+      cred('montagem · fotos: Joédson Alves/Agência Brasil e Casa Branca (dom. público)', seg(lt, 0.8, 2), BEGE, 1082);   // sob o cartaz
     }
 
     // ------------------------------------------------ G. foi o povo
@@ -381,10 +395,10 @@ window.CENA = {
       } else {
         const lt2 = t - T.rua;
         titulo('FOI O POVO.', seg(lt2, 0, 0.4), VERM);
-        L.camera(ctx, { zoom: 1.02 + lt2 * 0.01, y: 960 }, () => quadro(L.img.lulaPalco, 420, 600, { pb: true, seletiva: 'quente', zoom: 1.2 }));
+        zoomBase(1028, 1.02 + lt2 * 0.01, () => quadro(L.img.lulaPalco, 420, 600, { pb: true, seletiva: 'quente', zoom: 1.2 }));
         ['TRANSPORTE GRATUITO', 'GENTE NA RUA', 'GENTE CONVENCENDO GENTE'].forEach((s, i) =>
           L.etiqueta(ctx, s, CX, 1120 + i * 100, seg(lt2, i * 0.5, i * 0.5 + 0.3), { cor: i === 2 ? VERM : TINTA, corTexto: i === 2 ? BEGE : AMA, tam: 42 }));
-        cred('Foto: Paulo Pinto/Agência Brasil', seg(lt2, 0.3, 1));
+        cred('Foto: Paulo Pinto/Agência Brasil', seg(lt2, 0.3, 1), TINTA, 1066);                 // sob a foto
       }
     }
 
@@ -453,20 +467,20 @@ window.CENA = {
         titulo('A HISTÓRIA ENSINA', 1, AMA);
         const li = t - T.cubaLideres;
         sol(li);
-        lider(L.img.che, 740, 1330, 760, seg(li, 0.9, 1.5), 1.0);
-        lider(L.img.fidel, 330, 1400, 740, seg(li, 0.1, 0.7), -1.0);
+        lider(L.img.che, 740, 1290, 740, seg(li, 0.9, 1.5), 1.0);
+        lider(L.img.fidel, 330, 1345, 700, seg(li, 0.1, 0.7), -1.0);
         nomeComSeta('FIDEL CASTRO', 300, 520, 290, 680, seg(li, 0.6, 1.1), 1);
         nomeComSeta('CHE GUEVARA', 780, 440, 760, 590, seg(li, 1.5, 2.0), -1);
-        cred('Fidel: Washington, 1959 · Che: Alberto Korda, 1960 · domínio público', seg(li, 1.0, 2.0), BEGE);
+        cred('Fidel: Washington, 1959 · Che: Alberto Korda, 1960 · domínio público', seg(li, 1.0, 2.0), BEGE, 1385);   // sob os recortes
         return;
       }
       if (t >= T.chinaLider && t < T.organizado) {
         titulo('A HISTÓRIA ENSINA', 1, AMA);
         const li = t - T.chinaLider;
         sol(li);
-        lider(L.img.mao, 540, 1400, 820, seg(li, 0.1, 0.7), 1.0);
+        lider(L.img.mao, 540, 1345, 780, seg(li, 0.1, 0.7), 1.0);
         nomeComSeta('MAO TSÉ-TUNG', 760, 500, 640, 640, seg(li, 0.7, 1.2), -1);
-        cred('Mao: Pequim, 1950 · Chen Zhengqing · domínio público', seg(li, 1.0, 2.0), BEGE);
+        cred('Mao: Pequim, 1950 · Chen Zhengqing · domínio público', seg(li, 1.0, 2.0), BEGE, 1385);
         return;
       }
       const itens = [
@@ -480,7 +494,7 @@ window.CENA = {
       if (idx < 0) return;
       const [X, cod, img, nome, sub, credito] = itens[idx], li = t - X, e = ease.saida(seg(li, 0, 0.45));
       ctx.save(); ctx.globalAlpha = e;
-      L.camera(ctx, { zoom: 1.0 + li * 0.012, y: 920 }, () => {
+      zoomBase(1158, 1.0 + li * 0.012, () => {
         if (img) quadro(img, 630, 520, { pb: true, seletiva: true, zoom: 1.08 });
         else {
           ctx.fillStyle = VERM; ctx.fillRect(X0 - 8, 622, LARG + 16, 536); ctx.fillStyle = TINTA; ctx.fillRect(X0, 630, LARG, 520);
@@ -492,7 +506,7 @@ window.CENA = {
       bandeiraPais(cod, CX - 150, lerp(-260, 410, ease.saida(seg(li, 0.05, 0.5))), 300, 200, t);
       L.aplicarCarimbo(ctx, seg(li, 0.3, 0.6), CX, 1270, () => bloco(nome, 1310, AMA, 90), 31 + idx);
       linha(sub, 1375, seg(li, 0.6, 1.2), BEGE, 40);
-      cred(credito, seg(li, 0.5, 1.2), BEGE);
+      cred(credito, seg(li, 0.5, 1.2), BEGE, 1208);                        // sob a foto, antes do nome do país
     }
 
     // ------------------------------------------------ I. o chamado: bandeira com foice e martelo
