@@ -19,7 +19,9 @@ const T = Object.assign({
   acabou: 77.4, mobilizacao: 78.8, logo: 80.8, dur: 84.3,
 }, (window.TEMPOS || {}).marcas || {});
 // marcas finas (a narração define; na prévia ficam relativas às marcas principais)
-T.minas ??= T.mapaVira + 0.3; T.virada ??= T.turno2 + 2.6; T.vamos ??= T.golpe + 0.9; T.redes ??= T.organizado + 2.4;
+T.minas ??= T.mapaVira + 0.3;
+const HISTORIA = T.cuba < 9000;                          // versão sem Cuba/China (marcas = 9999): fecha só com França e Espanha
+ T.virada ??= T.turno2 + 2.6; T.vamos ??= T.golpe + 0.9; T.redes ??= T.organizado + 2.4;
 
 const NE = ['MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA'];
 const LULA_1T = NE.concat(['PA', 'AM', 'AP']);          // 1º turno: Lula em 12 estados
@@ -452,11 +454,12 @@ window.CENA = {
       L.fundo(ctx, COR.carvao); arquivo = false;
       L.raios(ctx, CX, 1700, 2300, 24, L.emDois(t) * 0.05, 'rgba(200,32,30,0.22)');
       if (t >= T.organizado) {
-        titulo('A HISTÓRIA ENSINA', 1, AMA);
+        titulo(HISTORIA ? 'A HISTÓRIA ENSINA' : 'E NÃO É SÓ AQUI', 1, AMA);
         const lt2 = t - T.organizado;
-        [['FR', 140, 440], ['ES', 560, 440], ['CU', 140, 700], ['CN', 560, 700]].forEach(([c, x, y], i) => {
+        (HISTORIA ? [['FR', 140, 440, 380, 220], ['ES', 560, 440, 380, 220], ['CU', 140, 700, 380, 220], ['CN', 560, 700, 380, 220]]
+          : [['FR', 130, 560, 390, 260], ['ES', 560, 560, 390, 260]]).forEach(([c, x, y, w, h], i) => {
           const p = ease.saida(seg(lt2, i * 0.08, i * 0.08 + 0.35));
-          if (p > 0) { ctx.save(); ctx.globalAlpha = p; bandeiraPais(c, x, y + (1 - p) * 60, 380, 220, t + i); ctx.restore(); }
+          if (p > 0) { ctx.save(); ctx.globalAlpha = p; bandeiraPais(c, x, y + (1 - p) * 60, w, h, t + i); ctx.restore(); }
         });
         L.aplicarCarimbo(ctx, seg(lt2, 0.5, 0.8), CX, 1060, () => bloco('NADA VEIO DE CIMA.', 1100, BEGE, 90), 51);
         L.aplicarCarimbo(ctx, seg(lt2, 1.4, 1.7), CX, 1200, () => bloco('VEIO DO POVO ORGANIZADO.', 1240, AMA, 90), 53);
@@ -539,8 +542,9 @@ window.CENA = {
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Fontes: TSE · Exame · CNN · NPR · The Brazilian Report', 1160],
         ['Fotos: Joédson Alves, Paulo Pinto / Agência Brasil (CC BY 3.0 BR) · Casa Branca (dom. público)', 1210],
-        ['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público) · China: via BBC', 1250],
-        ['Fidel (1959), Che (Korda, 1960), Mao (Chen Zhengqing, 1950): domínio público', 1290]].forEach(([s, y]) =>
+        ...(HISTORIA ? [['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público) · China: via BBC', 1250],
+          ['Fidel (1959), Che (Korda, 1960), Mao (Chen Zhengqing, 1950): domínio público', 1290]]
+          : [['Jorge Jaramillo, Barcex (CC BY-SA 4.0)', 1250]])].forEach(([s, y]) =>
         L.texto(ctx, s, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 26, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

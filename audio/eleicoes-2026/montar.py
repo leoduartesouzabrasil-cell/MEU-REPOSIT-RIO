@@ -40,15 +40,15 @@ CORTES = {
     2: [(0.0, 15.2)],                              # o detalhamento das contas (fica "São 14 milhões…")
     3: [(2.55, 3.98), (9.35, 12.9)],               # "com cédulas de papel," · "As missões internacionais atestaram o resultado e"
     4: [(2.85, 12.18)],                            # abstenção e Nordeste (o contador segue na tela)
-    5: [(6.78, 15.58), (28.58, 31.6)],             # a frase da Espanha · "mobilizado na rua e nas redes."
+    5: [(10.03, 23.88), (28.58, 31.6)],            # "contra a lei…" + Cuba e China · "mobilizado na rua e nas redes."
 } if CURTA else {}
 if CURTA:
     ENTRADA, VEL = 1.5, 1.12
     PAUSAS = {1: 1.9, 2: 0.5, 3: 0.7, 4: 0.5, 5: 0.6}      # depois de "Vamos às contas": os blocos da soma entram na música
     PAUSAS_ESPECIAIS = {1: [(8.6, 1.5), (19.0, 0.9), (20.7, 0.6)], 2: [(17.7, 0.5)], 3: [(15.6, 0.7), (21.7, 0.4)],
-                        5: [(20.3, 1.0), (23.3, 0.9)]}      # 19.0: carimbo "VIRADA" depois de "48,2%"
+                        5: [(14.0, 0.8)]}      # 19.0: carimbo "VIRADA" depois de "48,2%"
 SUFIXO = "-70" if CURTA else ""
-CORRECOES = [(["nenhuma"], "Nenhuma")] * CURTA + [(["Echer", "e"], "e Che."), (["na", "China"], "E na China"), (["ensina"], "ensina:"), (["Mau."], "Mao."), (["51", ",8%."], "51,8%."), (["48", ",2%."], "48,2%."),
+CORRECOES = [(["nenhuma"], "Nenhuma"), (["moradia"], "moradia."), (["organizado,"], "organizado.")] * CURTA + [(["Echer", "e"], "e Che."), (["na", "China"], "E na China"), (["ensina"], "ensina:"), (["Mau."], "Mao."), (["51", ",8%."], "51,8%."), (["48", ",2%."], "48,2%."),
              (["extrema", "-direita."], "extrema-direita."), (["nordeste"], "Nordeste"), (["foram", "as", "urnas"], "foram às urnas"),
              (["e", "não", "é", "só", "aqui."], "E não é só aqui."), (["4", "de", "outubro,"], "Quatro de outubro,"),
              (["Flávio", "3"], "Flávio, 3"), (["21", "dias"], "Vinte e um dias")]
@@ -210,19 +210,20 @@ else:
 M["rua"] = frase("teve transporte") - (0.2 if CURTA else 0)
 M["mundo"] = INICIO[5] - 0.3
 M["franca"] = frase("na frança")
-M["espanha"] = None if CURTA else frase("na espanha")
-M["cuba"] = frase("e a história") - 0.2
-M["cubaLideres"] = frase("com fidel") - 0.3
-M["china"] = frase("e na china") - 1.3          # a foto da China entra na pausa depois de "Fidel e Che"
-M["chinaLider"] = frase("com mao") - 0.2
+M["espanha"] = frase("na espanha")
+if CURTA:                                          # versão curta: sem Cuba e China (a cena fecha só com França e Espanha)
+    M["cuba"] = M["cubaLideres"] = M["china"] = M["chinaLider"] = 9999
+else:
+    M["cuba"] = frase("e a história") - 0.2
+    M["cubaLideres"] = frase("com fidel") - 0.3
+    M["china"] = frase("e na china") - 1.3          # a foto da China entra na pausa depois de "Fidel e Che"
+    M["chinaLider"] = frase("com mao") - 0.2
 M["organizado"] = frase("nenhuma grande") - 0.2
 M["redes"] = 9999 if CURTA else frase("mobilizado")
 M["acabou"] = frase("a eleição acabou") - 0.15
 M["mobilizacao"] = frase("mas a mobilização")
 M["logo"] = FIM[5] + PAUSAS[5]
 M["dur"] = round(M["logo"] + (3.1 if CURTA else 3.4), 2)
-if CURTA:
-    M["espanha"] = M["cuba"]                         # sem a fala da Espanha: o bloco dela é pulado
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
