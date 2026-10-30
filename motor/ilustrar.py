@@ -1,6 +1,6 @@
 """Transforma uma foto recortada (PNG com fundo transparente) em ilustração de cartaz soviético.
 
-Uso: python3 motor/ilustrar.py <recorte.png> <saida.png> [--luz direita|esquerda]
+Uso: python3 motor/ilustrar.py <recorte.png> <saida.png> [--luz direita|esquerda] [--estatua] [--corte x0,y0,x1,y1]
 Requer: pip install opencv-python-headless numpy pillow
 
 Etapas (ver identidade/IDENTIDADE.md, seção "Capas"):
@@ -36,26 +36,36 @@ def rampa(lum, cores, suave=0.08):
     return cores[i] * (1 - f[..., None]) + cores[i + 1] * f[..., None]
 
 
-def ilustrar(caminho, saida, luz="direita"):
+def ilustrar(caminho, saida, luz="direita", estatua=False, corte=None):
     rgba = cv2.imread(caminho, cv2.IMREAD_UNCHANGED)
+    if corte:                                                 # recorte "x0,y0,x1,y1" em fração da imagem
+        x0, y0, x1, y1 = corte
+        h, w = rgba.shape[:2]
+        rgba = rgba[int(y0 * h):int(y1 * h), int(x0 * w):int(x1 * w)]
     rgba = cv2.resize(rgba, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     alfa = rgba[..., 3].astype(np.float32) / 255
     bgr = rgba[..., :3]
 
-    # 1. pintura
-    pint = bgr
-    for _ in range(3):
+    # 1. pintura (estátuas envernizadas: mediana antes, para apagar os reflexos de brilho)
+    pint = cv2.medianBlur(bgr, 9) if estatua else bgr
+    for _ in range(5 if estatua else 3):
         pint = cv2.bilateralFilter(pint, 11, 40, 9)
     pint = cv2.stylization(pint, sigma_s=40, sigma_r=0.35)
     rgb = cv2.cvtColor(pint, cv2.COLOR_BGR2RGB).astype(np.float32) / 255
     hsv = cv2.cvtColor(pint, cv2.COLOR_BGR2HSV).astype(np.float32)
     mat, sat, val = hsv[..., 0] * 2, hsv[..., 1] / 255, hsv[..., 2] / 255
     lum = (0.3 * rgb[..., 0] + 0.59 * rgb[..., 1] + 0.11 * rgb[..., 2])
-    lum = np.clip((lum - 0.08) / 0.85, 0, 1) ** 0.9           # mais contraste, como guache
+    if estatua:                                               # contraste esticado pela própria figura
+        lo, hi = np.percentile(lum[alfa > 0.5], [4, 97])
+        lum = np.clip((lum - lo) / max(hi - lo, 1e-3), 0, 1) ** 0.75
+    else:
+        lum = np.clip((lum - 0.08) / 0.85, 0, 1) ** 0.9       # mais contraste, como guache
 
     # 2. paleta de cartaz
     out = rampa(lum, RAMPA)
     pele = (sat > 0.18) & (sat < 0.65) & ((mat < 35) | (mat > 340)) & (val > 0.25)
+    if estatua:                       # gesso pintado: o marrom escuro também é pele
+        pele = (sat > 0.12) & ((mat < 40) | (mat > 340)) & (val > 0.06) & ~((sat > 0.45) & ((mat < 14) | (mat > 335)) & (val > 0.35))
     vermelho = (sat > 0.45) & ((mat < 14) | (mat > 335)) & (val > 0.25)
     amarelo = (sat > 0.45) & (mat >= 35) & (mat < 65) & (val > 0.35)
     out[pele] = rampa(lum, PELE)[pele]
@@ -64,7 +74,7 @@ def ilustrar(caminho, saida, luz="direita"):
 
     # 3. contorno de tinta: bordas fortes da imagem pintada
     cinza = cv2.cvtColor(pint, cv2.COLOR_BGR2GRAY)
-    bordas = cv2.Canny(cv2.GaussianBlur(cinza, (5, 5), 0), 40, 110)
+    bordas = cv2.Canny(cv2.GaussianBlur(cinza, (5, 5), 0), *((80, 170) if estatua else (40, 110)))
     bordas = cv2.dilate(bordas, np.ones((2, 2), np.uint8)).astype(np.float32) / 255
     bordas = cv2.GaussianBlur(bordas, (3, 3), 0) * 0.85
     out = out * (1 - bordas[..., None]) + TINTA * bordas[..., None]
@@ -95,4 +105,5 @@ def ilustrar(caminho, saida, luz="direita"):
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    ilustrar(a[0], a[1], a[a.index("--luz") + 1] if "--luz" in a else "direita")
+    corte = tuple(map(float, a[a.index("--corte") + 1].split(","))) if "--corte" in a else None
+    ilustrar(a[0], a[1], a[a.index("--luz") + 1] if "--luz" in a else "direita", "--estatua" in a, corte)
