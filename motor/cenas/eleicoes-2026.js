@@ -16,6 +16,8 @@ const T = Object.assign({
   mundo: 58.0, franca: 58.3, espanha: 60.6, cuba: 62.6, cubaLideres: 65.2, china: 68.4, chinaLider: 70.8, organizado: 73.8,
   acabou: 77.4, mobilizacao: 78.8, logo: 80.8, dur: 84.3,
 }, (window.TEMPOS || {}).marcas || {});
+// marcas finas (a narração define; na prévia ficam relativas às marcas principais)
+T.minas ??= T.mapaVira + 0.3; T.virada ??= T.turno2 + 2.6; T.vamos ??= T.golpe + 0.9; T.redes ??= T.organizado + 2.4;
 
 const NE = ['MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA'];
 const LULA_1T = NE.concat(['PA', 'AM', 'AP']);          // 1º turno: Lula em 12 estados
@@ -50,7 +52,7 @@ window.CENA = {
       [T.contas, contas], [T.checklist, checklist], [T.soberania, soberania], [T.povo, povo], [T.mundo, mundo],
       [T.acabou, acabou], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.mapaVira, T.turno2 + 2.6, T.golpe, T.naoGolpe, T.soberano, T.cubaLideres + 0.3, T.chinaLider + 0.3, T.acabou, T.mobilizacao, T.logo];
+    const IMP = [T.mapaVira, T.virada, T.golpe, T.naoGolpe, T.soberano, T.cubaLideres + 0.3, T.chinaLider + 0.3, T.acabou, T.mobilizacao, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 16);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
@@ -189,7 +191,7 @@ window.CENA = {
       L.etiqueta(ctx, virou ? 'LULA · 13 ESTADOS' : 'LULA · 12 ESTADOS', 330, 1260, seg(lt, 1.2, 1.5), { cor: VERM, corTexto: BEGE, tam: 34 });
       L.etiqueta(ctx, virou ? 'FLÁVIO · 13 + DF' : 'FLÁVIO · 14 + DF', 750, 1260, seg(lt, 1.4, 1.7), { cor: AZUL, corTexto: BEGE, tam: 34 });
       if (virou) {
-        L.aplicarCarimbo(ctx, seg(t, T.mapaVira + 0.3, T.mapaVira + 0.6), 700, 1010, () =>
+        L.aplicarCarimbo(ctx, seg(t, T.minas, T.minas + 0.3), 700, 1010, () =>
           L.etiqueta(ctx, 'MINAS GERAIS VIROU', 700, 1010, 1, { cor: AMA, corTexto: TINTA, tam: 38 }), 11);
         linha('LULA CRESCEU EM TODOS OS ESTADOS', 1370, seg(t, T.mapaVira + 0.8, T.mapaVira + 1.6), VERM, 46);
       } else linha('21 DIAS DEPOIS…', 1370, seg(lt, 2.0, 2.6), TINTA, 46);
@@ -203,7 +205,7 @@ window.CENA = {
       const troca = ease.saida(seg(lt, 1.6, 2.4));                      // as barras trocam de lugar: Lula sobe
       barra(lerp(900, 600, troca), L.img.lula, '13', 'LULA · PT', VERM, 51.79, seg(lt, 0.2, 2.0));
       barra(lerp(600, 900, troca), L.img.flavio, '22', 'FLÁVIO BOLSONARO · PL', AZUL, 48.21, seg(lt, 0.4, 2.0));
-      L.aplicarCarimbo(ctx, seg(lt, 2.6, 2.9), CX, 1180, () => {
+      L.aplicarCarimbo(ctx, seg(t, T.virada, T.virada + 0.3), CX, 1180, () => {
         ctx.save(); ctx.translate(CX, 1180); ctx.rotate(-0.06); ctx.strokeStyle = VERM; ctx.lineWidth = 12;
         ctx.strokeRect(-260, -95, 520, 160);
         L.texto(ctx, 'VIRADA', 0, 35, { familia: FONTE.bloco, peso: 400, tam: 120, cor: VERM, alinhar: 'center' }); ctx.restore();
@@ -219,7 +221,7 @@ window.CENA = {
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 880, () =>
         L.texto(ctx, 'GOLPE?', CX + glitch, 940, { familia: FONTE.bloco, peso: 400, tam: L.ajustar(ctx, 'GOLPE?', FONTE.bloco, LARG, 400),
           cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 10 }), 9);
-      linha('VAMOS ÀS CONTAS.', 1120, seg(lt, 0.9, 1.6), AMA, 64);
+      linha('VAMOS ÀS CONTAS.', 1120, seg(t, T.vamos, T.vamos + 0.7), AMA, 64);
     }
 
     // ------------------------------------------------ E. as contas
@@ -435,6 +437,7 @@ window.CENA = {
         });
         L.aplicarCarimbo(ctx, seg(lt2, 0.5, 0.8), CX, 1060, () => bloco('NADA VEIO DE CIMA.', 1100, BEGE, 90), 51);
         L.aplicarCarimbo(ctx, seg(lt2, 1.4, 1.7), CX, 1200, () => bloco('VEIO DO POVO ORGANIZADO.', 1240, AMA, 90), 53);
+        linha('MOBILIZADO NA RUA E NAS REDES', 1340, seg(t, T.redes, T.redes + 0.8), BEGE, 44);
         return;
       }
       if (t >= T.cubaLideres && t < T.china) {
