@@ -9,7 +9,7 @@ Grave em 4 áudios separados (#1 a #4). [pausa] = ~1 s de silêncio.
 > Lula é um conciliador de classes: governa tentando agradar o trabalhador e o patrão ao mesmo tempo. Entrega políticas públicas, mas não mexe na estrutura.
 > Jones é comunista: defende que quem produz a riqueza, a classe trabalhadora, é quem deve comandar o país.
 
-NA TELA: foto do Lula falando, em cima, com seta "LULA"; foto do Jones embaixo, com seta "JONES MANOEL" · carimbos "CONCILIADOR DE CLASSES" (azul) × "COMUNISTA" (vermelho), com a definição de cada um em datilografia
+NA TELA: foto do Lula discursando, em cima, com a etiqueta "ESSE É O LULA"; foto do Jones embaixo, com "ESSE É O JONES MANOEL" · carimbos "CONCILIADOR DE CLASSES" (azul) × "COMUNISTA" (vermelho), com a definição de cada um em datilografia
 
 ## ÁUDIO #2 — A virada (tom firme)
 > Em 2026, a gente foi pra rua pra derrotar a extrema-direita e reeleger o Lula. E venceu. [pausa]
@@ -34,7 +34,7 @@ NA TELA: placar dividido "GOVERNO LULA" (azul) × "JONES MANOEL" (vermelho), um 
 > Jones Manoel presidente em 2030? [pausa]
 > Isso não se decide na urna. Se decide na organização. Começa agora.
 
-NA TELA: "249.077 VOTOS" · bandeira vermelha · carimbo "JONES 2030?" · "ORGANIZE-SE." → logo
+NA TELA: retrato do Jones · contador "249.077 VOTOS" · "O LULA NÃO VAI DURAR PARA SEMPRE." · carimbo "JONES 2030?" · "ORGANIZE-SE." → logo
 
 ---
 
