@@ -514,21 +514,35 @@ function imagem(ctx, img, cx, cy, largura, alfa = 1) {
 // CAPA — cartaz de propaganda soviética (modelo fixo das capas de Reels)
 // ======================================================================
 
-// foice e martelo (símbolo clássico: foice abrindo à esquerda, martelo cruzando em diagonal)
+// foice e martelo no desenho da bandeira soviética (caixa ~100x100 centrada em cx,cy):
+// lâmina da foice abre para a direita, com a ponta no alto e o cabo saindo embaixo à esquerda;
+// martelo cruzando em diagonal, cabeça no alto à esquerda e cabo descendo para a direita.
 function foiceMartelo(ctx, cx, cy, s, cor = COR.amarelo) {
   const g = Math.PI / 180;
   ctx.save(); ctx.translate(cx, cy); ctx.scale(s / 100, s / 100); ctx.fillStyle = cor;
-  // lâmina: crescente afinando na ponta (arco externo e interno com centros diferentes)
+  // lâmina: crescente que afina até a ponta (círculo interno deslocado na direção da ponta)
   ctx.beginPath();
-  ctx.arc(4, -4, 64, 140 * g, 385 * g, false);
-  ctx.arc(-2, -14, 50, 375 * g, 150 * g, true);
+  ctx.arc(0, 0, 50, -115 * g, 130 * g, false);
+  ctx.arc(-3.4, -7.25, 42, 130 * g, -115 * g, true);
   ctx.closePath(); ctx.fill();
-  // cabo da foice, saindo para baixo à esquerda
-  ctx.save(); ctx.translate(-46, 40); ctx.rotate(45 * g); ctx.fillRect(-11, -8, 22, 52); ctx.restore();
-  // martelo: cabo de baixo-direita para cima-esquerda, cabeça perpendicular
-  ctx.save(); ctx.rotate(-45 * g);
-  ctx.fillRect(-10, -36, 20, 118); ctx.fillRect(-42, -70, 84, 36); ctx.restore();
+  // cabo da foice
+  ctx.save(); ctx.translate(-29, 33); ctx.rotate(37 * g); ctx.fillRect(-6, -2, 12, 30); ctx.restore();
+  // martelo
+  ctx.save(); ctx.rotate(45 * g);
+  ctx.fillRect(-35, -6, 92, 12);                 // cabo (de cima-esquerda para baixo-direita)
+  ctx.fillRect(-46, -26, 18, 52);                // cabeça, perpendicular ao cabo
   ctx.restore();
+  ctx.restore();
+}
+
+// estrela vazada (contorno dourado), como na bandeira soviética
+function estrelaContorno(ctx, cx, cy, r, cor = COR.amarelo, espessura = r * 0.16) {
+  ctx.save(); ctx.translate(cx, cy); ctx.strokeStyle = cor; ctx.lineWidth = espessura; ctx.lineJoin = 'miter'; ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const rr = i % 2 ? r * 0.40 : r, a = -Math.PI / 2 + i * Math.PI / 5;
+    ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+  }
+  ctx.closePath(); ctx.stroke(); ctx.restore();
 }
 
 // bandeira grande tremulando (tecido com dobras), presa no canto superior esquerdo
@@ -663,4 +677,4 @@ window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vin
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
-  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, capaComArte, vela, img: {} };
+  foiceMartelo, estrelaContorno, bandeiraCartaz, brasa, capaSovietica, capaComArte, vela, img: {} };

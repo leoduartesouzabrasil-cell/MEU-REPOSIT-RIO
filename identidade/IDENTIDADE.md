@@ -72,7 +72,10 @@ Regras:
 - **Diagonal dominante de 15° a 30°**, subindo da esquerda para a direita (= futuro, avanço).
 - Figuras: em contra-plongée, queixo erguido, olhar para cima e para a direita.
 - Símbolos próprios: estrela de 5 pontas, raios de sol (sunburst), punho, bandeira tremulando, engrenagem, espiga.
-  A foice e o martelo entram quando o tema pede.
+  A foice e o martelo entram quando o tema pede. Desenho fixo, igual ao da bandeira soviética (`L.foiceMartelo`):
+  cabeça do martelo no alto à esquerda, cabo descendo para a direita; lâmina da foice abrindo para a direita, ponta no
+  alto, cabo embaixo à esquerda. Na bandeira, acima do símbolo vai a **estrela vazada** de contorno dourado
+  (`L.estrelaContorno`), tudo no canto junto ao mastro, sobre vermelho liso.
 
 ## 4. Vocabulário de movimento
 

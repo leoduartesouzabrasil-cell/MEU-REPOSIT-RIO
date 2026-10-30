@@ -417,16 +417,23 @@ window.CENA = {
 
     // ------------------------------------------------ I. o chamado: bandeira com foice e martelo
     function acabou(lt, t) {
-      L.fundo(ctx, VERM); arquivo = false;
-      L.raios(ctx, CX, 1900, 2300, 24, -0.4 + L.emDois(t) * 0.06, 'rgba(235,181,42,0.25)');
-      const fx = 200, fy = 890, fw = 700, fh = 430;
-      L.mastro(ctx, fx, fy - 10, 1700, TINTA);
-      L.bandeira(ctx, fx + 9, fy, fw, fh, t, COR.vermelhoEscuro, '#5A0E0B');
-      const k = 0.2, onda = Math.sin(k * 7 - t * 5) * 22 * k;          // mesma onda da bandeira na altura do símbolo
-      L.estrela(ctx, fx + 9 + fw * k, fy + 80 + onda, 42, 0, AMA);
-      L.foiceMartelo(ctx, fx + 9 + fw * k, fy + 210 + onda, 120, AMA);
+      L.fundo(ctx, COR.carvao); arquivo = false;
+      L.raios(ctx, CX, 1900, 2300, 24, -0.4 + L.emDois(t) * 0.06, 'rgba(200,32,30,0.28)');
+      // bandeira vermelha lisa com a estrela vazada e a foice e o martelo no canto (como a bandeira soviética)
+      const fx = 170, fy = 880, fw = 760, fh = 470;
+      L.mastro(ctx, fx, fy - 10, 1700, BEGE);
+      for (let i = 0, n = 90; i < n; i++) {                              // tecido com dobras suaves (luz e sombra graduais)
+        const kk = i / n, ond = Math.sin(kk * 7 - t * 5) * 22 * kk, luz = Math.cos(kk * 7 - t * 5);
+        const m = L.clamp(0.5 - luz * 0.5) * 0.55, cl = L.clamp(luz - 0.6) * 0.5;
+        const r = lerp(lerp(200, 138, m), 230, cl), g = lerp(lerp(32, 20, m), 70, cl), bb = lerp(lerp(30, 17, m), 60, cl);
+        ctx.fillStyle = `rgb(${r | 0},${g | 0},${bb | 0})`;
+        ctx.fillRect(fx + 9 + kk * fw, fy + ond, fw / n + 1, fh * (1 - kk * 0.12));
+      }
+      const k = 0.17, onda = Math.sin(k * 7 - t * 5) * 22 * k;          // mesma onda da bandeira na altura do símbolo
+      L.estrelaContorno(ctx, fx + 9 + fw * k, fy + 66 + onda, 38, AMA);
+      L.foiceMartelo(ctx, fx + 9 + fw * k + 4, fy + 195 + onda, 140, AMA);
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 500, () =>
-        L.texto(ctx, 'A ELEIÇÃO ACABOU.', CX, 540, { tam: L.ajustar(ctx, 'A ELEIÇÃO ACABOU.', FONTE.manchete, LARG), cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 6 }), 41);
+        L.texto(ctx, 'A ELEIÇÃO ACABOU.', CX, 540, { tam: L.ajustar(ctx, 'A ELEIÇÃO ACABOU.', FONTE.manchete, LARG), cor: BEGE, alinhar: 'center', erro: VERM, desloc: 6 }), 41);
       L.aplicarCarimbo(ctx, seg(t, T.mobilizacao, T.mobilizacao + 0.3), CX, 690, () =>
         bloco('A MOBILIZAÇÃO, NÃO.', 735, VERM, 110, [AMA, 600, 190]), 43);
     }
