@@ -280,3 +280,76 @@ def chocalho(dur=0.6, vel=0.6):
         soma(out, maraca(vel * (0.5 + 0.5 * _rng.random()), 0.05), t)
         t += 0.028 + 0.02 * _rng.random()
     return out * np.linspace(1, 0.3, len(out)).astype(np.float32)
+
+
+# ---------------------------------------------------------------- percussão de terreiro e efeitos de impacto
+def atabaque(f0=200.0, vel=1.0, tapa=False):
+    """Atabaque (rum ~150 Hz, rumpi ~220 Hz, lê ~300 Hz): couro com leve queda de afinação; tapa = som seco."""
+    dur = 0.12 if tapa else 0.45
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    f = f0 * (1 + 0.15 * np.exp(-t / 0.02))
+    corpo = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / (0.03 if tapa else 0.16))
+    corpo += 0.35 * np.sin(2 * np.pi * np.cumsum(f * 1.59) / SR) * np.exp(-t / 0.06)
+    estalo = banda(ruido(dur), 900, 6000) * np.exp(-t / (0.02 if tapa else 0.008)) * (1.2 if tapa else 0.4)
+    return ((corpo + estalo) * vel * 0.6).astype(np.float32)
+
+
+def toque_caboclo(dur, bpm=104):
+    """Toque de atabaques para a linha de caboclo (padrão em colcheias: lê constante, rumpi em tresillo, rum dobrando)."""
+    out = segundos(dur + 1)
+    col = 60 / bpm / 2
+    le = [1, 2, 1, 2, 1, 2, 1, 2]          # 1 aberto, 2 tapa
+    rumpi = [1, 0, 0, 1, 0, 0, 1, 0]
+    rum = [1, 0, 0, 0, 0, 1, 0, 0]
+    i, t = 0, 0.0
+    while t < dur:
+        k = i % 8
+        sw = 0.012 if k % 2 else 0.0         # leve suingue
+        if le[k]:
+            soma(out, atabaque(310, 0.5 if le[k] == 1 else 0.45, le[k] == 2), t + sw)
+        if rumpi[k]:
+            soma(out, atabaque(225, 0.75), t + sw)
+        if rum[k] or (i % 32 >= 28 and k % 2 == 0):  # virada do rum no fim de cada 4 compassos
+            soma(out, atabaque(150, 1.0), t + sw)
+        t += col
+        i += 1
+    return out
+
+
+def tiro(distancia=1.0):
+    """Disparo: estampido seco + corpo grave + cauda de eco. distancia > 1 = mais longe (mais abafado)."""
+    dur = 1.8
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    r = ruido(dur)
+    estampido = r * np.exp(-t / 0.006) * (1 / distancia)
+    medio = banda(r, 180, 2500) * np.exp(-t / 0.05)
+    grave = np.sin(2 * np.pi * np.cumsum(55 + 60 * np.exp(-t / 0.03)) / SR) * np.exp(-t / 0.09)
+    eco = banda(ruido(dur), 150, 1200) * np.exp(-t / 0.55) * 0.22
+    for atraso, g in [(0.18, 0.35), (0.41, 0.2)]:              # reflexões
+        d = int(atraso * SR)
+        eco[d:] += medio[:n - d] * g
+    return norm(estampido + medio + grave * 0.9 + eco, 0.95)
+
+
+def urna_eletronica():
+    """Bipes de confirmação de urna (sequência curta de tons agudos)."""
+    out = segundos(1.0)
+    for k, f in enumerate([1650, 1650, 1850, 1650, 1850, 2050, 1850]):
+        n = int(0.06 * SR)
+        tt = np.arange(n) / SR
+        b = np.sign(np.sin(2 * np.pi * f * tt)) * 0.25 + np.sin(2 * np.pi * f * tt) * 0.3
+        soma(out, (b * np.minimum(1, (0.06 - tt) / 0.01)).astype(np.float32), k * 0.085)
+    return out * 0.6
+
+
+def negacao():
+    """Buzina grave de 'errado' (dois tons descendo)."""
+    out = segundos(0.8)
+    for k, f in enumerate([180, 135]):
+        n = int(0.3 * SR)
+        tt = np.arange(n) / SR
+        x = np.sign(np.sin(2 * np.pi * f * tt)) * 0.4 * np.exp(-tt / 0.4)
+        soma(out, banda(x.astype(np.float32), 80, 2500), k * 0.28)
+    return out

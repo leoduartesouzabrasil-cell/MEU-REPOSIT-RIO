@@ -20,7 +20,9 @@ from som import SR, soma  # noqa: E402
 ENTRADA = 0.6
 # pausa depois de cada áudio: espaço para os golpes CARTAZ e para o logo
 PAUSAS = {1: 0.4, 2: 1.2, 3: 1.6, 4: 3.6}
-PAUSA_MAX = 0.32         # silêncios internos mais longos que isto são encurtados (sem cortar fala)
+PAUSA_MAX = 0.32
+# pausas que devem ser MAIORES (arquivo, instante no arquivo original → duração): espaço para efeitos
+PAUSAS_ESPECIAIS = {3: [(12.15, 1.4)]}     # entre "só em 2025," e "258": rajada de tiros         # silêncios internos mais longos que isto são encurtados (sem cortar fala)
 
 CORRECOES = [
     (["O", "que", "caboclo?"], "Okê, caboclo!"), (["pitiguaíba,"], "Pitiguaíba,"), (["sete", "flechas,"], "Sete Flechas,"),
@@ -46,20 +48,31 @@ def corrigir(pal):
     return out
 
 
-def trechos_com_fala(x):
-    """Segmentos [a, b) a manter: corta silêncio do começo/fim e encurta pausas internas longas."""
+def trechos_com_fala(x, especiais=()):
+    """Segmentos [a, b) a manter: corta silêncio do começo/fim e encurta pausas internas longas.
+    especiais: [(instante, duração)] — a pausa que contém o instante fica com essa duração (pode até crescer)."""
     q = int(0.01 * SR)
     en = np.array([np.sqrt(np.mean(x[i:i + q] ** 2)) for i in range(0, len(x) - q, q)])
     voz = en > np.max(en) * 10 ** (-38 / 20)
     idx = np.where(voz)[0]
     ini, fim = idx[0], idx[-1]
     segs, a, i = [], max(0, ini - 10), ini
+    pendentes = list(especiais)
     while i <= fim:
         if not voz[i]:
             j = i
             while j <= fim and not voz[j]:
                 j += 1
-            if (j - i) * 0.01 > PAUSA_MAX:
+            alvo = next((d for t_e, d in pendentes if i * 0.01 - 0.3 <= t_e <= j * 0.01 + 0.3), None)
+            if alvo is not None:
+                pendentes = [e for e in pendentes if e[1] != alvo]     # cada pausa especial vale uma vez só
+                meio = int(min(alvo, (j - i) * 0.01) / 2 / 0.01)
+                segs.append((a * 0.01, (i + meio) * 0.01))
+                extra = alvo - (j - i) * 0.01            # pausa maior que a gravada: completa com silêncio
+                if extra > 0:
+                    segs.append(("silencio", extra))
+                a = j - meio
+            elif (j - i) * 0.01 > PAUSA_MAX:
                 meio = int(PAUSA_MAX / 2 / 0.01)
                 segs.append((a * 0.01, (i + meio) * 0.01))
                 a = j - meio
@@ -74,6 +87,9 @@ def mapear(t, segs, t0):
     """Tempo no arquivo original → tempo no vídeo (segmentos colados a partir de t0)."""
     acc = t0
     for a, b in segs:
+        if a == "silencio":
+            acc += b
+            continue
         if t < a:
             return acc
         if t <= b:
@@ -87,9 +103,12 @@ t = ENTRADA
 pecas, PAL, INICIO, FIM = [], [], {}, {}
 for k in range(1, 5):
     x = som.ler_audio(str(AQUI / f"narracao-{k}.m4a"))
-    segs = trechos_com_fala(x)
+    segs = trechos_com_fala(x, PAUSAS_ESPECIAIS.get(k, ()))
     partes = []
     for a, b in segs:
+        if a == "silencio":
+            partes.append(np.zeros(int(b * SR), np.float32))
+            continue
         p = x[int(a * SR):int(b * SR)].copy()
         f = min(int(0.008 * SR), len(p) // 2)
         p[:f] *= np.linspace(0, 1, f)
@@ -133,6 +152,12 @@ M = {
     "oke2": frase("okê", INICIO[4]), "demarcacao": frase("demarcação"), "logo": FIM[4] + 0.6,
 }
 M["fim2"] = FIM[2]
+# rajada de tiros na pausa entre "só em 2025," e "258" + um tiro distante depois de "assassinados"
+_g1 = frase("258"); _g0 = _g1 - 1.45
+M["tiro1"], M["tiro2"], M["tiro3"] = _g0 + 0.15, _g0 + 0.5, _g0 + 0.72
+M["tiro4"] = frase("assassinados", fim=True) + 0.15
+M["urna"] = frase("votar")
+M["contra"] = frase("contra")
 M = {k: round(v, 3) for k, v in M.items()}
 
 
@@ -171,8 +196,6 @@ while tt < DUR - 0.3:
     soma(mus, som.maraca(0.55 if i % 4 == 0 else 0.3), tt)
     if fase == "terreiro":
         soma(mus, som.maraca(0.2), tt + batida / 2)
-        if i % 4 == 0:
-            soma(mus, som.tambor(0.45, 75, 40, 0.9), tt)
     elif fase == "virada":
         soma(mus, som.batimento(), tt, 0.9)
         if i % 4 == 2:
@@ -185,6 +208,15 @@ while tt < DUR - 0.3:
     tt += batida
     i += 1
 
+# atabaques: toque de caboclo durante toda a parte da Umbanda (áudios #1 e #2), sumindo antes da virada
+toque = som.toque_caboclo(M["pensa"] - 1.0)
+fade = np.ones(len(toque), np.float32)
+f = int(1.5 * SR)
+fade[-f:] = np.linspace(1, 0, f)
+soma(mus, toque * fade, 0.0, 1.6)
+# volta dos atabaques no chamado final ("Okê, caboclo!")
+soma(mus, som.toque_caboclo(M["logo"] - M["oke2"]), M["oke2"] - 0.1, 1.4)
+
 for t0, graus, ritmo in [
     (0.05, [0, 1, 0], [0.9, 0.6, 1.8]),
     (M["reverencia"] - 0.2, [3, 2, 1, 0], [0.8, 0.6, 0.8, 2.2]),
@@ -193,6 +225,15 @@ for t0, graus, ritmo in [
     (M["logo"] - 0.3, [4, 5, 4, 1, 0], [0.6, 0.5, 0.7, 0.6, 2.4]),
 ]:
     soma(mus, som.frase_tensa(graus, ritmo, 0.5), t0)
+
+# silêncio súbito antes de "Agora pensa" (a trilha some e volta com o estrondo)
+corte = np.ones(N, np.float32)
+c0, c1 = int((M["pensa"] - 0.9) * SR), int((M["pensa"] + 0.02) * SR)
+corte[c0:c1] = 0
+r = int(0.12 * SR)
+corte[c0 - r:c0] = np.linspace(1, 0, r)
+mus *= corte
+amb *= corte
 
 # ---------------------------------------------------------------- efeitos
 sfx = np.zeros(N, np.float32)
@@ -212,6 +253,13 @@ for t0 in [M["milhao"] + 0.6, M["povos391"]]:
     for k in range(4):
         soma(sfx, som.tique(), t0 + k * 0.12, 0.8)
 soma(sfx, som.sino_grave(), M["logo"] - 0.1, 0.9)
+for nome in ["tiro1", "tiro2", "tiro3"]:
+    soma(sfx, som.tiro(), M[nome], 1.0)
+soma(sfx, som.tiro(2.5), M["tiro4"], 0.7)
+soma(sfx, som.urna_eletronica(), M["urna"], 0.9)
+soma(sfx, som.negacao(), M["contra"], 0.8)
+soma(sfx, som.atabaque(150, 1.0), M["roupa"] + 0.3, 1.0)           # golpe seco de atabaque em "roupa branca?"
+soma(sfx, som.atabaque(150, 1.0), M["oke1"], 1.0)
 
 # ---------------------------------------------------------------- mixagem: a voz manda (regra da identidade)
 e = som.envelope_voz(voz)

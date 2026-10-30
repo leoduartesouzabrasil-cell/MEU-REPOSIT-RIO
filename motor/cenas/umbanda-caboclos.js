@@ -6,6 +6,7 @@ const M = window.TEMPOS.marcas;
 const PAL = window.TEMPOS.legendas.flatMap(l => l.p);
 const W = (w, depois = 0) => (PAL.find(([p, t]) => t >= depois && p.toLowerCase().startsWith(w.toLowerCase())) || [0, 1e9])[1];
 const IMPACTOS = [M.pensa, M.n258, M.voz, M.sauda, M.demarcacao, M.logo];
+const TIROS = [M.tiro1, M.tiro2, M.tiro3];
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: window.TEMPOS.dur,
@@ -31,7 +32,7 @@ window.CENA = {
       [M.votar, votar], [M.sauda, chamado], [M.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
 
-    const { dx, dy } = L.tremor(t, IMPACTOS, 20);
+    const { dx, dy } = L.tremor(t, IMPACTOS.concat(TIROS, [M.tiro4]), 20);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
     [[M.origem, SANGUE, 24], [M.naoda, VERM, -24], [M.sauda, SANGUE, 24], [M.logo, SANGUE, -24]]
@@ -42,6 +43,7 @@ window.CENA = {
     }
     if (arquivo) L.varredura(ctx, t, 0.12);
     IMPACTOS.forEach(T => L.flash(ctx, t, T, VERM, 0.3, 0.45));
+    TIROS.forEach(T => L.flash(ctx, t, T, TXT, 0.12, 0.7));            // clarão do disparo
     L.papel(ctx, t, 0.15); L.vinheta(ctx, 0.55);
 
     // ------------------------------------------------ helpers locais
@@ -142,6 +144,16 @@ window.CENA = {
     function mortos(lt, t) {
       L.fundo(ctx, FUNDO);
       rotulo('SÓ EM 2025', 420, seg(lt, 0, 0.5), TXT, 52);
+      // marcas de bala, uma por disparo
+      [[250, 600], [790, 520], [820, 1060]].forEach(([x, y], k) => {
+        if (t < TIROS[k]) return;
+        ctx.save(); ctx.fillStyle = TXT; ctx.beginPath(); ctx.arc(x, y, 30, 0, 7); ctx.fill();
+        ctx.fillStyle = FUNDO; ctx.beginPath(); ctx.arc(x, y, 20, 0, 7); ctx.fill();
+        ctx.strokeStyle = TXT; ctx.lineWidth = 3; const r = L.rng(k + 5);
+        for (let i = 0; i < 7; i++) { const a = r() * 7, d = 40 + r() * 70; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 30, y + Math.sin(a) * 30);
+          ctx.lineTo(x + Math.cos(a + 0.2) * d, y + Math.sin(a + 0.2) * d); ctx.stroke(); }
+        ctx.restore();
+      });
       if (t > M.n258 - 0.15) {
         L.respingo(ctx, CX, 760, 170, seg(t, M.n258, M.n258 + 0.25), SANGUE, 31);
         L.aplicarCarimbo(ctx, seg(t, M.n258 - 0.15, M.n258 + 0.15), CX, 760, () =>
@@ -176,18 +188,21 @@ window.CENA = {
       L.fundo(ctx, FUNDO);
       // metade de cima: o espírito cultuado · metade de baixo: o indígena vivo
       quadro(L.img.terreiro, 300, 460, { zoom: 1.6, pb: true });
-      rotulo('O ESPÍRITO VOCÊ CULTUA', 290, seg(t, W('cultuar') - 0.1, W('cultuar') + 0.6), TXT, 42);
-      const pb = t > W('costas') ? true : false;
+      rotulo('O ESPÍRITO VOCÊ CULTUA', 290, seg(t, W('cultuar', M.naoda) - 0.1, W('cultuar', M.naoda) + 0.6), TXT, 42);
+      const pb = t > W('costas', M.naoda) ? true : false;
       quadro(L.img.atlB, 820, 460, { zoom: 1.2, pb });
-      if (t > W('costas') - 0.1) {
-        ctx.save(); ctx.globalAlpha = 0.35 * seg(t, W('costas'), W('costas') + 0.4); ctx.fillStyle = FUNDO; ctx.fillRect(90, 820, 840, 460); ctx.restore();
+      if (t > W('costas', M.naoda) - 0.1) {
+        ctx.save(); ctx.globalAlpha = 0.35 * seg(t, W('costas', M.naoda), W('costas', M.naoda) + 0.4); ctx.fillStyle = FUNDO; ctx.fillRect(90, 820, 840, 460); ctx.restore();
       }
-      rotulo('E O INDÍGENA VIVO?', 1265, seg(t, W('vivo') - 0.3, W('vivo') + 0.4), AMA, 52);
+      rotulo('E O INDÍGENA VIVO?', 1265, seg(t, W('vivo', M.naoda) - 0.3, W('vivo', M.naoda) + 0.4), AMA, 52);
     }
 
     function votar(lt, t) {
       L.fundo(ctx, FUNDO);
       L.urna(ctx, CX, 820, 1.25, TXT, FUNDO);
+      if (t > M.urna && t < M.urna + 0.7 && Math.floor((t - M.urna) / 0.085) % 2 === 0) {   // tela da urna pisca com os bipes
+        ctx.fillStyle = AMA; ctx.fillRect(CX - 225, 707, 237, 163);
+      }
       L.aplicarCarimbo(ctx, seg(t, W('contra', M.votar) - 0.1, W('contra', M.votar) + 0.2), CX, 820, () => {
         ctx.save(); ctx.translate(CX, 820); ctx.strokeStyle = VERM; ctx.lineWidth = 46; ctx.lineCap = 'butt';
         ctx.beginPath(); ctx.moveTo(-300, -220); ctx.lineTo(300, 220); ctx.moveTo(300, -220); ctx.lineTo(-300, 220); ctx.stroke(); ctx.restore();
