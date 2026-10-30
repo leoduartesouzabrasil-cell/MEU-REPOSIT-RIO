@@ -13,6 +13,7 @@ Resumo rápido:
 - Movimento ARQUIVO: palavra por palavra, digitação + seleção, câmera documental, foco entrando, ondas + etiquetas, cor seletiva, moldura; varredura de TV.
 - Papel com grão "fervendo" sempre ligado.
 - Formato padrão: 1080×1920, 30 fps, **até ~60 s** salvo pedido contrário.
+- **Todo vídeo é legendado**: a narração aparece como legenda palavra a palavra, no tempo da fala (`legendas` em `<nome>.tempos.js`, gerado pelo `montar.py`). Em blocos com muito texto ou fundo escuro, use a tarja escura do `eleicoes-2026.js` (y ≈ 1460, dentro da margem segura).
 - Temas de violência/morte: **modo TENSO** (seção 8 do guia). Todo vídeo termina com o **logo O Camarada** (seção 9).
 - **Capa de todo Reels**: cartaz de propaganda soviética com a figura ilustrada (seção 10 do guia; `motor/ilustrar.py` + `L.capaSovietica`).
 

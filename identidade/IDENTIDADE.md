@@ -173,3 +173,11 @@ Como fazer: `python3 motor/ilustrar.py recorte.png ilustracao.png`, depois uma c
 (modelo: `motor/cenas/capa-indigenas-ms-arte.js`). A arte entra inteira e sem distorção, com a figura cabendo na largura;
 o fundo da própria arte é estendido para cima (textura espelhada, emenda esfumada) e ali entram o logo (versão bege sobre vermelho),
 o título em bege e a palavra de ordem em amarelo.
+
+## Legendas (obrigatórias em todo vídeo)
+- Toda narração vira legenda: linhas de até ~28 caracteres, palavra surgindo no tempo da fala (Instrument Serif itálica).
+- Quebra em pontuação ou pausa; nunca deixar uma palavra sozinha na linha seguinte.
+- Posição fixa: centro em y ≈ 1460, largura máxima x 120–960 (margem segura). Créditos e fontes vão para baixo do título (y ≈ 384).
+- Fundo claro: texto tinta direto no papel. Fundo escuro ou misto: tarja de tinta 86% com filete vermelho à esquerda e texto bege.
+- Corrigir na legenda o que a transcrição erra (números, nomes próprios, pontuação) pela lista CORRECOES do `montar.py`.
+

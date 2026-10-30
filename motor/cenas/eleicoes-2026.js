@@ -5,7 +5,8 @@
 // DIAGRAMAÇÃO PADRÃO (vale para todos os blocos):
 //   título do bloco ......... y = 330, centralizado, Archivo 700 até 48px (titulo())
 //   conteúdo ................ entre y = 420 e y = 1360, centralizado em x = 540, largura máx. 840 (x 120–960)
-//   crédito/fonte ........... y = 1440, centralizado, máquina de escrever até 26px (cred())
+//   crédito/fonte ........... y = 384, logo abaixo do título, máquina de escrever até 24px (cred())
+//   legenda da narração ..... tarja escura centrada em y = 1460 (sempre, em todos os blocos)
 //   nada importante fora de x 120–960 e y 250–1500 (margem segura do Reels)
 const T = Object.assign({
   inicio: 0, turno1: 2.2, mapa: 6.2, mapaVira: 9.4, turno2: 12.0, golpe: 16.0, contas: 18.0,
@@ -62,6 +63,24 @@ window.CENA = {
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.35));
     L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.35);
+    legenda();
+
+    // legenda da narração: tarja de tinta fixa (lê em fundo claro e escuro), palavras surgindo no tempo da fala
+    function legenda() {
+      const LEG = (window.TEMPOS || {}).legendas;
+      const l = LEG && LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
+      if (!l) return;
+      const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
+        L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');
+        return pal.reduce((s, [p]) => s + ctx.measureText(p).width, 0) + tam * 0.28 * (pal.length - 1);
+      };
+      const tam = Math.min(58, 58 * 780 / largura(58)), w = largura(tam);   // a tarja nunca passa de x 120–960
+      ctx.save(); ctx.globalAlpha = L.clamp((l.t1 - t) / 0.15) * L.clamp((t - l.t0 + 0.05) / 0.12);
+      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 30, 1412, w + 60, 92);
+      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 30, 1412, 8, 92);
+      L.palavras(ctx, pal, t, CX, 1475, { tam, cor: BEGE, espaco: 0.28, rgb: 0 });
+      ctx.restore();
+    }
 
     // ------------------------------------------------ componentes padronizados
     function tamMax(txt, familia, tam, peso = 700, larg = LARG) { return Math.min(tam, L.ajustar(ctx, txt, familia, larg, peso)); }
@@ -69,9 +88,9 @@ window.CENA = {
       L.texto(ctx, L.datilografar(txt, p), CX, 330, { familia: FONTE.grotesca, peso: 700, tam: tamMax(txt, FONTE.grotesca, 48),
         cor, alinhar: 'center', rgb: 1.5 });
     }
-    function cred(txt, p, cor = TINTA) {                                // crédito/fonte: sempre y 1440
+    function cred(txt, p, cor = TINTA) {                                // crédito/fonte: sempre y 384, sob o título
       if (p <= 0) return;
-      L.texto(ctx, L.datilografar(txt, p * 2), CX, 1440, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 26, 400),
+      L.texto(ctx, L.datilografar(txt, p * 2), CX, 384, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 24, 400),
         cor, alinhar: 'center' });
     }
     function linha(txt, y, p, cor = TINTA, tam = 46) {                  // linha de apoio centralizada

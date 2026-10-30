@@ -31,14 +31,23 @@ PAUSAS_ESPECIAIS = {
     3: [(15.6, 1.2), (21.7, 0.6)],                 # "NÃO FOI GOLPE." · fogo antes de "o Brasil é soberano"
     5: [(14.4, 0.9), (20.3, 2.1), (23.3, 1.8)],    # Espanha → história · Fidel e Che · Mao
 }
-CORRECOES = [(["Echer"], "e Che"), (["Mau."], "Mao.")]
+CORRECOES = [(["Echer", "e"], "e Che."), (["na", "China"], "E na China"), (["ensina"], "ensina:"), (["Mau."], "Mao."), (["51", ",8%."], "51,8%."), (["48", ",2%."], "48,2%."),
+             (["extrema", "-direita."], "extrema-direita."), (["nordeste"], "Nordeste"), (["foram", "as", "urnas"], "foram às urnas"),
+             (["e", "não", "é", "só", "aqui."], "E não é só aqui."), (["4", "de", "outubro,"], "Quatro de outubro,"),
+             (["Flávio", "3"], "Flávio, 3"), (["21", "dias"], "Vinte e um dias")]
 
 
 def corrigir(pal):
-    out = []
-    for w in pal:
-        novo = next((n for seq, n in CORRECOES if seq == [w[0]]), None)
-        out.append([novo or w[0], w[1], w[2]])
+    out, i = [], 0
+    while i < len(pal):
+        for seq, novo in CORRECOES:
+            if [p[0] for p in pal[i:i + len(seq)]] == seq:
+                out.append([novo, pal[i][1], pal[i + len(seq) - 1][2]])
+                i += len(seq)
+                break
+        else:
+            out.append(pal[i])
+            i += 1
     return out
 
 
@@ -144,7 +153,7 @@ M["mapa"] = frase("45%", fim=True) + 0.15
 M["mapaVira"] = frase("lula cresceu")
 M["minas"] = frase("virou minas")
 M["turno2"] = frase("lula", M["minas"]) - 0.3
-M["virada"] = frase("48", M["turno2"], fim=True) + 0.45
+M["virada"] = frase("48,2%", M["turno2"], fim=True) + 0.45
 M["golpe"] = frase("foi golpe")
 M["vamos"] = frase("vamos às contas")
 M["contas"] = INICIO[2] - 0.2
@@ -172,7 +181,7 @@ M["franca"] = frase("na frança")
 M["espanha"] = frase("na espanha")
 M["cuba"] = frase("e a história") - 0.2
 M["cubaLideres"] = frase("com fidel") - 0.3
-M["china"] = frase("na china") - 1.3          # a foto da China entra na pausa depois de "Fidel e Che"
+M["china"] = frase("e na china") - 1.3          # a foto da China entra na pausa depois de "Fidel e Che"
 M["chinaLider"] = frase("com mao") - 0.2
 M["organizado"] = frase("nenhuma grande") - 0.2
 M["redes"] = frase("mobilizado")
@@ -189,9 +198,29 @@ for t0, p in pecas:
 voz = voz[:int(DUR * SR)]
 N = len(voz)
 
+def legendas(palavras, max_car=28):
+    """Linhas curtas de legenda (quebra em pontuação, pausa ou ~28 caracteres), palavra a palavra no tempo da fala."""
+    linhas, atual = [], []
+    for i, p in enumerate(palavras):
+        atual.append(p)
+        texto = " ".join(w for w, _, _ in atual)
+        prox = palavras[i + 1] if i + 1 < len(palavras) else None
+        pausa = prox is None or prox[1] - p[2] > 0.45
+        cabe = len(texto) + 1 + len(prox[0]) if prox else 0
+        # passa do limite, salvo se a próxima for a última palavra da frase (evita palavra órfã na linha seguinte)
+        longa = prox is not None and cabe > max_car and not (prox[0][-1] in ".,?!:" and cabe <= max_car + 9)
+        if p[0][-1] in ".,?!:" or longa or pausa:
+            linhas.append({"t0": atual[0][1], "t1": p[2], "p": [[w, t0] for w, t0, _ in atual]})
+            atual = []
+    for a, b in zip(linhas, linhas[1:]):
+        a["t1"] = round(min(b["t0"], a["t1"] + 0.8), 3)
+    linhas[-1]["t1"] += 0.8
+    return linhas
+
+
 (RAIZ / "motor" / "cenas" / "eleicoes-2026.tempos.js").write_text(
     "// GERADO por audio/eleicoes-2026/montar.py — não editar à mão\n"
-    f"window.TEMPOS = {json.dumps({'dur': DUR, 'marcas': M}, ensure_ascii=False)};\n")
+    f"window.TEMPOS = {json.dumps({'dur': DUR, 'marcas': M, 'legendas': legendas(PAL)}, ensure_ascii=False)};\n")
 
 mus, sfx = trilha(M, N)
 
