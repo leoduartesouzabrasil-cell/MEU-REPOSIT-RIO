@@ -353,3 +353,32 @@ def negacao():
         x = np.sign(np.sin(2 * np.pi * f * tt)) * 0.4 * np.exp(-tt / 0.4)
         soma(out, banda(x.astype(np.float32), 80, 2500), k * 0.28)
     return out
+
+
+# ---------------------------------------------------------------- multidão e vitória
+def multidao(dur=3.0, intensidade=1.0):
+    """Multidão/gritaria distante: ruído vocal filtrado com ondas de entusiasmo."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    x = banda(ruido(dur), 300, 2600) * 0.6 + banda(ruido(dur), 900, 4000) * 0.3
+    onda = 0.55 + 0.45 * np.sin(2 * np.pi * 0.6 * t + 1) ** 2
+    env_ = np.clip(t / 0.6, 0, 1) * np.clip((dur - t) / 0.8, 0, 1)
+    return (x * onda * env_ * 0.35 * intensidade).astype(np.float32)
+
+
+def check():
+    """Confirmação positiva (dois tons subindo) para itens de lista."""
+    out = segundos(0.35)
+    for k, f in enumerate([880, 1320]):
+        n = int(0.12 * SR)
+        tt = np.arange(n) / SR
+        soma(out, (np.sin(2 * np.pi * f * tt) * np.exp(-tt / 0.06) * 0.4).astype(np.float32), k * 0.08)
+    return out
+
+
+def contador(dur=1.2, passos=14):
+    """Números rolando (tiques acelerando) — para contadores na tela."""
+    out = segundos(dur + 0.1)
+    for k in range(passos):
+        soma(out, tique(), dur * (k / passos) ** 0.8)
+    return out
