@@ -4,7 +4,7 @@
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: 2,
   imagens: {
-    arte: '../midia/umbanda-caboclos/caboclo-ilustracao.png',
+    arte: '../midia/umbanda-caboclos/caboclo-openart.webp',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
   desenhar(ctx, t, L) {
