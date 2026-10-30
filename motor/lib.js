@@ -344,6 +344,10 @@ function _processar(img, pb, seletiva) {
       const r = src.data[i], gg = src.data[i + 1], b = src.data[i + 2];
       const k = clamp((r - Math.max(gg, b) - 40) / 60);          // quanto "vermelho" é o pixel
       if (k > 0) { dst.data[i] = lerp(dst.data[i], 200, k); dst.data[i + 1] = lerp(dst.data[i + 1], 32, k); dst.data[i + 2] = lerp(dst.data[i + 2], 30, k); }
+      if (seletiva === 'quente') {                                // também mantém amarelos (vira o amarelo da paleta)
+        const ka = clamp((Math.min(r, gg) - b - 60) / 50) * clamp((gg - 0.45 * r) / 40);
+        if (ka > 0) { dst.data[i] = lerp(dst.data[i], 235, ka); dst.data[i + 1] = lerp(dst.data[i + 1], 181, ka); dst.data[i + 2] = lerp(dst.data[i + 2], 42, ka); }
+      }
     }
     g.putImageData(dst, 0, 0);
   }
@@ -377,12 +381,13 @@ function moldura(ctx, x, y, w, h, esp = 46) {
 
 // legenda da narração (registro Arquivo): linha atual, palavras surgindo no tempo da fala.
 // linhas = TEMPOS.legendas [{t0, t1, p:[[palavra, t]]}]
+// o.cx desloca o centro (margem segura: no Reels os botões ocupam a borda direita)
 function legenda(ctx, linhas, t, y = 1450, o = {}) {
   const l = linhas.find(l => t >= l.t0 - 0.05 && t < l.t1);
   if (!l) return;
   const sai = clamp((l.t1 - t) / 0.15);
   ctx.save(); ctx.globalAlpha = sai;
-  palavras(ctx, l.p.map(([w, t0]) => [w, t0 - 0.08]), t, ctx.canvas.width / 2, y,
+  palavras(ctx, l.p.map(([w, t0]) => [w, t0 - 0.08]), t, o.cx ?? ctx.canvas.width / 2, y,
     { tam: 66, cor: COR.tinta, espaco: 0.28, ...o });
   ctx.restore();
 }
@@ -640,8 +645,22 @@ function capaComArte(ctx, cfg) {
   papel(ctx, 1, 0.1); vinheta(ctx, 0.35);
 }
 
+// vela acesa com chama tremulando
+function vela(ctx, x, y, h, t, seed = 1, cor = COR.bege) {
+  const r = rng(seed), f = Math.sin(t * 11 + seed) * 0.12 + Math.sin(t * 23 + seed * 3) * 0.06;
+  ctx.save();
+  ctx.fillStyle = cor; ctx.fillRect(x - 14, y - h, 28, h);
+  const gl = ctx.createRadialGradient(x, y - h - 30, 4, x, y - h - 30, 120);
+  gl.addColorStop(0, 'rgba(235,181,42,0.45)'); gl.addColorStop(1, 'rgba(235,181,42,0)');
+  ctx.fillStyle = gl; ctx.fillRect(x - 120, y - h - 150, 240, 240);
+  ctx.translate(x, y - h - 4); ctx.rotate(f);
+  ctx.fillStyle = COR.amarelo; ctx.beginPath(); ctx.ellipse(0, -26, 12 + r() * 2, 30, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = COR.vermelho; ctx.beginPath(); ctx.ellipse(0, -16, 5, 14, 0, 0, 7); ctx.fill();
+  ctx.restore();
+}
+
 window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
-  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, capaComArte, img: {} };
+  foiceMartelo, bandeiraCartaz, brasa, capaSovietica, capaComArte, vela, img: {} };

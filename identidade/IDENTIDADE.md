@@ -66,7 +66,8 @@ Regras:
 ## 3. Composição
 
 - Formato padrão: **1080×1920 (Reels/Shorts), 30 fps**. Alternativos: 1080×1350 e 1920×1080.
-- Zonas seguras para Reels: 220 px no topo e 380 px embaixo sem texto importante.
+- **Margem segura do Reels** (obrigatória): texto e imagem importantes só em **x 90–930 e y 250–1500**. A borda direita tem os botões
+  (curtir, comentar), o rodapé tem a legenda do post e o topo tem o nome da conta. Centralize em x≈510, não em 540.
 - Topo: logo/kicker pequeno. Meio: manchete. Embaixo: figura ou símbolo.
 - **Diagonal dominante de 15° a 30°**, subindo da esquerda para a direita (= futuro, avanço).
 - Figuras: em contra-plongée, queixo erguido, olhar para cima e para a direita.
