@@ -13,15 +13,15 @@ const T = Object.assign({
   checklist: 33.5, ck1: 34.3, ck2: 36.6, ck3: 38.9, ck4: 41.2, naoGolpe: 43.0,
   soberania: 44.5, fogo: 45.6, soberano: 48.0,
   povo: 50.0, abst: 50.8, desde2006: 52.6, nordeste: 54.0, rua: 55.6,
-  mundo: 58.0, franca: 58.3, espanha: 60.6, cuba: 62.6, china: 64.2, organizado: 65.4,
-  acabou: 66.6, mobilizacao: 68.0, logo: 70.0, dur: 73.5,
+  mundo: 58.0, franca: 58.3, espanha: 60.6, cuba: 62.6, cubaLideres: 65.2, china: 68.4, chinaLider: 70.8, organizado: 73.8,
+  acabou: 77.4, mobilizacao: 78.8, logo: 80.8, dur: 84.3,
 }, (window.TEMPOS || {}).marcas || {});
 
 const NE = ['MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA'];
 const LULA_1T = NE.concat(['PA', 'AM', 'AP']);          // 1º turno: Lula em 12 estados
 const LULA_2T = LULA_1T.concat(['MG']);                  // 2º turno: Minas virou (13 estados)
 // ponto do rosto em cada foto (fração da largura/altura) e zoom, para enquadrar os retratos
-const _band = {}, _mont = {};                            // caches: bandeiras desenhadas e cartaz da montagem
+const _band = {}, _mont = {}, _lider = {};                            // caches: bandeiras desenhadas e cartaz da montagem
 const ROSTO = { flavio: [0.46, 0.36, 2.6], lula: [0.64, 0.47, 2.6], trump: [0.5, 0.34, 1.7] };
 
 window.CENA = {
@@ -35,6 +35,9 @@ window.CENA = {
     madri: '../midia/eleicoes-2026/espanha-madri.jpg',
     havana: '../midia/eleicoes-2026/cuba-1959.jpg',
     china: '../midia/eleicoes-2026/china-camponeses.jpg',
+    fidel: '../midia/eleicoes-2026/fidel-recorte.png',
+    che: '../midia/eleicoes-2026/che-recorte.png',
+    mao: '../midia/eleicoes-2026/mao-recorte.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -47,12 +50,12 @@ window.CENA = {
       [T.contas, contas], [T.checklist, checklist], [T.soberania, soberania], [T.povo, povo], [T.mundo, mundo],
       [T.acabou, acabou], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.mapaVira, T.turno2 + 2.6, T.golpe, T.naoGolpe, T.soberano, T.acabou, T.mobilizacao, T.logo];
+    const IMP = [T.mapaVira, T.turno2 + 2.6, T.golpe, T.naoGolpe, T.soberano, T.cubaLideres + 0.3, T.chinaLider + 0.3, T.acabou, T.mobilizacao, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 16);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
     [[T.turno1, AMA, -24], [T.mapa, BEGE, 24], [T.turno2, BEGE, -24], [T.golpe, VERM, 24], [T.contas, BEGE, -24],
-      [T.checklist, BEGE, 24], [T.soberania, TINTA, -24], [T.povo, VERM, 24], [T.mundo, AMA, -24], [T.acabou, VERM, 24], [T.logo, BEGE, -24]]
+      [T.checklist, BEGE, 24], [T.soberania, TINTA, -24], [T.povo, VERM, 24], [T.mundo, AMA, -24], [T.cubaLideres, VERM, 24], [T.china, AMA, -24], [T.chinaLider, VERM, 24], [T.organizado, AMA, -24], [T.acabou, VERM, 24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.35));
@@ -374,6 +377,51 @@ window.CENA = {
       }
     }
 
+    // ------------------------------------------------ líderes: recorte grande em PNG + seta com o nome
+    function sol(li) {                                                  // sol vermelho nascendo atrás dos líderes
+      const e = ease.saida(seg(li, 0, 0.6));
+      ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(CX, 980, 380 * e, 0, 7); ctx.fill();
+      L.raios(ctx, CX, 980, 1400, 24, li * 0.05, 'rgba(235,181,42,0.10)');
+    }
+    function preparaLider(img) {                                         // P&B + base esmaecida, e silhueta amarela (feito uma vez)
+      if (_lider[img.src]) return _lider[img.src];
+      const w = img.width, h = img.height, mk = () => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+      const foto = mk(), g = foto.getContext('2d');
+      g.filter = 'grayscale(1) contrast(1.2)'; g.drawImage(img, 0, 0); g.filter = 'none';
+      const fade = g.createLinearGradient(0, h * 0.72, 0, h);
+      fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+      g.globalCompositeOperation = 'destination-in'; g.fillStyle = fade; g.fillRect(0, 0, w, h);
+      const silh = mk(), gs = silh.getContext('2d');
+      gs.drawImage(foto, 0, 0); gs.globalCompositeOperation = 'source-in'; gs.fillStyle = AMA; gs.fillRect(0, 0, w, h);
+      return (_lider[img.src] = { foto, silh });
+    }
+    function lider(img, cx, base, alt, p, lado) {                        // entra subindo, com contorno amarelo deslocado
+      if (p <= 0) return;
+      const { foto, silh } = preparaLider(img), e = ease.saida(p), w = alt * img.width / img.height;
+      const y = base - alt + (1 - e) * 160;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p * 2.5);
+      ctx.drawImage(silh, cx - w / 2 + 14 * lado, y - 10, w, alt);
+      ctx.drawImage(foto, cx - w / 2, y, w, alt);
+      ctx.restore();
+    }
+    function nomeComSeta(nome, lx, ly, ax, ay, p, curva) {               // etiqueta + seta desenhada até o rosto
+      if (p <= 0) return;
+      const d = ease.saida(seg(p, 0, 0.6)), x0 = lx, y0 = ly + 34;
+      const cxq = (x0 + ax) / 2 + 90 * curva, cyq = (y0 + ay) / 2;
+      const ponto = k => [(1 - k) ** 2 * x0 + 2 * (1 - k) * k * cxq + k * k * ax, (1 - k) ** 2 * y0 + 2 * (1 - k) * k * cyq + k * k * ay];
+      ctx.save(); ctx.strokeStyle = AMA; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.beginPath();
+      for (let i = 0; i <= 30; i++) { const [x, y] = ponto(d * i / 30); ctx[i ? 'lineTo' : 'moveTo'](x, y); }
+      ctx.stroke();
+      if (d > 0.95) {                                                   // ponta da seta
+        const [x1, y1] = ponto(1), [xa, ya] = ponto(0.9), ang = Math.atan2(y1 - ya, x1 - xa);
+        ctx.fillStyle = AMA; ctx.beginPath(); ctx.moveTo(x1 + Math.cos(ang) * 10, y1 + Math.sin(ang) * 10);
+        ctx.lineTo(x1 + Math.cos(ang + 2.5) * 34, y1 + Math.sin(ang + 2.5) * 34); ctx.lineTo(x1 + Math.cos(ang - 2.5) * 34, y1 + Math.sin(ang - 2.5) * 34);
+        ctx.fill();
+      }
+      ctx.restore();
+      L.etiqueta(ctx, nome, lx, ly, seg(p, 0, 0.35), { cor: TINTA, corTexto: AMA, tam: 40 });
+    }
+
     // ------------------------------------------------ H. o mundo e a história: bandeiras + fotos
     function mundo(lt, t) {
       L.fundo(ctx, COR.carvao); arquivo = false;
@@ -385,8 +433,28 @@ window.CENA = {
           const p = ease.saida(seg(lt2, i * 0.08, i * 0.08 + 0.35));
           if (p > 0) { ctx.save(); ctx.globalAlpha = p; bandeiraPais(c, x, y + (1 - p) * 60, 380, 220, t + i); ctx.restore(); }
         });
-        L.aplicarCarimbo(ctx, seg(lt2, 0.3, 0.6), CX, 1060, () => bloco('NADA VEIO DE CIMA.', 1100, BEGE, 90), 51);
-        L.aplicarCarimbo(ctx, seg(lt2, 0.7, 1.0), CX, 1200, () => bloco('VEIO DO POVO ORGANIZADO.', 1240, AMA, 90), 53);
+        L.aplicarCarimbo(ctx, seg(lt2, 0.5, 0.8), CX, 1060, () => bloco('NADA VEIO DE CIMA.', 1100, BEGE, 90), 51);
+        L.aplicarCarimbo(ctx, seg(lt2, 1.4, 1.7), CX, 1200, () => bloco('VEIO DO POVO ORGANIZADO.', 1240, AMA, 90), 53);
+        return;
+      }
+      if (t >= T.cubaLideres && t < T.china) {
+        titulo('A HISTÓRIA ENSINA', 1, AMA);
+        const li = t - T.cubaLideres;
+        sol(li);
+        lider(L.img.che, 740, 1330, 760, seg(li, 0.9, 1.5), 1.0);
+        lider(L.img.fidel, 330, 1400, 740, seg(li, 0.1, 0.7), -1.0);
+        nomeComSeta('FIDEL CASTRO', 300, 520, 290, 680, seg(li, 0.6, 1.1), 1);
+        nomeComSeta('CHE GUEVARA', 780, 440, 760, 590, seg(li, 1.5, 2.0), -1);
+        cred('Fidel: Washington, 1959 · Che: Alberto Korda, 1960 · domínio público', seg(li, 1.0, 2.0), BEGE);
+        return;
+      }
+      if (t >= T.chinaLider && t < T.organizado) {
+        titulo('A HISTÓRIA ENSINA', 1, AMA);
+        const li = t - T.chinaLider;
+        sol(li);
+        lider(L.img.mao, 540, 1400, 820, seg(li, 0.1, 0.7), 1.0);
+        nomeComSeta('MAO TSÉ-TUNG', 760, 500, 640, 640, seg(li, 0.7, 1.2), -1);
+        cred('Mao: Pequim, 1950 · Chen Zhengqing · domínio público', seg(li, 1.0, 2.0), BEGE);
         return;
       }
       const itens = [
@@ -444,7 +512,8 @@ window.CENA = {
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Fontes: TSE · Exame · CNN · NPR · The Brazilian Report', 1160],
         ['Fotos: Joédson Alves, Paulo Pinto / Agência Brasil (CC BY 3.0 BR) · Casa Branca (dom. público)', 1210],
-        ['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público) · China: via BBC', 1250]].forEach(([s, y]) =>
+        ['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público) · China: via BBC', 1250],
+        ['Fidel (1959), Che (Korda, 1960), Mao (Chen Zhengqing, 1950): domínio público', 1290]].forEach(([s, y]) =>
         L.texto(ctx, s, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 26, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

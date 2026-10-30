@@ -18,3 +18,17 @@
 - Camponeses lendo o Livro Vermelho num trigal, China, anos 1960 (Revolução Cultural; não é foto de 1949).
 - Origem: BBC — https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/cacf/live/fef19390-4f0d-11f1-bd52-e755d604ece4.jpg.webp
 - Licença: **não é livre** (direitos da BBC/agência original, autor não identificado). Usada a pedido do autor do vídeo; exceção ao PROTOCOLO.
+
+## fidel-1959.jpg / fidel-recorte.png
+- Fidel Castro no MATS Terminal, Washington, 15/04/1959 — Wikimedia Commons, domínio público.
+- https://commons.wikimedia.org/wiki/File:Fidel_Castro_-_MATS_Terminal_Washington_1959.jpg
+
+## che-1960.jpg / che-recorte.png
+- "Guerrillero Heroico", Alberto Korda, 05/03/1960 (restauração: Adam Cuerden) — Wikimedia Commons, domínio público (PD-Cuba).
+- https://commons.wikimedia.org/wiki/File:Che_Guevara_-_Guerrillero_Heroico_by_Alberto_Korda.jpg
+
+## mao-1950.jpg / mao-recorte.png
+- Retrato oficial de Mao Zedong, Pequim, 1950, Chen Zhengqing — Wikimedia Commons, domínio público (PD-PRC; EUA: sem renovação).
+- https://commons.wikimedia.org/wiki/File:Mao_Zedong_1950_Portrait_(3x4_cropped).jpg
+
+Recortes (PNG) feitos com rembg (modelo birefnet-portrait).

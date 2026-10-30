@@ -1,6 +1,6 @@
 # Roteiro — "Não foi golpe. Foi o povo." (a virada de Lula no 2º turno de 2026)
 
-Duração estimada: ~70 s (≈195 palavras) · Reels 1080×1920 · fecha com o logo O Camarada
+Duração estimada: ~80 s (≈200 palavras; o trecho "a história ensina" é falado devagar) · Reels 1080×1920 · fecha com o logo O Camarada
 Grave em 5 áudios separados (#1 a #5). [pausa] = ~1 s de silêncio.
 
 ## ÁUDIO #1 — A virada (tom de suspense)
@@ -39,7 +39,8 @@ NA TELA: contador 21,08% → 19,22% · etiquetas CE 13,9% · PE 15,2% · PB 15,5
 
 ## ÁUDIO #5 — O chamado (firme, crescendo)
 > E não é só aqui. Na França, mais de quatrocentas mil pessoas foram às ruas. Na Espanha, o povo protesta por moradia, contra a lei barrada pela direita e pela extrema-direita.
-> A história ensina: de Cuba à China, nenhuma grande transformação veio de cima. Veio do povo organizado.
+> A história ensina: em Cuba, com Fidel e Che. Na China, com Mao. [pausa]
+> Nenhuma grande transformação veio de cima. Veio do povo organizado.
 > A eleição acabou. A mobilização, não.
 
 NA TELA: bandeira + foto de cada país (Paris 2026, Madri 2026, Havana 1959; China só bandeira) · bandeira vermelha com foice e martelo · "A ELEIÇÃO ACABOU. / A MOBILIZAÇÃO, NÃO." → logo
