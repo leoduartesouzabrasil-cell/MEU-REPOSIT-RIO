@@ -34,6 +34,7 @@ window.CENA = {
     paris: '../midia/eleicoes-2026/franca-paris.jpg',
     madri: '../midia/eleicoes-2026/espanha-madri.jpg',
     havana: '../midia/eleicoes-2026/cuba-1959.jpg',
+    china: '../midia/eleicoes-2026/china-camponeses.jpg',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -392,7 +393,7 @@ window.CENA = {
         [T.franca, 'FR', L.img.paris, 'FRANÇA', '400 MIL NAS RUAS · OUT/2026', 'Paris, 17/10/2026 · Foto: Jorge Jaramillo · CC BY-SA 4.0'],
         [T.espanha, 'ES', L.img.madri, 'ESPANHA', 'LUTA POR MORADIA', 'Madri, 26/09/2026 · Foto: Barcex · CC BY-SA 4.0'],
         [T.cuba, 'CU', L.img.havana, 'CUBA · 1959', 'O POVO NAS RUAS DE HAVANA', 'Havana, 8/1/1959 · domínio público'],
-        [T.china, 'CN', null, 'CHINA · 1949', 'REVOLUÇÃO CAMPONESA', 'bandeira da República Popular da China'],
+        [T.china, 'CN', L.img.china, 'CHINA · 1949', 'A REVOLUÇÃO VEIO DO CAMPO', 'Camponeses chineses, anos 1960 · foto reproduzida da BBC'],
       ];
       const idx = itens.filter(([X]) => t >= X).length - 1;
       titulo(t >= T.cuba ? 'A HISTÓRIA ENSINA' : 'E NÃO É SÓ AQUI', t >= T.cuba ? seg(t, T.cuba, T.cuba + 0.5) : seg(lt, 0, 0.6), AMA);
@@ -436,7 +437,7 @@ window.CENA = {
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Fontes: TSE · Exame · CNN · NPR · The Brazilian Report', 1160],
         ['Fotos: Joédson Alves, Paulo Pinto / Agência Brasil (CC BY 3.0 BR) · Casa Branca (dom. público)', 1210],
-        ['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público)', 1250]].forEach(([s, y]) =>
+        ['Jorge Jaramillo, Barcex (CC BY-SA 4.0) · Havana 1959 (dom. público) · China: via BBC', 1250]].forEach(([s, y]) =>
         L.texto(ctx, s, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 26, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

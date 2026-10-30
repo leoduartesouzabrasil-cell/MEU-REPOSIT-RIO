@@ -13,3 +13,8 @@
 | espanha-madri.jpg | Barcex (Carlos Barcenilla) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Madrid_-_Demonstration_for_the_right_to_housing_-_Not_one_more_Maricarmen_-_260926_194922.jpg | 2026-10-30 | Madri, 26/09/2026, marcha pelo direito à moradia ("Ni una Maricarmen más") |
 | cuba-1959.jpg | autor desconhecido | Domínio público (PD-Cuba) | https://commons.wikimedia.org/wiki/File:Fidel_Castro's_entry_into_Havana,_1959.jpg | 2026-10-30 | Entrada de Fidel Castro em Havana, 8/1/1959 |
 | trump.jpg | Daniel Torok / Casa Branca | Domínio público (PD-USGov) | https://commons.wikimedia.org/wiki/File:Official_Presidential_Portrait_of_President_Donald_J._Trump_(2025).jpg | 2026-10-30 | Retrato oficial de Donald Trump (2025) |
+
+## china-camponeses.jpg
+- Camponeses lendo o Livro Vermelho num trigal, China, anos 1960 (Revolução Cultural; não é foto de 1949).
+- Origem: BBC — https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/cacf/live/fef19390-4f0d-11f1-bd52-e755d604ece4.jpg.webp
+- Licença: **não é livre** (direitos da BBC/agência original, autor não identificado). Usada a pedido do autor do vídeo; exceção ao PROTOCOLO.
