@@ -11,3 +11,6 @@
 | Flávio pede anulação / acusa fraude sem provas | Agência Brasil (matéria do discurso de Lula) · Exame (chamada) |
 | Transporte gratuito obrigatório no 2º turno | Agência Brasil — https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/eleicoes-prefeituras-estados-devem-garantir-transporte-gratuito-no-segundo-turno |
 | França >400 mil em 24/10/2026; Espanha, moradia, lei barrada por Vox/PP/Junts | CNN — https://www.cnn.com/2026/10/24/europe/france-weekend-protests-detained-latam-intl · NPR — https://www.npr.org/2026/10/26/nx-s1-6016183/protests-and-unrest-sweep-across-parts-of-europe · Wikipedia "2026 European unrest" |
+| Mapa: vencedor por estado nos dois turnos (Lula 12 → 13, Minas virou; Lula cresceu em todos os estados) | TSE (resultados por UF) · CNN Brasil · Poder360 |
+| Flávio no Salão Oval com Trump (26/05/2026); pedido de pressão dos EUA; tarifas | The Brazilian Report · Agência Brasil · Bloomberg Línea |
+| Fotos de Paris, Madri e Havana 1959 | Wikimedia Commons (ver CREDITOS.md) |

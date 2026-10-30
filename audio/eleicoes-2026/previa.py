@@ -11,10 +11,26 @@ sys.path.insert(0, str(AQUI.parent.parent / "motor"))
 import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
-T = dict(turno1=2.5, dias21=7.0, turno2=8.5, golpe=13.0, contas=15.0, outros=16.5, voltaram=20.5, brancos=24.5,
-         total=28.0, divide=30.0, checklist=33.0, ck1=34.0, ck2=36.8, ck3=39.6, ck4=42.2, naoGolpe=44.0, povo=46.0,
-         abst=46.8, desde2006=48.6, nordeste=50.0, rua=51.6, mundo=54.5, franca=55.0, espanha=56.6, historia=58.2,
-         cuba=58.8, china=59.6, acabou=61.2, mobilizacao=62.6, logo=64.2, dur=67.5)
+T = dict(turno1=2.2, mapa=6.2, mapaVira=9.4, turno2=12.0, golpe=16.0, contas=18.0, outros=19.5, voltaram=22.5,
+         brancos=25.5, total=28.5, divide=30.5, checklist=33.5, ck1=34.3, ck2=36.6, ck3=38.9, ck4=41.2, naoGolpe=43.0,
+         soberania=44.5, fogo=45.6, soberano=48.0, povo=50.0, abst=50.8, desde2006=52.6, nordeste=54.0, rua=55.6,
+         mundo=58.0, franca=58.3, espanha=60.6, cuba=62.6, china=64.2, organizado=65.4, acabou=66.6, mobilizacao=68.0,
+         logo=70.0, dur=73.5)
+T["dias21"] = T["mapa"] + 2.0          # "21 dias depois…" no mapa
+T["historia"] = T["cuba"]
+SFX = AQUI.parent / "sfx"              # amostras do Soundza (licença Soundza Standard, uso livre em vídeos)
+
+
+def amostra(nome, dur=None, fade=0.3):
+    """Carrega audio/sfx/soundza-<nome>.wav em mono, cortado em `dur` s com fade de saída."""
+    a = som.ler_audio(str(SFX / f"soundza-{nome}.wav"))
+    a = (a.mean(axis=0) if a.ndim > 1 and a.shape[0] <= 2 else a).astype(np.float32)
+    if dur:
+        a = a[:int(dur * SR)].copy()
+        f = int(fade * SR); a[-f:] *= np.linspace(1, 0, f)
+    return a / (np.abs(a).max() + 1e-9)
+
+
 N = int(T["dur"] * SR)
 mus, sfx = np.zeros(N, np.float32), np.zeros(N, np.float32)
 
@@ -45,17 +61,32 @@ soma(sfx, som.maquina(12, 0.05), 0.1, 0.8)
 soma(sfx, som.urna_eletronica(), 1.3, 1.0)
 for t0 in [T["turno1"] + 0.3, T["turno2"] + 0.2]:
     soma(sfx, som.contador(1.6, 18), t0, 0.8)
-soma(sfx, som.contador(1.2, 21), T["dias21"], 0.9)
+soma(sfx, som.contador(1.2, 21), T["dias21"], 0.6)
+for k in range(27):                                                  # estados entrando no mapa
+    soma(sfx, som.tique(), T["mapa"] + 0.1 + k * 0.04, 0.35)
+soma(sfx, amostra("reverse-boom-whoosh"), T["mapaVira"] - 2.3, 0.6)
+soma(sfx, amostra("deep-boom-hit"), T["mapaVira"], 0.9)
+soma(sfx, som.carimbo_sfx(), T["mapaVira"] + 0.3, 0.8)
+
+# soberania: o cartaz pega fogo
+soma(sfx, amostra("burning-paper-crackle", 4.0, 0.8), T["fogo"], 1.0)
+soma(sfx, amostra("reverse-boom-whoosh"), T["soberano"] - 2.3, 0.5)
+soma(sfx, amostra("metal-boom-hit"), T["soberano"], 0.9)
+# bandeiras: tecido batendo a cada país + multidão de verdade nas ruas
+for k in ["franca", "espanha", "cuba", "china", "organizado"]:
+    soma(sfx, amostra("fast-cloth-flap"), T[k] + 0.05, 0.8)
+soma(sfx, amostra("crowd-cheering-and-whistling", 2.2, 0.6), T["franca"], 0.45)
+soma(sfx, amostra("crowd-cheering-and-whistling", 6.0, 1.5), T["acabou"], 0.6)
 for t0 in [T["turno2"] + 2.6, T["golpe"], T["naoGolpe"], T["acabou"], T["mobilizacao"], T["logo"], T["total"],
-           T["cuba"], T["china"]]:
+           T["soberano"], T["cuba"], T["china"]]:
     soma(sfx, som.carimbo_sfx(), t0, 0.9)
 for t0 in [T["golpe"], T["naoGolpe"], T["acabou"], T["logo"]]:
-    soma(sfx, som.boom(), t0, 0.8)
+    soma(sfx, amostra("deep-boom-hit"), t0, 0.8)
 for t0 in [T["golpe"], T["acabou"]]:
     soma(sfx, som.riser(1.3), t0 - 1.3, 0.7)
-soma(sfx, som.estatica(0.6) * 6, T["golpe"], 0.8)                       # "glitch" do GOLPE?
-for t0 in [T["turno1"], T["dias21"], T["turno2"], T["contas"], T["checklist"], T["povo"], T["mundo"], T["rua"]]:
-    soma(sfx, som.whoosh(), t0 - 0.35, 0.8)
+soma(sfx, amostra("digital-glitch-transition"), T["golpe"], 0.9)                       # "glitch" do GOLPE?
+for t0 in [T["turno1"], T["mapa"], T["turno2"], T["contas"], T["checklist"], T["soberania"], T["povo"], T["mundo"], T["rua"]]:
+    soma(sfx, amostra("fast-whoosh-chop"), t0 - 0.35, 0.75)
 for t0 in [T["outros"], T["voltaram"], T["brancos"]]:
     soma(sfx, som.whoosh(0.3), t0, 0.7)
     soma(sfx, som.tique(), t0 + 0.4, 1.0)
@@ -67,9 +98,7 @@ soma(sfx, som.contador(1.4, 16), T["abst"], 0.8)
 for k in range(3):
     soma(sfx, som.tique(), T["nordeste"] + k * 0.3, 1.0)
 soma(sfx, som.multidao(3.0, 1.0), T["rua"], 1.0)
-soma(sfx, som.multidao(6.0, 1.3), T["acabou"], 1.0)
-for t0 in [T["franca"], T["espanha"]]:
-    soma(sfx, som.tique(), t0, 1.0)
+soma(sfx, som.multidao(6.0, 1.3), T["acabou"], 0.6)
 soma(sfx, som.sino_grave(), T["logo"] - 0.1, 0.9)
 
 mix = mus * 0.5 + sfx * 0.55
