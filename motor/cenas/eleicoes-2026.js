@@ -6,7 +6,7 @@
 //   título do bloco ......... y = 330, centralizado, Archivo 700 até 48px (titulo())
 //   conteúdo ................ entre y = 420 e y = 1360, centralizado em x = 540, largura máx. 840 (x 120–960)
 //   crédito/fonte ........... y = 384, logo abaixo do título, máquina de escrever até 24px (cred())
-//   legenda da narração ..... tarja escura centrada em y = 1460 (sempre, em todos os blocos)
+//   legenda da narração ..... faixa semitransparente de lado a lado em y 1395–1505 (sempre, até o logo)
 //   nada importante fora de x 120–960 e y 250–1500 (margem segura do Reels)
 const T = Object.assign({
   inicio: 0, turno1: 2.2, mapa: 6.2, mapaVira: 9.4, turno2: 12.0, golpe: 16.0, contas: 18.0,
@@ -60,26 +60,16 @@ window.CENA = {
     [[T.turno1, AMA, -24], [T.mapa, BEGE, 24], [T.turno2, BEGE, -24], [T.golpe, VERM, 24], [T.contas, BEGE, -24],
       [T.checklist, BEGE, 24], [T.soberania, TINTA, -24], [T.povo, VERM, 24], [T.mundo, AMA, -24], [T.cubaLideres, VERM, 24], [T.china, AMA, -24], [T.chinaLider, VERM, 24], [T.organizado, AMA, -24], [T.acabou, VERM, 24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
+    legenda();
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.35));
     L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.35);
-    legenda();
 
-    // legenda da narração: tarja de tinta fixa (lê em fundo claro e escuro), palavras surgindo no tempo da fala
+    // legenda da narração (estilo dos vídeos anteriores): faixa semitransparente de lado a lado, texto bege palavra a palavra
     function legenda() {
-      const LEG = (window.TEMPOS || {}).legendas;
-      const l = LEG && LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
-      if (!l) return;
-      const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
-        L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');
-        return pal.reduce((s, [p]) => s + ctx.measureText(p).width, 0) + tam * 0.28 * (pal.length - 1);
-      };
-      const tam = Math.min(58, 58 * 780 / largura(58)), w = largura(tam);   // a tarja nunca passa de x 120–960
-      ctx.save(); ctx.globalAlpha = L.clamp((l.t1 - t) / 0.15) * L.clamp((t - l.t0 + 0.05) / 0.12);
-      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 30, 1412, w + 60, 92);
-      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 30, 1412, 8, 92);
-      L.palavras(ctx, pal, t, CX, 1475, { tam, cor: BEGE, espaco: 0.28, rgb: 0 });
-      ctx.restore();
+      if (t >= T.logo || !(window.TEMPOS || {}).legendas) return;
+      ctx.save(); ctx.fillStyle = 'rgba(15,12,11,0.55)'; ctx.fillRect(0, 1395, 1080, 110); ctx.restore();
+      L.legenda(ctx, window.TEMPOS.legendas, t, 1473, { cor: BEGE, cx: CX, tam: 60, rgb: 0 });
     }
 
     // ------------------------------------------------ componentes padronizados

@@ -178,6 +178,6 @@ o título em bege e a palavra de ordem em amarelo.
 - Toda narração vira legenda: linhas de até ~28 caracteres, palavra surgindo no tempo da fala (Instrument Serif itálica).
 - Quebra em pontuação ou pausa; nunca deixar uma palavra sozinha na linha seguinte.
 - Posição fixa: centro em y ≈ 1460, largura máxima x 120–960 (margem segura). Créditos e fontes vão para baixo do título (y ≈ 384).
-- Fundo claro: texto tinta direto no papel. Fundo escuro ou misto: tarja de tinta 86% com filete vermelho à esquerda e texto bege.
+- Estilo fixo (o dos vídeos anteriores): faixa preta semitransparente rgba(15,12,11,0.55), de lado a lado, ~110 px de altura, texto bege por cima; o grão do papel passa por cima da faixa. Nada de tarja sólida ou caixa ajustada ao texto.
 - Corrigir na legenda o que a transcrição erra (números, nomes próprios, pontuação) pela lista CORRECOES do `montar.py`.
 
