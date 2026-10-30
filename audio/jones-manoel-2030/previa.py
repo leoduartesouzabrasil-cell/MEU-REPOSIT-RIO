@@ -14,8 +14,8 @@ from som import SR, soma  # noqa: E402
 from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
 T = dict(lula=0.3, jones=2.3, concilia=4.6, comunista=10.2, virada=15.6, vencemos=16.2, naoBasta=19.6, novaVia=21.6,
-         diferencas=25.6, d1=26.0, d2=29.6, d3=34.6, d4=39.6, votos=43.0, eterno=46.6, jones2030=48.8, organize=51.2,
-         logo=54.6, dur=58.0)
+         diferencas=25.6, d1=26.0, d2=29.6, d3=34.6, d4=39.6, d5=43.0, mais=46.6, votos=52.4, eterno=56.0,
+         jones2030=58.2, organize=60.6, logo=64.0, dur=67.4)
 
 
 def trilha(T, N):
@@ -66,7 +66,10 @@ def trilha(T, N):
         soma(sfx, amostra("deep-boom-hit"), t0, 0.7)
     for t0 in [T["concilia"], T["virada"], T["diferencas"], T["votos"]]:
         soma(sfx, amostra("fast-whoosh-chop"), t0 - 0.35, 0.75)
-    for k in ["d1", "d2", "d3", "d4"]:
+    for k in range(6):                                               # etiquetas do "o que mais Jones defende"
+        soma(sfx, som.carimbo_sfx(), T["mais"] + 0.45 + k * 0.75, 0.5)
+    soma(sfx, amostra("fast-whoosh-chop"), T["mais"] - 0.35, 0.75)
+    for k in ["d1", "d2", "d3", "d4", "d5"]:
         soma(sfx, som.whoosh(0.3), T[k], 0.6)
         soma(sfx, som.tique(), T[k] + 0.5, 0.9)
         soma(sfx, som.negacao(), T[k] + 0.9, 0.5)                    # ✗ do governo

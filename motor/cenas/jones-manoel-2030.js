@@ -7,8 +7,8 @@
 //   crédito de foto logo abaixo da foto · legenda: tarja escura y 1466–1542
 const T = Object.assign({
   lula: 0.3, jones: 2.3, concilia: 4.6, comunista: 10.2, virada: 15.6, vencemos: 16.2, naoBasta: 19.6, novaVia: 21.6,
-  diferencas: 25.6, d1: 26.0, d2: 29.6, d3: 34.6, d4: 39.6, votos: 43.0, eterno: 46.6, jones2030: 48.8, organize: 51.2,
-  logo: 54.6, dur: 58.0,
+  diferencas: 25.6, d1: 26.0, d2: 29.6, d3: 34.6, d4: 39.6, d5: 43.0, mais: 46.6, votos: 52.4, eterno: 56.0,
+  jones2030: 58.2, organize: 60.6, logo: 64.0, dur: 67.4,
 }, (window.TEMPOS || {}).marcas || {});
 
 // ponto do rosto em cada foto (fração da largura/altura) e zoom, para os retratos redondos
@@ -21,6 +21,7 @@ window.CENA = {
     lula: '../midia/jones-manoel-2030/lula-discurso-2026.jpg',
     jones: '../midia/jones-manoel-2030/jones-une-2023.jpg',
     jonesRetrato: '../midia/jones-manoel-2030/jones-pcb-2022.jpg',
+    jonesRecorte: '../midia/jones-manoel-2030/jones-recorte.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -30,13 +31,13 @@ window.CENA = {
     let arquivo = true;
 
     const ordem = [[0, apresentacao], [T.concilia, definicoes], [T.virada, virada], [T.diferencas, diferencas],
-      [T.votos, chamado], [T.logo, final]];
+      [T.mais, maisPropostas], [T.votos, chamado], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
     const IMP = [T.vencemos, T.naoBasta, T.novaVia, T.jones2030, T.organize, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 14);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.concilia, BEGE, -24], [T.virada, VERM, 24], [T.diferencas, BEGE, -24], [T.votos, TINTA, 24], [T.logo, BEGE, -24]]
+    [[T.concilia, BEGE, -24], [T.virada, VERM, 24], [T.diferencas, BEGE, -24], [T.mais, VERM, 24], [T.votos, TINTA, -24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.35));
@@ -96,6 +97,56 @@ window.CENA = {
       }, ok ? 61 : 63);
     }
 
+    // urna eletrônica desenhada: tela com cargo, número e nome; teclado numérico com CONFIRMA (p: entrada, d: digitação)
+    function urna(cx, cy, p, d) {
+      if (p <= 0) return;
+      ctx.save(); ctx.globalAlpha = p; ctx.translate(cx, cy + (1 - p) * 80);
+      ctx.fillStyle = 'rgba(15,12,11,0.35)'; ctx.fillRect(-370, -195, 760, 410);              // sombra chapada
+      ctx.fillStyle = TINTA; ctx.fillRect(-380, -205, 760, 410);
+      ctx.fillStyle = BEGE; ctx.fillRect(-350, -175, 400, 290);                                  // tela
+      L.texto(ctx, 'PRESIDENTE', -150, -130, { familia: FONTE.grotesca, peso: 700, tam: 30, cor: TINTA, alinhar: 'center' });
+      const dig = '13'.slice(0, Math.floor(d * 2.99));
+      ['', ''].forEach((_, k) => {                                                               // duas caixas de dígito
+        ctx.strokeStyle = TINTA; ctx.lineWidth = 4; ctx.strokeRect(-255 + k * 105, -105, 90, 120);
+        if (dig[k]) L.texto(ctx, dig[k], -210 + k * 105, -8, { tam: 110, cor: VERM, alinhar: 'center' });
+      });
+      if (d >= 1) L.texto(ctx, 'LULA', -150, 85, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: TINTA, alinhar: 'center' });
+      ctx.fillStyle = VERM; ctx.fillRect(-350, 135, 400, 45);                                    // faixa "VOTO"
+      L.texto(ctx, 'VOTO', -150, 170, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: BEGE, alinhar: 'center' });
+      for (let k = 0; k < 10; k++) {                                                             // teclado 1–9, 0
+        const col = k < 9 ? k % 3 : 1, lin = k < 9 ? Math.floor(k / 3) : 3, x = 100 + col * 82, y = -175 + lin * 66;
+        const aceso = (k === 0 && d > 0.2 && d < 0.45) || (k === 2 && d > 0.55 && d < 0.8);   // teclas 1 e 3 piscam
+        ctx.fillStyle = aceso ? AMA : '#3A322C'; ctx.fillRect(x, y, 70, 56);
+        L.texto(ctx, String(k < 9 ? k + 1 : 0), x + 35, y + 40, { familia: FONTE.grotesca, peso: 700, tam: 30, cor: aceso ? TINTA : BEGE, alinhar: 'center' });
+      }
+      ctx.fillStyle = d >= 1 ? AMA : '#6B6A2E'; ctx.fillRect(100, 105, 234, 75);               // CONFIRMA
+      L.texto(ctx, 'CONFIRMA', 217, 154, { familia: FONTE.grotesca, peso: 700, tam: 30, cor: TINTA, alinhar: 'center' });
+      ctx.restore();
+    }
+    // Jones recortado: P&B de alto contraste, com silhueta vermelha deslocada (feito uma vez)
+    function jonesCartaz(cx, base, alt, p) {
+      if (p <= 0) return;
+      const img = L.img.jonesRecorte;
+      if (!_cache.jones) {
+        const w = img.width, h = img.height, mk = () => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+        const foto = mk(), g = foto.getContext('2d');
+        g.filter = 'grayscale(1) contrast(1.6) brightness(1.08)'; g.drawImage(img, 0, 0); g.filter = 'none';
+        const fade = g.createLinearGradient(0, h * 0.8, 0, h);                                   // base esmaecida
+        fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+        g.globalCompositeOperation = 'destination-in'; g.fillStyle = fade; g.fillRect(0, 0, w, h);
+        const silh = mk(), gs = silh.getContext('2d');
+        gs.drawImage(foto, 0, 0); gs.globalCompositeOperation = 'source-in'; gs.fillStyle = VERM; gs.fillRect(0, 0, w, h);
+        _cache.jones = { foto, silh };
+      }
+      const { foto, silh } = _cache.jones, e = ease.saida(p), bx0 = 150, bx1 = 669, by0 = 20;   // caixa da figura na foto
+      const esc = alt / (img.height - by0), w = img.width * esc, h = img.height * esc;
+      const x = cx - ((bx0 + bx1) / 2) * esc, y = base - h + (1 - e) * 200;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p * 2.5);
+      ctx.drawImage(silh, x - 24, y - 14, w, h);                                // contraste vermelho deslocado
+      ctx.drawImage(foto, x, y, w, h);
+      ctx.restore();
+    }
+
     // ------------------------------------------------ A. "Esse é o Lula. Esse é o Jones Manoel."
     function apresentacao(lt, t) {
       L.fundo(ctx, BEGE);
@@ -150,8 +201,7 @@ window.CENA = {
         L.fundo(ctx, VERM);
         L.raios(ctx, CX, 960, 1800, 22, L.emDois(t) * 0.05, 'rgba(28,23,20,0.16)');
         titulo('ELEIÇÕES 2026', seg(lt, 0, 0.5), BEGE);
-        L.urna(ctx, CX, 760, 1.15, TINTA, BEGE);
-        L.texto(ctx, '13', CX - 98, 742, { tam: 110, cor: VERM, alinhar: 'center' });
+        urna(CX, 760, ease.saida(seg(t, T.virada, T.virada + 0.5)), seg(t, T.virada + 0.5, T.vencemos));
         L.aplicarCarimbo(ctx, seg(t, T.vencemos, T.vencemos + 0.3), CX, 1100, () =>
           L.texto(ctx, 'VENCEMOS.', CX, 1160, { tam: L.ajustar(ctx, 'VENCEMOS.', FONTE.manchete, 700), cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 8 }), 81);
       } else if (t < T.novaVia) {
@@ -165,14 +215,15 @@ window.CENA = {
         // sol nascente amarelo: uma nova via
         L.fundo(ctx, AMA);
         const e = ease.saida(seg(t, T.novaVia, T.novaVia + 1.2));
-        L.raios(ctx, CX, 1500, 2200, 24, t * 0.03, 'rgba(200,32,30,0.20)');
-        ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(CX, lerp(1900, 1450, e), 420, 0, 7); ctx.fill();
-        L.aplicarCarimbo(ctx, seg(t, T.novaVia + 0.2, T.novaVia + 0.5), CX, 700, () => {
-          L.texto(ctx, 'UMA', CX, 560, { familia: FONTE.bloco, peso: 400, tam: 90, cor: TINTA, alinhar: 'center' });
-          L.texto(ctx, 'NOVA VIA', CX, 790, { tam: Math.min(220, L.ajustar(ctx, 'NOVA VIA', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 8 });
+        L.raios(ctx, CX, 1250, 2200, 24, t * 0.03, 'rgba(200,32,30,0.20)');
+        ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(CX, lerp(1800, 1130, e), 440, 0, 7); ctx.fill();
+        L.aplicarCarimbo(ctx, seg(t, T.novaVia + 0.2, T.novaVia + 0.5), CX, 460, () => {
+          L.texto(ctx, 'UMA', CX, 370, { familia: FONTE.bloco, peso: 400, tam: 70, cor: TINTA, alinhar: 'center' });
+          L.texto(ctx, 'NOVA VIA', CX, 520, { tam: Math.min(170, L.ajustar(ctx, 'NOVA VIA', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 8 });
         }, 85);
-        linha('O PODER NAS MÃOS', 920, seg(t, T.novaVia + 1.2, T.novaVia + 1.9), TINTA, 52);
-        linha('DE QUEM TRABALHA', 985, seg(t, T.novaVia + 1.7, T.novaVia + 2.4), TINTA, 52);
+        linha('O PODER NAS MÃOS DE QUEM TRABALHA', 590, seg(t, T.novaVia + 1.2, T.novaVia + 2.2), TINTA, 44);
+        jonesCartaz(CX + 20, 1405, 800, seg(t, T.novaVia + 0.4, T.novaVia + 1.3));
+        cred('Foto: Agência Brasil', seg(t, T.novaVia + 1.0, T.novaVia + 1.8), TINTA, 1452);
       }
     }
 
@@ -193,7 +244,8 @@ window.CENA = {
         [T.d1, 'JORNADA', ['40 HORAS'], ['30 HORAS'], 'projeto do governo (abr/2026) · Jones, Diario de PE (05/10/2026)'],
         [T.d2, 'JUROS', ['SELIC 14,25%', '+ ARCABOUÇO'], ['JUROS BAIXOS', '+ INVESTIMENTO'], 'Copom (jun/2026) · Jones, Diario de PE e X'],
         [T.d3, 'PRIVATIZAÇÕES', ['NENHUMA', 'REVERTIDA'], ['REVERTER', 'PETRÓLEO', 'PÚBLICO'], 'Jones, O Povo (07/03/2026)'],
-        [T.d4, 'REFORMA TRABALHISTA', ['MANTEVE'], ['REVOGAR'], 'Jones, Diario de PE (05/10/2026)'],
+        [T.d4, 'REFORMA TRABALHISTA', ['MANTEVE'], ['REVOGAR', '+ FIM DA', 'PEJOTIZAÇÃO'], 'Jones, Diario de PE (05/10/2026)'],
+        [T.d5, 'BETS', ['LIBEROU E', 'REGULAMENTOU'], ['CONTRA AS', 'APOSTAS'], 'Lei 14.790/2023 · Jones, Diario de PE (05/10/2026)'],
       ];
       const i = temas.filter(([X]) => t >= X).length - 1;
       if (i < 0) return;
@@ -221,8 +273,22 @@ window.CENA = {
       marca(xR, 1080, true, seg(li, 2.0, 2.3));
       // placar: 4 bolinhas mostrando em qual diferença estamos
       temas.forEach((_, k) => {
-        ctx.fillStyle = k <= i ? VERM : 'rgba(28,23,20,0.2)'; ctx.beginPath(); ctx.arc(CX - 75 + k * 50, 1230, 12, 0, 7); ctx.fill();
+        ctx.fillStyle = k <= i ? VERM : 'rgba(28,23,20,0.2)'; ctx.beginPath(); ctx.arc(CX - 100 + k * 50, 1230, 12, 0, 7); ctx.fill();
       });
+    }
+
+    // ------------------------------------------------ D2. e mais propostas (lista em etiquetas, uma a uma)
+    function maisPropostas(lt, t) {
+      L.fundo(ctx, VERM); arquivo = false;
+      L.raios(ctx, CX, 1700, 2300, 24, L.emDois(t) * 0.05, 'rgba(28,23,20,0.16)');
+      titulo('O QUE MAIS JONES DEFENDE', seg(lt, 0, 0.6), BEGE);
+      cred('fontes: O Povo (07/03/2026) · Diario de PE (05/10/2026) · propostas de campanha (set/2026)', seg(lt, 0.4, 1.2), BEGE);
+      const itens = [['REFORMA AGRÁRIA DE VERDADE', AMA, TINTA], ['TRANSPORTE PÚBLICO ESTATAL', TINTA, AMA], ['SANEAMENTO PÚBLICO', AMA, TINTA],
+        ['TERRAS INDÍGENAS E QUILOMBOLAS', TINTA, AMA], ['FIM DA DÍVIDA ABUSIVA DOS ESTADOS', AMA, TINTA], ['VOZ PARA SINDICATOS E MOVIMENTOS', TINTA, AMA]];
+      L.fonte(ctx, FONTE.grotesca, 40, 700);                                       // um tamanho só para todas as etiquetas
+      const tam = Math.min(40, ...itens.map(([s]) => 40 * 780 / (ctx.measureText(s).width + 44)));
+      itens.forEach(([s, cor, corTexto], k) =>
+        L.etiqueta(ctx, s, CX, 520 + k * 140, seg(lt, 0.4 + k * 0.75, 0.7 + k * 0.75), { cor, corTexto, tam }));
     }
 
     // ------------------------------------------------ E. o chamado
@@ -251,7 +317,7 @@ window.CENA = {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 800, () => L.imagem(ctx, L.img.logo, CX, 800, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Fontes: Diario de Pernambuco · O Povo · IHU/Sul21 · Bahia Notícias · Banco Central · Congresso em Foco', 1160],
+      [['Fontes: Diario de Pernambuco · O Povo · IHU/Sul21 · Bahia Notícias · Aratu On · Banco Central · Congresso em Foco', 1160],
         ['Fotos: Paulo Pinto e Agência Brasil (CC BY 3.0 BR) · PCB (reprodução permitida com crédito)', 1210]].forEach(([s, y]) =>
         L.texto(ctx, s, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
