@@ -22,7 +22,7 @@ const CONTRA = [
   ['GUSTAVO GAYER', 'PL-GO', 'gayer', [0.52,  0.36,  0.6]],
   ['MARCEL VAN HATTEM', 'NOVO-RS', 'hattem', [0.5,  0.4,  0.64]],
   ['RICARDO SALLES', 'NOVO-SP', 'salles', [0.52,  0.45,  0.6]],
-  ['KIM KATAGUIRI', 'UNIÃO-SP', 'kim', [0.55,  0.45,  0.52]],
+  ['KIM KATAGUIRI', 'MISSÃO-SP (ex-UNIÃO)', 'kim', [0.55,  0.45,  0.52]],
   ['CARLOS JORDY', 'PL-RJ', 'jordy', [0.5,  0.44,  0.72]],
   ['GENERAL PAZUELLO', 'PL-RJ', 'pazuello', [0.5,  0.45,  0.65]],
   ['MARIO FRIAS', 'PL-SP', 'frias', [0.48,  0.28,  0.33]],
