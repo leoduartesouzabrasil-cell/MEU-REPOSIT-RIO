@@ -17,7 +17,8 @@ from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
 T = dict(titulo=0.3, origem=3.6, meme=7.4, hoje=9.4, migalhas=12.0, regua=15.0, p1=15.8, p2=17.1, p3=18.6, p4=19.9,
          p5=21.2, p6=22.5, p7=23.8, p8=25.4, p9=26.9, p10=28.6, p11=30.3, p12=31.9, p13=33.2, p14=34.5, p15=35.9,
-         visao=37.6, circo=40.0, plateia=43.0, palhaco=45.0, acabar=48.0, radical=50.4, comente=52.8, logo=55.6, dur=59.0)
+         visao=37.6, circo=40.0, plateia=43.0, palhaco=45.0, acabar=48.0, voce=49.8, sobe=52.2, sim=52.9,
+         radical=55.2, comente=57.6, logo=60.4, dur=63.8)
 
 
 def trilha(T, N):
@@ -33,6 +34,9 @@ def trilha(T, N):
     soma(mus, som.rock(T["circo"] - T["p11"] - 0.3, riff=((E, 6), (F, 2)), intensidade=0.85), T["p11"])
     # circo: meio-tempo com trítono (E–B♭), torto, acelerando a tensão
     soma(mus, som.rock(T["acabar"] - T["circo"], bpm=112, riff=((E, 4), (Bb, 4)), intensidade=0.7, meio_tempo=True), T["circo"])
+    # de volta à régua ("e eu?"): groove rápido enquanto a régua passa; para seco quando a foto sobe
+    soma(mus, som.rock(T["sobe"] - T["voce"], bpm=140, riff=((A, 4), (G, 4), (E, 8)), intensidade=0.8), T["voce"])
+    soma(mus, som.prato(1.0), T["sobe"] + 0.4, 0.9)
     # "chega de ciranda": corte seco; "radicalize-se": guitarra aberta, sem abafar, a toda
     soma(mus, som.rock(T["logo"] - T["radical"] + 1.0, bpm=132, riff=((E, 4), (G, 2), (A, 2), (D, 2), (E, 6)),
                        intensidade=1.0, abafado=False), T["radical"])
@@ -61,6 +65,12 @@ def trilha(T, N):
     soma(sfx, amostra("digital-glitch-transition"), T["acabar"] - 0.05, 0.8)
     soma(sfx, amostra("deep-boom-hit"), T["acabar"], 0.8)
     soma(sfx, som.carimbo_sfx(), T["acabar"], 0.9)
+    soma(sfx, amostra("fast-whoosh-chop"), T["voce"] - 0.35, 0.75)
+    for k in range(14):                               # a régua passando rápido pelas fotos
+        soma(sfx, som.tique(), T["voce"] + 0.25 + k * 0.15, 0.5)
+    soma(sfx, som.riser(1.0), T["sobe"] - 0.6, 0.6)
+    soma(sfx, amostra("deep-boom-hit"), T["sobe"] + 0.45, 0.8)
+    soma(sfx, som.carimbo_sfx(), T["sim"], 0.9)
     soma(sfx, amostra("fast-cloth-flap"), T["radical"] + 0.05, 0.7)
     soma(sfx, som.carimbo_sfx(), T["radical"], 0.9)
     soma(sfx, amostra("metal-boom-hit"), T["radical"], 0.6)

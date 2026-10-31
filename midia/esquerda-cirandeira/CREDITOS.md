@@ -17,3 +17,4 @@
 | flavio-2026.jpg | Joédson Alves/Agência Brasil | CC BY 3.0 BR | (cópia de midia/eleicoes-2026) | 2026-10-29 | Flávio Bolsonaro com jornalistas, 2026 |
 | janones-2026.jpg | Bruno Spada/Câmara dos Deputados | Câmara dos Deputados (CC BY 3.0, via Agência Brasil) | https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/janones-denuncia-censura-em-decisao-do-tse-contra-exercito-do-lula | 2026-10-31 | Justiça Eleitoral mandou suspender canal de WhatsApp com 3,3 milhões de pessoas. |
 | jones-2026-tse.jpg | TSE (Portal de Dados Abertos) | CC BY 4.0 (Wikimedia Commons) | https://commons.wikimedia.org/wiki/File:Jones_Manoel_em_2026.jpg | 2026-10-31 | Retrato oficial de candidato, 2026 (161×225) |
+| eu.jpg | autor da página (foto enviada por ele) | uso próprio | upload do autor | 2026-10-31 | Escadaria Selarón, Rio de Janeiro |

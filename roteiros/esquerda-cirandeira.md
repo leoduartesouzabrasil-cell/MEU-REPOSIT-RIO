@@ -9,7 +9,10 @@ Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O
 2. **A régua:** uma barra do espectro que passa da esquerda radicalizada à extrema-direita, com a foto de cada
    pessoa em cima (nome + etiqueta curta). No fim, a câmera recua e mostra a régua inteira.
 3. **O circo:** lona listrada, holofotes, picadeiro. "A política virou um grande circo." Plateia: "Somos a plateia…
-   ou os palhaços?" (narizes vermelhos aparecem). "CHEGA DE CIRANDA." → bandeira vermelha: "RADICALIZE-SE."
+   ou os palhaços?" (narizes vermelhos aparecem). "CHEGA DE CIRANDA."
+4. **E eu?:** a régua volta e passa rápido por todas as fotos até a ponta da esquerda radicalizada; entre Jones e
+   Jabbour, a foto do autor da página sobe mais alto que todas, com o pop-up "SIM, ESSE SOU EU."
+5. **Radicalize-se:** bandeira vermelha com foice e martelo, "DE QUE LADO DA RÉGUA VOCÊ ESTÁ?", logo.
 
 ## A régua (definida por você) — fotos em midia/esquerda-cirandeira/ (painel: saida/cirandeira-fotos.jpg)
 | Faixa | Quem | Situação atual | Foto |
@@ -57,10 +60,11 @@ NA TELA: lona, holofotes, picadeiro · "SOMOS A PLATEIA…" · narizes vermelhos
 
 ### ÁUDIO #4 — O chamado (firme)
 > Pra acabar com o circo, tem que acabar com a esquerda cirandeira. [pausa]
+> E eu? Eu tô aqui: na ponta da esquerda. [pausa]
 > É hora de se radicalizar.
 > E você: de que lado da régua está? Comenta aí.
 
-NA TELA: "CHEGA DE CIRANDA." · bandeira vermelha com foice e martelo: "RADICALIZE-SE." · "DE QUE LADO DA RÉGUA VOCÊ ESTÁ?" · logo
+NA TELA: "CHEGA DE CIRANDA." · a régua volta e passa rápido até a esquerda radicalizada; entre Jones e Jabbour, a sua foto sobe mais alto, com o pop-up "SIM, ESSE SOU EU." · bandeira vermelha com foice e martelo: "RADICALIZE-SE." · "DE QUE LADO DA RÉGUA VOCÊ ESTÁ?" · logo
 
 ---
 

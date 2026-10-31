@@ -7,7 +7,8 @@ const T = Object.assign({
   titulo: 0.3, origem: 3.6, meme: 7.4, hoje: 9.4, migalhas: 12.0,
   regua: 15.0, p1: 15.8, p2: 17.1, p3: 18.6, p4: 19.9, p5: 21.2, p6: 22.5, p7: 23.8, p8: 25.4, p9: 26.9, p10: 28.6,
   p11: 30.3, p12: 31.9, p13: 33.2, p14: 34.5, p15: 35.9, visao: 37.6,
-  circo: 40.0, plateia: 43.0, palhaco: 45.0, acabar: 48.0, radical: 50.4, comente: 52.8, logo: 55.6, dur: 59.0,
+  circo: 40.0, plateia: 43.0, palhaco: 45.0, acabar: 48.0, voce: 49.8, sobe: 52.2, sim: 52.9,
+  radical: 55.2, comente: 57.6, logo: 60.4, dur: 63.8,
 }, (window.TEMPOS || {}).marcas || {});
 
 // faixas da régua (esquerda → direita)
@@ -40,6 +41,7 @@ window.CENA = {
     dilma: M + 'dilma-2026.jpg', lula: M + 'lula-2026.jpg', janones: M + 'janones-2026.jpg', alckmin: M + 'alckmin-2026.jpg',
     ciro: M + 'ciro-2026-tse.jpg', alcolumbre: M + 'alcolumbre-2026.jpg', renan: M + 'renan-2026.jpg', nikolas: M + 'nikolas-2026.jpg',
     pavanato: M + 'pavanato-2026-tse.jpg', flavio: M + 'flavio-2026.jpg', bolsonaro: M + 'bolsonaro-2025.jpg',
+    eu: M + 'eu.jpg',                                                     // foto do autor da página (enviada por ele)
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -48,13 +50,13 @@ window.CENA = {
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
     let arquivo = true;
 
-    const ordem = [[0, abertura], [T.regua, regua], [T.circo, circo], [T.logo, final]];
+    const ordem = [[0, abertura], [T.regua, regua], [T.circo, circo], [T.voce, voce], [T.radical, circo], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.origem, T.circo, T.palhaco, T.acabar, T.radical, T.logo];
+    const IMP = [T.origem, T.circo, T.palhaco, T.acabar, T.sobe + 0.5, T.radical, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.regua, BEGE, -24], [T.circo, VERM, 24], [T.radical, VERM, -24], [T.logo, BEGE, 24]]
+    [[T.regua, BEGE, -24], [T.circo, VERM, 24], [T.voce, BEGE, -24], [T.radical, VERM, 24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.3));
@@ -200,6 +202,50 @@ window.CENA = {
         L.etiqueta(ctx, nomeF, CX, 1350, 1, { cor: corF, corTexto: REGUA[atual][2] === 2 ? TINTA : BEGE, tam: 40 });
       }
       if (v > 0.5) linha('DA ESQUERDA RADICALIZADA À EXTREMA-DIREITA', 1150, seg(t, T.visao + 0.8, T.visao + 1.6), TINTA, 38);
+    }
+
+    // ------------------------------------------------ C2. de volta à régua: ela passa rápido até a ponta da esquerda e eu subo
+    function voce(lt, t) {
+      L.fundo(ctx, BEGE);
+      L.camera(ctx, { zoom: 1 + lt * 0.003 }, () => L.planta(ctx, 65, TINTA, 0.06));
+      titulo('E EU?', seg(lt, 0, 0.4), VERM);
+      const ESP = 350, wx = i => i * ESP, yR = 1160;
+      // a câmera vem da extrema-direita até a ponta da esquerda radicalizada, rápido, e para entre Jones e Jabbour
+      const pan = seg(t, T.voce + 0.2, T.sobe - 0.2), e = pan < 0.5 ? 4 * pan ** 3 : 1 - (-2 * pan + 2) ** 3 / 2;
+      const camX = lerp(wx(14), wx(0) + ESP / 2, e), X = w => CX + (w - camX);
+      REGUA.forEach(([, , faixa], i) => {
+        const x0 = X(wx(i) - ESP / 2); ctx.fillStyle = FAIXAS[faixa][1]; ctx.fillRect(x0, yR, ESP + 1, 34);
+      });
+      FAIXAS.forEach(([nome], f) => {
+        const i0 = REGUA.findIndex(r => r[2] === f), i1 = REGUA.length - 1 - [...REGUA].reverse().findIndex(r => r[2] === f);
+        L.texto(ctx, nome, X((wx(i0) + wx(i1)) / 2), yR + 74, { familia: FONTE.grotesca, peso: 700, tam: 34, cor: FAIXAS[f][1] === '#EBB52A' ? '#9A6F0E' : FAIXAS[f][1], alinhar: 'center' });
+      });
+      REGUA.forEach(([nome], i) => {                                             // todos já estão na régua; nomes embaixo, pequenos
+        const x = X(wx(i)), r = 118, y = yR - 300;
+        if (x < -150 || x > 1230) return;
+        ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x, y + r); ctx.lineTo(x, yR); ctx.stroke();
+        retrato(i, x, y, r, 9);
+        L.texto(ctx, nome, x, yR + 120, { familia: FONTE.grotesca, peso: 700, tam: tamMax(nome, FONTE.grotesca, 26, 700, 300), cor: TINTA, alinhar: 'center' });
+      });
+      // a minha foto sobe entre Jones e Jabbour, mais alto que todo mundo
+      const ps = ease.carimbo ? Math.min(1.08, ease.carimbo(seg(t, T.sobe, T.sobe + 0.6))) : ease.saida(seg(t, T.sobe, T.sobe + 0.6));
+      if (t >= T.sobe) {
+        const x = X(wx(0) + ESP / 2), r = 145, y = lerp(yR + 40, yR - 560, ps), img = L.img.eu;
+        ctx.strokeStyle = VERM; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(x, y + r); ctx.lineTo(x, yR); ctx.stroke();
+        const [fx, fy, lado] = [0.47, 0.42, 0.44];                               // enquadramento manual da foto do autor
+        const base = Math.max(2 * r / img.width, 2 * r / img.height), s0 = 2 * r / (lado * img.height);
+        ctx.save(); ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(x, y, r + 14, 0, 7); ctx.fill();
+        ctx.fillStyle = AMA; ctx.beginPath(); ctx.arc(x, y, r + 6, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.clip();
+        L.foto(ctx, img, x - r, y - r, 2 * r, 2 * r, { pb: true, zoom: s0 / base, dx: (0.5 - fx) * img.width * s0, dy: (0.5 - fy) * img.height * s0, retic: false });
+        ctx.restore();
+        if (t >= T.sim) {                                                        // pop-up com seta apontando para a foto
+          const pp = seg(t, T.sim, T.sim + 0.3), ya = y - r - 22;
+          ctx.save(); ctx.globalAlpha = Math.min(1, pp * 3); ctx.fillStyle = VERM;
+          ctx.beginPath(); ctx.moveTo(x, ya + 4); ctx.lineTo(x - 22, ya - 30); ctx.lineTo(x + 22, ya - 30); ctx.fill(); ctx.restore();
+          L.etiqueta(ctx, 'SIM, ESSE SOU EU.', x, ya - 62, pp, { cor: VERM, corTexto: BEGE, tam: 44 });
+        }
+      }
     }
 
     // ------------------------------------------------ C. o circo
