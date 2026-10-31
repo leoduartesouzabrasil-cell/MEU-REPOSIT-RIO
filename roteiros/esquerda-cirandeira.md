@@ -42,15 +42,17 @@ Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O
 
 NA TELA: ciranda de bonequinhos · "2016" · "VIROU MEME" · a roda ganha CENTRÃO e MERCADO · migalhas
 
-### ÁUDIO #2 — A régua (ritmo de apresentação, leve)
+### ÁUDIO #2 — A régua (ritmo de apresentação, leve) — sem falar os nomes; eles aparecem escritos na tela
 > Pra entender, olha a régua.
-> Na esquerda radicalizada: Jones Manoel e Elias Jabbour.
-> Na esquerda: Erika Hilton e Rick Azevedo, que derrubaram a escala seis por um… Dilma, Lula… e Janones, o general do Exército do Lula.
-> No centro: Alckmin, que era do PSDB; Ciro, que foi pro PSDB com apoio do PL; e Davi Alcolumbre, que dança com qualquer governo.
-> Na direita, Renan Santos.
-> E na extrema-direita: Nikolas, Pavanato, Flávio… e, no fim da fila, Bolsonaro.
+> De um lado, a esquerda radicalizada: quer mudar a estrutura, não só o governo.
+> Depois, a esquerda: a que governa e a que apoia o governo.
+> No meio, o centro: que dança com qualquer governo.
+> E aí vem a direita… e a extrema-direita. [pausa]
+> E a ciranda vai puxando todo mundo pra direita.
 
-NA TELA: a régua passa da esquerda pra direita, cada foto entra no nome falado, com etiqueta · visão geral no fim
+NA TELA: a régua passa da esquerda pra direita; quando cada faixa é falada, as fotos daquela faixa entram uma atrás da outra,
+com nome e etiqueta escritos (Jones e Jabbour · Erika, Rick, Dilma, Lula e Janones · Alckmin, Ciro e Alcolumbre · Renan ·
+Nikolas, Pavanato, Flávio e, no fim da fila, Bolsonaro) · visão geral da régua inteira no fim
 
 ### ÁUDIO #3 — O circo (irônico → firme)
 > No fim, a política virou um grande circo. [pausa]
