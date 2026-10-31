@@ -13,25 +13,25 @@ window.CENA = {
     L.fundo(ctx, COR.amarelo);
     L.raios(ctx, CX, 1150, 1800, 24, 0.04, 'rgba(176,118,40,0.22)');
     // a roda da ciranda: anel vermelho atrás dos três
-    ctx.strokeStyle = COR.vermelho; ctx.lineWidth = 46; ctx.beginPath(); ctx.arc(CX, 1180, 400, 0, 7); ctx.stroke();
+    ctx.strokeStyle = COR.vermelho; ctx.lineWidth = 46; ctx.beginPath(); ctx.arc(CX, 1110, 400, 0, 7); ctx.stroke();
 
     // figura recortada, subindo da borda de baixo, com sombra de tinta deslocada
-    function figura(img, [bx0, by0, bx1], cx, alt, sombra = 16) {
+    function figura(img, [bx0, by0, bx1], cx, alt, sombra = 16, base = H) {
       const esc = alt / (img.height - by0), w = img.width * esc, h = img.height * esc;
-      const x = cx - ((bx0 + bx1) / 2) * esc, y = H - h;
+      const x = cx - ((bx0 + bx1) / 2) * esc, y = base - h;
       const s = document.createElement('canvas'); s.width = img.width; s.height = img.height;
       const g = s.getContext('2d'); g.drawImage(img, 0, 0); g.globalCompositeOperation = 'source-in';
       g.fillStyle = COR.tinta; g.fillRect(0, 0, img.width, img.height);
       ctx.drawImage(s, x + sombra, y + sombra * 0.7, w, h);
       ctx.drawImage(img, x, y, w, h);
     }
-    figura(L.img.trio, [3, 29, 1536], CX, 980, 20);         // Lula à frente; Janones e Manuela atrás, nas laterais
+    figura(L.img.trio, [3, 29, 1536], CX, 1050, 20, H - 100);   // sobe 100 px: mãos e rostos cabem no recorte 3:4 do grid        // Lula à frente; Janones e Manuela atrás, nas laterais
 
     // logo + título
-    L.imagem(ctx, L.img.logo, CX, 205, 270);
+    L.imagem(ctx, L.img.logo, CX, 300, 250);
     const t1 = Math.min(150, L.ajustar(ctx, 'ESQUERDA CIRANDEIRA:', FONTE.manchete, LARG));
-    L.texto(ctx, 'ESQUERDA CIRANDEIRA:', CX, 410, { tam: t1, cor: COR.vermelho, alinhar: 'center', erro: COR.tinta, desloc: 6 });
-    ctx.save(); ctx.translate(CX, 500); ctx.rotate(-0.02);
+    L.texto(ctx, 'ESQUERDA CIRANDEIRA:', CX, 480, { tam: t1, cor: COR.vermelho, alinhar: 'center', erro: COR.tinta, desloc: 6 });
+    ctx.save(); ctx.translate(CX, 568); ctx.rotate(-0.02);
     ctx.fillStyle = COR.tinta; ctx.fillRect(-LARG / 2, -52, LARG, 104);
     const t2 = Math.min(76, L.ajustar(ctx, 'É HORA DE RADICALIZAR!', FONTE.bloco, LARG - 60, 400));
     L.texto(ctx, 'É HORA DE RADICALIZAR!', 0, t2 * 0.36, { familia: FONTE.bloco, peso: 400, tam: t2, cor: COR.amarelo, alinhar: 'center' });
