@@ -4,10 +4,12 @@ Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O
 **Status: rascunho para aprovação** (antes de buscar todas as fotos e montar o vídeo).
 
 ## A ideia visual
-Uma **ciranda** (roda de mãos dadas) de retratos redondos. A roda gira e vai "puxando" para a direita:
-cada pessoa entra de mãos dadas com a próxima, com etiqueta de nome. Embaixo, uma **régua** do espectro
-(vermelho à esquerda → azul à direita) mostra onde cada um fica. Trilha: "Ciranda, cirandinha"
-(cantiga de domínio público) tocada na flauta sintetizada, que vai desafinando quando a roda chega no centrão.
+1. **A ciranda (só na abertura, sem fotos):** roda de bonequinhos de mãos dadas explica o termo. Em "hoje",
+   metade da roda vira CENTRÃO e MERCADO, de mãos dadas com a ESQUERDA; caem migalhas no meio.
+2. **A régua:** uma barra do espectro que passa da esquerda radicalizada à extrema-direita, com a foto de cada
+   pessoa em cima (nome + etiqueta curta). No fim, a câmera recua e mostra a régua inteira.
+3. **O circo:** lona listrada, holofotes, picadeiro. "A política virou um grande circo." Plateia: "Somos a plateia…
+   ou os palhaços?" (narizes vermelhos aparecem). "CHEGA DE CIRANDA." → bandeira vermelha: "RADICALIZE-SE."
 
 ## A régua (definida por você) — fotos em midia/esquerda-cirandeira/ (painel: saida/cirandeira-fotos.jpg)
 | Faixa | Quem | Situação atual | Foto |
@@ -33,32 +35,32 @@ cada pessoa entra de mãos dadas com a próxima, com etiqueta de nome. Embaixo, 
 ### ÁUDIO #1 — O que é (curioso, leve)
 > Você já ouviu falar em "esquerda cirandeira"? [pausa]
 > Conta-se que o termo nasceu em 2016: num ato contra o impeachment da Dilma, militantes do PCO interromperam uma ciranda do PSOL. Virou meme.
-> Hoje, ele serve pra falar de uma esquerda que dança de mãos dadas com quem devia enfrentar.
+> Hoje, é a esquerda que dança de mãos dadas com o centrão e com o mercado… e dá migalhas pro povo não se revoltar.
 
-NA TELA: "ESQUERDA CIRANDEIRA?" · roda de ciranda desenhada · "2016" carimbado · etiqueta "VIROU MEME"
+NA TELA: ciranda de bonequinhos · "2016" · "VIROU MEME" · a roda ganha CENTRÃO e MERCADO · migalhas
 
-### ÁUDIO #2 — A roda (irônico, ritmo de cantiga)
-> Funciona assim. Na ponta da esquerda: Jones Manoel e Elias Jabbour, que querem trocar a música.
-> Depois, Erika Hilton e Rick Azevedo, que acabaram de derrubar a escala seis por um. A Dilma, e o Lula…
-> de mãos dadas com o Janones, general do Exército do Lula no zap… que segura a mão do Alckmin, que era do PSDB. [pausa]
-> No centro, o Ciro, que foi pro PSDB com apoio do PL, e o Davi Alcolumbre, que dança com qualquer governo.
-> A roda vai girando… passa pelo Renan Santos… Nikolas, Pavanato, Flávio… e, no fim da fila, o Bolsonaro.
+### ÁUDIO #2 — A régua (ritmo de apresentação, leve)
+> Pra entender, olha a régua.
+> Na esquerda radicalizada: Jones Manoel e Elias Jabbour.
+> Na esquerda: Erika Hilton e Rick Azevedo, que derrubaram a escala seis por um… Dilma, Lula… e Janones, o general do Exército do Lula.
+> No centro: Alckmin, que era do PSDB; Ciro, que foi pro PSDB com apoio do PL; e Davi Alcolumbre, que dança com qualquer governo.
+> Na direita, Renan Santos.
+> E na extrema-direita: Nikolas, Pavanato, Flávio… e, no fim da fila, Bolsonaro.
 
-NA TELA: retratos entrando um a um na roda, de mãos dadas, com nome e etiqueta curta
-("QUER TROCAR A MÚSICA", "DERRUBOU A 6x1", "EXÉRCITO DO LULA", "EX-PSDB", "PSDB + PL", "DANÇA COM TODO GOVERNO") ·
-a régua embaixo desliza: ESQUERDA RADICALIZADA → ESQUERDA → CENTRO → DIREITA → EXTREMA-DIREITA
+NA TELA: a régua passa da esquerda pra direita, cada foto entra no nome falado, com etiqueta · visão geral no fim
 
-### ÁUDIO #3 — Por que isso importa (firme)
-> Essa é a ciranda do mercado: o governo entrega ministérios e emendas pro centrão, aceita arcabouço e juros altos…
-> e devolve migalhas pro povo não se revoltar.
+### ÁUDIO #3 — O circo (irônico → firme)
+> No fim, a política virou um grande circo. [pausa]
+> E a gente já não sabe se é a plateia… ou se é o palhaço.
 
-NA TELA: centrão puxando a roda · "11 MINISTÉRIOS" · "JUROS 14,25%" · migalhas caindo num prato
+NA TELA: lona, holofotes, picadeiro · "SOMOS A PLATEIA…" · narizes vermelhos · "…OU OS PALHAÇOS?"
 
-### ÁUDIO #4 — O fecho (leve, com chamada)
-> Ciranda é bonita na praia. Na política, quem roda pra direita sempre solta a mão do povo. [pausa]
-> E você: tá em qual ponta da roda? Comenta aí.
+### ÁUDIO #4 — O chamado (firme)
+> Pra acabar com o circo, tem que acabar com a esquerda cirandeira. [pausa]
+> É hora de se radicalizar.
+> E você: de que lado da régua está? Comenta aí.
 
-NA TELA: a roda para; a mão do "povo" fica solta · "EM QUAL PONTA VOCÊ ESTÁ?" · logo
+NA TELA: "CHEGA DE CIRANDA." · bandeira vermelha com foice e martelo: "RADICALIZE-SE." · "DE QUE LADO DA RÉGUA VOCÊ ESTÁ?" · logo
 
 ---
 
