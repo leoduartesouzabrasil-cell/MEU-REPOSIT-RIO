@@ -25,9 +25,9 @@ window.CENA = {
       ctx.drawImage(s, x + sombra, y + sombra * 0.7, w, h);
       ctx.drawImage(img, x, y, w, h);
     }
-    figura(L.img.janones, [175, 29, 1352], 190, 1150);       // atrás, à esquerda
-    figura(L.img.manuela, [253, 16, 1282], 900, 1180);      // atrás, à direita
-    figura(L.img.lula, [319, 41, 1220], CX, 1060, 20);      // à frente, no centro
+    figura(L.img.janones, [175, 29, 1352], 140, 880);       // atrás, à esquerda
+    figura(L.img.manuela, [253, 16, 1282], 950, 890);      // atrás, à direita
+    figura(L.img.lula, [319, 41, 1220], CX, 1130, 20);      // à frente, no centro
 
     // logo + título
     L.imagem(ctx, L.img.logo, CX, 205, 270);
