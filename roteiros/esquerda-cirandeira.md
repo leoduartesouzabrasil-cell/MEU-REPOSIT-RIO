@@ -18,6 +18,7 @@ cada pessoa entra de mãos dadas com a próxima, com etiqueta de nome. Embaixo, 
 | | Rick Azevedo | fundador do VAT; eleito dep. federal (PSOL-RJ) | Câmara/Commons, mai/2026 |
 | | Dilma Rousseff | presidenta do Banco do BRICS | Agência Brasil, jan/2026 |
 | | Lula | reeleito presidente | Agência Brasil, out/2026 |
+| | André Janones | deputado reeleito (Rede-MG), criador do canal "Exército do Lula" | Câmara dos Deputados, 2026 |
 | **Centro** | Geraldo Alckmin | vice reeleito (PSB), ex-PSDB | Agência Brasil, mar/2026 |
 | | Ciro Gomes | ex-PDT, foi ao PSDB com apoio do PL e perdeu o governo do CE (46%) | TSE 2026 (retrato oficial, pequeno) |
 | | Davi Alcolumbre | presidente do Senado (União) | Agência Brasil, jun/2026 |
@@ -39,12 +40,12 @@ NA TELA: "ESQUERDA CIRANDEIRA?" · roda de ciranda desenhada · "2016" carimbado
 ### ÁUDIO #2 — A roda (irônico, ritmo de cantiga)
 > Funciona assim. Na ponta da esquerda: Jones Manoel e Elias Jabbour, que querem trocar a música.
 > Depois, Erika Hilton e Rick Azevedo, que acabaram de derrubar a escala seis por um. A Dilma, e o Lula…
-> de mãos dadas com o Alckmin, que era do PSDB. [pausa]
+> de mãos dadas com o Janones, general do Exército do Lula no zap… que segura a mão do Alckmin, que era do PSDB. [pausa]
 > No centro, o Ciro, que foi pro PSDB com apoio do PL, e o Davi Alcolumbre, que dança com qualquer governo.
 > A roda vai girando… passa pelo Renan Santos… Nikolas, Pavanato, Flávio… e, no fim da fila, o Bolsonaro.
 
 NA TELA: retratos entrando um a um na roda, de mãos dadas, com nome e etiqueta curta
-("QUER TROCAR A MÚSICA", "DERRUBOU A 6x1", "EX-PSDB", "PSDB + PL", "DANÇA COM TODO GOVERNO") ·
+("QUER TROCAR A MÚSICA", "DERRUBOU A 6x1", "EXÉRCITO DO LULA", "EX-PSDB", "PSDB + PL", "DANÇA COM TODO GOVERNO") ·
 a régua embaixo desliza: ESQUERDA RADICALIZADA → ESQUERDA → CENTRO → DIREITA → EXTREMA-DIREITA
 
 ### ÁUDIO #3 — Por que isso importa (firme)
@@ -71,5 +72,6 @@ NA TELA: a roda para; a mão do "povo" fica solta · "EM QUAL PONTA VOCÊ ESTÁ?
 - Elias Jabbour: professor da UERJ, ex-presidente do Instituto Pereira Passos, autor de "China: o socialismo do século XXI".
 - Rick Azevedo: eleito dep. federal pelo PSOL-RJ (Gazeta SP) — **confirmar com 2ª fonte**.
 - PEC 221/2019 (fim da 6x1) promulgada em 16/10/2026 (Agência Brasil, fotos da promulgação). Ciro perdeu para Elmano (53,19% × 46,22%). Renan Santos 4º lugar. Nikolas 3.119.318 votos; Pavanato 3.038.438 (Agência Brasil / Agência Câmara).
+- Janones: saiu do Avante para a Rede, reeleito dep. federal por MG com ~78,8 mil votos (NC News, O Liberal — confirmar no TSE); canal "Exército do Lula" no WhatsApp, suspenso e reativado pelo TSE em out/2026 (Agência Brasil).
 - Centrão com 11 ministérios no 1º mandato: InfoMoney / Correio Braziliense. Selic 14,25% (jun/2026).
 - Bolsonaro: confirmar a situação jurídica atual antes de escrever na tela.

@@ -15,3 +15,4 @@
 | jones-2023.jpg | Agência Brasil | CC BY 3.0 BR | (cópia de midia/jones-manoel-2030) | 2026-10-30 | Jones Manoel na Bienal da UNE, 2023 |
 | lula-2026.jpg | Paulo Pinto/Agência Brasil | CC BY 3.0 BR | (cópia de midia/jones-manoel-2030) | 2026-10-30 | Lula discursa após a vitória, 25/10/2026 |
 | flavio-2026.jpg | Joédson Alves/Agência Brasil | CC BY 3.0 BR | (cópia de midia/eleicoes-2026) | 2026-10-29 | Flávio Bolsonaro com jornalistas, 2026 |
+| janones-2026.jpg | Bruno Spada/Câmara dos Deputados | Câmara dos Deputados (CC BY 3.0, via Agência Brasil) | https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/janones-denuncia-censura-em-decisao-do-tse-contra-exercito-do-lula | 2026-10-31 | Justiça Eleitoral mandou suspender canal de WhatsApp com 3,3 milhões de pessoas. |
