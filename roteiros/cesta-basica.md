@@ -28,8 +28,9 @@ NA TELA: carimbo "APROVADO" · prateleira com os itens · etiqueta de cada um: 2
 > Por isso, ter maioria na Câmara importa.
 > Em 2027, a esquerda vai ter cento e vinte e quatro deputados. Pra aprovar uma lei dessas, precisa de duzentos e cinquenta e sete.
 > Fica de olho em como cada um vota.
+> E quando eles reclamarem do preço do mercado… [pausa] lembre-se: eles votaram contra zerar os impostos da cesta básica.
 
-NA TELA: maquete 2027: ESQUERDA 124 · CENTRO 257 · DIREITA 132 · linha "MAIORIA: 257" · logo
+NA TELA: maquete 2027: ESQUERDA 124 · CENTRO 257 · DIREITA 132 · linha "MAIORIA: 257" · Kim Kataguiri e Nikolas Ferreira lado a lado, carimbo "NÃO" · "LEMBRE-SE: ELES VOTARAM CONTRA ZERAR OS IMPOSTOS DA CESTA BÁSICA." · logo
 
 ---
 

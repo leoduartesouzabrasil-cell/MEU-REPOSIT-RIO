@@ -7,7 +7,7 @@ const T = Object.assign({
   titulo: 0.3, sera: 2.6,
   votacao: 5.0, placar: 8.0, sim: 8.6, nao: 10.4, contra: 12.4, esquerda: 19.0,
   aprovado: 23.0, itens: 24.4, taxa: 28.6,
-  maioria: 32.6, m2027: 33.6, precisa: 37.0, olho: 40.4, logo: 43.6, dur: 47.0,
+  maioria: 32.6, m2027: 33.6, precisa: 37.0, olho: 40.4, lembre: 43.0, lembre2: 45.4, logo: 49.0, dur: 52.4,
 }, (window.TEMPOS || {}).marcas || {});
 
 // votação final do PLP 68/2024 (17/12/2024, dados abertos da Câmara): 324 SIM · 123 NÃO · 3 abstenções · 63 ausentes
@@ -45,13 +45,13 @@ window.CENA = {
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, AZUL = COR.azul;
     let arquivo = true;
 
-    const ordem = [[0, gancho], [T.votacao, votacao], [T.aprovado, aprovado], [T.maioria, maioria], [T.logo, final]];
+    const ordem = [[0, gancho], [T.votacao, votacao], [T.aprovado, aprovado], [T.maioria, maioria], [T.lembre, lembre], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.sera, T.placar + 1.6, T.aprovado, T.taxa, T.precisa, T.logo];
+    const IMP = [T.sera, T.placar + 1.6, T.aprovado, T.taxa, T.precisa, T.lembre2, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.votacao, BEGE, -24], [T.aprovado, VERM, 24], [T.maioria, BEGE, -24], [T.logo, BEGE, 24]]
+    [[T.votacao, BEGE, -24], [T.aprovado, VERM, 24], [T.maioria, BEGE, -24], [T.lembre, AZUL, 24], [T.logo, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.3));
@@ -237,6 +237,34 @@ window.CENA = {
         L.aplicarCarimbo(ctx, pp, CX, 1275, () => bloco('PRA APROVAR UMA LEI DESSAS: 257', 1300, BEGE, 48, [TINTA, 1243, 92]), 175);
       }
       if (t >= T.olho) linha('FIQUE DE OLHO EM COMO CADA UM VOTA.', 1405, seg(t, T.olho, T.olho + 1.0), VERM, 40);
+    }
+
+    // ------------------------------------------------ E. lembre-se: Kim Kataguiri e Nikolas Ferreira, lado a lado
+    function lembre(lt, t) {
+      L.fundo(ctx, BEGE);
+      L.camera(ctx, { zoom: 1 + lt * 0.006 }, () => L.planta(ctx, 77, TINTA, 0.06));
+      linha('QUANDO ELES RECLAMAREM', 470, seg(t, T.lembre, T.lembre + 0.7), TINTA, 52);
+      linha('DO PREÇO DO MERCADO…', 540, seg(t, T.lembre + 0.5, T.lembre + 1.2), TINTA, 52);
+      [[6, 290, -1], [0, 790, 1]].forEach(([i, x, lado], k) => {                       // Kim à esquerda, Nikolas à direita
+        const [nome, partido] = CONTRA[i], e = ease.saida(seg(t, T.lembre + 0.2 + k * 0.3, T.lembre + 0.8 + k * 0.3));
+        if (e <= 0) return;
+        ctx.save(); ctx.globalAlpha = Math.min(1, e * 2); ctx.translate((1 - e) * 120 * lado, 0);
+        retrato(i, x, 820, 180, 12);
+        L.texto(ctx, nome, x, 1062, { familia: FONTE.bloco, peso: 400, tam: tamMax(nome, FONTE.bloco, 40, 400, 420), cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, partido, x, 1102, { familia: FONTE.maquina, peso: 400, tam: 28, cor: AZUL, alinhar: 'center' });
+        ctx.restore();
+        L.aplicarCarimbo(ctx, seg(t, T.lembre + 0.9 + k * 0.3, T.lembre + 1.15 + k * 0.3), x + 115, 955, () => {
+          ctx.save(); ctx.translate(x + 115, 955); ctx.rotate(-0.12); ctx.fillStyle = AZUL; ctx.fillRect(-70, -34, 140, 64);
+          L.texto(ctx, 'NÃO', 0, 16, { familia: FONTE.bloco, peso: 400, tam: 44, cor: BEGE, alinhar: 'center' }); ctx.restore();
+        }, 181 + k);
+      });
+      if (t >= T.lembre2) L.aplicarCarimbo(ctx, seg(t, T.lembre2, T.lembre2 + 0.3), CX, 1250, () => {
+        ctx.fillStyle = VERM; ctx.fillRect(X0, 1160, LARG, 250);
+        L.texto(ctx, 'LEMBRE-SE:', CX, 1225, { familia: FONTE.bloco, peso: 400, tam: 50, cor: AMA, alinhar: 'center' });
+        L.texto(ctx, 'ELES VOTARAM CONTRA ZERAR', CX, 1300, { familia: FONTE.bloco, peso: 400, tam: tamMax('ELES VOTARAM CONTRA ZERAR', FONTE.bloco, 52, 400, LARG - 60), cor: BEGE, alinhar: 'center' });
+        L.texto(ctx, 'OS IMPOSTOS DA CESTA BÁSICA.', CX, 1370, { familia: FONTE.bloco, peso: 400, tam: tamMax('OS IMPOSTOS DA CESTA BÁSICA.', FONTE.bloco, 52, 400, LARG - 60), cor: BEGE, alinhar: 'center' });
+      }, 185);
+      cred('votação final do PLP 68/2024 · 17/12/2024 · dados abertos da Câmara', seg(lt, 0.4, 1.4));
     }
 
     function final(lt) {

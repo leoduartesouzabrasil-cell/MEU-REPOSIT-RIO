@@ -15,7 +15,8 @@ from som import SR, soma  # noqa: E402
 from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
 T = dict(titulo=0.3, sera=2.6, votacao=5.0, placar=8.0, sim=8.6, nao=10.4, contra=12.4, esquerda=19.0,
-         aprovado=23.0, itens=24.4, taxa=28.6, maioria=32.6, m2027=33.6, precisa=37.0, olho=40.4, logo=43.6, dur=47.0)
+         aprovado=23.0, itens=24.4, taxa=28.6, maioria=32.6, m2027=33.6, precisa=37.0, olho=40.4, lembre=43.0, lembre2=45.4, logo=49.0,
+         dur=52.4)
 
 
 def trilha(T, N):
@@ -59,6 +60,12 @@ def trilha(T, N):
         soma(sfx, som.tique(), T["m2027"] + k * 0.09, 0.35)
     soma(sfx, som.carimbo_sfx(), T["precisa"], 0.9)
     soma(sfx, amostra("deep-boom-hit"), T["precisa"], 0.6)
+    soma(sfx, amostra("fast-whoosh-chop"), T["lembre"] - 0.35, 0.75)
+    for k in range(2):
+        soma(sfx, amostra("fast-whoosh-chop"), T["lembre"] + 0.2 + k * 0.3, 0.5)
+        soma(sfx, som.negacao(), T["lembre"] + 0.9 + k * 0.3, 0.6)
+    soma(sfx, som.carimbo_sfx(), T["lembre2"], 1.0)
+    soma(sfx, amostra("deep-boom-hit"), T["lembre2"], 0.7)
     soma(sfx, som.sino_grave(), T["logo"] - 0.1, 0.9)
     return mus, sfx
 
