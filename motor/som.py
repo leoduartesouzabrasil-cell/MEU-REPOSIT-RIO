@@ -382,3 +382,95 @@ def contador(dur=1.2, passos=14):
     for k in range(passos):
         soma(out, tique(), dur * (k / passos) ** 0.8)
     return out
+
+
+# ======================================================================
+# Rock (sintetizado): guitarra distorcida em power chord + bateria
+# ======================================================================
+_cache_rock = {}
+
+
+def _passa_baixa(x, fc):
+    """Passa-baixa de 1 polo (suaviza o chiado da distorção)."""
+    a = np.exp(-2 * np.pi * fc / SR)
+    y = np.empty_like(x)
+    acc = 0.0
+    # recursão vetorizada por blocos seria mais rápida; os buffers aqui são curtos
+    for i in range(len(x)):
+        acc = (1 - a) * x[i] + a * acc
+        y[i] = acc
+    return y
+
+
+def guitarra(nota, dur=0.25, abafada=False, vel=1.0):
+    """Power chord distorcido (fundamental + quinta + oitava). nota em Hz. abafada = palm mute (curto, escuro)."""
+    chave = (round(nota, 2), round(dur, 3), abafada)
+    if chave not in _cache_rock:
+        n = int((dur + (0.05 if abafada else 0.35)) * SR)
+        t = np.arange(n) / SR
+        x = np.zeros(n, np.float32)
+        for mult, g in [(1.0, 1.0), (1.4983, 0.8), (2.0, 0.55)]:
+            for det in (-0.004, 0.004):                                   # dois "captadores" levemente desafinados
+                f = nota * mult * (1 + det)
+                x += g * (2 * ((t * f) % 1.0) - 1).astype(np.float32)        # dente de serra
+        e = env(n, a=0.004, d=0.09 if abafada else 0.9, s=0.0 if abafada else 0.25,
+                r=0.05, total=None)
+        e[int(dur * SR):] *= np.exp(-np.arange(n - int(dur * SR)) / SR / (0.02 if abafada else 0.12))
+        x = np.tanh(x * e * (5.0 if abafada else 7.0))                      # distorção
+        x = _passa_baixa(x, 1800 if abafada else 3200)
+        _cache_rock[chave] = norm(x, 0.8)
+    return _cache_rock[chave] * vel
+
+
+def bumbo(vel=1.0):
+    n = int(0.35 * SR); t = np.arange(n) / SR
+    f = 45 + 75 * np.exp(-t * 28)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 9)
+    clique = ruido(0.35)[:n] * np.exp(-t * 300) * 0.3
+    return norm((x + clique).astype(np.float32), 0.95 * vel)
+
+
+def caixa(vel=1.0):
+    n = int(0.25 * SR); t = np.arange(n) / SR
+    corpo = np.sin(2 * np.pi * 185 * t) * np.exp(-t * 25)
+    esteira = banda(ruido(0.25)[:n], 1500, 9000) * np.exp(-t * 16)
+    return norm((0.5 * corpo + esteira).astype(np.float32), 0.85 * vel)
+
+
+def chimbal(vel=1.0, aberto=False):
+    d = 0.3 if aberto else 0.06
+    n = int(d * SR); t = np.arange(n) / SR
+    x = banda(ruido(d)[:n], 7000, 16000) * np.exp(-t * (12 if aberto else 70))
+    return norm(x.astype(np.float32), 0.5 * vel)
+
+
+def prato(vel=1.0, dur=2.0):
+    n = int(dur * SR); t = np.arange(n) / SR
+    x = banda(ruido(dur)[:n], 3000, 16000) * np.exp(-t * 2.2)
+    return norm(x.astype(np.float32), 0.7 * vel)
+
+
+def rock(dur, bpm=124, riff=((82.41, 4), (82.41, 4), (98.0, 2), (110.0, 2), (73.42, 4)), intensidade=1.0,
+         abafado=True, bateria=True, meio_tempo=False):
+    """Groove de rock: colcheias de guitarra no riff (nota, colcheias) + bateria (bumbo 1 e 3, caixa 2 e 4, chimbal)."""
+    out = segundos(dur + 1.0)
+    col = 60 / bpm / 2
+    seq = [n for n, k in riff for _ in range(k)]
+    i, t = 0, 0.0
+    while t < dur:
+        nota = seq[i % len(seq)]
+        forte = i % 8 in (0, 3, 6)                                           # acentos sincopados
+        soma(out, guitarra(nota, col * (2 if forte and not abafado else 1), abafada=abafado and not forte,
+                           vel=0.9 * intensidade if forte else 0.6 * intensidade), t)
+        if bateria:
+            soma(out, chimbal(0.8 * intensidade), t)
+            passo = i % 8
+            if passo in ((0,) if meio_tempo else (0, 4)):
+                soma(out, bumbo(intensidade), t)
+            if passo in ((4,) if meio_tempo else (2, 6)):
+                soma(out, caixa(intensidade), t)
+            if passo == 7 and not meio_tempo:
+                soma(out, bumbo(0.6 * intensidade), t)
+        t += col
+        i += 1
+    return out[:int(dur * SR)]

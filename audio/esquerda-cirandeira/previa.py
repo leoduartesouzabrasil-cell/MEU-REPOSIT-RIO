@@ -1,6 +1,6 @@
 """Trilha + efeitos da PRÉVIA (sem narração) de "Esquerda cirandeira".
-Ciranda (evocação sintetizada) na abertura e na régua; da direita em diante, flauta no modo frígio (tensa);
-um-pá de circo; marcha no "radicalize-se". Os tempos espelham motor/cenas/esquerda-cirandeira.js.
+Rock sintetizado (motor/som.py: guitarra distorcida em power chord + bateria): meio-tempo na abertura,
+groove na régua, riff frígio na direita, trítono torto no circo, corte seco e guitarra aberta no "radicalize-se". Os tempos espelham motor/cenas/esquerda-cirandeira.js.
 Saída: audio/esquerda-cirandeira/previa.wav
 """
 import sys
@@ -21,42 +21,24 @@ T = dict(titulo=0.3, origem=3.6, meme=7.4, hoje=9.4, migalhas=12.0, regua=15.0, 
 
 
 def trilha(T, N):
+    """Rock sintetizado (guitarra distorcida em power chord + bateria), crescendo do começo ao "radicalize-se"."""
     mus, sfx = np.zeros(N, np.float32), np.zeros(N, np.float32)
     dur = N / SR
-    soma(mus, som.drone(T["circo"], 55.0, 0.3), 0, 0.5)
-    soma(mus, som.drone(dur - T["radical"], 55.0, 0.7), T["radical"], 1.0)
-    # ciranda (abertura e régua): bumbo forte no 1, maracá no contratempo, em roda
-    bat = 60 / 92
-    t, i = 0.6, 0
-    while t < T["circo"] - 0.3:
-        soma(mus, som.tambor(1.0 if i % 4 == 0 else 0.45, 70, 34, 1.0), t)
-        soma(mus, som.maraca(0.35), t + bat / 2)
-        if T["p11"] <= t and i % 4 == 2:
-            soma(mus, som.batimento(), t, 0.35)
-        t, i = t + bat, i + 1
-    # circo: "um-pá" (grave no tempo, estalo no contratempo), acelerando até "chega de ciranda"
-    t, i = T["circo"], 0
-    while t < T["acabar"]:
-        soma(mus, som.tambor(0.8, 55, 30, 0.6), t)
-        soma(mus, som.tique(), t + 0.2, 0.7)
-        t, i = t + max(0.28, 0.42 - (t - T["circo"]) * 0.015), i + 1
-    # radicalizar: marcha de tambores até o fim
-    t, i = T["radical"], 0
-    while t < dur - 1:
-        soma(mus, som.tambor(0.9, 80, 38, 0.9), t)
-        if i % 2:
-            soma(mus, som.tambor(0.55, 130, 65, 0.4), t + 0.33)
-        soma(mus, som.maraca(0.35), t + 0.33)
-        t, i = t + 0.66, i + 1
-    for t0, g, r in [(T["titulo"] + 0.6, [4, 5, 7, 5, 4, 2], [0.33, 0.33, 0.66, 0.33, 0.33, 1.0]),
-                     (T["regua"] + 0.3, [4, 5, 7, 8, 7, 5], [0.33, 0.33, 0.33, 0.33, 0.66, 1.0]),
-                     (T["p6"], [7, 8, 7, 5, 4, 5], [0.33, 0.33, 0.33, 0.33, 0.66, 1.0]),
-                     (T["p8"] + 0.2, [4, 5, 4, 2, 0], [0.33, 0.33, 0.66, 0.66, 1.2]),
-                     (T["radical"] + 0.3, [7, 8, 7, 5, 4], [0.5, 0.5, 0.7, 0.5, 1.8])]:
-        soma(mus, som.frase_flauta(g, r, 1.0, 0.5), t0)
-    for t0, g, r in [(T["p11"], [3, 2, 1, 0], [0.5, 0.5, 0.5, 1.4]), (T["p14"], [1, 2, 1, 0], [0.4, 0.4, 0.6, 1.6]),
-                     (T["circo"] + 0.4, [0, 1, 2, 1, 0, 1, 2, 3], [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8])]:
-        soma(mus, som.frase_tensa(g, r, 0.5), t0)
+    E, F, G, A, D, Bb = 82.41, 87.31, 98.0, 110.0, 73.42, 116.54
+    # abertura: meio-tempo, guitarra abafada (palm mute), entra devagar
+    soma(mus, som.rock(T["regua"] - 0.5, riff=((E, 8), (E, 4), (G, 2), (A, 2)), intensidade=0.55, meio_tempo=True), 0.4)
+    # régua (esquerda → centro): groove cheio, palhetada abafada com acentos
+    soma(mus, som.rock(T["p11"] - T["regua"], riff=((E, 4), (E, 4), (G, 2), (A, 2), (D, 4)), intensidade=0.8), T["regua"])
+    # direita e extrema-direita: riff frígio (E–F), mais sombrio
+    soma(mus, som.rock(T["circo"] - T["p11"] - 0.3, riff=((E, 6), (F, 2)), intensidade=0.85), T["p11"])
+    # circo: meio-tempo com trítono (E–B♭), torto, acelerando a tensão
+    soma(mus, som.rock(T["acabar"] - T["circo"], bpm=112, riff=((E, 4), (Bb, 4)), intensidade=0.7, meio_tempo=True), T["circo"])
+    # "chega de ciranda": corte seco; "radicalize-se": guitarra aberta, sem abafar, a toda
+    soma(mus, som.rock(T["logo"] - T["radical"] + 1.0, bpm=132, riff=((E, 4), (G, 2), (A, 2), (D, 2), (E, 6)),
+                       intensidade=1.0, abafado=False), T["radical"])
+    for t0 in [T["regua"], T["radical"], T["logo"]]:
+        soma(mus, som.prato(0.9), t0, 0.8)
+    soma(mus, som.drone(dur, 41.2, 0.2), 0, 0.25)                                     # chão grave por baixo
 
     # efeitos
     soma(sfx, som.carimbo_sfx(), T["titulo"], 0.9)
@@ -91,7 +73,7 @@ def trilha(T, N):
 
 if __name__ == "__main__":
     mus, sfx = trilha(T, int(T["dur"] * SR))
-    mix = mus * 0.5 + sfx * 0.55
+    mix = mus * 0.28 + sfx * 0.5
     mix = np.where(np.abs(mix) > 0.7, np.sign(mix) * (0.7 + 0.28 * np.tanh((np.abs(mix) - 0.7) / 0.28)), mix).astype(np.float32)
     som.salvar_wav(str(AQUI / "previa.wav"), mix * 1.02, mix * 0.98)
     print("ok", T["dur"])

@@ -12,30 +12,31 @@ const T = Object.assign({
 
 // faixas da régua (esquerda → direita)
 const FAIXAS = [['ESQUERDA RADICALIZADA', '#8A1411'], ['ESQUERDA', '#C8201E'], ['CENTRO', '#EBB52A'], ['DIREITA', '#4A6488'], ['EXTREMA-DIREITA', '#1F3A5F']];
-// a régua: nome, foto, faixa, etiqueta, rosto [x, y, altura do rosto] em fração da foto
+// a régua: nome, foto, faixa, etiqueta e enquadramento MANUAL [centro x, centro y, lado da janela] (centro em fração da foto,
+// lado em fração da ALTURA da foto). Cada um foi ajustado à mão: rosto inteiro com ombros, sem estourar a borda da foto.
 const REGUA = [
-  ['JONES MANOEL', 'jones', 0, 'QUER TROCAR A MÚSICA', [0.43, 0.48, 0.25]],
-  ['ELIAS JABBOUR', 'jabbour', 0, 'QUER TROCAR A MÚSICA', [0.48, 0.25, 0.23]],
-  ['ERIKA HILTON', 'erika', 1, 'DERRUBOU A 6x1', [0.36, 0.47, 0.45]],
-  ['RICK AZEVEDO', 'rick', 1, 'DERRUBOU A 6x1', [0.52, 0.40, 0.35]],
-  ['DILMA ROUSSEFF', 'dilma', 1, 'BANCO DO BRICS', [0.50, 0.43, 0.40]],
-  ['LULA', 'lula', 1, 'O DONO DA RODA', [0.53, 0.31, 0.25]],
-  ['ANDRÉ JANONES', 'janones', 1, 'EXÉRCITO DO LULA', [0.50, 0.36, 0.50]],
-  ['GERALDO ALCKMIN', 'alckmin', 2, 'EX-PSDB', [0.82, 0.68, 0.27]],
-  ['CIRO GOMES', 'ciro', 2, 'FOI PRO PSDB + PL', [0.47, 0.40, 0.58]],
-  ['DAVI ALCOLUMBRE', 'alcolumbre', 2, 'DANÇA COM TODO GOVERNO', [0.48, 0.40, 0.30]],
-  ['RENAN SANTOS', 'renan', 3, 'MBL', [0.58, 0.38, 0.35]],
-  ['NIKOLAS FERREIRA', 'nikolas', 4, '3,1 MI DE VOTOS', [0.50, 0.23, 0.17]],
-  ['LUCAS PAVANATO', 'pavanato', 4, '3 MI DE VOTOS', [0.50, 0.40, 0.55]],
-  ['FLÁVIO BOLSONARO', 'flavio', 4, 'PERDEU O 2º TURNO', [0.47, 0.375, 0.16]],
-  ['JAIR BOLSONARO', 'bolsonaro', 4, 'NO FIM DA FILA', [0.377, 0.41, 0.22]],
+  ['JONES MANOEL', 'jones', 0, 'QUER TROCAR A MÚSICA', [0.5, 0.4, 0.7]],
+  ['ELIAS JABBOUR', 'jabbour', 0, 'QUER TROCAR A MÚSICA', [0.48, 0.33, 0.4]],
+  ['ERIKA HILTON', 'erika', 1, 'DERRUBOU A 6x1', [0.36, 0.55, 0.9]],
+  ['RICK AZEVEDO', 'rick', 1, 'DERRUBOU A 6x1', [0.5, 0.46, 0.74]],
+  ['DILMA ROUSSEFF', 'dilma', 1, 'BANCO DO BRICS', [0.5, 0.5, 0.95]],
+  ['LULA', 'lula', 1, 'O DONO DA RODA', [0.54, 0.4, 0.62]],
+  ['ANDRÉ JANONES', 'janones', 1, 'EXÉRCITO DO LULA', [0.5, 0.48, 0.95]],
+  ['GERALDO ALCKMIN', 'alckmin', 2, 'EX-PSDB', [0.82, 0.74, 0.5]],
+  ['CIRO GOMES', 'ciro', 2, 'FOI PRO PSDB + PL', [0.5, 0.45, 0.7]],
+  ['DAVI ALCOLUMBRE', 'alcolumbre', 2, 'DANÇA COM TODO GOVERNO', [0.48, 0.48, 0.75]],
+  ['RENAN SANTOS', 'renan', 3, 'MBL', [0.58, 0.45, 0.78]],
+  ['NIKOLAS FERREIRA', 'nikolas', 4, '3,1 MI DE VOTOS', [0.5, 0.3, 0.42]],
+  ['LUCAS PAVANATO', 'pavanato', 4, '3 MI DE VOTOS', [0.5, 0.45, 0.7]],
+  ['FLÁVIO BOLSONARO', 'flavio', 4, 'PERDEU O 2º TURNO', [0.47, 0.43, 0.42]],
+  ['JAIR BOLSONARO', 'bolsonaro', 4, 'NO FIM DA FILA', [0.377, 0.49, 0.5]],
 ];
 const M = '../midia/esquerda-cirandeira/';
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
   imagens: {
-    jones: M + 'jones-2023.jpg', jabbour: M + 'jabbour-2025.jpg', erika: M + 'erika-2026.jpg', rick: M + 'rick-2026.jpg',
+    jones: M + 'jones-2026-tse.jpg', jabbour: M + 'jabbour-2025.jpg', erika: M + 'erika-2026.jpg', rick: M + 'rick-2026.jpg',
     dilma: M + 'dilma-2026.jpg', lula: M + 'lula-2026.jpg', janones: M + 'janones-2026.jpg', alckmin: M + 'alckmin-2026.jpg',
     ciro: M + 'ciro-2026-tse.jpg', alcolumbre: M + 'alcolumbre-2026.jpg', renan: M + 'renan-2026.jpg', nikolas: M + 'nikolas-2026.jpg',
     pavanato: M + 'pavanato-2026-tse.jpg', flavio: M + 'flavio-2026.jpg', bolsonaro: M + 'bolsonaro-2025.jpg',
@@ -91,11 +92,11 @@ window.CENA = {
       if (fundo) { ctx.fillStyle = fundo[0]; ctx.fillRect(X0, fundo[1], LARG, fundo[2]); }
       L.texto(ctx, txt, CX, y, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, tam, 400, LARG - 50), cor, alinhar: 'center' });
     }
-    // retrato redondo: o rosto ocupa ~70% do círculo, centrado
+    // retrato redondo com o enquadramento manual de cada foto (janela quadrada → círculo)
     function retrato(i, cx, cy, r, anel = 8) {
-      const [, chave, faixa, , [fx, fy, fh]] = REGUA[i], img = L.img[chave];
-      const base = Math.max(2 * r / img.width, 2 * r / img.height), zoom = Math.max(1, 1.45 * r / (fh * img.height) / base);
-      const s0 = base * zoom, iw = img.width * s0, ih = img.height * s0;
+      const [, chave, faixa, , [fx, fy, lado]] = REGUA[i], img = L.img[chave];
+      const base = Math.max(2 * r / img.width, 2 * r / img.height), s0 = 2 * r / (lado * img.height), zoom = s0 / base;
+      const iw = img.width * s0, ih = img.height * s0;
       ctx.save(); ctx.fillStyle = FAIXAS[faixa][1]; ctx.beginPath(); ctx.arc(cx, cy, r + anel, 0, 7); ctx.fill();
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.clip();
       L.foto(ctx, img, cx - r, cy - r, 2 * r, 2 * r, { pb: true, zoom, dx: (0.5 - fx) * iw, dy: (0.5 - fy) * ih, retic: false });
@@ -110,43 +111,43 @@ window.CENA = {
     }
 
     // ------------------------------------------------ A. a ciranda explica o termo (sem fotos de ninguém)
+    // faixas fixas, nada sobreposto: título 420–640 · roda 690–1210 · etiquetas y 1290 · frase y 1385
     function abertura(lt, t) {
       L.fundo(ctx, BEGE);
       L.camera(ctx, { zoom: 1 + lt * 0.006 }, () => L.planta(ctx, 61, TINTA, 0.07));
-      const n = 12, R = 225, cy = 1040, rot = lt * 0.35, hoje = t >= T.hoje;
+      const n = 12, R = 190, cy = 960, rot = lt * 0.35, hoje = t >= T.hoje;
       ctx.save(); ctx.globalAlpha = 0.95 * ease.saida(seg(lt, 0, 0.8));
-      ctx.strokeStyle = TINTA; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(CX, cy, R, 0, 7); ctx.stroke();
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(CX, cy, R, 0, 7); ctx.stroke();
       for (let k = 0; k < n; k++) {
         const a = rot + k * 2 * Math.PI / n, x = CX + Math.cos(a) * R, y = cy + Math.sin(a) * R;
-        // a partir de "hoje": metade da roda vira centrão (cinza-azulado) e mercado (amarelo), de mãos dadas com a esquerda
+        // a partir de "hoje": metade da roda vira centrão (azul-acinzentado) e mercado (ocre), de mãos dadas com a esquerda
         const cor = !hoje ? (k % 2 ? VERM : TINTA) : k < 6 ? VERM : k < 9 ? '#4A6488' : '#B98516';
-        boneco(x, y, cor);
+        boneco(x, y, cor, 0.85);
       }
       ctx.restore();
-      L.aplicarCarimbo(ctx, seg(t, T.titulo, T.titulo + 0.3), CX, 560, () => {
-        L.texto(ctx, 'ESQUERDA', CX, 520, { familia: FONTE.bloco, peso: 400, tam: 96, cor: TINTA, alinhar: 'center' });
-        L.texto(ctx, 'CIRANDEIRA?', CX, 660, { tam: L.ajustar(ctx, 'CIRANDEIRA?', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 });
+      L.aplicarCarimbo(ctx, seg(t, T.titulo, T.titulo + 0.3), CX, 520, () => {
+        L.texto(ctx, 'ESQUERDA', CX, 500, { familia: FONTE.bloco, peso: 400, tam: 84, cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, 'CIRANDEIRA?', CX, 630, { tam: Math.min(150, L.ajustar(ctx, 'CIRANDEIRA?', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 });
       }, 101);
-      if (t >= T.origem && !hoje) {
-        L.aplicarCarimbo(ctx, seg(t, T.origem, T.origem + 0.3), CX, 1040, () => {
-          ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(CX, 1040, 140, 0, 7); ctx.fill();
-          L.texto(ctx, '2016', CX, 1080, { tam: 120, cor: AMA, alinhar: 'center' });
-        }, 103);
-        linha('ATO CONTRA O IMPEACHMENT: PCO × CIRANDA DO PSOL', 1385, seg(t, T.origem + 0.5, T.origem + 1.6), TINTA, 36);
-        L.etiqueta(ctx, 'VIROU MEME', 800, 870, seg(t, T.meme, T.meme + 0.3), { cor: VERM, corTexto: BEGE, tam: 40 });
-      }
       if (t >= T.origem) cred('fonte: data_labe · Jornal Extra AL (out/2026)', seg(t, T.origem + 0.5, T.origem + 1.5));
+      if (t >= T.origem && !hoje) {
+        L.aplicarCarimbo(ctx, seg(t, T.origem, T.origem + 0.3), CX, cy, () => {
+          ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(CX, cy, 110, 0, 7); ctx.fill();
+          L.texto(ctx, '2016', CX, cy + 34, { tam: 100, cor: AMA, alinhar: 'center' });
+        }, 103);
+        L.etiqueta(ctx, 'VIROU MEME', CX, 1290, seg(t, T.meme, T.meme + 0.3), { cor: VERM, corTexto: BEGE, tam: 38 });
+        linha('ATO CONTRA O IMPEACHMENT: PCO × CIRANDA DO PSOL', 1385, seg(t, T.origem + 0.5, T.origem + 1.6), TINTA, 34);
+      }
       if (hoje) {
-        L.etiqueta(ctx, 'ESQUERDA', 260, 1300, seg(t, T.hoje, T.hoje + 0.3), { cor: VERM, corTexto: BEGE, tam: 34 });
-        L.etiqueta(ctx, 'CENTRÃO', 560, 760, seg(t, T.hoje + 0.4, T.hoje + 0.7), { cor: '#4A6488', corTexto: BEGE, tam: 34 });
-        L.etiqueta(ctx, 'MERCADO', 830, 1290, seg(t, T.hoje + 0.8, T.hoje + 1.1), { cor: '#B98516', corTexto: TINTA, tam: 34 });
-        if (t < T.migalhas) linha('DE MÃOS DADAS COM O CENTRÃO E O MERCADO', 1400, seg(t, T.hoje + 0.4, T.hoje + 1.4), TINTA, 36);
+        [['ESQUERDA', 250, VERM, BEGE], ['CENTRÃO', 540, '#4A6488', BEGE], ['MERCADO', 830, '#B98516', TINTA]].forEach(([s, x, cor, ct], k) =>
+          L.etiqueta(ctx, s, x, 1290, seg(t, T.hoje + k * 0.4, T.hoje + 0.3 + k * 0.4), { cor, corTexto: ct, tam: 34 }));
+        if (t < T.migalhas) linha('DE MÃOS DADAS COM O CENTRÃO E O MERCADO', 1385, seg(t, T.hoje + 0.4, T.hoje + 1.4), TINTA, 36);
         else {
           for (let k = 0; k < 10; k++) {                                            // migalhas caindo no meio da roda
             const q = seg(t, T.migalhas + k * 0.1, T.migalhas + 0.6 + k * 0.1);
-            ctx.fillStyle = '#B98516'; ctx.fillRect(CX - 100 + (k * 41) % 200, lerp(930, 1100, ease.saida(q)), 11, 9);
+            ctx.fillStyle = '#B98516'; ctx.fillRect(CX - 90 + (k * 37) % 180, lerp(860, 1030, ease.saida(q)), 11, 9);
           }
-          linha('…E MIGALHAS PRO POVO NÃO SE REVOLTAR', 1400, seg(t, T.migalhas, T.migalhas + 1.0), VERM, 36);
+          linha('…E MIGALHAS PRO POVO NÃO SE REVOLTAR', 1385, seg(t, T.migalhas, T.migalhas + 1.0), VERM, 36);
         }
       }
     }
