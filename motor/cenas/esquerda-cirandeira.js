@@ -10,6 +10,8 @@ const T = Object.assign({
   circo: 40.0, plateia: 43.0, palhaco: 45.0, acabar: 48.0, voce: 49.8, sobe: 52.2, sim: 52.9,
   radical: 55.2, comente: 57.6, logo: 60.4, dur: 63.8,
 }, (window.TEMPOS || {}).marcas || {});
+// marcas que só existem com a narração (na prévia ficam fora do tempo do vídeo)
+T.vinte ??= 1e9; T.extrema ??= 1e9; T.estagnacao ??= 1e9; T.eleger ??= 1e9;
 
 // faixas da régua (esquerda → direita)
 const FAIXAS = [['ESQUERDA RADICALIZADA', '#8A1411'], ['ESQUERDA', '#C8201E'], ['CENTRO', '#EBB52A'], ['DIREITA', '#4A6488'], ['EXTREMA-DIREITA', '#1F3A5F']];
@@ -47,7 +49,7 @@ window.CENA = {
 
   desenhar(ctx, t, L) {
     const { COR, FONTE, seg, lerp, ease } = L;
-    const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
+    const CX = 540, LARG = 840, X0 = 120, AZUL_ESC = COR.azul, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
     let arquivo = true;
 
     const ordem = [[0, abertura], [T.regua, regua], [T.circo, circo], [T.voce, voce], [T.radical, circo], [T.logo, final]];
@@ -230,7 +232,7 @@ window.CENA = {
       // a minha foto sobe entre Jones e Jabbour, mais alto que todo mundo
       const ps = ease.carimbo ? Math.min(1.08, ease.carimbo(seg(t, T.sobe, T.sobe + 0.6))) : ease.saida(seg(t, T.sobe, T.sobe + 0.6));
       if (t >= T.sobe) {
-        const x = X(wx(0) + ESP / 2), r = 145, y = lerp(yR + 40, yR - 560, ps), img = L.img.eu;
+        const x = X(wx(0) + ESP / 2), r = 145, y = lerp(yR + 40, yR - 515, ps), img = L.img.eu;
         ctx.strokeStyle = VERM; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(x, y + r); ctx.lineTo(x, yR); ctx.stroke();
         const [fx, fy, lado] = [0.47, 0.42, 0.44];                               // enquadramento manual da foto do autor
         const base = Math.max(2 * r / img.width, 2 * r / img.height), s0 = 2 * r / (lado * img.height);
@@ -286,10 +288,27 @@ window.CENA = {
           if (t >= T.palhaco) L.aplicarCarimbo(ctx, seg(t, T.palhaco, T.palhaco + 0.3), CX, 900, () =>
             L.texto(ctx, '…OU OS PALHAÇOS?', CX, 940, { familia: FONTE.bloco, peso: 400, tam: tamMax('…OU OS PALHAÇOS?', FONTE.bloco, 84, 400), cor: VERM, alinhar: 'center', erro: BEGE, desloc: 4 }), 133);
         }
+        if (t >= T.vinte && t < T.acabar) {                                          // a conta de quase 20 anos de ciranda
+          const pv = seg(t, T.vinte, T.vinte + 0.4);
+          ctx.fillStyle = `rgba(15,12,11,${0.82 * pv})`; ctx.fillRect(0, 0, 1080, 1920);
+          L.aplicarCarimbo(ctx, pv, CX, 640, () => {
+            L.texto(ctx, 'QUASE 20 ANOS', CX, 640, { tam: Math.min(170, L.ajustar(ctx, 'QUASE 20 ANOS', FONTE.manchete, LARG)), cor: AMA, alinhar: 'center', erro: VERM, desloc: 6 });
+            linha('ELEGENDO A ESQUERDA CIRANDEIRA', 720, 1, BEGE, 44);
+          }, 141);
+          L.aplicarCarimbo(ctx, seg(t, T.extrema, T.extrema + 0.3), CX, 880, () =>
+            bloco('CRESCIMENTO DA EXTREMA-DIREITA', 905, BEGE, 54, [AZUL_ESC, 840, 96]), 143);
+          L.aplicarCarimbo(ctx, seg(t, T.estagnacao, T.estagnacao + 0.3), CX, 1020, () =>
+            bloco('ESTAGNAÇÃO SOCIAL', 1045, BEGE, 64, [VERM, 980, 96]), 145);
+          if (t >= T.estagnacao) linha('PRA CLASSE TRABALHADORA', 1145, seg(t, T.estagnacao + 0.4, T.estagnacao + 1.2), AMA, 40);
+        }
         if (t >= T.acabar) {                                                         // a lona rasga: chega de ciranda
           const pa = seg(t, T.acabar, T.acabar + 0.3);
-          ctx.fillStyle = `rgba(15,12,11,${0.75 * pa})`; ctx.fillRect(0, 0, 1080, 1920);
+          ctx.fillStyle = `rgba(15,12,11,${0.85 * pa})`; ctx.fillRect(0, 0, 1080, 1920);
           L.aplicarCarimbo(ctx, pa, CX, 760, () => bloco('CHEGA DE CIRANDA.', 800, BEGE, 110, [VERM, 680, 180]), 135);
+          if (t >= T.eleger) {
+            linha('MOBILIZAÇÃO PRA ELEGER', 960, seg(t, T.eleger, T.eleger + 0.6), BEGE, 50);
+            linha('NOVOS LÍDERES DE ESQUERDA', 1030, seg(t, T.eleger + 0.4, T.eleger + 1.0), AMA, 50);
+          }
         }
       } else {
         // radicalizar: bandeira vermelha com estrela, foice e martelo
