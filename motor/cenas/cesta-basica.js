@@ -9,6 +9,7 @@ const T = Object.assign({
   aprovado: 23.0, itens: 24.4, taxa: 28.6,
   maioria: 32.6, m2027: 33.6, precisa: 37.0, olho: 40.4, lembre: 43.0, lembre2: 45.4, logo: 49.0, dur: 52.4,
 }, (window.TEMPOS || {}).marcas || {});
+T.eleger ??= 1e9;                                          // só existe com a narração
 
 // votação final do PLP 68/2024 (17/12/2024, dados abertos da Câmara): 324 SIM · 123 NÃO · 3 abstenções · 63 ausentes
 const VOTO = { sim: 324, nao: 123, abst: 3, total: 513 };
@@ -224,8 +225,12 @@ window.CENA = {
       L.camera(ctx, { zoom: 1 + lt * 0.002 }, () => L.planta(ctx, 75, TINTA, 0.06));
       titulo(t >= T.m2027 ? 'A CÂMARA EM 2027' : 'POR ISSO, MAIORIA IMPORTA', seg(lt, 0, 0.5), t >= T.m2027 ? TINTA : VERM);
       cred('eleição de 04/10/2026 · Agência Senado · Exame · CNN Brasil', seg(lt, 0.4, 1.4));
+      if (t >= T.eleger && t < T.m2027) L.aplicarCarimbo(ctx, seg(t, T.eleger, T.eleger + 0.3), CX, 820, () => {
+        bloco('ELEGER LIDERANÇAS', 800, BEGE, 76, [VERM, 700, 130]);
+        bloco('DE ESQUERDA IMPORTA.', 930, VERM, 70);
+      }, 177);
       const p = seg(t, T.m2027, T.m2027 + 1.8);
-      plenario(CX, 1000, [[C2027.esquerda, VERM], [C2027.centro, AMA], [C2027.direita, AZUL]], p);
+      if (t >= T.m2027 - 0.2 || T.eleger > 1e8) plenario(CX, 1000, [[C2027.esquerda, VERM], [C2027.centro, AMA], [C2027.direita, AZUL]], p);
       [['ESQUERDA', C2027.esquerda, VERM, 250], ['CENTRO', C2027.centro, '#B98516', 540], ['DIREITA', C2027.direita, AZUL, 830]].forEach(([nome, n, cor, x], k) => {
         const e = ease.saida(seg(t, T.m2027 + 0.4 + k * 0.5, T.m2027 + 1.2 + k * 0.5));
         if (e <= 0) return;
