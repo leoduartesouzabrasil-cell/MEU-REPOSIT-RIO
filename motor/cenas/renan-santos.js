@@ -8,7 +8,7 @@
 const T = Object.assign({
   titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4,
   dossie: 9.6, mbl: 10.6, missao: 11.4, votos: 12.2, f1: 14.2, f2: 18.0, f3: 21.8, f4: 26.0,
-  cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 38.0, visao: 39.9,
+  cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 38.0, volta: 38.9, soraya: 39.5, visao: 40.6,
   ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.8, amigo: 54.0, dur: 58.0,
 }, (window.TEMPOS || {}).marcas || {});
 
@@ -32,6 +32,8 @@ const REGUA = [
   ['JAIR BOLSONARO', 'bolsonaro', 4, 'NO FIM DA FILA', [0.377, 0.49, 0.5]],
 ];
 const RENAN = 10;
+// quem ocupa o lugar vago na direita depois que o Renan sai (mesmo formato de REGUA; enquadramento manual)
+const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PODEMOS-MS', [0.5, 0.4, 0.6]];
 const PULO = 1.8;   // duração do salto do Renan até depois do Bolsonaro
 
 // o dossiê: data/contexto, a fala (linhas), a linha selecionada, apoio e fontes
@@ -54,6 +56,7 @@ window.CENA = {
     dilma: M + 'dilma-2026.jpg', lula: M + 'lula-2026.jpg', janones: M + 'janones-2026.jpg', alckmin: M + 'alckmin-2026.jpg',
     ciro: M + 'ciro-2026-tse.jpg', alcolumbre: M + 'alcolumbre-2026.jpg', renan: M + 'renan-2026.jpg', nikolas: M + 'nikolas-2026.jpg',
     pavanato: M + 'pavanato-2026-tse.jpg', flavio: M + 'flavio-2026.jpg', bolsonaro: M + 'bolsonaro-2025.jpg',
+    soraya: '../midia/renan-santos/soraya-2026.jpg',
     retrato: '../midia/renan-santos/renan-debate-band-2026.jpg',   // debate da Band (recorte manual 850×944)
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
@@ -110,7 +113,7 @@ window.CENA = {
     }
     // retrato redondo com o enquadramento manual de cada foto (janela quadrada → círculo); corAnel troca a cor da faixa
     function retrato(i, cx, cy, r, anel = 8, corAnel = null) {
-      const [, chave, faixa, , [fx, fy, lado]] = REGUA[i], img = L.img[chave];
+      const [, chave, faixa, , [fx, fy, lado]] = typeof i === 'number' ? REGUA[i] : i, img = L.img[chave];
       const base = Math.max(2 * r / img.width, 2 * r / img.height), s0 = 2 * r / (lado * img.height), zoom = s0 / base;
       const iw = img.width * s0, ih = img.height * s0;
       ctx.save(); ctx.fillStyle = corAnel || FAIXAS[faixa][1]; ctx.beginPath(); ctx.arc(cx, cy, r + anel, 0, 7); ctx.fill();
@@ -271,7 +274,9 @@ window.CENA = {
       const pos = i => i === RENAN ? lerp(wx(RENAN), wx(15), m) : wx(i);
       const fim = wx(14 + m);
       const v = ease.saida(seg(t, T.visao, T.visao + 1.4)), total = wx(15);
-      const camX = lerp(lerp(wx(RENAN) + ESP * 0.3, wx(15) - ESP * 0.5, m), total / 2, v);
+      // a câmera segue o salto, volta ao lugar vago para a Soraya entrar e depois recua para a régua inteira
+      const vb = ease.saida(seg(t, T.volta, T.volta + 0.8));
+      const camX = lerp(lerp(lerp(wx(RENAN) + ESP * 0.3, wx(15) - ESP * 0.5, m), wx(RENAN), vb), total / 2, v);
       const esc = lerp(1, 860 / (total + 300), v), yB = lerp(yR, 980, v);
       const X = w => CX + (w - camX) * esc;
       // a barra: até o centro igual; a direita fica com o lugar vago; a extrema-direita cresce
@@ -284,9 +289,20 @@ window.CENA = {
       [[0, 0, 1], [1, 2, 6], [2, 7, 9]].forEach(([f, a, b]) => faixaTxt(FAIXAS[f][0], f, X((wx(a) + wx(b)) / 2)));
       faixaTxt('DIREITA', 3, X(wx(RENAN)));
       faixaTxt('EXTREMA-DIREITA', 4, X((wx(RENAN + 1) + fim) / 2));
-      // o lugar vago na direita: círculo tracejado com "?"
-      const r = lerp(118, 24, v), yF = yB - lerp(300, 60, v);
-      if (m > 0.3) {
+      // o lugar vago na direita: círculo tracejado com "?", até a Soraya Thronicke subir para ele
+      const r = lerp(118, 24, v), yF = yB - lerp(300, 60, v), ps = ease.saida(seg(t, T.soraya, T.soraya + 0.45));
+      if (ps > 0) {
+        const x = X(wx(RENAN)), y = yF + (1 - ps) * 60;
+        ctx.save(); ctx.globalAlpha = Math.min(1, ps * 2);
+        ctx.strokeStyle = TINTA; ctx.lineWidth = lerp(5, 2, v); ctx.beginPath(); ctx.moveTo(x, y + r); ctx.lineTo(x, yB); ctx.stroke();
+        retrato(SORAYA, x, y, r, lerp(9, 3, v));
+        if (v < 0.5) {
+          ctx.globalAlpha = Math.min(1, ps * 2) * (1 - v * 2);
+          L.texto(ctx, SORAYA[0], x, yB + 120, { familia: FONTE.grotesca, peso: 700, tam: tamMax(SORAYA[0], FONTE.grotesca, 26, 700, 300), cor: TINTA, alinhar: 'center' });
+          L.etiqueta(ctx, SORAYA[3], x, y - r - 70, seg(t, T.soraya + 0.3, T.soraya + 0.6), { cor: FAIXAS[3][1], corTexto: BEGE, tam: 30 });
+        }
+        ctx.restore();
+      } else if (m > 0.3) {
         ctx.save(); ctx.globalAlpha = seg(mm, 0.3, 0.8); ctx.setLineDash([14 * esc + 2, 12 * esc + 2]); ctx.strokeStyle = '#4A6488'; ctx.lineWidth = lerp(6, 2, v);
         ctx.beginPath(); ctx.arc(X(wx(RENAN)), yF, r, 0, 7); ctx.stroke(); ctx.setLineDash([]);
         L.texto(ctx, '?', X(wx(RENAN)), yF + r * 0.42, { familia: FONTE.manchete, tam: r * 1.3, cor: '#4A6488', alinhar: 'center' });
@@ -316,7 +332,7 @@ window.CENA = {
         if (i === RENAN && mm >= 1 && v < 0.5) {
           ctx.save(); ctx.globalAlpha = 1 - v * 2;
           L.etiqueta(ctx, 'EXTREMA-DIREITA', x, y - r - 70, seg(t, T.pula + PULO, T.pula + PULO + 0.3), { cor: FAIXAS[4][1], corTexto: BEGE, tam: 34 });
-          L.etiqueta(ctx, 'DEPOIS ATÉ DO BOLSONARO', CX, 1355, seg(t, T.pula + PULO + 0.3, T.pula + PULO + 0.6), { cor: VERM, corTexto: BEGE, tam: 34 });
+          if (t < T.volta) L.etiqueta(ctx, 'DEPOIS ATÉ DO BOLSONARO', CX, 1355, seg(t, T.pula + PULO + 0.3, T.pula + PULO + 0.6), { cor: VERM, corTexto: BEGE, tam: 34 });
           ctx.restore();
         }
       });

@@ -11,7 +11,9 @@ Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **
    datilografadas, cada uma com a fala ou o trecho do plano, a palavra-chave selecionada em vermelho e a fonte embaixo.
 3. **A virada (CARTAZ):** fundo vermelho chapado com sol nascente bege. "ISSO NÃO É DIREITA." Depois, uma faixa azul-escura na diagonal com "É EXTREMA-DIREITA." e "DE TERNO, MAS EXTREMA."
 4. **Régua corrigida:** a foto do Renan é riscada na DIREITA, salta por cima de Nikolas, Pavanato, Flávio e Bolsonaro e
-   desce na ponta da régua, **depois do Bolsonaro** (etiqueta "DEPOIS ATÉ DO BOLSONARO"). O anel muda de cor. O lugar dele na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
+   desce na ponta da régua, **depois do Bolsonaro** (etiqueta "DEPOIS ATÉ DO BOLSONARO").
+   A câmera volta ao lugar vago na DIREITA e a foto da **Soraya Thronicke** sobe para ele (etiqueta "SENADORA · PODEMOS-MS").
+   O anel dele muda de cor. Por um instante o lugar na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
 5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
 6. **O retrato:** parede de galeria, a foto do Renan no debate da Band (dando de ombros; Renato Pizzutto/Band, recorte manual, P&B com só a gravata e o broche R14 em amarelo) numa moldura dourada entalhada (rosetas com estrela, frisos de contas, plaquinha "RENAN SANTOS").
@@ -42,8 +44,9 @@ ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot"
 > Isso não é direita. [pausa]
 > É extrema-direita. [pausa]
 > E na régua ele fica depois até do Bolsonaro.
+> Na direita, quem fica é a Soraya Thronicke.
 
-NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · "DE TERNO, MAS EXTREMA." · a foto salta até depois do Bolsonaro · "EXTREMA-DIREITA" · "DEPOIS ATÉ DO BOLSONARO" · "RÉGUA CORRIGIDA" · visão geral
+NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · "DE TERNO, MAS EXTREMA." · a foto salta até depois do Bolsonaro · "EXTREMA-DIREITA" · "DEPOIS ATÉ DO BOLSONARO" · "RÉGUA CORRIGIDA" · a Soraya Thronicke sobe para o lugar vago na direita · visão geral
 
 ### ÁUDIO #4: A ligação com a ciranda e o fecho (firme, depois baixo e direto)
 > E é aqui que as duas coisas se ligam: enquanto a esquerda cirandeira dança com o centrão, a extrema-direita cresce e troca de roupa.
