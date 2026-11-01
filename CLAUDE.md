@@ -39,3 +39,23 @@ baixadas com `python3 pesquisa/baixar_imagem.py <url> <tema>` (gera `CREDITOS.md
 7. Pré-visualização ao vivo: abra `motor/player.html?cena=<nome>` num navegador.
 
 Quando faltar algo na biblioteca (novo símbolo, transição), adicione em `motor/lib.js` e documente em `identidade/IDENTIDADE.md`, mantendo a identidade.
+
+## Fluxo de cada vídeo (combinado com o autor) — siga sem precisar perguntar
+1. **Pesquisa** (protocolo acima) → **roteiro** em `roteiros/<nome>.md` (áudios #1..#4, "NA TELA", notas de precisão) e `midia/<nome>/FONTES.md`. Enviar o roteiro por extenso na resposta.
+2. **Prévia sem narração**: cena `motor/cenas/<nome>.js` + trilha `audio/<nome>/previa.py` (exporta `trilha(T, N)`). Conferir com `ferramentas/stills.js` em folha pequena antes de renderizar.
+3. **Narração**: o autor manda 4 áudios. Antes de usar, comparar `md5sum` com áudios antigos (já chegaram arquivos repetidos de outros vídeos) e transcrever. Montar com `audio/<nome>/montar.py` (modelos: `audio/cesta-basica/montar.py`, `audio/esquerda-cirandeira/montar.py`): voz acelerada (VEL 1.08–1.20), pausas compactadas, marcas de T por frase falada, CORRECOES da transcrição, legendas.
+4. **Render** em segundo plano (`run_in_background`), comprimir (`-crf 24 -tune grain`) para `saida/<nome>-FINAL.mp4`, enviar e fazer commit/push.
+5. **Capa**: arte do autor + título; conferir o recorte 3:4 do grid (y 240–1680).
+
+## Preferências do autor (valem para todos os vídeos)
+- Legenda: tarja escura do tamanho da frase, filete vermelho, texto bege 48 px, y 1466–1542 (não usar faixa transparente).
+- Nada sobreposto: título y 330, fonte dos dados y 384, conteúdo até y ~1420; crédito de foto logo ABAIXO da foto.
+- Fotos de pessoas: as mais atuais com licença livre (Agência Brasil, Câmara/Senado via Commons, TSE como último recurso); enquadramento MANUAL de cada uma com `ferramentas/enq.py` (rosto inteiro com ombros, sem estourar a borda).
+- Trilha: rock sintetizado (`som.rock`, guitarra + bateria) — o autor não gosta da flauta.
+- Tom: leve/irônico quando pedido; fatos sempre conferidos (lista nominal de votações via dados abertos da Câmara).
+- Duração-alvo ~50–60 s; se a narração não couber, entregar e oferecer versão curta (cortes de apoio, sem regravar).
+
+## Economia de contexto
+- Conversas longas gastam a janela de contexto: **comece uma conversa nova a cada vídeo**. Tudo o que importa está neste arquivo, em `identidade/IDENTIDADE.md`, `ferramentas/LEIA-ME.md`, nos roteiros e no git.
+- Ver imagens só em folhas pequenas; ler arquivos grandes por trechos (`grep`/`sed -n`); renders sempre em segundo plano.
+
