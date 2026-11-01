@@ -28,16 +28,16 @@ window.CENA = {
 
     // os dois cartazes riscados, atrás e menores (recortes da arte: esquerdo x 54–765, direito x 790–1482, y 35–987)
     const R = L.img.riscados;
-    [[54, 765, 285, 950, -7], [790, 1482, 795, 950, 6]].forEach(([x0, x1, cx, cy, ang]) => comSombra(g => {
-      const w = 400, esc = w / (x1 - x0), h = (987 - 35) * esc;
+    [[54, 765, 240, 860, -7], [790, 1482, 840, 860, 6]].forEach(([x0, x1, cx, cy, ang]) => comSombra(g => {
+      const w = 310, esc = w / (x1 - x0), h = (987 - 35) * esc;
       g.translate(cx, cy); g.rotate(ang * Math.PI / 180);
       g.drawImage(R, x0, 35, x1 - x0, 952, -w / 2, -h / 2, w, h);
-    }, 12));
+    }, 10));
 
     // o Renan em evidência, subindo da borda de baixo (recorte: x 155–1393, y 61–1024)
     comSombra(g => {
-      const img = L.img.renan, esc = 0.8, w = img.width * esc, h = img.height * esc;
-      const x = CX - ((155 + 1393) / 2) * esc, y = H - 110 - h;      // sobe 110 px: mãos e rosto dentro do recorte 3:4 do grid (y 240–1680)
+      const img = L.img.renan, esc = 1.02, w = img.width * esc, h = img.height * esc;
+      const x = CX - ((155 + 1393) / 2) * esc, y = H - 105 - h;     // bem grande: as pontas dos dedos podem sair pelas laterais; mãos e rosto no recorte 3:4 (y 240–1680)
       g.drawImage(img, x, y, w, h);
     }, 20);
 
