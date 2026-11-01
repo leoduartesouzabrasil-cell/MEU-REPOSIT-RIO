@@ -15,10 +15,7 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
-T = dict(titulo=0.3, pan=0.5, c1=4.0, c2=4.8, c3=5.6, razao=7.4, dossie=9.6, mbl=10.6, missao=11.4, votos=12.2,
-         f1=14.2, f2=18.0, f3=21.8, f4=26.0, cartaz=30.6, extrema=32.2, corrige=34.6, risco=35.2, pula=35.9,
-         corrigida=38.0, volta=38.9, soraya=39.5, visao=40.6, ciranda=43.0, cresce=45.0, terno=47.0, mesmo=48.8, quadro=51.0, engane=52.6, amigo=53.6, logo=55.8,
-         dur=59.0)
+T = dict(titulo=0.3, pan=0.5, c1=4.0, c2=4.8, c3=5.6, razao=7.4, dossie=9.6, mbl=10.4, missao=11.0, votos=11.6, f1=13.4, f2=16.2, f3=19.0, f4=21.8, f5=24.6, f6=27.4, f7=30.2, cartaz=33.0, extrema=34.4, corrige=36.4, risco=37.0, pula=37.6, corrigida=39.6, volta=40.4, soraya=41.0, visao=41.9, ciranda=44.0, cresce=45.6, terno=47.2, mesmo=48.6, quadro=50.4, engane=51.8, amigo=52.8, logo=55.2, dur=58.6)
 
 
 def trilha(T, N):
@@ -53,11 +50,11 @@ def trilha(T, N):
     soma(sfx, som.carimbo_sfx(), T["razao"], 0.9)
     for t0 in [T["mbl"], T["missao"], T["votos"]]:
         soma(sfx, som.tique(), t0, 0.8)
-    for k in ["f1", "f2", "f3", "f4"]:                    # cada ficha: whoosh, datilografia e a seleção
+    for k in ["f1", "f2", "f3", "f4", "f5", "f6", "f7"]:                    # cada ficha: whoosh, datilografia e a seleção
         soma(sfx, amostra("fast-whoosh-chop"), T[k] - 0.1, 0.5)
         for q in range(14):
             soma(sfx, som.tique(), T[k] + 0.3 + q * 0.05, 0.35)
-        soma(sfx, som.carimbo_sfx(), T[k] + 2.0, 0.5)
+        soma(sfx, som.carimbo_sfx(), T[k] + 1.6, 0.5)
     soma(sfx, amostra("fast-whoosh-chop"), T["cartaz"] - 0.35, 0.75)
     soma(sfx, som.carimbo_sfx(), T["cartaz"] + 0.1, 0.9)
     soma(sfx, amostra("metal-boom-hit"), T["extrema"], 0.7)

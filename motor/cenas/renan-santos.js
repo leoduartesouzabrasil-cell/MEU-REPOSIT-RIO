@@ -6,10 +6,10 @@
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const T = Object.assign({
-  titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4,
-  dossie: 9.6, mbl: 10.6, missao: 11.4, votos: 12.2, f1: 14.2, f2: 18.0, f3: 21.8, f4: 26.0,
-  cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 38.0, volta: 38.9, soraya: 39.5, visao: 40.6,
-  ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.6, amigo: 53.6, logo: 55.8, dur: 59.0,
+  titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4, dossie: 9.6, mbl: 10.4, missao: 11.0,
+  votos: 11.6, f1: 13.4, f2: 16.2, f3: 19.0, f4: 21.8, f5: 24.6, f6: 27.4, f7: 30.2, cartaz: 33.0,
+  extrema: 34.4, corrige: 36.4, risco: 37.0, pula: 37.6, corrigida: 39.6, volta: 40.4, soraya: 41.0, visao: 41.9, ciranda: 44.0,
+  cresce: 45.6, terno: 47.2, mesmo: 48.6, quadro: 50.4, engane: 51.8, amigo: 52.8, logo: 55.2, dur: 58.6,
 }, (window.TEMPOS || {}).marcas || {});
 
 // a MESMA régua do vídeo da esquerda cirandeira (faixas, fotos, etiquetas e enquadramento manual)
@@ -44,8 +44,14 @@ const FICHAS = [
     'fonte: Correio da Manhã · NSC Total · A Crítica'],
   ['f3', 'PLANO DE GOVERNO (“LIVRO AMARELO”)', ['direito penal do inimigo', '+ superpresídios', 'no modelo do Cecot'], 2, 'O PRESÍDIO DE BUKELE',
     'fonte: Gazeta do Povo · Agência Pública · Congresso em Foco'],
-  ['f4', 'EDUCAÇÃO: O QUE ELE QUER ACABAR', ['fim do Pé-de-Meia', 'fim das cotas', 'fim da autonomia universitária'], [0, 1, 2], null,
-    'fonte: Correio da Manhã · Congresso em Foco · SBT News · iMirante · NC News'],
+  ['f4', 'LIVRO AMARELO, P. 32 · COTAS', ['“Abolir o sistema', 'de cotas na educação', 'brasileira e em geral.”'], 0, 'À CNN, CHAMOU AS COTAS DE “INJUSTAS”',
+    'fonte: plano de governo (TSE) · CNN Brasil · Alma Preta'],
+  ['f5', 'LIVRO AMARELO, P. 32 · UNIVERSIDADES', ['“substituindo a', 'autonomia universitária', 'por uma perspectiva de', 'alinhamento estratégico”'], 1, 'E PROMETEU ACABAR COM O PÉ-DE-MEIA',
+    'fonte: plano de governo (TSE) · Correio da Manhã (Pé-de-Meia)'],
+  ['f6', 'LIVRO AMARELO, P. 31 · CÓDIGO DE CONDUTA DO ESTUDANTE', ['“uniformização', 'comportamental do estudante,', 'com implicações punitivas”'], 2, 'E ESCOLA CIVIL-MILITAR IMPOSTA PELA UNIÃO',
+    'fonte: plano de governo (TSE) · SBT News'],
+  ['f7', 'LIVRO AMARELO, P. 29 · IMPRENSA', ['“Código Unificado', 'de imprensa visando', 'disciplinar o setor”'], 2, null,
+    'fonte: plano de governo (TSE) · Bahia Notícias · MyNews'],
 ];
 const M = '../midia/esquerda-cirandeira/';
 
@@ -218,13 +224,13 @@ window.CENA = {
       ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(-412, -342, 840, 720);
       ctx.fillStyle = '#F4EAD2'; ctx.fillRect(-420, -350, 840, 720);
       ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(-404, -334, 808, 688);
-      L.texto(ctx, `FICHA ${i + 1}/4`, 380, -290, { familia: FONTE.sub, peso: 600, tam: 26, cor: VERM, alinhar: 'right', tracking: 2 });
-      L.texto(ctx, L.datilografar(data, seg(t, t0 + 0.3, t0 + 1.0)), -380, -290, { familia: FONTE.maquina, peso: 400, tam: tamMax(data, FONTE.maquina, 28, 400, 600), cor: TINTA });
+      L.texto(ctx, `FICHA ${i + 1}/${FICHAS.length}`, 380, -290, { familia: FONTE.sub, peso: 600, tam: 26, cor: VERM, alinhar: 'right', tracking: 2 });
+      L.texto(ctx, L.datilografar(data, seg(t, t0 + 0.2, t0 + 0.8)), -380, -290, { familia: FONTE.maquina, peso: 400, tam: tamMax(data, FONTE.maquina, 28, 400, 600), cor: TINTA });
       ctx.fillStyle = TINTA; ctx.fillRect(-380, -258, 760, 3);
       const tamQ = Math.min(96, ...linhas.map(s => L.ajustar(ctx, s, FONTE.serifa, 650, 400))), y0 = -90 - (linhas.length - 3) * 40;
       linhas.forEach((s, j) => {
-        const y = y0 + j * tamQ * 1.15, ws = s.split(' '), ti = t0 + 0.9 + j * 0.45;
-        const ordemSel = Array.isArray(sel) ? sel.indexOf(j) : (j === sel ? 0 : -1), ts = t0 + 2.0 + ordemSel * 0.45;
+        const y = y0 + j * tamQ * 1.15, ws = s.split(' '), ti = t0 + 0.6 + j * 0.3;
+        const ordemSel = Array.isArray(sel) ? sel.indexOf(j) : (j === sel ? 0 : -1), ts = t0 + 1.6 + ordemSel * 0.35;
         if (ordemSel >= 0) {
           L.fonte(ctx, FONTE.serifa, tamQ, 400, 'italic');
           const w = ctx.measureText(s).width;
@@ -232,8 +238,8 @@ window.CENA = {
         }
         L.palavras(ctx, ws.map((p, q) => [p, ti + q * 0.12]), t, 0, y, { tam: tamQ, cor: ordemSel >= 0 && t > ts + 0.3 ? VERM : TINTA, espaco: 0.28 });
       });
-      if (apoio) L.etiqueta(ctx, apoio, 0, 200, seg(t, t0 + 2.4, t0 + 2.7), { cor: '#1F3A5F', corTexto: BEGE, tam: 30 });
-      L.texto(ctx, L.datilografar(fonte, seg(t, t0 + 1.0, t0 + 2.0)), 0, 320, { familia: FONTE.maquina, peso: 400, tam: tamMax(fonte, FONTE.maquina, 22, 400, 740), cor: TINTA, alinhar: 'center' });
+      if (apoio) L.etiqueta(ctx, apoio, 0, 205 + (linhas.length - 3) * 40, seg(t, t0 + 1.9, t0 + 2.2), { cor: '#1F3A5F', corTexto: BEGE, tam: 30 });
+      L.texto(ctx, L.datilografar(fonte, seg(t, t0 + 0.7, t0 + 1.5)), 0, 320, { familia: FONTE.maquina, peso: 400, tam: tamMax(fonte, FONTE.maquina, 22, 400, 740), cor: TINTA, alinhar: 'center' });
       ctx.restore();
     }
 

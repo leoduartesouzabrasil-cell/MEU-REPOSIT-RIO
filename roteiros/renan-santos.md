@@ -7,7 +7,7 @@ Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **
 ## A ideia visual (mesma linguagem do vídeo da esquerda cirandeira; referência: `videos/05-esquerda-cirandeira.mp4`)
 1. **A régua volta:** título carimbado "RENAN SANTOS / É DIREITA?" no topo (como "ESQUERDA CIRANDEIRA?"). Embaixo, a mesma régua, com as mesmas 15 fotos. A câmera corre da esquerda até o Renan Santos, parado na
    DIREITA. Os comentários do post aparecem como etiquetas em volta da foto. Carimbo: "VOCÊS TINHAM RAZÃO."
-2. **O dossiê (ARQUIVO):** foto do Renan em moldura dourada e a ficha (MBL, Missão, 4º lugar). Depois vêm quatro fichas
+2. **O dossiê (ARQUIVO):** foto do Renan em moldura dourada e a ficha (MBL, Missão, 4º lugar). Depois vêm sete fichas
    datilografadas, cada uma com a fala ou o trecho do plano, a palavra-chave selecionada em vermelho e a fonte embaixo.
 3. **A virada (CARTAZ):** fundo vermelho chapado com sol nascente bege. "ISSO NÃO É DIREITA." Depois, uma faixa azul-escura na diagonal com "É EXTREMA-DIREITA." e "DE TERNO, MAS EXTREMA."
 4. **Régua corrigida:** a foto do Renan é riscada na DIREITA, salta por cima de Nikolas, Pavanato, Flávio e Bolsonaro e
@@ -34,11 +34,14 @@ NA TELA: a régua corre até o Renan (DIREITA) · etiquetas "ISSO É EXTREMA-DIR
 > No lançamento da candidatura, ele disse: "nós vamos matar quem roubar".
 > No Jornal Nacional, prometeu um regime de exceção nas favelas.
 > O plano de governo defende o direito penal do inimigo e superpresídios no modelo de Bukele, em El Salvador.
-> E na educação, quer acabar com o Pé-de-Meia, com as cotas e com a autonomia das universidades.
+> No livro de propostas dele, o Livro Amarelo, tem: abolir as cotas "na educação brasileira e em geral";
+> trocar a autonomia das universidades por "alinhamento estratégico";
+> um código de conduta pro estudante, "com implicações punitivas";
+> e um código de imprensa "visando disciplinar o setor".
 
 NA TELA: moldura com a foto · "FUNDADOR DO MBL" · "CANDIDATO DO MISSÃO" · "4º LUGAR · 2,7 MI DE VOTOS" ·
 ficha 1º/8/2026 "nós vamos matar quem roubar" · ficha 26/8/2026 "vai ter um regime de exceção em favelas" ·
-ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot" · ficha da educação "fim do Pé-de-Meia · fim das cotas · fim da autonomia universitária"
+ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot" · ficha p. 32 "Abolir o sistema de cotas…" + "À CNN, CHAMOU AS COTAS DE INJUSTAS" · ficha p. 32 "substituindo a autonomia universitária…" + "E PROMETEU ACABAR COM O PÉ-DE-MEIA" · ficha p. 31 "uniformização comportamental do estudante, com implicações punitivas" + "E ESCOLA CIVIL-MILITAR IMPOSTA PELA UNIÃO" · ficha p. 29 "Código Unificado de imprensa visando disciplinar o setor"
 
 ### ÁUDIO #3: A virada (seco)
 > Isso não é direita. [pausa]
@@ -63,7 +66,7 @@ NA TELA: título "ESQUERDA CIRANDEIRA", a roda e o boneco azul crescendo de tern
   "vai ter um regime de exceção em favelas" (Correio da Manhã, NSC Total e A Crítica), "necessariamente, e no momento certo" saiu do vídeo.
 - "Direito penal do inimigo" e "superpresídios no modelo do Cecot" vêm do plano de governo (Gazeta do Povo, Pública, Congresso em Foco).
   O Cecot é o megapresídio de Nayib Bukele.
-- Educação: fim do Pé-de-Meia (Correio da Manhã; Jornal da Record), fim das cotas (plano: Congresso em Foco, SBT News, iMirante),
-  fim da autonomia universitária (iMirante, NC News, Boca).
+- Fichas 4 a 7: trechos literais do Livro Amarelo (plano registrado no TSE, p. 29, 31 e 32), conferidos no PDF. "Injustas" (CNN e Alma Preta).
+  Pé-de-Meia: Correio da Manhã e Jornal da Record (confirmar 2ª fonte grande).
 - Votos: 2.675.887 no 1º turno (várias fontes; confirmar no TSE antes de postar).
 - Não usar "prendeu, matou" como fala dele: é o título da seção do plano.
