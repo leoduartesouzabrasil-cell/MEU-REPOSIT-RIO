@@ -36,7 +36,7 @@ const RENAN = 10;
 const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PODEMOS-MS', [0.48, 0.42, 0.56]];
 const PULO = 1.8;   // duração do salto do Renan até depois do Bolsonaro
 
-// o dossiê: data/contexto, a fala (linhas), a linha selecionada, apoio e fontes
+// o dossiê: data/contexto, a fala (linhas), a linha selecionada (ou lista de linhas, selecionadas em sequência), apoio e fontes
 const FICHAS = [
   ['f1', '1º/8/2026 · LANÇAMENTO DA CANDIDATURA', ['“Nós vamos', 'matar', 'quem roubar.”'], 1, null,
     'fonte: Estado de Minas/Folhapress · Bem Paraná'],
@@ -44,8 +44,8 @@ const FICHAS = [
     'fonte: Correio da Manhã · NSC Total · A Crítica'],
   ['f3', 'PLANO DE GOVERNO (“LIVRO AMARELO”)', ['direito penal do inimigo', '+ superpresídios', 'no modelo do Cecot'], 2, 'O PRESÍDIO DE BUKELE',
     'fonte: Gazeta do Povo · Agência Pública · Congresso em Foco'],
-  ['f4', 'BOMBA ATÔMICA: SAIR DO TRATADO DE NÃO PROLIFERAÇÃO?', ['“Necessariamente,', 'e no momento', 'certo.”'], 0, null,
-    'fonte: NSC Total (Globo, 26/8/2026) · SBT News'],
+  ['f4', 'EDUCAÇÃO: O QUE ELE QUER ACABAR', ['fim do Pé-de-Meia', 'fim das cotas', 'fim da autonomia universitária'], [0, 1, 2], null,
+    'fonte: Correio da Manhã · Congresso em Foco · SBT News · iMirante · NC News'],
 ];
 const M = '../midia/esquerda-cirandeira/';
 
@@ -221,15 +221,16 @@ window.CENA = {
       L.texto(ctx, `FICHA ${i + 1}/4`, 380, -290, { familia: FONTE.sub, peso: 600, tam: 26, cor: VERM, alinhar: 'right', tracking: 2 });
       L.texto(ctx, L.datilografar(data, seg(t, t0 + 0.3, t0 + 1.0)), -380, -290, { familia: FONTE.maquina, peso: 400, tam: tamMax(data, FONTE.maquina, 28, 400, 600), cor: TINTA });
       ctx.fillStyle = TINTA; ctx.fillRect(-380, -258, 760, 3);
-      const tamQ = Math.min(96, ...linhas.map(s => L.ajustar(ctx, s, FONTE.serifa, 720, 400))), y0 = -90 - (linhas.length - 3) * 40;
+      const tamQ = Math.min(96, ...linhas.map(s => L.ajustar(ctx, s, FONTE.serifa, 650, 400))), y0 = -90 - (linhas.length - 3) * 40;
       linhas.forEach((s, j) => {
         const y = y0 + j * tamQ * 1.15, ws = s.split(' '), ti = t0 + 0.9 + j * 0.45;
-        if (j === sel) {
+        const ordemSel = Array.isArray(sel) ? sel.indexOf(j) : (j === sel ? 0 : -1), ts = t0 + 2.0 + ordemSel * 0.45;
+        if (ordemSel >= 0) {
           L.fonte(ctx, FONTE.serifa, tamQ, 400, 'italic');
           const w = ctx.measureText(s).width;
-          L.selecao(ctx, -w / 2 - 10, y - tamQ * 0.78, w + 20, tamQ * 1.0, seg(t, t0 + 2.0, t0 + 2.5), VERM);
+          L.selecao(ctx, -w / 2 - 10, y - tamQ * 0.78, w + 20, tamQ * 1.0, seg(t, ts, ts + 0.5), VERM);
         }
-        L.palavras(ctx, ws.map((p, q) => [p, ti + q * 0.12]), t, 0, y, { tam: tamQ, cor: j === sel && t > t0 + 2.3 ? VERM : TINTA, espaco: 0.28 });
+        L.palavras(ctx, ws.map((p, q) => [p, ti + q * 0.12]), t, 0, y, { tam: tamQ, cor: ordemSel >= 0 && t > ts + 0.3 ? VERM : TINTA, espaco: 0.28 });
       });
       if (apoio) L.etiqueta(ctx, apoio, 0, 200, seg(t, t0 + 2.4, t0 + 2.7), { cor: '#1F3A5F', corTexto: BEGE, tam: 30 });
       L.texto(ctx, L.datilografar(fonte, seg(t, t0 + 1.0, t0 + 2.0)), 0, 320, { familia: FONTE.maquina, peso: 400, tam: tamMax(fonte, FONTE.maquina, 22, 400, 740), cor: TINTA, alinhar: 'center' });

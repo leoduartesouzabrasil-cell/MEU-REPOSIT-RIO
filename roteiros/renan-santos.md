@@ -34,11 +34,11 @@ NA TELA: a régua corre até o Renan (DIREITA) · etiquetas "ISSO É EXTREMA-DIR
 > No lançamento da candidatura, ele disse: "nós vamos matar quem roubar".
 > No Jornal Nacional, prometeu um regime de exceção nas favelas.
 > O plano de governo defende o direito penal do inimigo e superpresídios no modelo de Bukele, em El Salvador.
-> E ele ainda quer a bomba atômica, e sair do tratado que proíbe ela: "necessariamente, e no momento certo".
+> E na educação, quer acabar com o Pé-de-Meia, com as cotas e com a autonomia das universidades.
 
 NA TELA: moldura com a foto · "FUNDADOR DO MBL" · "CANDIDATO DO MISSÃO" · "4º LUGAR · 2,7 MI DE VOTOS" ·
 ficha 1º/8/2026 "nós vamos matar quem roubar" · ficha 26/8/2026 "vai ter um regime de exceção em favelas" ·
-ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot" · ficha da bomba "necessariamente, e no momento certo"
+ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot" · ficha da educação "fim do Pé-de-Meia · fim das cotas · fim da autonomia universitária"
 
 ### ÁUDIO #3: A virada (seco)
 > Isso não é direita. [pausa]
@@ -60,8 +60,10 @@ NA TELA: título "ESQUERDA CIRANDEIRA", a roda e o boneco azul crescendo de tern
 
 ## Notas de precisão (fontes em midia/renan-santos/FONTES.md)
 - Citações entre aspas são literais e têm duas fontes: "nós vamos matar quem roubar" (EM/Folhapress e Bem Paraná),
-  "vai ter um regime de exceção em favelas" (Correio da Manhã, NSC Total e A Crítica), "necessariamente, e no momento certo" (NSC Total e SBT News).
+  "vai ter um regime de exceção em favelas" (Correio da Manhã, NSC Total e A Crítica), "necessariamente, e no momento certo" saiu do vídeo.
 - "Direito penal do inimigo" e "superpresídios no modelo do Cecot" vêm do plano de governo (Gazeta do Povo, Pública, Congresso em Foco).
   O Cecot é o megapresídio de Nayib Bukele.
+- Educação: fim do Pé-de-Meia (Correio da Manhã; Jornal da Record), fim das cotas (plano: Congresso em Foco, SBT News, iMirante),
+  fim da autonomia universitária (iMirante, NC News, Boca).
 - Votos: 2.675.887 no 1º turno (várias fontes; confirmar no TSE antes de postar).
 - Não usar "prendeu, matou" como fala dele: é o título da seção do plano.
