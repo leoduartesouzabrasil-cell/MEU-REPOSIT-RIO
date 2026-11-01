@@ -385,7 +385,7 @@ window.CENA = {
       L.fundo(ctx, BEGE);
       for (let x = 0; x < 1080; x += 60) { ctx.fillStyle = 'rgba(214,194,154,0.45)'; ctx.fillRect(x, 0, 26, 1920); }   // papel de parede
       ctx.fillStyle = COR.begeEscuro; ctx.fillRect(0, 1560, 1080, 12);                                                      // rodameio
-      const x = 270, y = 490, w = 540, h = 600, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.retrato;   // janela 0,9 = proporção do recorte
+      const x = 270, y = 430, w = 540, h = 600, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.retrato;   // janela 0,9 = proporção do recorte
       // luz da luminária sobre o quadro: halo em retícula (sem gradiente liso)
       ctx.save(); ctx.globalAlpha = 0.55 * p;
       ctx.beginPath(); ctx.moveTo(CX - 90, 440); ctx.lineTo(CX + 90, 440); ctx.lineTo(x + w + 120, y + h * 0.75); ctx.lineTo(x - 120, y + h * 0.75); ctx.closePath(); ctx.clip();
@@ -418,8 +418,8 @@ window.CENA = {
       ctx.restore();
       L.texto(ctx, 'Foto: Renato Pizzutto / Band', CX, y + h + E + 104, { familia: FONTE.maquina, peso: 400, tam: 20, cor: TINTA, alinhar: 'center' });
       // a frase
-      const yF = 1462;
-      if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 100, { tam: 66, cor: TINTA, espaco: 0.3 });
+      const yF = 1405;   // acima da tarja da legenda (y 1466)
+      if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 112, { tam: 64, cor: TINTA, espaco: 0.3 });
       if (t >= T.amigo) L.aplicarCarimbo(ctx, seg(t, T.amigo, T.amigo + 0.3), CX, yF, () =>
         L.texto(ctx, 'ELE NÃO É SEU AMIGO.', CX, yF + 20, { tam: L.ajustar(ctx, 'ELE NÃO É SEU AMIGO.', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 6 }), 241);
     }

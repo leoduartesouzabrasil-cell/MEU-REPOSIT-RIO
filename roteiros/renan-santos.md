@@ -1,8 +1,8 @@
 # Plano + roteiro: "Renan Santos: da direita para a extrema-direita" (continuação da "Esquerda cirandeira")
 
-Duração: 50–60 s (prévia: 59 s) · Reels 1080×1920 · legendado · fecha com o logo O Camarada (encerramento padrão, depois do retrato)
+Duração: ~81 s com a narração inteira (o autor preferiu não cortar; a prévia sem voz tinha 58,6 s) · Reels 1080×1920 · legendado · fecha com o logo O Camarada (encerramento padrão, depois do retrato)
 Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **sem a cena do circo e sem o "radicalize-se"**.
-**Status: prévia sem narração** (falta gravar os 4 áudios).
+**Status: narração gravada e montada** (`audio/renan-santos/montar.py`). Por escolha do autor, a narração entrou inteira, sem cortes: o vídeo tem ~81 s, acima do limite de 60 s.
 
 ## A ideia visual (mesma linguagem do vídeo da esquerda cirandeira; referência: `videos/05-esquerda-cirandeira.mp4`)
 1. **A régua volta:** título carimbado "RENAN SANTOS / É DIREITA?" no topo (como "ESQUERDA CIRANDEIRA?"). Embaixo, a mesma régua, com as mesmas 15 fotos. A câmera corre da esquerda até o Renan Santos, parado na
