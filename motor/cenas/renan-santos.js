@@ -120,9 +120,21 @@ window.CENA = {
     }
     function corTextoFaixa(f) { return FAIXAS[f][1] === '#EBB52A' ? '#9A6F0E' : FAIXAS[f][1]; }
     // bonequinho de ciranda (silhueta); terno = 0..1 veste paletó (lapela bege + gravata)
-    function boneco(x, y, cor, esc = 1, terno = 0) {
+    // rosto = 1 desenha a cabeça com rosto: franja lateral repartida e bigodinho quadrado (referência sutil ao nazismo,
+    // sem nenhum símbolo); usado só no boneco da extrema-direita
+    function boneco(x, y, cor, esc = 1, terno = 0, rosto = 0) {
       ctx.save(); ctx.translate(x, y); ctx.scale(esc, esc); ctx.fillStyle = cor;
       ctx.beginPath(); ctx.arc(0, -52, 26, 0, 7); ctx.fill(); ctx.fillRect(-20, -26, 40, 70);
+      if (rosto) {
+        ctx.save(); ctx.beginPath(); ctx.arc(0, -52, 26, 0, 7); ctx.clip();
+        ctx.fillStyle = COR.begeEscuro; ctx.fillRect(-26, -78, 52, 52);                                        // pele
+        ctx.fillStyle = TINTA;                                                                                 // cabelo: risca à esquerda,
+        ctx.beginPath(); ctx.moveTo(-30, -60); ctx.lineTo(-30, -80); ctx.lineTo(30, -80); ctx.lineTo(30, -66);  // franja caindo na diagonal
+        ctx.quadraticCurveTo(4, -70, -14, -56); ctx.lineTo(-30, -60); ctx.fill();
+        ctx.fillRect(-12, -55, 7, 2.6); ctx.fillRect(5, -55, 7, 2.6);                                          // sobrancelhas
+        ctx.fillRect(-4.5, -42, 9, 5.5);                                                                       // bigodinho quadrado
+        ctx.restore();
+      }
       if (terno > 0) {
         ctx.globalAlpha = terno; ctx.fillStyle = BEGE;
         ctx.beginPath(); ctx.moveTo(-11, -26); ctx.lineTo(11, -26); ctx.lineTo(0, 2); ctx.fill();
@@ -333,7 +345,7 @@ window.CENA = {
         L.etiqueta(ctx, s, x, 1290, 1, { cor, corTexto: ct, tam: 24 }));
       // o boneco da extrema-direita: cresce e veste terno
       const pc = ease.saida(seg(t, T.cresce, T.cresce + 2.2)), esc = lerp(0.7, 3.4, pc);
-      boneco(770, 1190 - 44 * esc, '#1F3A5F', esc, seg(t, T.terno, T.terno + 0.5));
+      boneco(770, 1190 - 44 * esc, '#1F3A5F', esc, seg(t, T.terno, T.terno + 0.5), 1);
       if (t >= T.cresce) L.etiqueta(ctx, 'EXTREMA-DIREITA', 770, 1290, seg(t, T.cresce, T.cresce + 0.3), { cor: '#1F3A5F', corTexto: BEGE, tam: 24 });
       if (t >= T.terno && t < T.mesmo) linha('MUDA O PARTIDO, MUDA O TERNO…', 1385, seg(t, T.terno, T.terno + 1.0), VERM, 36);
       if (t >= T.mesmo) {
