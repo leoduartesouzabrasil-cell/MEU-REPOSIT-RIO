@@ -44,7 +44,9 @@ Quando faltar algo na biblioteca (novo símbolo, transição), adicione em `moto
 Os vídeos finais já publicados ficam em `videos/` (lista em `videos/LEIA-ME.md`). **Antes de criar qualquer vídeo, abra os vídeos de
 lá como referência de design** e mantenha o mesmo padrão. Para comparar, faça uma folha de quadros pequena:
 `ffmpeg -i videos/<arquivo>.mp4 -vf "fps=1/3,scale=216:384" saida/ref/q_%02d.jpg`, junte os quadros com PIL e abra só a folha.
-Se o vídeo novo continua um anterior (ex.: Renan Santos → Esquerda cirandeira), reaproveite a cena e os componentes daquele vídeo.
+Se o vídeo novo continua um anterior (ex.: Renan Santos → Esquerda cirandeira), use aquele vídeo como **base** (padrão visual,
+componentes, a régua), mas **não como cópia**: as cenas e o final são próprios do novo tema (no do Renan: sem circo e sem "radicalize-se").
+Duração máxima: 50 a 60 s.
 
 ## Fluxo de cada vídeo (combinado com o autor) — siga sem precisar perguntar
 1. **Pesquisa** (protocolo acima) → **roteiro** em `roteiros/<nome>.md` (áudios #1..#4, "NA TELA", notas de precisão) e `midia/<nome>/FONTES.md`. Enviar o roteiro por extenso na resposta.

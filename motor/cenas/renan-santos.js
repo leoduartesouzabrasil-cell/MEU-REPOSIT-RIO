@@ -1,5 +1,6 @@
 // "Renan Santos: da direita para a extrema-direita": continuação da "Esquerda cirandeira".
-// A régua volta, os comentários tinham razão, o dossiê mostra as falas e o plano, a régua é corrigida e a ciranda fecha a ligação.
+// Usa aquele vídeo como base (régua, fotos, ciranda), sem copiá-lo: a régua volta, os comentários tinham razão, o dossiê
+// mostra as falas e o plano, a régua é corrigida, a ciranda faz a ligação e o retrato na moldura fecha: "ele não é seu amigo".
 // PRÉVIA sem narração (tempos estimados). Com a narração, os tempos de T vêm de renan-santos.tempos.js.
 // Render: node motor/render.js renan-santos saida/renan-santos.mp4 --audio audio/renan-santos/previa.wav
 //
@@ -8,7 +9,7 @@ const T = Object.assign({
   titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4,
   dossie: 9.6, mbl: 10.6, missao: 11.4, votos: 12.2, f1: 14.2, f2: 18.0, f3: 21.8, f4: 26.0,
   cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 37.4, visao: 39.4,
-  ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, radical: 51.0, comente: 53.4, logo: 56.4, dur: 59.6,
+  ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.8, amigo: 54.0, dur: 58.0,
 }, (window.TEMPOS || {}).marcas || {});
 
 // a MESMA régua do vídeo da esquerda cirandeira (faixas, fotos, etiquetas e enquadramento manual)
@@ -61,14 +62,13 @@ window.CENA = {
     const ESP = 350, wx = i => i * ESP, yR = 1160;
     let arquivo = true;
 
-    const ordem = [[0, abertura], [T.dossie, dossie], [T.cartaz, cartaz], [T.corrige, corrige], [T.ciranda, ciranda],
-      [T.radical, bandeira], [T.logo, final]];
+    const ordem = [[0, abertura], [T.dossie, dossie], [T.cartaz, cartaz], [T.corrige, corrige], [T.ciranda, ciranda], [T.quadro, quadro]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + 1.2, T.mesmo, T.radical, T.logo];
+    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + 1.2, T.mesmo, T.amigo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.dossie, BEGE, -24], [T.cartaz, AMA, 24], [T.corrige, BEGE, -24], [T.ciranda, BEGE, 24], [T.radical, VERM, -24], [T.logo, BEGE, 24]]
+    [[T.dossie, BEGE, -24], [T.cartaz, VERM, 24], [T.corrige, BEGE, -24], [T.ciranda, BEGE, 24], [T.quadro, BEGE, -24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.3));
@@ -220,33 +220,29 @@ window.CENA = {
     }
 
     // ------------------------------------------------ C. CARTAZ: isso não é direita / é extrema-direita
+    // vermelho chapado com sol nascente bege e faixa diagonal (registro CARTAZ da identidade, sem o palco do circo)
     function cartaz(lt, t) {
-      // mesmo palco escuro do circo da esquerda cirandeira: lona listrada em leque, véu de tinta e holofotes
       arquivo = false;
-      L.fundo(ctx, '#2A1410');
-      const n = 18;
-      for (let k = 0; k < n; k++) {
-        const a0 = k * Math.PI / n, a1 = a0 + Math.PI / n;
-        ctx.fillStyle = k % 2 ? VERM : BEGE; ctx.beginPath(); ctx.moveTo(CX, 140);
-        ctx.lineTo(CX + Math.cos(a0) * 2200, 140 + Math.sin(a0) * 2200); ctx.lineTo(CX + Math.cos(a1) * 2200, 140 + Math.sin(a1) * 2200); ctx.fill();
-      }
-      ctx.fillStyle = 'rgba(15,12,11,0.62)'; ctx.fillRect(0, 0, 1080, 1920);
-      const fo = Math.sin(t * 1.3) * 120;
-      [200 + fo, 880 - fo].forEach(x => {
-        const g = ctx.createLinearGradient(0, 250, 0, 1150); g.addColorStop(0, 'rgba(235,181,42,0.45)'); g.addColorStop(1, 'rgba(235,181,42,0.05)');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, 250); ctx.lineTo(CX - 230, 1150); ctx.lineTo(CX + 230, 1150); ctx.fill();
-      });
-      L.aplicarCarimbo(ctx, seg(t, T.cartaz + 0.1, T.cartaz + 0.4), CX, 600, () => {
-        L.texto(ctx, 'ISSO NÃO É', CX, 560, { familia: FONTE.bloco, peso: 400, tam: tamMax('ISSO NÃO É', FONTE.bloco, 80, 400), cor: BEGE, alinhar: 'center' });
-        L.texto(ctx, 'DIREITA.', CX, 720, { tam: Math.min(190, L.ajustar(ctx, 'DIREITA.', FONTE.manchete, LARG)), cor: AMA, alinhar: 'center', erro: TINTA, desloc: 7 });
+      L.fundo(ctx, VERM);
+      L.raios(ctx, CX, 1500, 2600, 20, -0.3 + L.emDois(t) * 0.05, 'rgba(237,224,196,0.13)');
+      L.aplicarCarimbo(ctx, seg(t, T.cartaz + 0.1, T.cartaz + 0.4), CX, 640, () => {
+        L.texto(ctx, 'ISSO NÃO É', CX, 590, { familia: FONTE.bloco, peso: 400, tam: tamMax('ISSO NÃO É', FONTE.bloco, 84, 400), cor: BEGE, alinhar: 'center' });
+        L.texto(ctx, 'DIREITA.', CX, 770, { tam: Math.min(220, L.ajustar(ctx, 'DIREITA.', FONTE.manchete, LARG)), cor: AMA, alinhar: 'center', erro: COR.vermelhoEscuro, desloc: 8 });
       }, 211);
       if (t >= T.extrema) {
-        const pe = seg(t, T.extrema, T.extrema + 0.3);
-        ctx.fillStyle = `rgba(15,12,11,${0.5 * pe})`; ctx.fillRect(0, 0, 1080, 1920);
-        // as faixas de bloco, como "CRESCIMENTO DA EXTREMA-DIREITA" no vídeo anterior
-        L.aplicarCarimbo(ctx, pe, CX, 860, () => bloco('É EXTREMA-DIREITA.', 885, BEGE, 72, [COR.azul, 800, 120]), 213);
-        if (t >= T.extrema + 0.7) L.aplicarCarimbo(ctx, seg(t, T.extrema + 0.7, T.extrema + 1.0), CX, 1000, () =>
-          bloco('DE TERNO, MAS EXTREMA.', 1025, BEGE, 56, [VERM, 965, 96]), 215);
+        // a faixa azul-escura (a cor da extrema-direita na régua) atravessa a tela na diagonal
+        const pe = ease.saida(seg(t, T.extrema, T.extrema + 0.3));
+        ctx.save(); ctx.translate(CX, 1010); ctx.rotate(-7 * Math.PI / 180);
+        ctx.fillStyle = TINTA; ctx.fillRect(-760 + (1 - pe) * -1500 + 10, -118, 1520, 250);
+        ctx.fillStyle = COR.azul; ctx.fillRect(-760 + (1 - pe) * -1500, -128, 1520, 250); ctx.restore();
+        L.aplicarCarimbo(ctx, seg(t, T.extrema + 0.15, T.extrema + 0.45), CX, 1010, () => {
+          ctx.save(); ctx.translate(CX, 1010); ctx.rotate(-7 * Math.PI / 180);
+          const tm = tamMax('É EXTREMA-DIREITA.', FONTE.bloco, 96, 400, 860);
+          L.texto(ctx, 'É EXTREMA-DIREITA.', 0, tm * 0.36, { familia: FONTE.bloco, peso: 400, tam: tm, cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 4 });
+          ctx.restore();
+        }, 213);
+        if (t >= T.extrema + 0.8) L.aplicarCarimbo(ctx, seg(t, T.extrema + 0.8, T.extrema + 1.1), CX, 1250, () =>
+          L.texto(ctx, 'DE TERNO, MAS EXTREMA.', CX, 1270, { familia: FONTE.grotesca, peso: 700, tam: tamMax('DE TERNO, MAS EXTREMA.', FONTE.grotesca, 56), cor: BEGE, alinhar: 'center' }), 215);
       }
     }
 
@@ -344,40 +340,56 @@ window.CENA = {
       }
     }
 
-    // ------------------------------------------------ F. radicalize-se (a bandeira do primeiro vídeo)
-    function bandeira(lt, t) {
+    // ------------------------------------------------ F. o retrato na moldura: "não se engane, ele não é seu amigo"
+    // parede de galeria (papel listrado), luminária de quadro, moldura dourada entalhada; o logo fica pequeno no topo
+    function quadro(lt, t) {
       arquivo = false;
-      L.fundo(ctx, COR.carvao);
-      L.raios(ctx, CX, 1900, 2300, 24, -0.4 + L.emDois(t) * 0.06, 'rgba(200,32,30,0.28)');
-      const fx = 170, fy = 840, fw = 760, fh = 440;
-      L.mastro(ctx, fx, fy - 10, 1700, BEGE);
-      for (let i = 0, n2 = 90; i < n2; i++) {
-        const kk = i / n2, ond = Math.sin(kk * 7 - t * 5) * 22 * kk, luz = Math.cos(kk * 7 - t * 5);
-        const mk = L.clamp(0.5 - luz * 0.5) * 0.55;
-        ctx.fillStyle = `rgb(${lerp(200, 138, mk) | 0},${lerp(32, 20, mk) | 0},${lerp(30, 17, mk) | 0})`;
-        ctx.fillRect(fx + 9 + kk * fw, fy + ond, fw / n2 + 1, fh * (1 - kk * 0.12));
-      }
-      const k = 0.17, onda = Math.sin(k * 7 - t * 5) * 22 * k;
-      L.estrelaContorno(ctx, fx + 9 + fw * k, fy + 66 + onda, 38, AMA);
-      L.foiceMartelo(ctx, fx + 9 + fw * k + 4, fy + 195 + onda, 140, AMA);
-      L.aplicarCarimbo(ctx, seg(t, T.radical, T.radical + 0.3), CX, 560, () =>
-        L.texto(ctx, 'RADICALIZE-SE.', CX, 600, { tam: L.ajustar(ctx, 'RADICALIZE-SE.', FONTE.manchete, LARG), cor: BEGE, alinhar: 'center', erro: VERM, desloc: 7 }), 231);
-      if (t >= T.comente) L.aplicarCarimbo(ctx, seg(t, T.comente, T.comente + 0.3), CX, 730, () => {
-        ctx.fillStyle = AMA; ctx.fillRect(X0, 655, LARG, 160);  // logo abaixo do RADICALIZE-SE, como no vídeo anterior
-        L.texto(ctx, 'E VOCÊ: ONDE ELE FICA', CX, 724, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: VERM, alinhar: 'center' });
-        L.texto(ctx, 'NA SUA RÉGUA?', CX, 792, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: TINTA, alinhar: 'center' });
-      }, 233);
-    }
-
-    function final(lt) {
-      L.fundo(ctx, BEGE); arquivo = false;
-      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
-      ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Fotos: Paulo Pinto, Lula Marques, Bruno Peres, Marcelo Camargo, Joédson Alves / Agência Brasil (CC BY 3.0 BR)', 1110],
-        ['Bruno Spada, Kayo Magalhães / Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · Luiza Valente (CC0)', 1150],
-        ['Fontes: Estado de Minas/Folhapress · Correio da Manhã · NSC Total · Gazeta do Povo', 1200],
-        ['Agência Pública · Congresso em Foco · SBT News · Bem Paraná · A Crítica', 1240]].forEach(([s, y]) =>
-        L.texto(ctx, s, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 22, 400), cor: TINTA, alinhar: 'center' }));
+      L.fundo(ctx, BEGE);
+      for (let x = 0; x < 1080; x += 60) { ctx.fillStyle = 'rgba(214,194,154,0.45)'; ctx.fillRect(x, 0, 26, 1920); }   // papel de parede
+      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(0, 1560, 1080, 12);                                                      // rodameio
+      L.imagem(ctx, L.img.logo, CX, 290, 300, seg(lt, 0.2, 0.8));
+      const x = 310, y = 490, w = 460, h = 540, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.renan, z = 1.3;
+      // luz da luminária sobre o quadro: halo em retícula (sem gradiente liso)
+      ctx.save(); ctx.globalAlpha = 0.55 * p;
+      ctx.beginPath(); ctx.moveTo(CX - 90, 440); ctx.lineTo(CX + 90, 440); ctx.lineTo(x + w + 120, y + h * 0.75); ctx.lineTo(x - 120, y + h * 0.75); ctx.closePath(); ctx.clip();
+      L.reticula(ctx, x - 140, 430, w + 280, h, '#F6EBD2', 12, 3.4); ctx.restore();
+      ctx.save(); ctx.translate(0, (1 - p) * 40); ctx.globalAlpha = Math.min(1, p * 1.6);
+      // fio e prego
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 60, y - 70); ctx.lineTo(CX, y - 150); ctx.lineTo(x + w - 60, y - 70); ctx.stroke();
+      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(CX, y - 150, 8, 0, 7); ctx.fill();
+      // moldura entalhada: faixas, frisos de contas e rosetas nos cantos
+      const E = 78;
+      ctx.fillStyle = 'rgba(28,23,20,0.35)'; ctx.fillRect(x - E + 22, y - E + 26, w + 2 * E, h + 2 * E);                  // sombra na parede
+      [[COR.vermelhoEscuro, 0], ['#B98516', 6], [AMA, 14], ['#D9A227', 26], ['#B98516', 40], [AMA, 48], ['#8F6410', 64], [COR.vermelhoEscuro, 72]]
+        .forEach(([c, d]) => { ctx.fillStyle = c; ctx.fillRect(x - E + d, y - E + d, w + 2 * (E - d), h + 2 * (E - d)); });
+      const contas = (d, passo, r, cor) => {
+        ctx.fillStyle = cor;
+        for (let k = x - E + d; k <= x + w + E - d; k += passo) { ctx.beginPath(); ctx.arc(k, y - E + d, r, 0, 7); ctx.arc(k, y + h + E - d, r, 0, 7); ctx.fill(); }
+        for (let k = y - E + d; k <= y + h + E - d; k += passo) { ctx.beginPath(); ctx.arc(x - E + d, k, r, 0, 7); ctx.arc(x + w + E - d, k, r, 0, 7); ctx.fill(); }
+      };
+      contas(20, 16, 3.6, '#FFE08A'); contas(57, 12, 2.6, '#8F6410');
+      [[x - E + 38, y - E + 38], [x + w + E - 38, y - E + 38], [x - E + 38, y + h + E - 38], [x + w + E - 38, y + h + E - 38]].forEach(([cx, cy]) => {
+        ctx.fillStyle = COR.vermelhoEscuro; ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 7); ctx.fill();
+        L.estrela(ctx, cx, cy, 24, 0, AMA); ctx.fillStyle = '#8F6410'; ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 7); ctx.fill();
+      });
+      ctx.fillStyle = TINTA; ctx.fillRect(x - 8, y - 8, w + 16, h + 16);                                                    // passe-partout escuro
+      const s = Math.max(w / img.width, h / img.height) * z, pf = seg(lt, 0.3, 1.3);
+      L.foto(ctx, img, x, y, w, h, { pb: true, zoom: z, desfoque: (1 - pf) * 14, dx: (0.5 - 0.6) * img.width * s, dy: (0.5 - 0.42) * img.height * s });
+      // plaquinha de museu
+      ctx.fillStyle = '#B98516'; ctx.fillRect(CX - 150, y + h + E + 22, 300, 52); ctx.fillStyle = AMA; ctx.fillRect(CX - 144, y + h + E + 28, 288, 40);
+      L.texto(ctx, 'RENAN SANTOS', CX, y + h + E + 58, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
+      ctx.restore();
+      L.texto(ctx, 'Foto: Paulo Pinto / Agência Brasil', CX, y + h + E + 104, { familia: FONTE.maquina, peso: 400, tam: 20, cor: TINTA, alinhar: 'center' });
+      // a frase
+      const yF = 1430;
+      if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 90, { tam: 66, cor: TINTA, espaco: 0.3 });
+      if (t >= T.amigo) L.aplicarCarimbo(ctx, seg(t, T.amigo, T.amigo + 0.3), CX, yF, () =>
+        L.texto(ctx, 'ELE NÃO É SEU AMIGO.', CX, yF + 20, { tam: L.ajustar(ctx, 'ELE NÃO É SEU AMIGO.', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 6 }), 241);
+      // créditos pequenos no rodapé
+      ctx.save(); ctx.globalAlpha = seg(t, T.amigo + 1.0, T.amigo + 1.6);
+      [['Fotos da régua: Agência Brasil (CC BY 3.0 BR) · Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · L. Valente (CC0)', 1610],
+        ['Fontes: Estado de Minas/Folhapress · Correio da Manhã · NSC Total · Gazeta do Povo · Agência Pública · SBT News', 1645]].forEach(([s2, yy]) =>
+        L.texto(ctx, s2, CX, yy, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 19, 400, 900), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }
   },

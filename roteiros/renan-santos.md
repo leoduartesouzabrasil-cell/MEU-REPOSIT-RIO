@@ -1,6 +1,7 @@
 # Plano + roteiro: "Renan Santos: da direita para a extrema-direita" (continuação da "Esquerda cirandeira")
 
-Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O Camarada
+Duração: 50–60 s (prévia: 58 s) · Reels 1080×1920 · legendado · logo O Camarada pequeno no topo do retrato final
+Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **sem a cena do circo e sem o "radicalize-se"**.
 **Status: prévia sem narração** (falta gravar os 4 áudios).
 
 ## A ideia visual (mesma linguagem do vídeo da esquerda cirandeira; referência: `videos/05-esquerda-cirandeira.mp4`)
@@ -8,12 +9,13 @@ Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O
    DIREITA. Os comentários do post aparecem como etiquetas em volta da foto. Carimbo: "VOCÊS TINHAM RAZÃO."
 2. **O dossiê (ARQUIVO):** foto do Renan em moldura dourada e a ficha (MBL, Missão, 4º lugar). Depois vêm quatro fichas
    datilografadas, cada uma com a fala ou o trecho do plano, a palavra-chave selecionada em vermelho e a fonte embaixo.
-3. **A virada (CARTAZ):** o mesmo palco escuro do circo (lona listrada e holofotes). "ISSO NÃO É DIREITA." Depois vêm as faixas de bloco "É EXTREMA-DIREITA." (azul) e "DE TERNO, MAS EXTREMA." (vermelho).
+3. **A virada (CARTAZ):** fundo vermelho chapado com sol nascente bege. "ISSO NÃO É DIREITA." Depois, uma faixa azul-escura na diagonal com "É EXTREMA-DIREITA." e "DE TERNO, MAS EXTREMA."
 4. **Régua corrigida:** a foto do Renan é riscada na DIREITA, sobe, e desce na EXTREMA-DIREITA, ao lado de Nikolas,
    Pavanato, Flávio e Bolsonaro. O anel muda de cor. O lugar dele na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
 5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
-6. **Radicalize-se:** a bandeira vermelha do primeiro vídeo, "RADICALIZE-SE." e "E VOCÊ: ONDE ELE FICA NA SUA RÉGUA?", seguidos do logo.
+6. **O retrato:** parede de galeria, a foto do Renan numa moldura dourada entalhada (rosetas com estrela, frisos de contas, plaquinha "RENAN SANTOS").
+   Embaixo: "Não se engane," e o carimbo "ELE NÃO É SEU AMIGO." O logo fica pequeno no topo e os créditos no rodapé.
 
 ## Roteiro da narração (4 áudios)
 
@@ -43,14 +45,13 @@ ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot"
 
 NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · "DE TERNO, MAS EXTREMA." · a foto pula para a extrema-direita · "RÉGUA CORRIGIDA" · visão geral
 
-### ÁUDIO #4: A ligação com a ciranda (firme)
+### ÁUDIO #4: A ligação com a ciranda e o fecho (firme, depois baixo e direto)
 > E é aqui que as duas coisas se ligam: enquanto a esquerda cirandeira dança com o centrão, a extrema-direita cresce e troca de roupa.
 > Muda o partido, muda o terno… o projeto é o mesmo. [pausa]
-> É hora de se radicalizar.
-> E você: onde ele fica na sua régua? Comenta aí.
+> Então, não se engane: [pausa] ele não é seu amigo.
 
-NA TELA: a roda da ciranda e o boneco azul crescendo de terno · "MUDA O PARTIDO, MUDA O TERNO" · "O PROJETO É O MESMO." ·
-bandeira "RADICALIZE-SE." · "E VOCÊ: ONDE ELE FICA NA SUA RÉGUA?" · logo
+NA TELA: título "ESQUERDA CIRANDEIRA", a roda e o boneco azul crescendo de terno · "MUDA O PARTIDO, MUDA O TERNO…" ·
+"O PROJETO É O MESMO." · retrato na moldura dourada · "Não se engane," · "ELE NÃO É SEU AMIGO."
 
 ---
 
