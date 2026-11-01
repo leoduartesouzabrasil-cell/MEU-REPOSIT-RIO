@@ -8,7 +8,7 @@
 const T = Object.assign({
   titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4,
   dossie: 9.6, mbl: 10.6, missao: 11.4, votos: 12.2, f1: 14.2, f2: 18.0, f3: 21.8, f4: 26.0,
-  cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 37.4, visao: 39.4,
+  cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 38.0, visao: 39.9,
   ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.8, amigo: 54.0, dur: 58.0,
 }, (window.TEMPOS || {}).marcas || {});
 
@@ -32,6 +32,7 @@ const REGUA = [
   ['JAIR BOLSONARO', 'bolsonaro', 4, 'NO FIM DA FILA', [0.377, 0.49, 0.5]],
 ];
 const RENAN = 10;
+const PULO = 1.8;   // duração do salto do Renan até depois do Bolsonaro
 
 // o dossiê: data/contexto, a fala (linhas), a linha selecionada, apoio e fontes
 const FICHAS = [
@@ -64,7 +65,7 @@ window.CENA = {
 
     const ordem = [[0, abertura], [T.dossie, dossie], [T.cartaz, cartaz], [T.corrige, corrige], [T.ciranda, ciranda], [T.quadro, quadro]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + 1.2, T.mesmo, T.amigo];
+    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + PULO, T.mesmo, T.amigo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
@@ -252,12 +253,12 @@ window.CENA = {
       L.camera(ctx, { zoom: 1 + lt * 0.002 }, () => L.planta(ctx, 65, TINTA, 0.06));
       titulo(t >= T.corrigida ? 'RÉGUA CORRIGIDA' : 'A RÉGUA', t >= T.corrigida ? seg(t, T.corrigida, T.corrigida + 0.5) : 1, t >= T.corrigida ? VERM : TINTA);
       cred('fotos: Agência Brasil · Câmara dos Deputados · TSE · Wikimedia Commons (créditos no final)', seg(lt, 0.3, 1.3));
-      const m = ease.saida(seg(t, T.pula, T.pula + 1.2)), mm = seg(t, T.pula, T.pula + 1.2);
-      // posição de cada um: a extrema-direita abre espaço e o Renan entra na frente dela
-      const pos = i => i < RENAN ? wx(i) : i === RENAN ? lerp(wx(RENAN), wx(RENAN + 1), m) : wx(i + m);
+      const m = ease.saida(seg(t, T.pula, T.pula + PULO)), mm = seg(t, T.pula, T.pula + PULO);
+      // posição de cada um: todos ficam onde estão e o Renan salta por cima da extrema-direita até depois do Bolsonaro
+      const pos = i => i === RENAN ? lerp(wx(RENAN), wx(15), m) : wx(i);
       const fim = wx(14 + m);
       const v = ease.saida(seg(t, T.visao, T.visao + 1.4)), total = wx(15);
-      const camX = lerp(lerp(wx(RENAN) + ESP * 0.3, wx(RENAN) + ESP * 0.8, m), total / 2, v);
+      const camX = lerp(lerp(wx(RENAN) + ESP * 0.3, wx(15) - ESP * 0.5, m), total / 2, v);
       const esc = lerp(1, 860 / (total + 300), v), yB = lerp(yR, 980, v);
       const X = w => CX + (w - camX) * esc;
       // a barra: até o centro igual; a direita fica com o lugar vago; a extrema-direita cresce
@@ -286,7 +287,7 @@ window.CENA = {
         ctx.strokeStyle = i === RENAN && mm > 0 && mm < 1 ? 'rgba(0,0,0,0)' : TINTA; ctx.lineWidth = lerp(5, 2, v);
         ctx.beginPath(); ctx.moveTo(x, y + r); ctx.lineTo(x, yB); ctx.stroke();
         retrato(i, x, y, r, lerp(9, 3, v), i === RENAN && mm > 0.5 ? FAIXAS[4][1] : null);
-        if (v < 0.5) {
+        if (v < 0.5 && !(i === RENAN && mm > 0 && mm < 1)) {          // o nome do Renan some durante o salto
           ctx.save(); ctx.globalAlpha = 1 - v * 2;
           L.texto(ctx, nome, x, yB + 120, { familia: FONTE.grotesca, peso: 700, tam: tamMax(nome, FONTE.grotesca, 26, 700, 300), cor: TINTA, alinhar: 'center' });
           ctx.restore();
@@ -301,7 +302,8 @@ window.CENA = {
         }
         if (i === RENAN && mm >= 1 && v < 0.5) {
           ctx.save(); ctx.globalAlpha = 1 - v * 2;
-          L.etiqueta(ctx, 'EXTREMA-DIREITA', x, y - r - 70, seg(t, T.pula + 1.2, T.pula + 1.5), { cor: FAIXAS[4][1], corTexto: BEGE, tam: 34 });
+          L.etiqueta(ctx, 'EXTREMA-DIREITA', x, y - r - 70, seg(t, T.pula + PULO, T.pula + PULO + 0.3), { cor: FAIXAS[4][1], corTexto: BEGE, tam: 34 });
+          L.etiqueta(ctx, 'DEPOIS ATÉ DO BOLSONARO', CX, 1355, seg(t, T.pula + PULO + 0.3, T.pula + PULO + 0.6), { cor: VERM, corTexto: BEGE, tam: 34 });
           ctx.restore();
         }
       });

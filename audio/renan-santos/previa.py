@@ -17,7 +17,7 @@ from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
 T = dict(titulo=0.3, pan=0.5, c1=4.0, c2=4.8, c3=5.6, razao=7.4, dossie=9.6, mbl=10.6, missao=11.4, votos=12.2,
          f1=14.2, f2=18.0, f3=21.8, f4=26.0, cartaz=30.6, extrema=32.2, corrige=34.6, risco=35.2, pula=35.9,
-         corrigida=37.4, visao=39.4, ciranda=43.0, cresce=45.0, terno=47.0, mesmo=48.8, quadro=51.0, engane=52.8, amigo=54.0,
+         corrigida=38.0, visao=39.9, ciranda=43.0, cresce=45.0, terno=47.0, mesmo=48.8, quadro=51.0, engane=52.8, amigo=54.0,
          dur=58.0)
 
 
@@ -64,8 +64,8 @@ def trilha(T, N):
     soma(sfx, som.carimbo_sfx(), T["extrema"] + 0.15, 0.9)
     soma(sfx, amostra("fast-whoosh-chop"), T["corrige"] - 0.35, 0.7)
     soma(sfx, som.carimbo_sfx(), T["risco"], 0.6)
-    soma(sfx, som.riser(1.0), T["pula"] - 0.2, 0.5)
-    soma(sfx, amostra("deep-boom-hit"), T["pula"] + 1.2, 0.8)
+    soma(sfx, som.riser(1.6), T["pula"] - 0.2, 0.5)
+    soma(sfx, amostra("deep-boom-hit"), T["pula"] + 1.8, 0.8)
     soma(sfx, som.carimbo_sfx(), T["corrigida"], 0.8)
     soma(sfx, amostra("reverse-boom-whoosh"), T["visao"] - 1.0, 0.4)
     soma(sfx, amostra("fast-whoosh-chop"), T["ciranda"] - 0.35, 0.7)
