@@ -33,7 +33,7 @@ const REGUA = [
 ];
 const RENAN = 10;
 // quem ocupa o lugar vago na direita depois que o Renan sai (mesmo formato de REGUA; enquadramento manual)
-const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PODEMOS-MS', [0.5, 0.4, 0.6]];
+const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PODEMOS-MS', [0.48, 0.42, 0.56]];
 const PULO = 1.8;   // duração do salto do Renan até depois do Bolsonaro
 
 // o dossiê: data/contexto, a fala (linhas), a linha selecionada, apoio e fontes
@@ -418,7 +418,7 @@ window.CENA = {
         L.texto(ctx, 'ELE NÃO É SEU AMIGO.', CX, yF + 20, { tam: L.ajustar(ctx, 'ELE NÃO É SEU AMIGO.', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 6 }), 241);
       // créditos pequenos no rodapé
       ctx.save(); ctx.globalAlpha = seg(t, T.amigo + 1.0, T.amigo + 1.6);
-      [['Fotos da régua: Agência Brasil (CC BY 3.0 BR) · Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · L. Valente (CC0)', 1610],
+      [['Fotos da régua: Agência Brasil (CC BY 3.0 BR) · Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · L. Valente (CC0) · A. Anholete/Agência Senado (CC BY 2.0)', 1610],
         ['Fontes: Estado de Minas/Folhapress · Correio da Manhã · NSC Total · Gazeta do Povo · Agência Pública · SBT News', 1645]].forEach(([s2, yy]) =>
         L.texto(ctx, s2, CX, yy, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 19, 400, 900), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
