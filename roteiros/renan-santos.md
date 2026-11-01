@@ -3,15 +3,15 @@
 Duração estimada: ~60 s · Reels 1080×1920 · legendado · fecha com o logo O Camarada
 **Status: prévia sem narração** (falta gravar os 4 áudios).
 
-## A ideia visual (mesma linguagem do vídeo da esquerda cirandeira)
-1. **A régua volta:** a mesma régua, com as mesmas 15 fotos. A câmera corre da esquerda até o Renan Santos, parado na
+## A ideia visual (mesma linguagem do vídeo da esquerda cirandeira; referência: `videos/05-esquerda-cirandeira.mp4`)
+1. **A régua volta:** título carimbado "RENAN SANTOS / É DIREITA?" no topo (como "ESQUERDA CIRANDEIRA?"). Embaixo, a mesma régua, com as mesmas 15 fotos. A câmera corre da esquerda até o Renan Santos, parado na
    DIREITA. Os comentários do post aparecem como etiquetas em volta da foto. Carimbo: "VOCÊS TINHAM RAZÃO."
 2. **O dossiê (ARQUIVO):** foto do Renan em moldura dourada e a ficha (MBL, Missão, 4º lugar). Depois vêm quatro fichas
    datilografadas, cada uma com a fala ou o trecho do plano, a palavra-chave selecionada em vermelho e a fonte embaixo.
-3. **A virada (CARTAZ):** raios vermelhos. "ISSO NÃO É DIREITA." Na sequência, em Russo One: "É EXTREMA-DIREITA."
+3. **A virada (CARTAZ):** o mesmo palco escuro do circo (lona listrada e holofotes). "ISSO NÃO É DIREITA." Depois vêm as faixas de bloco "É EXTREMA-DIREITA." (azul) e "DE TERNO, MAS EXTREMA." (vermelho).
 4. **Régua corrigida:** a foto do Renan é riscada na DIREITA, sobe, e desce na EXTREMA-DIREITA, ao lado de Nikolas,
    Pavanato, Flávio e Bolsonaro. O anel muda de cor. O lugar dele na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
-5. **A ligação com a ciranda:** a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
+5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
 6. **Radicalize-se:** a bandeira vermelha do primeiro vídeo, "RADICALIZE-SE." e "E VOCÊ: ONDE ELE FICA NA SUA RÉGUA?", seguidos do logo.
 
@@ -41,7 +41,7 @@ ficha do plano "direito penal do inimigo" + "superpresídios no modelo do Cecot"
 > É extrema-direita. [pausa]
 > Régua corrigida.
 
-NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · a foto pula para a extrema-direita · "RÉGUA CORRIGIDA" · visão geral
+NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · "DE TERNO, MAS EXTREMA." · a foto pula para a extrema-direita · "RÉGUA CORRIGIDA" · visão geral
 
 ### ÁUDIO #4: A ligação com a ciranda (firme)
 > E é aqui que as duas coisas se ligam: enquanto a esquerda cirandeira dança com o centrão, a extrema-direita cresce e troca de roupa.

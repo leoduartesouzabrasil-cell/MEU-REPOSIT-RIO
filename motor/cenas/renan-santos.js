@@ -149,16 +149,20 @@ window.CENA = {
     function abertura(lt, t) {
       L.fundo(ctx, BEGE);
       L.camera(ctx, { zoom: 1 + lt * 0.003 }, () => L.planta(ctx, 63, TINTA, 0.06));
-      titulo('LEMBRA DA RÉGUA?', seg(t, T.titulo, T.titulo + 0.6));
-      cred('do vídeo "esquerda cirandeira"', seg(t, T.titulo + 0.6, T.titulo + 1.6));
+      cred('a régua do vídeo "esquerda cirandeira"', seg(t, T.titulo + 0.5, T.titulo + 1.5));
+      // título carimbado no topo, como na abertura da esquerda cirandeira
+      L.aplicarCarimbo(ctx, seg(t, T.titulo, T.titulo + 0.3), CX, 520, () => {
+        L.texto(ctx, 'RENAN SANTOS', CX, 500, { familia: FONTE.bloco, peso: 400, tam: 84, cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, 'É DIREITA?', CX, 630, { tam: Math.min(150, L.ajustar(ctx, 'É DIREITA?', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 });
+      }, 199);
       const pan = seg(t, T.pan, T.pan + 2.6), e = pan < 0.5 ? 4 * pan ** 3 : 1 - (-2 * pan + 2) ** 3 / 2;
       const camX = lerp(wx(1), wx(RENAN), e), X = w => CX + (w - camX);
       reguaInteira(X);
       const xr = X(wx(RENAN)), yr = yR - 300;
       if (pan >= 1) L.selecao(ctx, xr - 140, yr - 140, 280, 280, seg(t, T.pan + 2.6, T.pan + 3.1), VERM);
-      // os comentários do post, empilhados acima da foto
-      [['ISSO É EXTREMA-DIREITA', T.c1, VERM, -70], ['RÉGUA ERRADA', T.c2, TINTA, 110], ['RENAN NA DIREITA??', T.c3, TINTA, -40]]
-        .forEach(([s, t0, cor, ox], k) => L.etiqueta(ctx, s, CX + ox, 470 + k * 78, seg(t, t0, t0 + 0.3), { cor, corTexto: BEGE, tam: 30 }));
+      // os comentários do post, embaixo da régua (faixa das etiquetas, acima da legenda)
+      [['ISSO É EXTREMA-DIREITA', T.c1, VERM, 330, 1350], ['RÉGUA ERRADA', T.c2, TINTA, 770, 1350], ['RENAN NA DIREITA??', T.c3, TINTA, CX, 1418]]
+        .forEach(([s, t0, cor, x, y]) => L.etiqueta(ctx, s, x, y, seg(t, t0, t0 + 0.3), { cor, corTexto: BEGE, tam: 28 }));
       if (t >= T.razao) {                                                            // carimbo: vocês tinham razão
         const pa = seg(t, T.razao, T.razao + 0.3);
         ctx.fillStyle = `rgba(15,12,11,${0.85 * pa})`; ctx.fillRect(0, 0, 1080, 1920);
@@ -217,24 +221,32 @@ window.CENA = {
 
     // ------------------------------------------------ C. CARTAZ: isso não é direita / é extrema-direita
     function cartaz(lt, t) {
+      // mesmo palco escuro do circo da esquerda cirandeira: lona listrada em leque, véu de tinta e holofotes
       arquivo = false;
-      L.fundo(ctx, AMA);
-      L.raios(ctx, CX, 1100, 2400, 22, lt * 0.12, 'rgba(200,32,30,0.30)');
-      L.aplicarCarimbo(ctx, seg(t, T.cartaz + 0.1, T.cartaz + 0.4), CX, 640, () => {
-        bloco('ISSO NÃO É', 600, TINTA, 96);
-        L.texto(ctx, 'DIREITA.', CX, 790, { tam: Math.min(230, L.ajustar(ctx, 'DIREITA.', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 });
+      L.fundo(ctx, '#2A1410');
+      const n = 18;
+      for (let k = 0; k < n; k++) {
+        const a0 = k * Math.PI / n, a1 = a0 + Math.PI / n;
+        ctx.fillStyle = k % 2 ? VERM : BEGE; ctx.beginPath(); ctx.moveTo(CX, 140);
+        ctx.lineTo(CX + Math.cos(a0) * 2200, 140 + Math.sin(a0) * 2200); ctx.lineTo(CX + Math.cos(a1) * 2200, 140 + Math.sin(a1) * 2200); ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(15,12,11,0.62)'; ctx.fillRect(0, 0, 1080, 1920);
+      const fo = Math.sin(t * 1.3) * 120;
+      [200 + fo, 880 - fo].forEach(x => {
+        const g = ctx.createLinearGradient(0, 250, 0, 1150); g.addColorStop(0, 'rgba(235,181,42,0.45)'); g.addColorStop(1, 'rgba(235,181,42,0.05)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, 250); ctx.lineTo(CX - 230, 1150); ctx.lineTo(CX + 230, 1150); ctx.fill();
+      });
+      L.aplicarCarimbo(ctx, seg(t, T.cartaz + 0.1, T.cartaz + 0.4), CX, 600, () => {
+        L.texto(ctx, 'ISSO NÃO É', CX, 560, { familia: FONTE.bloco, peso: 400, tam: tamMax('ISSO NÃO É', FONTE.bloco, 80, 400), cor: BEGE, alinhar: 'center' });
+        L.texto(ctx, 'DIREITA.', CX, 720, { tam: Math.min(190, L.ajustar(ctx, 'DIREITA.', FONTE.manchete, LARG)), cor: AMA, alinhar: 'center', erro: TINTA, desloc: 7 });
       }, 211);
       if (t >= T.extrema) {
         const pe = seg(t, T.extrema, T.extrema + 0.3);
-        // a faixa vermelha entra na diagonal, como no cartaz soviético
-        ctx.save(); ctx.translate(CX, 1060); ctx.rotate(-6 * Math.PI / 180);
-        ctx.fillStyle = VERM; ctx.fillRect(-700 + (1 - ease.saida(pe)) * -1400, -150, 1400, 300); ctx.restore();
-        L.aplicarCarimbo(ctx, seg(t, T.extrema + 0.15, T.extrema + 0.45), CX, 1060, () => {
-          ctx.save(); ctx.translate(CX, 1060); ctx.rotate(-6 * Math.PI / 180);
-          L.texto(ctx, 'É EXTREMA-', 0, -10, { familia: FONTE.bloco, peso: 400, tam: tamMax('É EXTREMA-', FONTE.bloco, 120, 400, 800), cor: BEGE, alinhar: 'center', erro: COR.vermelhoEscuro, desloc: 5 });
-          L.texto(ctx, 'DIREITA.', 0, 120, { familia: FONTE.bloco, peso: 400, tam: tamMax('É EXTREMA-', FONTE.bloco, 120, 400, 800), cor: AMA, alinhar: 'center', erro: COR.vermelhoEscuro, desloc: 5 });
-          ctx.restore();
-        }, 213);
+        ctx.fillStyle = `rgba(15,12,11,${0.5 * pe})`; ctx.fillRect(0, 0, 1080, 1920);
+        // as faixas de bloco, como "CRESCIMENTO DA EXTREMA-DIREITA" no vídeo anterior
+        L.aplicarCarimbo(ctx, pe, CX, 860, () => bloco('É EXTREMA-DIREITA.', 885, BEGE, 72, [COR.azul, 800, 120]), 213);
+        if (t >= T.extrema + 0.7) L.aplicarCarimbo(ctx, seg(t, T.extrema + 0.7, T.extrema + 1.0), CX, 1000, () =>
+          bloco('DE TERNO, MAS EXTREMA.', 1025, BEGE, 56, [VERM, 965, 96]), 215);
       }
     }
 
@@ -304,9 +316,14 @@ window.CENA = {
     function ciranda(lt, t) {
       L.fundo(ctx, BEGE);
       L.camera(ctx, { zoom: 1 + lt * 0.006 }, () => L.planta(ctx, 61, TINTA, 0.07));
-      linha('ENQUANTO A ESQUERDA CIRANDEIRA DANÇA…', 470, seg(t, T.ciranda + 0.2, T.ciranda + 1.2), TINTA, 40);
-      if (t >= T.cresce) linha('…A EXTREMA-DIREITA CRESCE E TROCA DE ROUPA', 540, seg(t, T.cresce, T.cresce + 1.2), '#1F3A5F', 40);
-      const n = 12, R = 150, rx = 360, cy = 980, rot = lt * 0.5;
+      // o mesmo título carimbado da abertura da esquerda cirandeira
+      L.aplicarCarimbo(ctx, seg(t, T.ciranda, T.ciranda + 0.3), CX, 520, () => {
+        L.texto(ctx, 'ESQUERDA', CX, 500, { familia: FONTE.bloco, peso: 400, tam: 84, cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, 'CIRANDEIRA', CX, 630, { tam: Math.min(150, L.ajustar(ctx, 'CIRANDEIRA', FONTE.manchete, LARG)), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 });
+      }, 219);
+      if (t < T.cresce) linha('DANÇA COM O CENTRÃO E O MERCADO…', 1385, seg(t, T.ciranda + 0.3, T.ciranda + 1.3), TINTA, 36);
+      else if (t < T.terno) linha('…E A EXTREMA-DIREITA CRESCE E TROCA DE ROUPA', 1385, seg(t, T.cresce, T.cresce + 1.2), '#1F3A5F', 36);
+      const n = 12, R = 160, rx = 360, cy = 980, rot = lt * 0.5;
       ctx.save(); ctx.strokeStyle = TINTA; ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(rx, cy, R, 0, 7); ctx.stroke();
       for (let k = 0; k < n; k++) {
         const a = rot + k * 2 * Math.PI / n;
@@ -314,12 +331,12 @@ window.CENA = {
       }
       ctx.restore();
       [['ESQUERDA', 190, VERM, BEGE], ['CENTRÃO', 360, '#4A6488', BEGE], ['MERCADO', 530, '#B98516', TINTA]].forEach(([s, x, cor, ct]) =>
-        L.etiqueta(ctx, s, x, 1250, 1, { cor, corTexto: ct, tam: 24 }));
+        L.etiqueta(ctx, s, x, 1290, 1, { cor, corTexto: ct, tam: 24 }));
       // o boneco da extrema-direita: cresce e veste terno
       const pc = ease.saida(seg(t, T.cresce, T.cresce + 2.2)), esc = lerp(0.7, 3.4, pc);
       boneco(770, 1190 - 44 * esc, '#1F3A5F', esc, seg(t, T.terno, T.terno + 0.5));
-      if (t >= T.cresce) L.etiqueta(ctx, 'EXTREMA-DIREITA', 770, 1250, seg(t, T.cresce, T.cresce + 0.3), { cor: '#1F3A5F', corTexto: BEGE, tam: 24 });
-      if (t >= T.terno && t < T.mesmo) linha('MUDA O PARTIDO, MUDA O TERNO…', 1370, seg(t, T.terno, T.terno + 1.0), VERM, 40);
+      if (t >= T.cresce) L.etiqueta(ctx, 'EXTREMA-DIREITA', 770, 1290, seg(t, T.cresce, T.cresce + 0.3), { cor: '#1F3A5F', corTexto: BEGE, tam: 24 });
+      if (t >= T.terno && t < T.mesmo) linha('MUDA O PARTIDO, MUDA O TERNO…', 1385, seg(t, T.terno, T.terno + 1.0), VERM, 36);
       if (t >= T.mesmo) {
         const pm = seg(t, T.mesmo, T.mesmo + 0.3);
         ctx.fillStyle = `rgba(15,12,11,${0.82 * pm})`; ctx.fillRect(0, 0, 1080, 1920);
@@ -345,10 +362,10 @@ window.CENA = {
       L.foiceMartelo(ctx, fx + 9 + fw * k + 4, fy + 195 + onda, 140, AMA);
       L.aplicarCarimbo(ctx, seg(t, T.radical, T.radical + 0.3), CX, 560, () =>
         L.texto(ctx, 'RADICALIZE-SE.', CX, 600, { tam: L.ajustar(ctx, 'RADICALIZE-SE.', FONTE.manchete, LARG), cor: BEGE, alinhar: 'center', erro: VERM, desloc: 7 }), 231);
-      if (t >= T.comente) L.aplicarCarimbo(ctx, seg(t, T.comente, T.comente + 0.3), CX, 1380, () => {
-        ctx.fillStyle = AMA; ctx.fillRect(X0, 1300, LARG, 170);
-        L.texto(ctx, 'E VOCÊ: ONDE ELE FICA', CX, 1372, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: VERM, alinhar: 'center' });
-        L.texto(ctx, 'NA SUA RÉGUA?', CX, 1442, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: TINTA, alinhar: 'center' });
+      if (t >= T.comente) L.aplicarCarimbo(ctx, seg(t, T.comente, T.comente + 0.3), CX, 730, () => {
+        ctx.fillStyle = AMA; ctx.fillRect(X0, 655, LARG, 160);  // logo abaixo do RADICALIZE-SE, como no vídeo anterior
+        L.texto(ctx, 'E VOCÊ: ONDE ELE FICA', CX, 724, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: VERM, alinhar: 'center' });
+        L.texto(ctx, 'NA SUA RÉGUA?', CX, 792, { familia: FONTE.bloco, peso: 400, tam: tamMax('E VOCÊ: ONDE ELE FICA', FONTE.bloco, 56, 400, LARG - 60), cor: TINTA, alinhar: 'center' });
       }, 233);
     }
 
