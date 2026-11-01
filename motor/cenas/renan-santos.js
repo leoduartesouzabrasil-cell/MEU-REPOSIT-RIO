@@ -54,6 +54,7 @@ window.CENA = {
     dilma: M + 'dilma-2026.jpg', lula: M + 'lula-2026.jpg', janones: M + 'janones-2026.jpg', alckmin: M + 'alckmin-2026.jpg',
     ciro: M + 'ciro-2026-tse.jpg', alcolumbre: M + 'alcolumbre-2026.jpg', renan: M + 'renan-2026.jpg', nikolas: M + 'nikolas-2026.jpg',
     pavanato: M + 'pavanato-2026-tse.jpg', flavio: M + 'flavio-2026.jpg', bolsonaro: M + 'bolsonaro-2025.jpg',
+    retrato: '../midia/renan-santos/renan-debate-band-2026.jpg',   // debate da Band (recorte manual 850×944)
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -349,16 +350,16 @@ window.CENA = {
       L.fundo(ctx, BEGE);
       for (let x = 0; x < 1080; x += 60) { ctx.fillStyle = 'rgba(214,194,154,0.45)'; ctx.fillRect(x, 0, 26, 1920); }   // papel de parede
       ctx.fillStyle = COR.begeEscuro; ctx.fillRect(0, 1560, 1080, 12);                                                      // rodameio
-      L.imagem(ctx, L.img.logo, CX, 290, 300, seg(lt, 0.2, 0.8));
-      const x = 310, y = 490, w = 460, h = 540, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.renan, z = 1.3;
+      L.imagem(ctx, L.img.logo, CX, 262, 280, seg(lt, 0.2, 0.8));
+      const x = 270, y = 490, w = 540, h = 600, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.retrato;   // janela 0,9 = proporção do recorte
       // luz da luminária sobre o quadro: halo em retícula (sem gradiente liso)
       ctx.save(); ctx.globalAlpha = 0.55 * p;
       ctx.beginPath(); ctx.moveTo(CX - 90, 440); ctx.lineTo(CX + 90, 440); ctx.lineTo(x + w + 120, y + h * 0.75); ctx.lineTo(x - 120, y + h * 0.75); ctx.closePath(); ctx.clip();
       L.reticula(ctx, x - 140, 430, w + 280, h, '#F6EBD2', 12, 3.4); ctx.restore();
       ctx.save(); ctx.translate(0, (1 - p) * 40); ctx.globalAlpha = Math.min(1, p * 1.6);
       // fio e prego
-      ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 60, y - 70); ctx.lineTo(CX, y - 150); ctx.lineTo(x + w - 60, y - 70); ctx.stroke();
-      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(CX, y - 150, 8, 0, 7); ctx.fill();
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 60, y - 70); ctx.lineTo(CX, y - 118); ctx.lineTo(x + w - 60, y - 70); ctx.stroke();
+      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(CX, y - 118, 8, 0, 7); ctx.fill();
       // moldura entalhada: faixas, frisos de contas e rosetas nos cantos
       const E = 78;
       ctx.fillStyle = 'rgba(28,23,20,0.35)'; ctx.fillRect(x - E + 22, y - E + 26, w + 2 * E, h + 2 * E);                  // sombra na parede
@@ -375,16 +376,16 @@ window.CENA = {
         L.estrela(ctx, cx, cy, 24, 0, AMA); ctx.fillStyle = '#8F6410'; ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 7); ctx.fill();
       });
       ctx.fillStyle = TINTA; ctx.fillRect(x - 8, y - 8, w + 16, h + 16);                                                    // passe-partout escuro
-      const s = Math.max(w / img.width, h / img.height) * z, pf = seg(lt, 0.3, 1.3);
-      L.foto(ctx, img, x, y, w, h, { pb: true, zoom: z, desfoque: (1 - pf) * 14, dx: (0.5 - 0.6) * img.width * s, dy: (0.5 - 0.42) * img.height * s });
+      const pf = seg(lt, 0.3, 1.3);
+      L.foto(ctx, img, x, y, w, h, { pb: true, seletiva: 'amarelo', desfoque: (1 - pf) * 14 });   // P&B com cor seletiva: só a gravata e o broche R14 ficam amarelos
       // plaquinha de museu
       ctx.fillStyle = '#B98516'; ctx.fillRect(CX - 150, y + h + E + 22, 300, 52); ctx.fillStyle = AMA; ctx.fillRect(CX - 144, y + h + E + 28, 288, 40);
       L.texto(ctx, 'RENAN SANTOS', CX, y + h + E + 58, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
       ctx.restore();
-      L.texto(ctx, 'Foto: Paulo Pinto / Agência Brasil', CX, y + h + E + 104, { familia: FONTE.maquina, peso: 400, tam: 20, cor: TINTA, alinhar: 'center' });
+      L.texto(ctx, 'Foto: Renato Pizzutto / Band', CX, y + h + E + 104, { familia: FONTE.maquina, peso: 400, tam: 20, cor: TINTA, alinhar: 'center' });
       // a frase
-      const yF = 1430;
-      if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 90, { tam: 66, cor: TINTA, espaco: 0.3 });
+      const yF = 1462;
+      if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 100, { tam: 66, cor: TINTA, espaco: 0.3 });
       if (t >= T.amigo) L.aplicarCarimbo(ctx, seg(t, T.amigo, T.amigo + 0.3), CX, yF, () =>
         L.texto(ctx, 'ELE NÃO É SEU AMIGO.', CX, yF + 20, { tam: L.ajustar(ctx, 'ELE NÃO É SEU AMIGO.', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 6 }), 241);
       // créditos pequenos no rodapé

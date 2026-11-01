@@ -14,7 +14,7 @@ Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **
    desce na ponta da régua, **depois do Bolsonaro** (etiqueta "DEPOIS ATÉ DO BOLSONARO"). O anel muda de cor. O lugar dele na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
 5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
-6. **O retrato:** parede de galeria, a foto do Renan numa moldura dourada entalhada (rosetas com estrela, frisos de contas, plaquinha "RENAN SANTOS").
+6. **O retrato:** parede de galeria, a foto do Renan no debate da Band (dando de ombros; Renato Pizzutto/Band, recorte manual, P&B com só a gravata e o broche R14 em amarelo) numa moldura dourada entalhada (rosetas com estrela, frisos de contas, plaquinha "RENAN SANTOS").
    Embaixo: "Não se engane," e o carimbo "ELE NÃO É SEU AMIGO." O logo fica pequeno no topo e os créditos no rodapé.
 
 ## Roteiro da narração (4 áudios)

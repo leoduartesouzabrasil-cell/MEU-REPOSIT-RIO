@@ -95,7 +95,7 @@ Regras:
 | **Câmera documental** | Pan e zoom lentos sobre planta/foto; a câmera vai até a palavra importante | contínuo |
 | **Foco entrando** | Foto ou retrato começa desfocado e fica nítido (rack focus) | 0,6–1 s |
 | **Ondas + etiquetas** | Ondas concêntricas de sinal; etiquetas de interface surgem com pop ao redor | 0,3 s por etiqueta |
-| **Cor seletiva** | Foto P&B em que um único elemento fica colorido (sempre vermelho, amarelo ou azul da paleta) | estático |
+| **Cor seletiva** | Foto P&B em que um único elemento fica colorido (sempre vermelho, amarelo ou azul da paleta). `L.foto(..., {seletiva})`: `true` = vermelhos, `'quente'` = vermelhos + amarelos, `'amarelo'` = só amarelos (não tinge a pele) | estático |
 | **Moldura** | Retrato de arquivo em moldura dourada (amarelo + vermelho-escuro) na parede bege | estático + zoom |
 
 - Curva padrão: saída forte (`cubic-bezier(.2,.9,.1,1)`): chega rápido e assenta. Nada de ease-in-out suave e genérico.

@@ -343,8 +343,8 @@ function _processar(img, pb, seletiva) {
     for (let i = 0; i < src.data.length; i += 4) {
       const r = src.data[i], gg = src.data[i + 1], b = src.data[i + 2];
       const k = clamp((r - Math.max(gg, b) - 40) / 60);          // quanto "vermelho" é o pixel
-      if (k > 0) { dst.data[i] = lerp(dst.data[i], 200, k); dst.data[i + 1] = lerp(dst.data[i + 1], 32, k); dst.data[i + 2] = lerp(dst.data[i + 2], 30, k); }
-      if (seletiva === 'quente') {                                // também mantém amarelos (vira o amarelo da paleta)
+      if (k > 0 && seletiva !== 'amarelo') { dst.data[i] = lerp(dst.data[i], 200, k); dst.data[i + 1] = lerp(dst.data[i + 1], 32, k); dst.data[i + 2] = lerp(dst.data[i + 2], 30, k); }
+      if (seletiva === 'quente' || seletiva === 'amarelo') {      // mantém amarelos (vira o amarelo da paleta); 'amarelo' = só amarelo, sem o vermelho (não pega pele)
         const ka = clamp((Math.min(r, gg) - b - 60) / 50) * clamp((gg - 0.45 * r) / 40);
         if (ka > 0) { dst.data[i] = lerp(dst.data[i], 235, ka); dst.data[i + 1] = lerp(dst.data[i + 1], 181, ka); dst.data[i + 2] = lerp(dst.data[i + 2], 42, ka); }
       }
