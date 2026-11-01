@@ -17,8 +17,8 @@ from trilha import amostra  # noqa: E402  (amostras do Soundza em audio/sfx)
 
 T = dict(titulo=0.3, pan=0.5, c1=4.0, c2=4.8, c3=5.6, razao=7.4, dossie=9.6, mbl=10.6, missao=11.4, votos=12.2,
          f1=14.2, f2=18.0, f3=21.8, f4=26.0, cartaz=30.6, extrema=32.2, corrige=34.6, risco=35.2, pula=35.9,
-         corrigida=38.0, volta=38.9, soraya=39.5, visao=40.6, ciranda=43.0, cresce=45.0, terno=47.0, mesmo=48.8, quadro=51.0, engane=52.8, amigo=54.0,
-         dur=58.0)
+         corrigida=38.0, volta=38.9, soraya=39.5, visao=40.6, ciranda=43.0, cresce=45.0, terno=47.0, mesmo=48.8, quadro=51.0, engane=52.6, amigo=53.6, logo=55.8,
+         dur=59.0)
 
 
 def trilha(T, N):
@@ -36,7 +36,7 @@ def trilha(T, N):
     soma(mus, som.rock(T["quadro"] - T["ciranda"], bpm=112, riff=((E, 4), (Bb, 4)), intensidade=0.7, meio_tempo=True), T["ciranda"])
     # retrato na moldura: a banda para; um acorde aberto soa e some, e o prato marca "ele não é seu amigo"
     soma(mus, som.rock(1.6, bpm=132, riff=((E, 8),), intensidade=0.8, abafado=False), T["quadro"], 0.7)
-    for t0 in [T["dossie"], T["cartaz"], T["quadro"], T["amigo"]]:
+    for t0 in [T["dossie"], T["cartaz"], T["quadro"], T["amigo"], T["logo"]]:
         soma(mus, som.prato(0.9), t0, 0.8)
     soma(mus, som.drone(dur, 41.2, 0.2), 0, 0.25)
 
@@ -81,7 +81,9 @@ def trilha(T, N):
         soma(sfx, som.tique(), T["engane"] + k * 0.15, 0.6)
     soma(sfx, amostra("deep-boom-hit"), T["amigo"], 0.9)
     soma(sfx, som.carimbo_sfx(), T["amigo"], 0.9)
-    soma(sfx, som.sino_grave(), T["amigo"] + 0.2, 0.8)
+    soma(sfx, amostra("fast-whoosh-chop"), T["logo"] - 0.35, 0.6)
+    soma(sfx, som.carimbo_sfx(), T["logo"], 0.8)
+    soma(sfx, som.sino_grave(), T["logo"] - 0.1, 0.9)
     return mus, sfx
 
 

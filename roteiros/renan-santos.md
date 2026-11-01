@@ -1,6 +1,6 @@
 # Plano + roteiro: "Renan Santos: da direita para a extrema-direita" (continuação da "Esquerda cirandeira")
 
-Duração: 50–60 s (prévia: 58 s) · Reels 1080×1920 · legendado · logo O Camarada pequeno no topo do retrato final
+Duração: 50–60 s (prévia: 59 s) · Reels 1080×1920 · legendado · fecha com o logo O Camarada (encerramento padrão, depois do retrato)
 Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **sem a cena do circo e sem o "radicalize-se"**.
 **Status: prévia sem narração** (falta gravar os 4 áudios).
 
@@ -17,7 +17,7 @@ Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **
 5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
 6. **O retrato:** parede de galeria, a foto do Renan no debate da Band (dando de ombros; Renato Pizzutto/Band, recorte manual, P&B com só a gravata e o broche R14 em amarelo) numa moldura dourada entalhada (rosetas com estrela, frisos de contas, plaquinha "RENAN SANTOS").
-   Embaixo: "Não se engane," e o carimbo "ELE NÃO É SEU AMIGO." O logo fica pequeno no topo e os créditos no rodapé.
+   Embaixo: "Não se engane," e o carimbo "ELE NÃO É SEU AMIGO." Em seguida, o encerramento padrão: logo O Camarada carimbado, com os créditos de fotos e fontes embaixo.
 
 ## Roteiro da narração (4 áudios)
 
@@ -54,7 +54,7 @@ NA TELA: CARTAZ "ISSO NÃO É DIREITA." · "É EXTREMA-DIREITA." · "DE TERNO, M
 > Então, não se engane: [pausa] ele não é seu amigo.
 
 NA TELA: título "ESQUERDA CIRANDEIRA", a roda e o boneco azul crescendo de terno · "MUDA O PARTIDO, MUDA O TERNO…" ·
-"O PROJETO É O MESMO." · retrato na moldura dourada · "Não se engane," · "ELE NÃO É SEU AMIGO."
+"O PROJETO É O MESMO." · retrato na moldura dourada · "Não se engane," · "ELE NÃO É SEU AMIGO." · logo O Camarada
 
 ---
 

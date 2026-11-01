@@ -9,7 +9,7 @@ const T = Object.assign({
   titulo: 0.3, pan: 0.5, c1: 4.0, c2: 4.8, c3: 5.6, razao: 7.4,
   dossie: 9.6, mbl: 10.6, missao: 11.4, votos: 12.2, f1: 14.2, f2: 18.0, f3: 21.8, f4: 26.0,
   cartaz: 30.6, extrema: 32.2, corrige: 34.6, risco: 35.2, pula: 35.9, corrigida: 38.0, volta: 38.9, soraya: 39.5, visao: 40.6,
-  ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.8, amigo: 54.0, dur: 58.0,
+  ciranda: 43.0, cresce: 45.0, terno: 47.0, mesmo: 48.8, quadro: 51.0, engane: 52.6, amigo: 53.6, logo: 55.8, dur: 59.0,
 }, (window.TEMPOS || {}).marcas || {});
 
 // a MESMA régua do vídeo da esquerda cirandeira (faixas, fotos, etiquetas e enquadramento manual)
@@ -67,13 +67,13 @@ window.CENA = {
     const ESP = 350, wx = i => i * ESP, yR = 1160;
     let arquivo = true;
 
-    const ordem = [[0, abertura], [T.dossie, dossie], [T.cartaz, cartaz], [T.corrige, corrige], [T.ciranda, ciranda], [T.quadro, quadro]];
+    const ordem = [[0, abertura], [T.dossie, dossie], [T.cartaz, cartaz], [T.corrige, corrige], [T.ciranda, ciranda], [T.quadro, quadro], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + PULO, T.mesmo, T.amigo];
+    const IMP = [T.razao, T.cartaz, T.extrema, T.pula + PULO, T.mesmo, T.amigo, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.dossie, BEGE, -24], [T.cartaz, VERM, 24], [T.corrige, BEGE, -24], [T.ciranda, BEGE, 24], [T.quadro, BEGE, -24]]
+    [[T.dossie, BEGE, -24], [T.cartaz, VERM, 24], [T.corrige, BEGE, -24], [T.ciranda, BEGE, 24], [T.quadro, BEGE, -24], [T.logo, BEGE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.08);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.3));
@@ -372,13 +372,12 @@ window.CENA = {
     }
 
     // ------------------------------------------------ F. o retrato na moldura: "não se engane, ele não é seu amigo"
-    // parede de galeria (papel listrado), luminária de quadro, moldura dourada entalhada; o logo fica pequeno no topo
+    // parede de galeria (papel listrado), luz de luminária, moldura dourada entalhada; depois vem o encerramento com o logo
     function quadro(lt, t) {
       arquivo = false;
       L.fundo(ctx, BEGE);
       for (let x = 0; x < 1080; x += 60) { ctx.fillStyle = 'rgba(214,194,154,0.45)'; ctx.fillRect(x, 0, 26, 1920); }   // papel de parede
       ctx.fillStyle = COR.begeEscuro; ctx.fillRect(0, 1560, 1080, 12);                                                      // rodameio
-      L.imagem(ctx, L.img.logo, CX, 262, 280, seg(lt, 0.2, 0.8));
       const x = 270, y = 490, w = 540, h = 600, p = ease.saida(seg(lt, 0, 0.7)), img = L.img.retrato;   // janela 0,9 = proporção do recorte
       // luz da luminária sobre o quadro: halo em retícula (sem gradiente liso)
       ctx.save(); ctx.globalAlpha = 0.55 * p;
@@ -416,11 +415,19 @@ window.CENA = {
       if (t >= T.engane) L.palavras(ctx, [['Não', T.engane], ['se', T.engane + 0.15], ['engane,', T.engane + 0.3]], t, CX, yF - 100, { tam: 66, cor: TINTA, espaco: 0.3 });
       if (t >= T.amigo) L.aplicarCarimbo(ctx, seg(t, T.amigo, T.amigo + 0.3), CX, yF, () =>
         L.texto(ctx, 'ELE NÃO É SEU AMIGO.', CX, yF + 20, { tam: L.ajustar(ctx, 'ELE NÃO É SEU AMIGO.', FONTE.manchete, LARG), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 6 }), 241);
-      // créditos pequenos no rodapé
-      ctx.save(); ctx.globalAlpha = seg(t, T.amigo + 1.0, T.amigo + 1.6);
-      [['Fotos da régua: Agência Brasil (CC BY 3.0 BR) · Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · L. Valente (CC0) · A. Anholete/Agência Senado (CC BY 2.0)', 1610],
-        ['Fontes: Estado de Minas/Folhapress · Correio da Manhã · NSC Total · Gazeta do Povo · Agência Pública · SBT News', 1645]].forEach(([s2, yy]) =>
-        L.texto(ctx, s2, CX, yy, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 19, 400, 900), cor: TINTA, alinhar: 'center' }));
+    }
+
+    // ------------------------------------------------ G. encerramento padrão: logo O Camarada carimbado + créditos (como todos os vídeos)
+    function final(lt) {
+      L.fundo(ctx, BEGE); arquivo = false;
+      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
+      ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
+      [['Fotos: Paulo Pinto, Lula Marques, Bruno Peres, Marcelo Camargo, Joédson Alves / Agência Brasil (CC BY 3.0 BR)', 1110],
+        ['Bruno Spada, Kayo Magalhães / Câmara dos Deputados (CC BY 3.0) · TSE (CC BY 4.0) · Luiza Valente (CC0)', 1150],
+        ['Andressa Anholete / Agência Senado (CC BY 2.0) · Renato Pizzutto / Band', 1190],
+        ['Fontes: Estado de Minas/Folhapress · Correio da Manhã · NSC Total · Gazeta do Povo', 1240],
+        ['Agência Pública · Congresso em Foco · SBT News · Bem Paraná · A Crítica', 1280]].forEach(([s2, y]) =>
+        L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 22, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }
   },
