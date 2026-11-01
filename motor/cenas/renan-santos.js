@@ -33,7 +33,7 @@ const REGUA = [
 ];
 const RENAN = 10;
 // quem ocupa o lugar vago na direita depois que o Renan sai (mesmo formato de REGUA; enquadramento manual)
-const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PODEMOS-MS', [0.48, 0.42, 0.56]];
+const SORAYA = ['SORAYA THRONICKE', 'soraya', 3, 'SENADORA · PSB-MS', [0.48, 0.42, 0.56]];
 const PULO = 1.8;   // duração do salto do Renan até depois do Bolsonaro
 
 // o dossiê: data/contexto, a fala (linhas), a linha selecionada (ou lista de linhas, selecionadas em sequência), apoio e fontes

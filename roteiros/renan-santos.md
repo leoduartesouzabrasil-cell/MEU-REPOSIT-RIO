@@ -12,7 +12,7 @@ Usa a esquerda cirandeira como **base** (régua, fotos, ciranda), sem copiar: **
 3. **A virada (CARTAZ):** fundo vermelho chapado com sol nascente bege. "ISSO NÃO É DIREITA." Depois, uma faixa azul-escura na diagonal com "É EXTREMA-DIREITA." e "DE TERNO, MAS EXTREMA."
 4. **Régua corrigida:** a foto do Renan é riscada na DIREITA, salta por cima de Nikolas, Pavanato, Flávio e Bolsonaro e
    desce na ponta da régua, **depois do Bolsonaro** (etiqueta "DEPOIS ATÉ DO BOLSONARO").
-   A câmera volta ao lugar vago na DIREITA e a foto da **Soraya Thronicke** sobe para ele (etiqueta "SENADORA · PODEMOS-MS").
+   A câmera volta ao lugar vago na DIREITA e a foto da **Soraya Thronicke** sobe para ele (etiqueta "SENADORA · PSB-MS").
    O anel dele muda de cor. Por um instante o lugar na direita fica vazio, com um "?". Depois, a visão geral da régua inteira.
 5. **A ligação com a ciranda:** volta o título carimbado "ESQUERDA CIRANDEIRA" e a roda do primeiro vídeo (esquerda + centrão + mercado) gira. Ao lado, um boneco azul-escuro
    cresce e veste terno: "A EXTREMA-DIREITA TROCA DE ROUPA".
