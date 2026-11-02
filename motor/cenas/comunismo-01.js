@@ -7,12 +7,15 @@
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const JONES = 16.3;   // o gancho: 0–16,3 s do vídeo do Jones Manoel, numa moldura (o vídeo entra na montagem: juntar.sh)
+// a vinheta entra 0,4 s DEPOIS do fim do vídeo do Jones: o corte diagonal passa por cima do último quadro dele
+// (desenhado na janela), e não por cima do vídeo sobreposto.
+const J0 = JONES + 0.4;
 const T = Object.assign({
-  vin: JONES, fab: JONES + 3.5, tear: JONES + 5.0, crianca: JONES + 6.4, lei: JONES + 7.8, marx: JONES + 10.4, engels: JONES + 11.1, manif: JONES + 12.6,
-  frase: JONES + 14.4, sel: JONES + 16.4, classes: JONES + 18.6, dono: JONES + 19.6, padaria: JONES + 21.0, paes: JONES + 21.8,
-  nenhum: JONES + 24.4, leva: JONES + 25.6, salario: JONES + 27.2, lucro: JONES + 28.0,
-  objetivo: JONES + 30.2, capital: JONES + 32.2, supera: JONES + 34.4, semclasses: JONES + 36.0,
-  meios: JONES + 40.0, seu: JONES + 42.6, iphone: JONES + 44.6, proximo: JONES + 48.0, logo: JONES + 51.6, dur: JONES + 55.2,
+  vin: J0, fab: J0 + 3.5, tear: J0 + 5.0, crianca: J0 + 6.4, lei: J0 + 7.8, marx: J0 + 10.4, engels: J0 + 11.1, manif: J0 + 12.6,
+  frase: J0 + 14.4, sel: J0 + 16.4, classes: J0 + 18.6, dono: J0 + 19.6, padaria: J0 + 21.0, paes: J0 + 21.8,
+  nenhum: J0 + 24.4, leva: J0 + 25.6, salario: J0 + 27.2, lucro: J0 + 28.0, semdono: J0 + 29.4, sempadeiro: J0 + 31.0, indisp: J0 + 32.4,
+  objetivo: J0 + 34.6, capital: J0 + 36.6, supera: J0 + 38.8, semclasses: J0 + 40.4,
+  meios: J0 + 44.4, seu: J0 + 47.0, iphone: J0 + 49.0, proximo: J0 + 52.4, logo: J0 + 56.0, dur: J0 + 59.6,
 }, (window.TEMPOS || {}).marcas || {});
 T.tear ??= T.fab + 1.5;
 // janela do vídeo do Jones: recorte 576×735 do original a partir do topo (mantém o título dele, tira a legenda de baixo),
@@ -25,6 +28,7 @@ window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
   imagens: {
     marx: '../midia/comunismo-01/marx-recorte.jpg',       // J. J. E. Mayall, 1875 (domínio público)
+    jonesFim: '../midia/comunismo-01/jones-ultimo-quadro.jpg',     // último quadro do trecho (16,2 s), já recortado 690×880
     engels: '../midia/comunismo-01/engels-recorte.jpg',   // retrato de Engels (domínio público)
     fab1820: '../midia/comunismo-01/fabricas-manchester-1820.jpg', tear1835: '../midia/comunismo-01/tear-mecanico-1835.jpg',
     criancas1843: '../midia/comunismo-01/criancas-minas-1843.jpg', pagamento1892: '../midia/comunismo-01/pagamento-fabrica-1892.jpg',
@@ -43,7 +47,7 @@ window.CENA = {
     const ordem = [[0, gancho], [T.vin, vinheta], [T.fab, fabricas], [T.marx, autores], [T.classes, classes], [T.padaria, padaria], [T.objetivo, objetivo],
       [T.meios, meios], [T.proximo, proximo], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.lei, T.sel, T.nenhum, T.lucro, T.supera, T.semclasses + 0.6, T.iphone, T.proximo + 0.1, T.logo];
+    const IMP = [T.lei, T.sel, T.nenhum, T.lucro, T.indisp, T.supera, T.semclasses + 0.6, T.iphone, T.proximo + 0.1, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
@@ -125,6 +129,7 @@ window.CENA = {
       const { x, y, w, h } = JANELA;
       L.moldura(ctx, x, y, w, h, 30);
       ctx.fillStyle = TINTA; ctx.fillRect(x, y, w, h);                 // aqui entra o vídeo (juntar.sh)
+      if (t >= JONES - 0.1) ctx.drawImage(L.img.jonesFim, x, y, w, h);  // depois que o vídeo acaba: o último quadro, sem buraco
       L.texto(ctx, 'Vídeo: Jones Manoel', CX, y + h + 72, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
     }
 
@@ -238,27 +243,29 @@ window.CENA = {
 
     // ------------------------------------------------ E. a padaria (2D, exemplo)
     function padaria(lt) {
+      const semDono = ease.saida(seg(t, T.semdono, T.semdono + 0.5)), semPad = ease.saida(seg(t, T.sempadeiro, T.sempadeiro + 0.5));
       L.fundo(ctx, BEGE);
       titulo('PENSA NUMA PADARIA', seg(lt, 0.1, 0.6));
       cred('exemplo', seg(lt, 0.3, 0.9));
       // forno (de quem é dono) à esquerda
       ctx.fillStyle = '#6B4A2E'; ctx.fillRect(150, 640, 340, 380); ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(150, 640, 340, 380);
       ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(320, 860, 110, Math.PI, 0); ctx.lineTo(430, 960); ctx.lineTo(210, 960); ctx.fill();
-      const brilho = 0.6 + 0.4 * Math.sin(lt * 9);
+      const brilho = (0.6 + 0.4 * Math.sin(lt * 9)) * (1 - 0.9 * ease.saida(seg(t, T.sempadeiro + 0.3, T.sempadeiro + 0.9)));   // sem padeiro, o forno apaga
       ctx.fillStyle = `rgba(235,181,42,${brilho})`; ctx.beginPath(); ctx.arc(320, 900, 70, Math.PI, 0); ctx.fill();
       ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(320, 930, 40, Math.PI, 0); ctx.fill();
       ctx.fillStyle = TINTA; ctx.fillRect(280, 540, 80, 100);                                   // chaminé do forno
       L.etiqueta(ctx, 'O FORNO', 320, 1070, seg(lt, 0.4, 0.7), { cor: TINTA, tam: 30 });
       // padeiro
-      pessoa(560, 1300, PADEIRO, 1.25, 0);
-      L.etiqueta(ctx, 'PADEIRO', 560, 1350, seg(lt, 0.6, 0.9), { cor: VERM, tam: 30 });
+      if (semPad < 1) { ctx.save(); ctx.globalAlpha = 1 - semPad; pessoa(560 - semPad * 300, 1300, PADEIRO, 1.25, 0); ctx.restore(); }
+      if (semPad < 0.5) L.etiqueta(ctx, 'PADEIRO', 560, 1350, seg(lt, 0.6, 0.9), { cor: VERM, tam: 30 });
       // contador de pães
-      const n = Math.round(500 * ease.saida(seg(t, T.paes, T.paes + 2.4)));
+      const n = t < T.sempadeiro + 0.4 ? Math.round(500 * ease.saida(seg(t, T.paes, T.paes + 2.4))) : 0;
       L.texto(ctx, String(n), 760, 640, { familia: FONTE.manchete, peso: 900, tam: 170, cor: TINTA, alinhar: 'center' });
       L.texto(ctx, 'PÃES POR DIA', 760, 700, { familia: FONTE.grotesca, peso: 700, tam: 34, cor: TINTA, alinhar: 'center', tracking: 3 });
       // pilha de pães: perto do padeiro, depois deslizando para o dono
       const leva = ease.saida(seg(t, T.leva, T.leva + 1.0)), donoE = ease.saida(seg(t, T.leva - 0.3, T.leva + 0.2));
-      if (donoE > 0) pessoa(lerp(1200, 900, donoE), 1300, DONO, 1.25);
+      // "se o dono faltar, a padaria funciona; se o padeiro faltar, não sai um pão" (exemplo do Jones Manoel, da fábrica de sapato)
+      if (donoE > 0 && semDono < 1) { ctx.save(); ctx.globalAlpha = 1 - semDono; pessoa(lerp(1200, 900, donoE) + semDono * 300, 1300, DONO, 1.25); ctx.restore(); }
       const qtd = Math.min(24, Math.round(n / 500 * 24));
       for (let k = 0; k < qtd; k++) {
         const col = k % 6, lin = Math.floor(k / 6);
@@ -267,15 +274,30 @@ window.CENA = {
       }
       if (t >= T.nenhum && t < T.leva + 0.5) L.aplicarCarimbo(ctx, seg(t, T.nenhum, T.nenhum + 0.3), 560, 800, () =>
         L.etiqueta(ctx, 'NENHUM É DELE', 560, 800, 1, { cor: VERM, tam: 44 }), 31);
-      if (donoE > 0) L.etiqueta(ctx, 'DONO DO FORNO', lerp(1200, 900, donoE), 1350, seg(t, T.leva, T.leva + 0.3), { cor: AZUL, tam: 30 });
+      if (donoE > 0 && t < T.semdono) L.etiqueta(ctx, 'DONO DO FORNO', lerp(1200, 900, donoE), 1350, seg(t, T.leva, T.leva + 0.3), { cor: AZUL, tam: 30 });
       // salário (uma moeda volta) × lucro (a pilha fica)
-      if (t >= T.salario) {
+      if (t >= T.salario && t < T.semdono) {
         const q = ease.saida(seg(t, T.salario, T.salario + 0.6));
         moeda(lerp(880, 600, q), lerp(1000, 980, q) - Math.sin(q * Math.PI) * 120);
         if (q >= 1) L.etiqueta(ctx, 'SALÁRIO', 600, 910, seg(t, T.salario + 0.6, T.salario + 0.9), { cor: AMA, corTexto: TINTA, tam: 34 });
       }
-      if (t >= T.lucro) L.aplicarCarimbo(ctx, seg(t, T.lucro, T.lucro + 0.3), 880, 900, () =>
+      if (t >= T.lucro && t < T.semdono) L.aplicarCarimbo(ctx, seg(t, T.lucro, T.lucro + 0.3), 880, 900, () =>
         L.etiqueta(ctx, 'LUCRO', 880, 900, 1, { cor: AZUL, tam: 50 }), 33);
+      if (t >= T.semdono && t < T.sempadeiro) L.aplicarCarimbo(ctx, seg(t, T.semdono + 0.3, T.semdono + 0.6), CX, 900, () => {
+        ctx.fillStyle = AZUL; ctx.fillRect(X0, 840, LARG, 120);
+        L.texto(ctx, 'SEM O DONO: A PADARIA FUNCIONA', CX, 920, { familia: FONTE.bloco, peso: 400, tam: tamMax('SEM O DONO: A PADARIA FUNCIONA', FONTE.bloco, 52, 400, 780), cor: BEGE, alinhar: 'center' });
+      }, 34);
+      if (t >= T.sempadeiro) L.aplicarCarimbo(ctx, seg(t, T.sempadeiro + 0.3, T.sempadeiro + 0.6), CX, 900, () => {
+        ctx.fillStyle = VERM; ctx.fillRect(X0, 840, LARG, 120);
+        L.texto(ctx, 'SEM O PADEIRO: NÃO SAI UM PÃO', CX, 920, { familia: FONTE.bloco, peso: 400, tam: tamMax('SEM O PADEIRO: NÃO SAI UM PÃO', FONTE.bloco, 52, 400, 780), cor: BEGE, alinhar: 'center' });
+      }, 35);
+      if (t >= T.indisp) L.aplicarCarimbo(ctx, seg(t, T.indisp, T.indisp + 0.3), CX, 1250, () => {
+        ctx.save(); ctx.translate(CX, 1250);
+        ctx.fillStyle = TINTA; ctx.fillRect(-LARG / 2, -70, LARG, 140);
+        L.texto(ctx, 'QUEM É INDISPENSÁVEL?', 0, -14, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: BEGE, alinhar: 'center' });
+        L.texto(ctx, 'QUEM TRABALHA.', 0, 46, { familia: FONTE.bloco, peso: 400, tam: 60, cor: AMA, alinhar: 'center' });
+        ctx.restore();
+      }, 36);
     }
     function pao(x, y) {
       ctx.fillStyle = '#B9802F'; ctx.beginPath(); ctx.ellipse(x, y, 22, 14, 0, 0, 7); ctx.fill();

@@ -17,10 +17,10 @@ from som import SR, soma  # noqa: E402
 from vinheta import vinheta, DUR as DUR_VIN  # noqa: E402
 
 J = 16.3   # o gancho do Jones (o áudio dele entra na montagem: juntar.sh)
-T = dict(vin=J, fab=J + 3.5, tear=J + 5.0, crianca=J + 6.4, lei=J + 7.8, marx=J + 10.4, engels=J + 11.1, manif=J + 12.6, frase=J + 14.4,
-         sel=J + 16.4, classes=J + 18.6, dono=J + 19.6, padaria=J + 21.0, paes=J + 21.8, nenhum=J + 24.4, leva=J + 25.6,
-         salario=J + 27.2, lucro=J + 28.0, objetivo=J + 30.2, capital=J + 32.2, supera=J + 34.4, semclasses=J + 36.0,
-         meios=J + 40.0, seu=J + 42.6, iphone=J + 44.6, proximo=J + 48.0, logo=J + 51.6, dur=J + 55.2)
+T = dict(vin=J + 0.4, fab=J + 3.9, tear=J + 5.4, crianca=J + 6.8, lei=J + 8.2, marx=J + 10.8, engels=J + 11.5, manif=J + 13.0, frase=J + 14.8,
+         sel=J + 16.8, classes=J + 19.0, dono=J + 20.0, padaria=J + 21.4, paes=J + 22.2, nenhum=J + 24.8, leva=J + 26.0,
+         salario=J + 27.6, lucro=J + 28.4, semdono=J + 29.8, sempadeiro=J + 31.4, indisp=J + 32.8, objetivo=J + 35.0, capital=J + 37.0, supera=J + 39.2, semclasses=J + 40.8,
+         meios=J + 44.8, seu=J + 47.4, iphone=J + 49.4, proximo=J + 52.8, logo=J + 56.4, dur=J + 60.0)
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 
@@ -44,6 +44,9 @@ def trilha(T, N):
     # a padaria: groove didático (contratempo)
     som.banda_secao(st, T["padaria"], T["meios"] - T["padaria"], 124, ((E, 8), (D, 4), (A, 4)), "pulo", 0.68, virar=True, seed=3)
     som.banda_golpe(st, T["lucro"], E, 0.9, anel=0.6)
+    # "sem o dono, funciona; sem o padeiro, não sai um pão": a banda para no sem padeiro e volta no "quem trabalha"
+    som.banda_golpe(st, T["semdono"] + 0.3, G, 0.8, anel=0.4)
+    som.banda_golpe(st, T["indisp"], E, 1.0, anel=1.0)
     # o que é o comunismo: verso contido com sinte (a imagem de época), tensão no capitalismo, golpe no "superar",
     # e o acorde maior abrindo na "sociedade sem classes"
     som.banda_secao(st, T["objetivo"], T["supera"] - T["objetivo"], 112, ((E, 8), (C, 4), (D, 4)), "palm", 0.55, seed=5)
@@ -88,6 +91,9 @@ def trilha(T, N):
     soma(fx, som.passos(3, 0.25, 0.5), T["leva"] - 0.3, 0.6); soma(fx, som.whoosh(0.6), T["leva"], 0.5)
     soma(fx, som.metal(1200, 0.5, 0.5), T["salario"] + 0.6, 0.35)          # a moedinha
     soma(fx, som.carimbo_sfx(), T["lucro"], 0.9); soma(fx, som.boom(), T["lucro"], 0.4)
+    soma(fx, som.passos(3, 0.2, 0.5), T["semdono"], 0.5); soma(fx, som.carimbo_sfx(), T["semdono"] + 0.3, 0.7)
+    soma(fx, som.passos(3, 0.2, 0.5), T["sempadeiro"], 0.5); soma(fx, som.negacao(), T["sempadeiro"] + 0.3, 0.45)
+    soma(fx, som.carimbo_sfx(), T["sempadeiro"] + 0.3, 0.7); soma(fx, som.carimbo_sfx(), T["indisp"], 1.0); soma(fx, som.boom(), T["indisp"], 0.5)
     soma(fx, som.whoosh(), T["objetivo"] - 0.35, 0.6); soma(fx, som.papel(0.5), T["objetivo"], 0.7)
     soma(fx, som.whoosh(0.5), T["capital"], 0.5); soma(fx, som.tique(), T["capital"] + 0.35, 0.8)
     soma(fx, som.carimbo_sfx(), T["supera"], 1.0); soma(fx, som.boom(), T["supera"], 0.5)

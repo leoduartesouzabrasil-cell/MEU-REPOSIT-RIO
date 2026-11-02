@@ -64,8 +64,10 @@ NA TELA: retratos de Marx e Engels em moldura · capa do Manifesto (Londres, 184
 > Luta de classes é isso: de um lado, quem trabalha. Do outro, quem é dono.
 > Pensa numa padaria: o padeiro faz quinhentos pães por dia, e nenhum é dele.
 > O pão é do dono do forno, que paga o salário e fica com o lucro.
+> E olha só: se o dono faltar um dia, a padaria funciona? Funciona. Se o padeiro faltar, não sai um pão.
+> Quem é indispensável é quem trabalha.
 
-NA TELA: "QUEM TRABALHA × QUEM É DONO" · padaria 2D: contador até 500, "NENHUM É DELE", os pães vão pro dono, "SALÁRIO" × "LUCRO"
+NA TELA: "QUEM TRABALHA × QUEM É DONO" · padaria 2D: contador até 500, "NENHUM É DELE", os pães vão pro dono, "SALÁRIO" × "LUCRO" · o dono sai: "SEM O DONO: A PADARIA FUNCIONA" · o padeiro sai, o forno apaga, o contador vai a 0: "SEM O PADEIRO: NÃO SAI UM PÃO" · "QUEM É INDISPENSÁVEL? QUEM TRABALHA."
 
 ### ÁUDIO #4: O que é o comunismo, o ponto crucial e o gancho (firme, depois leve)
 > Então, o que é o comunismo? É superar o capitalismo, esse sistema onde poucos são donos e a maioria trabalha pra eles.
@@ -82,6 +84,8 @@ Manifesto, cap. II: "…uma associação em que o livre desenvolvimento de cada 
 "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · logo O Camarada
 
 ## Notas de precisão do roteiro
+- "Se o dono faltar… se o padeiro faltar…": adaptação do exemplo da fábrica de sapato do Jones Manoel (vídeo de apoio enviado pelo autor, `midia/comunismo-01/video-apoio-2.mp4`: "quem é imprescindível para o processo produtivo? … São os trabalhadores"). Base teórica, não citação na tela.
+- Fim do gancho: o vídeo do Jones acaba em 16,3 s; a cena mostra o último quadro dele na moldura (sem buraco) e a vinheta entra em 16,7 s com o corte diagonal por cima.
 - A frase da luta de classes **abre o capítulo I** do Manifesto (a primeira frase do livro é "Um espectro ronda a Europa…"): por isso "o primeiro capítulo começa assim".
 - "Quase 200 anos": a Revolução Industrial começa no fim dos anos 1700; o Manifesto é de 1848 (178 anos).
 - Lei de 1833: só a proibição de menores de 9 anos nas fábricas de **tecido** (não citar horas).
