@@ -100,3 +100,15 @@ O vídeo do Jones NÃO entra em tela cheia: fica numa moldura dourada (janela 69
 y = 735 (576×735): **o título de cima dele ("É comunista mas tem coisas?") fica; a legenda de baixo sai**. A nossa legenda (tarja padrão)
 mostra a fala dele, palavra por palavra. Título da cena: "COMUNISTA TEM QUE SER POBRE?"; fonte: "Jones Manoel, historiador";
 crédito logo abaixo da moldura: "Vídeo: Jones Manoel". Montagem: `audio/comunismo-01/juntar.sh` sobrepõe o vídeo e soma o áudio dele.
+
+## Status
+Narração gravada e montada (`audio/comunismo-01/montar.py`, VEL 1.20). Vídeo final: **96,8 s** (gancho do Jones 16,3 s + vinheta 3,5 s + narração + logo),
+`videos/09-comunismo-01-o-que-e.mp4`. O autor acrescentou "camarada" no fim do #4 ("continuam seus, camarada").
+
+## Legenda do post
+```
+Comunista tem que ser pobre? Não! O comunismo não quer tomar a sua casa, o seu carro ou o seu celular: quer que a riqueza fique com quem produz. No primeiro episódio da série Desmistificando o Comunismo, a gente explica de onde veio essa ideia, o que é a luta de classes e qual é o objetivo do comunismo. 🔥🚩
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```
