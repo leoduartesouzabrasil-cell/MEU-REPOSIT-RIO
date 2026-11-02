@@ -8,11 +8,13 @@
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const JONES = 16.3;   // o gancho: 0–16,3 s do vídeo do Jones Manoel, numa moldura (o vídeo entra na montagem: juntar.sh)
 const T = Object.assign({
-  vin: JONES, fab: JONES + 3.5, crianca: JONES + 6.4, lei: JONES + 7.8, marx: JONES + 10.4, engels: JONES + 11.1, manif: JONES + 12.6,
+  vin: JONES, fab: JONES + 3.5, tear: JONES + 5.0, crianca: JONES + 6.4, lei: JONES + 7.8, marx: JONES + 10.4, engels: JONES + 11.1, manif: JONES + 12.6,
   frase: JONES + 14.4, sel: JONES + 16.4, classes: JONES + 18.6, dono: JONES + 19.6, padaria: JONES + 21.0, paes: JONES + 21.8,
-  nenhum: JONES + 24.4, leva: JONES + 25.6, salario: JONES + 27.2, lucro: JONES + 28.0, meios: JONES + 30.2, seu: JONES + 32.8,
-  iphone: JONES + 34.8, proximo: JONES + 38.2, logo: JONES + 41.8, dur: JONES + 45.4,
+  nenhum: JONES + 24.4, leva: JONES + 25.6, salario: JONES + 27.2, lucro: JONES + 28.0,
+  objetivo: JONES + 30.2, capital: JONES + 32.2, supera: JONES + 34.4, semclasses: JONES + 36.0,
+  meios: JONES + 40.0, seu: JONES + 42.6, iphone: JONES + 44.6, proximo: JONES + 48.0, logo: JONES + 51.6, dur: JONES + 55.2,
 }, (window.TEMPOS || {}).marcas || {});
+T.tear ??= T.fab + 1.5;
 // janela do vídeo do Jones: recorte 576×735 do original a partir do topo (mantém o título dele, tira a legenda de baixo),
 // escalado para 690×880
 const JANELA = { x: 195, y: 445, w: 690, h: 880 };
@@ -24,6 +26,8 @@ window.CENA = {
   imagens: {
     marx: '../midia/comunismo-01/marx-recorte.jpg',       // J. J. E. Mayall, 1875 (domínio público)
     engels: '../midia/comunismo-01/engels-recorte.jpg',   // retrato de Engels (domínio público)
+    fab1820: '../midia/comunismo-01/fabricas-manchester-1820.jpg', tear1835: '../midia/comunismo-01/tear-mecanico-1835.jpg',
+    criancas1843: '../midia/comunismo-01/criancas-minas-1843.jpg', pagamento1892: '../midia/comunismo-01/pagamento-fabrica-1892.jpg',
     logoBege: '../identidade/marca/o-camarada-bege.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
@@ -36,14 +40,14 @@ window.CENA = {
     const DONO = { roupa: TINTA, pele: '#E0B48A', tipo: 'terno', calca: TINTA, chapeu: 'cartola' };
     const PADEIRO = { roupa: BEGE, pele: '#5E3B26', tipo: 'avental', chapeu: 'padeiro' };
 
-    const ordem = [[0, gancho], [T.vin, vinheta], [T.fab, fabricas], [T.marx, autores], [T.classes, classes], [T.padaria, padaria],
+    const ordem = [[0, gancho], [T.vin, vinheta], [T.fab, fabricas], [T.marx, autores], [T.classes, classes], [T.padaria, padaria], [T.objetivo, objetivo],
       [T.meios, meios], [T.proximo, proximo], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.lei, T.sel, T.nenhum, T.lucro, T.iphone, T.proximo + 0.1, T.logo];
+    const IMP = [T.lei, T.sel, T.nenhum, T.lucro, T.supera, T.semclasses + 0.6, T.iphone, T.proximo + 0.1, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.vin, VERM, 24], [T.fab, BEGE, -24], [T.marx, BEGE, 24], [T.classes, BEGE, -24], [T.padaria, BEGE, 24], [T.meios, BEGE, -24],
+    [[T.vin, VERM, 24], [T.fab, BEGE, -24], [T.marx, BEGE, 24], [T.classes, BEGE, -24], [T.padaria, BEGE, 24], [T.objetivo, BEGE, -24], [T.meios, BEGE, 24],
       [T.proximo, VERM, 24], [T.logo, BEGE, -24]].forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
@@ -127,53 +131,40 @@ window.CENA = {
     // ------------------------------------------------ A. vinheta da série (3,5 s, música própria)
     function vinheta(lt) { arquivo = false; L.vinhetaComunismo(ctx, lt, { ep: 'EP. 1 · O QUE É O COMUNISMO?', logo: L.img.logoBege }); }
 
-    // ------------------------------------------------ B. Europa das fábricas (ARQUIVO)
+    // ------------------------------------------------ B. Europa das fábricas: imagens de época (ARQUIVO)
     function fabricas(lt) {
       L.fundo(ctx, BEGE);
       titulo('EUROPA · ANOS 1800', seg(lt, 0.1, 0.6));
-      cred('a Revolução Industrial', seg(lt, 0.3, 0.9));
-      const sobe = ease.saida(seg(lt, 0, 0.7));
-      ctx.save(); ctx.translate(0, (1 - sobe) * 300);
-      // céu de fuligem
-      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, 430, LARG, 640);
-      // chaminés com fumaça (recortadas na área do conteúdo: não sobem no título)
-      ctx.save(); ctx.beginPath(); ctx.rect(X0, 430, LARG, 640); ctx.clip();
-      [[230, 520], [470, 470], [800, 500]].forEach(([x, y], k) => {
-        ctx.fillStyle = TINTA; ctx.fillRect(x - 22, y, 44, 430);
-        ctx.fillStyle = VERM; ctx.fillRect(x - 22, y + 30, 44, 12);
-        for (let i = 0; i < 7; i++) {
-          const f = ((lt * 0.35 + i / 7 + k * 0.13) % 1), r = 26 + f * 70;
-          ctx.fillStyle = `rgba(28,23,20,${0.55 * (1 - f)})`;
-          ctx.beginPath(); ctx.arc(x + f * 90 + Math.sin(f * 6 + k) * 14, y - 20 - f * 260, r, 0, 7); ctx.fill();
-        }
-      });
-      ctx.restore();
-      // galpões com telhado serrilhado
-      ctx.fillStyle = TINTA; ctx.fillRect(X0, 860, LARG, 210);
-      for (let x = X0; x < X0 + LARG; x += 120) { ctx.beginPath(); ctx.moveTo(x, 860); ctx.lineTo(x + 120, 860); ctx.lineTo(x + 120, 790); ctx.closePath(); ctx.fill(); }
-      ctx.fillStyle = AMA; for (let x = X0 + 30; x < X0 + LARG - 40; x += 90) for (let y = 900; y < 1040; y += 60) ctx.fillRect(x, y, 40, 30);
-      // chão e a fila de operários entrando
-      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, 1070, LARG, 330);
-      ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0, 1070, LARG, 8);
-      for (let k = 0; k < 6; k++) {
-        const ph = (lt * 0.25 + k / 6) % 1, x = lerp(1000, 200, ph), crianca = k === 3;
-        pessoa(x, 1330, { roupa: [AZUL, '#3A302A', VERM, '#6B5A48', AZUL, '#3A302A'][k], pele: ['#8A5A3A', '#E0B48A', '#5E3B26', '#C68E5E', '#E0B48A', '#8A5A3A'][k], chapeu: crianca ? null : 'bone' },
-          crianca ? 0.62 : 0.95, ph * 20);
-        if (crianca && t >= T.crianca) L.etiqueta(ctx, 'ATÉ CRIANÇA', x, 1110, seg(t, T.crianca, T.crianca + 0.3), { cor: VERM, tam: 34 });
+      cred('a Revolução Industrial · imagens de época', seg(lt, 0.3, 0.9));
+      // três imagens em sequência, na mesma moldura: as fábricas, o trabalho, a criança
+      const QUADROS = [
+        ['fab1820', T.fab, 'Fábricas em Manchester, Inglaterra, c. 1820', 'aquarela de época · domínio público'],
+        ['tear1835', T.tear, 'Tecelagem com teares mecânicos, 1835', 'gravura de E. Baines · domínio público'],
+        ['criancas1843', T.crianca, 'Criança puxando carvão numa mina, Inglaterra, 1843', 'Wellcome Collection (CC BY 4.0)'],
+      ];
+      const atual = QUADROS.filter(q => t >= q[1]).sort((a, b) => a[1] - b[1]).pop() || QUADROS[0];
+      const [k, t0, legendaFoto, creditoFoto] = atual;
+      const x = X0, y = 470, w = LARG, h = 560;
+      if (t < T.lei + 0.3) {
+        const e = ease.saida(seg(t, t0, t0 + 0.5));
+        L.moldura(ctx, x, y, w, h, 26);
+        L.foto(ctx, L.img[k], x, y, w, h, { pb: true, zoom: lerp(1.0, 1.08, seg(t, t0, t0 + 3)), desfoque: (1 - e) * 8 });
+        L.texto(ctx, legendaFoto, CX, y + h + 80, { familia: FONTE.grotesca, peso: 700, tam: tamMax(legendaFoto, FONTE.grotesca, 34, 700, 820), cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, creditoFoto, CX, y + h + 122, { familia: FONTE.maquina, peso: 400, tam: 24, cor: TINTA, alinhar: 'center' });
+        if (k === 'criancas1843') L.etiqueta(ctx, 'ATÉ CRIANÇA', x + w - 170, y + 70, seg(t, T.crianca + 0.3, T.crianca + 0.6), { cor: VERM, tam: 38 });
       }
-      ctx.restore();
       // ficha da lei de 1833
       if (t >= T.lei) {
         const e = ease.saida(seg(t, T.lei, T.lei + 0.4));
-        ctx.save(); ctx.translate(0, (1 - e) * 700);
-        ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 14, 474, LARG, 470);
-        ctx.fillStyle = BEGE; ctx.fillRect(X0, 460, LARG, 470); ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(X0, 460, LARG, 470);
-        ctx.fillStyle = VERM; ctx.fillRect(X0, 460, LARG, 14);
-        L.texto(ctx, 'INGLATERRA, 1833', X0 + 44, 550, { familia: FONTE.sub, peso: 600, tam: 48, cor: VERM, tracking: 3 });
+        ctx.save(); ctx.translate(0, (1 - e) * 900);
+        ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 14, 534, LARG, 470);
+        ctx.fillStyle = BEGE; ctx.fillRect(X0, 520, LARG, 470); ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(X0, 520, LARG, 470);
+        ctx.fillStyle = VERM; ctx.fillRect(X0, 520, LARG, 14);
+        L.texto(ctx, 'INGLATERRA, 1833', X0 + 44, 610, { familia: FONTE.sub, peso: 600, tam: 48, cor: VERM, tracking: 3 });
         ['Só agora a lei proíbe criança', 'com menos de 9 anos', 'na fábrica de tecido.'].forEach((s, i) =>
-          L.texto(ctx, L.datilografar(s, seg(t, T.lei + 0.4 + i * 0.4, T.lei + 0.8 + i * 0.4)), X0 + 44, 650 + i * 72, { familia: FONTE.maquina, peso: 400, tam: 46, cor: TINTA }));
-        L.selecao(ctx, X0 + 40, 692, 460, 64, seg(t, T.lei + 1.6, T.lei + 2.0), VERM);
-        L.texto(ctx, 'fonte: Parlamento britânico (Lei das Fábricas, 1833)', X0 + 44, 900, { familia: FONTE.maquina, peso: 400, tam: 22, cor: TINTA });
+          L.texto(ctx, L.datilografar(s, seg(t, T.lei + 0.4 + i * 0.4, T.lei + 0.8 + i * 0.4)), X0 + 44, 710 + i * 72, { familia: FONTE.maquina, peso: 400, tam: 46, cor: TINTA }));
+        L.selecao(ctx, X0 + 40, 752, 460, 64, seg(t, T.lei + 1.6, T.lei + 2.0), VERM);
+        L.texto(ctx, 'fonte: Parlamento britânico (Lei das Fábricas, 1833)', X0 + 44, 960, { familia: FONTE.maquina, peso: 400, tam: 22, cor: TINTA });
         ctx.restore();
       }
     }
@@ -296,6 +287,59 @@ window.CENA = {
       L.texto(ctx, '$', x, y + 11, { familia: FONTE.bloco, peso: 400, tam: 30, cor: TINTA, alinhar: 'center' });
     }
 
+    // ------------------------------------------------ E2. o que é o comunismo: superar o capitalismo, acabar com as classes
+    function objetivo(lt) {
+      L.fundo(ctx, BEGE);
+      titulo('ENTÃO, O QUE É O COMUNISMO?', seg(lt, 0.1, 0.7));
+      cred(t < T.semclasses ? 'Marx e Engels, Manifesto Comunista (1848)' : 'Manifesto Comunista, capítulo II', seg(lt, 0.3, 0.9));
+      // a imagem de época: trabalhadoras recebendo o pagamento (a classe que produz a riqueza)
+      if (t < T.capital + 0.3) {
+        const e = ease.saida(seg(lt, 0, 0.5)), sai = ease.entrada(seg(t, T.capital - 0.1, T.capital + 0.3));
+        ctx.save(); ctx.translate(-sai * 1200, 0); ctx.globalAlpha = e;
+        L.moldura(ctx, X0, 470, LARG, 620, 26);
+        L.foto(ctx, L.img.pagamento1892, X0, 470, LARG, 620, { pb: true, zoom: lerp(1.0, 1.06, seg(lt, 0, 2.5)) });
+        L.texto(ctx, 'Dia de pagamento numa fábrica de Manchester, c. 1892', CX, 1170, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, 'desenho de G. P. Jacomb-Hood · domínio público', CX, 1212, { familia: FONTE.maquina, peso: 400, tam: 24, cor: TINTA, alinhar: 'center' });
+        ctx.restore();
+      }
+      if (t >= T.capital) {
+        // capitalismo: o dono lá em cima, numa plataforma; a maioria embaixo. Ao "superar", a plataforma desce e todos ficam no mesmo nível.
+        const ent = ease.saida(seg(t, T.capital, T.capital + 0.5)), desce = ease.saida(seg(t, T.semclasses, T.semclasses + 0.9));
+        ctx.save(); ctx.globalAlpha = ent;
+        const chao = 1290, alturaPlat = lerp(330, 0, desce);
+        ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, chao, LARG, 20);
+        if (alturaPlat > 2) { ctx.fillStyle = TINTA; ctx.fillRect(CX - 90, chao - alturaPlat, 180, alturaPlat); }
+        const N = 9;
+        for (let i = 0; i < N; i++) {
+          const xx = X0 + 50 + i * ((LARG - 100) / (N - 1));
+          if (i === 4) continue;
+          pessoa(xx, chao, { roupa: [AZUL, VERM, '#6B5A48', AZUL, VERM, '#3A302A', AZUL, VERM, '#6B5A48'][i], pele: ['#8A5A3A', '#E0B48A', '#5E3B26', '#C68E5E'][i % 4], chapeu: i % 2 ? 'bone' : null }, 0.72);
+        }
+        pessoa(CX, chao - alturaPlat, desce > 0.6 ? { roupa: '#3A302A', pele: '#E0B48A' } : DONO, 0.72);
+        if (t < T.semclasses) {
+          L.etiqueta(ctx, 'CAPITALISMO', CX, 600, seg(t, T.capital + 0.3, T.capital + 0.6), { cor: AZUL, tam: 48 });
+          L.texto(ctx, 'poucos são donos · a maioria trabalha pra eles', CX, 690, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: TINTA, alinhar: 'center' });
+        }
+        ctx.restore();
+        if (t >= T.supera && t < T.semclasses + 0.4) L.aplicarCarimbo(ctx, seg(t, T.supera, T.supera + 0.3), CX, 820, () => {
+          ctx.save(); ctx.translate(CX, 820); ctx.rotate(-0.04);
+          ctx.strokeStyle = VERM; ctx.lineWidth = 9; ctx.strokeRect(-360, -70, 720, 140);
+          L.texto(ctx, 'SUPERAR O CAPITALISMO', 0, 22, { familia: FONTE.bloco, peso: 400, tam: 56, cor: VERM, alinhar: 'center' });
+          ctx.restore();
+        }, 71);
+        if (t >= T.semclasses) {
+          L.aplicarCarimbo(ctx, seg(t, T.semclasses + 0.6, T.semclasses + 0.9), CX, 640, () => {
+            ctx.fillStyle = VERM; ctx.fillRect(X0, 570, LARG, 140);
+            L.texto(ctx, 'UMA SOCIEDADE SEM CLASSES', CX, 662, { familia: FONTE.bloco, peso: 400, tam: tamMax('UMA SOCIEDADE SEM CLASSES', FONTE.bloco, 64, 400, 780), cor: BEGE, alinhar: 'center' });
+          }, 72);
+          ctx.save(); ctx.globalAlpha = seg(t, T.semclasses + 1.2, T.semclasses + 1.8);
+          ['“…uma associação em que o livre desenvolvimento', 'de cada um é a condição para o', 'livre desenvolvimento de todos.”'].forEach((s, i) =>
+            L.texto(ctx, s, CX, 790 + i * 50, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 40, cor: TINTA, alinhar: 'center' }));
+          ctx.restore();
+        }
+      }
+    }
+
     // ------------------------------------------------ F. meios de produção × o que é seu
     function meios(lt) {
       L.fundo(ctx, BEGE);
@@ -369,9 +413,10 @@ window.CENA = {
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Gancho: Jones Manoel (vídeo)', 1110],
         ['Fotos: Marx (J. J. E. Mayall, 1875) e Engels · domínio público', 1150],
-        ['Fontes: Manifesto Comunista (1848) · Lei das Fábricas (Parlamento britânico, 1833)', 1200],
-        ['Engels, entrevista de 1893 (Marx e Engels, Entrevistas, Boitempo)', 1240],
-        ['Padaria: exemplo ilustrativo', 1290]].forEach(([s2, y]) =>
+        ['Imagens de época: Manchester c. 1820 · Baines 1835 · Jacomb-Hood c. 1892 (domínio público) · Wellcome Collection 1843 (CC BY 4.0)', 1190],
+        ['Fontes: Manifesto Comunista (1848) · Lei das Fábricas (Parlamento britânico, 1833)', 1240],
+        ['Engels, entrevista de 1893 (Marx e Engels, Entrevistas, Boitempo)', 1280],
+        ['Padaria: exemplo ilustrativo', 1330]].forEach(([s2, y]) =>
         L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

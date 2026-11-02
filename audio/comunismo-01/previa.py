@@ -17,9 +17,10 @@ from som import SR, soma  # noqa: E402
 from vinheta import vinheta, DUR as DUR_VIN  # noqa: E402
 
 J = 16.3   # o gancho do Jones (o áudio dele entra na montagem: juntar.sh)
-T = dict(vin=J, fab=J + 3.5, crianca=J + 6.4, lei=J + 7.8, marx=J + 10.4, engels=J + 11.1, manif=J + 12.6, frase=J + 14.4,
+T = dict(vin=J, fab=J + 3.5, tear=J + 5.0, crianca=J + 6.4, lei=J + 7.8, marx=J + 10.4, engels=J + 11.1, manif=J + 12.6, frase=J + 14.4,
          sel=J + 16.4, classes=J + 18.6, dono=J + 19.6, padaria=J + 21.0, paes=J + 21.8, nenhum=J + 24.4, leva=J + 25.6,
-         salario=J + 27.2, lucro=J + 28.0, meios=J + 30.2, seu=J + 32.8, iphone=J + 34.8, proximo=J + 38.2, logo=J + 41.8, dur=J + 45.4)
+         salario=J + 27.2, lucro=J + 28.0, objetivo=J + 30.2, capital=J + 32.2, supera=J + 34.4, semclasses=J + 36.0,
+         meios=J + 40.0, seu=J + 42.6, iphone=J + 44.6, proximo=J + 48.0, logo=J + 51.6, dur=J + 55.2)
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 
@@ -43,6 +44,15 @@ def trilha(T, N):
     # a padaria: groove didático (contratempo)
     som.banda_secao(st, T["padaria"], T["meios"] - T["padaria"], 124, ((E, 8), (D, 4), (A, 4)), "pulo", 0.68, virar=True, seed=3)
     som.banda_golpe(st, T["lucro"], E, 0.9, anel=0.6)
+    # o que é o comunismo: verso contido com sinte (a imagem de época), tensão no capitalismo, golpe no "superar",
+    # e o acorde maior abrindo na "sociedade sem classes"
+    som.banda_secao(st, T["objetivo"], T["supera"] - T["objetivo"], 112, ((E, 8), (C, 4), (D, 4)), "palm", 0.55, seed=5)
+    soma(st["sinte"], som.sinte([82.41, 123.5, 164.8], T["supera"] - T["objetivo"], 0.25, brilho=900, ataque=0.8), T["objetivo"])
+    som.banda_golpe(st, T["supera"], E, 1.0, anel=1.2)
+    soma(st["sinte"], som.sinte([110.0, 138.6, 164.8, 220.0], T["meios"] - T["semclasses"], 0.35, brilho=1300, ataque=0.6), T["semclasses"])
+    soma(st["solo"], som.solo([(329.6, 0.3), (415.3, 0.3), (493.9, 0.3), (659.3, -1.6)], 0.55), T["semclasses"] + 0.6)
+    som.banda_golpe(st, T["semclasses"] + 0.6, A, 0.85, anel=1.4)
+    soma(st["bat"], som.virada(0.6, 0.8), T["meios"] - 0.62)
     # meios de produção × o que é seu: refrão aberto; golpe no "comunista pode ter iPhone, sim"
     som.banda_secao(st, T["meios"], T["proximo"] - T["meios"], 128, ((E, 8), (C, 8), (G, 8), (D, 8)), "aberto", 0.8, seed=4)
     som.banda_golpe(st, T["iphone"], E, 1.0, anel=0.7)
@@ -58,6 +68,7 @@ def trilha(T, N):
 
     # efeitos
     soma(fx, som.whoosh(), T["fab"] - 0.35, 0.6)
+    soma(fx, som.whoosh(0.4), T["tear"] - 0.1, 0.5); soma(fx, som.whoosh(0.4), T["crianca"] - 0.1, 0.5)
     for k in range(int((T["marx"] - T["fab"]) / 0.55)):                    # a máquina da fábrica batendo
         soma(fx, som.metal(110 + 20 * (k % 2), 0.4, 0.4), T["fab"] + 0.2 + k * 0.55, 0.18)
     soma(fx, som.passos(10, 0.3, 0.4), T["fab"] + 0.4, 0.4)
@@ -77,6 +88,11 @@ def trilha(T, N):
     soma(fx, som.passos(3, 0.25, 0.5), T["leva"] - 0.3, 0.6); soma(fx, som.whoosh(0.6), T["leva"], 0.5)
     soma(fx, som.metal(1200, 0.5, 0.5), T["salario"] + 0.6, 0.35)          # a moedinha
     soma(fx, som.carimbo_sfx(), T["lucro"], 0.9); soma(fx, som.boom(), T["lucro"], 0.4)
+    soma(fx, som.whoosh(), T["objetivo"] - 0.35, 0.6); soma(fx, som.papel(0.5), T["objetivo"], 0.7)
+    soma(fx, som.whoosh(0.5), T["capital"], 0.5); soma(fx, som.tique(), T["capital"] + 0.35, 0.8)
+    soma(fx, som.carimbo_sfx(), T["supera"], 1.0); soma(fx, som.boom(), T["supera"], 0.5)
+    soma(fx, som.riser(0.9), T["semclasses"] - 0.3, 0.4); soma(fx, som.carimbo_sfx(), T["semclasses"] + 0.6, 0.9)
+    soma(fx, som.multidao(2.5, 0.6), T["semclasses"] + 0.8, 0.35)
     soma(fx, som.whoosh(), T["meios"] - 0.35, 0.6)
     for t0 in (T["meios"], T["seu"]):
         for k in range(4):

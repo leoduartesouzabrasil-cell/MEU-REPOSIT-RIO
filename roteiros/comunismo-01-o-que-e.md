@@ -51,32 +51,35 @@ Fontes de apoio indicadas pelo autor: Soberana / Ian Neves, Jones Manoel, profes
 > Pra entender o comunismo, volta quase 200 anos, pra Europa das primeiras fábricas.
 > Gente trabalhando o dia inteiro por quase nada. Até criança ia pra fábrica.
 
-NA TELA: ARQUIVO — gravura/ilustração de fábrica com chaminés (Commons, domínio público) · "EUROPA · ANOS 1800" · "REVOLUÇÃO INDUSTRIAL" ·
-ficha: "INGLATERRA, 1833: SÓ AGORA A LEI PROÍBE CRIANÇA COM MENOS DE 9 ANOS NA FÁBRICA DE TECIDO" · fonte: Parlamento britânico
+NA TELA: IMAGENS DE ÉPOCA em moldura (P&B): fábricas em Manchester, c. 1820 · tecelagem com teares mecânicos, 1835 ·
+criança puxando carvão numa mina, 1843 ("ATÉ CRIANÇA") · ficha "INGLATERRA, 1833: só agora a lei proíbe criança com menos de 9 anos na fábrica de tecido"
 
 ### ÁUDIO #2: Quem criou (firme)
 > Aí, dois alemães, Karl Marx e Friedrich Engels, escreveram em 1848 o Manifesto Comunista.
 > E o primeiro capítulo começa assim: a história de toda sociedade até hoje é a história da luta de classes.
 
-NA TELA: retratos de Marx e Engels em moldura (fotos de época, domínio público) · "KARL MARX" / "FRIEDRICH ENGELS" · capa original do Manifesto (Londres, 1848) ·
-a frase datilografada, com "LUTA DE CLASSES" selecionado em vermelho
+NA TELA: retratos de Marx e Engels em moldura · capa do Manifesto (Londres, 1848) · a frase datilografada com "luta de classes" selecionado
 
 ### ÁUDIO #3: Luta de classes, com exemplo (didático)
 > Luta de classes é isso: de um lado, quem trabalha. Do outro, quem é dono.
 > Pensa numa padaria: o padeiro faz quinhentos pães por dia, e nenhum é dele.
 > O pão é do dono do forno, que paga o salário e fica com o lucro.
 
-NA TELA: 2D — balança/duas colunas "QUEM TRABALHA" × "QUEM É DONO" · padaria de cartaz: o padeiro (boneco) tira pães do forno, o contador sobe até 500 ·
-os pães deslizam para o lado do dono · uma moedinha volta para o padeiro: "SALÁRIO"; a pilha grande fica com o dono: "LUCRO" · rodapé "exemplo"
+NA TELA: "QUEM TRABALHA × QUEM É DONO" · padaria 2D: contador até 500, "NENHUM É DELE", os pães vão pro dono, "SALÁRIO" × "LUCRO"
 
-### ÁUDIO #4: O ponto crucial e o gancho do próximo episódio (firme, depois leve)
-> O comunismo quer que o que produz riqueza — a fábrica, a terra, o forno — seja de todos, e não de um patrão.
+### ÁUDIO #4: O que é o comunismo, o ponto crucial e o gancho (firme, depois leve)
+> Então, o que é o comunismo? É superar o capitalismo, esse sistema onde poucos são donos e a maioria trabalha pra eles.
+> O objetivo é acabar com as classes: uma sociedade sem patrão e sem explorado.
+> Por isso, o que tem que ser de todos é o que produz riqueza: a fábrica, a terra, o forno.
 > A sua casa, o seu carro e o seu celular continuam seus.
 > E socialismo, é a mesma coisa? [pausa] Isso é no próximo vídeo.
 
-NA TELA: duas colunas — "MEIOS DE PRODUÇÃO → DE TODOS" (fábrica, terra, máquina, forno) × "SEU → CONTINUA SEU" (casa, carro, celular, roupa) ·
-trecho do Manifesto (cap. II): "O comunismo não tira a ninguém o poder de se apropriar de produtos sociais…" · carimbo "COMUNISTA PODE TER IPHONE, SIM." ·
-CARTAZ: "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · vinheta curta da série · logo O Camarada
+NA TELA: "ENTÃO, O QUE É O COMUNISMO?" · imagem de época: dia de pagamento numa fábrica de Manchester, c. 1892 ·
+"CAPITALISMO: poucos são donos, a maioria trabalha pra eles" (o dono no alto de uma plataforma, os trabalhadores embaixo) ·
+carimbo "SUPERAR O CAPITALISMO" · a plataforma desce e todos ficam no mesmo nível: "UMA SOCIEDADE SEM CLASSES" +
+Manifesto, cap. II: "…uma associação em que o livre desenvolvimento de cada um é a condição para o livre desenvolvimento de todos." ·
+"MEIOS DE PRODUÇÃO → DE TODOS" × "O QUE É SEU → CONTINUA SEU" · "COMUNISTA PODE TER IPHONE, SIM." ·
+"PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · logo O Camarada
 
 ## Notas de precisão do roteiro
 - A frase da luta de classes **abre o capítulo I** do Manifesto (a primeira frase do livro é "Um espectro ronda a Europa…"): por isso "o primeiro capítulo começa assim".
@@ -84,7 +87,9 @@ CARTAZ: "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · vinheta curta da s
 - Lei de 1833: só a proibição de menores de 9 anos nas fábricas de **tecido** (não citar horas).
 - Padaria e "500 pães": exemplo ilustrativo (rodapé "exemplo").
 - "Comunista pode ter iPhone, sim": paráfrase do argumento do Jones e do Manifesto (propriedade pessoal ≠ meios de produção).
-- Duração estimada: Jones 16,3 s + vinheta 3 s + narração ~48 s (≈150 palavras, VEL 1.20) + logo ≈ **70 s**.
+- "Superar o capitalismo" e "sociedade sem classes": Manifesto, cap. II (o proletariado no poder suprime "as classes em geral"; no lugar da velha sociedade burguesa "entra uma associação…"). Engels (1847): "O comunismo é a doutrina das condições de libertação do proletariado."
+- Imagens de época: ver midia/comunismo-01/CREDITOS.md (Manchester c. 1820, Baines 1835, Wellcome 1843 CC BY 4.0, Jacomb-Hood c. 1892).
+- Duração estimada: Jones 16,3 s + vinheta 3,5 s + narração ~60 s (≈190 palavras, VEL 1.20) + logo ≈ **80 s**.
 
 ## Gancho em moldura (pedido do autor)
 O vídeo do Jones NÃO entra em tela cheia: fica numa moldura dourada (janela 690×880 em x 195, y 445), recortado do original do topo até
