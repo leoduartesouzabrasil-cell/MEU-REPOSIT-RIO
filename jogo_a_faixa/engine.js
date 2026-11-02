@@ -1,11 +1,11 @@
 // =====================================================================
-// PLANALTO 2027 — motor de simulação
+// A FAIXA — motor de simulação
 // =====================================================================
 
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const COPOM = [0,2,4,5,6,8,10,11];
 const TOTAL_TURNOS = 48;
-const SAVE_KEY = 'planalto2027_save_v1';
+const SAVE_KEY = 'afaixa_save_v1';
 
 let S = null;
 
@@ -105,7 +105,7 @@ function novoEstado(cfg){
   // satisfação inicial dos partidos
   S.partidos.forEach(p=>{
     if (p.id===S.pres.partido) p.sat = 85;
-    else if (S.coalizao.includes(p.id)) p.sat = 55;
+    else if (S.coalizao.includes(p.id)) p.sat = 60;
     else p.sat = clamp(30 - dist(p,S.pres)*1.2, 5, 45);
   });
   if (S.vice && S.vice.partido){ const vp=P(S.vice.partido); if (vp) vp.sat += 10; }
@@ -275,7 +275,7 @@ const CUSTOM = {
   copa(){
     const r = Math.random();
     let txt, fx;
-    if (r<0.12){ txt='O Brasil é HEXACAMPEÃO do mundo! Carnaval fora de época nas ruas.'; fx=5; }
+    if (r<0.12){ S.flags.hexa = true; txt='O Brasil é HEXACAMPEÃO do mundo! Carnaval fora de época nas ruas.'; fx=5; }
     else if (r<0.24){ txt='O Brasil perde a final nos pênaltis. Orgulho e frustração.'; fx=1.5; }
     else if (r<0.45){ txt='Eliminado na semifinal.'; fx=0.5; }
     else if (r<0.75){ txt='Eliminado nas quartas de final. Mais um ciclo de cobranças.'; fx=-0.5; }
@@ -296,7 +296,7 @@ const CUSTOM = {
     calcBase();
     const contra = votacaoImpeachment(fx.modo==='emendas'?0.06:fx.modo==='rua'?0.02:0);
     if (contra >= 342){ S.fim = { tipo:'impeachment', votos:contra }; return `A Câmara autoriza o processo por ${contra} votos a ${513-contra}. O Senado afasta você do cargo.`; }
-    S.flags.impeachRisk = 0;
+    S.flags.impeachRisk = 0; S.flags.sobreviveu = true;
     return `O pedido é rejeitado: apenas ${contra} votos a favor, abaixo dos 342 necessários. Você sobrevive.`;
   },
   saidaPartido(fx){
@@ -335,12 +335,12 @@ const CUSTOM = {
 function probVoto(p, proj, casa){
   let base;
   if (p.id===S.pres.partido) base = 0.92;
-  else if (S.coalizao.includes(p.id)) base = 0.48 + (p.sat-50)/110;
-  else base = 0.22 + (p.sat-30)/160;
+  else if (S.coalizao.includes(p.id)) base = 0.57 + (p.sat-50)/110;
+  else base = 0.29 + (p.sat-30)/160;
   const w = (proj.we||0)+(proj.ws||0) || 1;
   const d = (Math.abs(proj.e - p.e)*(proj.we||0) + Math.abs(proj.s - p.s)*(proj.ws||0))/w;
-  const align = 0.26 - d*0.046;
-  const popEf = (proj.pop||0) * (S.aprov-40)/100 * (0.5 + p.fis*0.6);
+  const align = 0.27 - d*0.045;
+  const popEf = (proj.pop||0) * (S.aprov-32)/90 * (0.5 + p.fis*0.6);
   const art = (proj.artic||0)*0.045;
   const pc = casa==='camara'? (S.presCamara-50)/450 : (S.stf-50)/2000;
   return clamp(base + align + popEf + art + pc + (S.aprov-45)/350, 0.01, 0.985);
@@ -453,7 +453,7 @@ function processarTramitacao(){
       S.rejeitadas[def.id] = S.t;
       S.aprovShock -= def.tipo==='PEC'? 1.5 : 1;
       P(S.pres.partido).sat -= 1;
-      if (proj.mp){ applyFx(inverterFx(def.fx)); S.presCamara = clamp(S.presCamara-4,0,100); }
+      if (proj.mp){ S.flags.mpCaiu = true; applyFx(inverterFx(def.fx)); S.presCamara = clamp(S.presCamara-4,0,100); }
       r.efeitos = [{ txt: proj.mp ? 'A MP perde a validade. Os efeitos fiscais e estruturais são revertidos.' : 'Derrota do governo no plenário. O projeto só poderá ser reapresentado em 6 meses.', livre:true }];
       logar('Congresso', `REJEITADO: ${def.nome}. ${r.okC? 'Passou na Câmara, caiu no Senado.' : `Câmara: ${r.simC} sim, ${r.naoC} não.`}`);
     }
@@ -736,13 +736,21 @@ function encerrarMes(){
     S.pendentes.push({ tipo:'eleicao', r });
   }
   registrarHist();
+  checarCarimbos();
+  const mesFechado = S.t;
   S.t++;
   if (S.t>=TOTAL_TURNOS){ S.fim = { tipo:'mandato' }; salvar(); return; }
   S.ap = apMax();
   // manchetes mensais
   if (S.t%3===0) logar('Economia', `PNAD: desemprego em ${fmt(S.eco.desemp)}%. IPCA em 12 meses: ${fmt(S.eco.ipca)}%.`);
   enfileirarEventos();
+  S.pendentes.unshift({ tipo:'resumo', mes:mesFechado });
   salvar();
+}
+
+function checarCarimbos(){
+  S.carimbos = S.carimbos || [];
+  CARIMBOS.forEach(c=>{ if (!S.carimbos.includes(c.id) && c.chk(S)){ S.carimbos.push(c.id); (S.novosCarimbos = S.novosCarimbos||[]).push(c.id); logar('Carimbo', `Carimbo conquistado: ${c.nome}.`); } });
 }
 
 // ---------- ações do presidente ----------

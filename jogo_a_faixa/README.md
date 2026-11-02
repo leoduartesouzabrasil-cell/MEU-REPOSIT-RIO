@@ -1,8 +1,12 @@
-# Planalto 2027
+# A Faixa
 
-Simulador de governo do Brasil para o navegador. Você é presidente da República de janeiro de 2027 a dezembro de 2030: 48 meses, um turno por mês.
+Jogo de governo do Brasil para o navegador do celular. Você é presidente da República de janeiro de 2027 a dezembro de 2030: 48 meses, um turno por mês.
 
-**Como jogar:** abra `index.html` no navegador. Não precisa de instalação nem servidor.
+**Como jogar:** abra `a-faixa.html` (arquivo único) no navegador do celular ou do computador. Não precisa de instalação nem de servidor. O código-fonte separado está em `index.html` + `*.js`.
+
+## Visual
+
+Formato vertical pensado para celular, nas cores preto, vermelho e amarelo: placar de votação animado, carimbos de conquista, nota final de S a F, reações das redes a cada decisão e balanço mensal.
 
 ## O que dá para fazer
 

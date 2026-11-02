@@ -1,5 +1,5 @@
 // =====================================================================
-// PLANALTO 2027 — eventos
+// A FAIXA — eventos
 // Agendados (calendário político real) e aleatórios (crises e oportunidades)
 // Cada opção: { txt, fx, res }  — fx segue o formato de applyFx() em game.js
 // =====================================================================

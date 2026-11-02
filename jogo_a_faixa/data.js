@@ -1,5 +1,5 @@
 // =====================================================================
-// PLANALTO 2027 — base de dados
+// A FAIXA — base de dados
 // Fontes de referência (consultadas em nov/2026):
 //  - Bancadas eleitas em out/2026: Congresso em Foco, Gazeta SP, O Liberal
 //    (PL 121, PT 70, União 46, PSD 43, PP 41, Republicanos 41; demais
@@ -257,3 +257,42 @@ const ACOES = [
   { id:'cafepartido', nome:'Negociar com um partido', custo:1, desc:'Jantar no Alvorada com a cúpula de um partido. Pode trazê-lo para a base.' },
   { id:'entrevista', nome:'Entrevista coletiva', custo:1, desc:'Melhora a relação com a imprensa; risco de gafe.' },
 ];
+
+// =====================================================================
+// Carimbos (conquistas) e reações da internet
+// =====================================================================
+const CARIMBOS = [
+  { id:'rolo', nome:'Rolo compressor', desc:'Base fiel acima de 308 deputados', chk:s=>s.baseCamara>=308 },
+  { id:'idolo', nome:'Ídolo nacional', desc:'Aprovação de 65% ou mais', chk:s=>s.aprov>=65 },
+  { id:'volume', nome:'Volume morto', desc:'Aprovação abaixo de 20%', chk:s=>s.aprov<20 },
+  { id:'domada', nome:'Inflação domada', desc:'IPCA em 12 meses até 3,5%', chk:s=>s.eco.ipca<=3.5 },
+  { id:'pleno', nome:'Pleno emprego', desc:'Desemprego abaixo de 5%', chk:s=>s.eco.desemp<5 },
+  { id:'pibao', nome:'Pibão', desc:'PIB crescendo 3,5% ou mais', chk:s=>s.eco.pib>=3.5 },
+  { id:'recessao', nome:'Recessão técnica', desc:'PIB negativo', chk:s=>s.eco.pib<0 },
+  { id:'dolar7', nome:'Dólar a sete', desc:'Dólar acima de R$ 7', chk:s=>s.eco.dolar>=7 },
+  { id:'tesoura', nome:'Mão de tesoura', desc:'Superávit primário de 1% do PIB', chk:s=>s.eco.primario>=1 },
+  { id:'constituinte', nome:'Emendou a Constituição', desc:'Aprovou uma PEC', chk:s=>s.aprovadas.some(id=>PROJETOS.find(p=>p.id===id).tipo==='PEC') },
+  { id:'reformista', nome:'Reformista', desc:'8 projetos aprovados', chk:s=>s.aprovadas.length>=8 },
+  { id:'caducou', nome:'Caducou', desc:'Deixou uma MP perder a validade', chk:s=>!!s.flags.mpCaiu },
+  { id:'amigos', nome:'Amigo de todos', desc:'Média das relações externas acima de 65', chk:s=>Object.values(s.rel).reduce((a,b)=>a+b,0)/Object.keys(s.rel).length>=65 },
+  { id:'floresta', nome:'Floresta em pé', desc:'Desmatamento abaixo de 3.500 km²', chk:s=>s.soc.desmat<3500 },
+  { id:'paz', nome:'Paz nas ruas', desc:'Menos de 17 homicídios por 100 mil', chk:s=>s.soc.homic<17 },
+  { id:'fome', nome:'Fome zero', desc:'Pobreza abaixo de 18%', chk:s=>s.soc.pobreza<18 },
+  { id:'blindado', nome:'Blindado', desc:'Sobreviveu a uma votação de impeachment', chk:s=>!!s.flags.sobreviveu },
+  { id:'hexa', nome:'Hexa!', desc:'Governou durante o hexacampeonato', chk:s=>!!s.flags.hexa },
+  { id:'reeleito', nome:'Mais quatro anos', desc:'Venceu a eleição de 2030', chk:s=>!!(s.flags.eleicao && s.flags.eleicao.vence) },
+];
+
+const REACOES = {
+  pos: [['@tiadozap_oficial','Compartilhem! Finalmente alguém fazendo alguma coisa nesse país.'],['@economista_de_x','Surpreendentemente sensato. Agora é ver a execução.'],['@motoboy_sp','Se chegar no bolso do povo, eu aplaudo.'],['@prof_de_historia','Medida acertada. Coisa rara em Brasília.'],['@agro_raiz','Até que enfim ouviram quem trabalha.'],['@estudante_ufba','Ponto pro governo hoje, não vou mentir.'],['@vizinha_fofoqueira','Meu marido que nunca elogia ninguém elogiou.']],
+  neg: [['@faria_limer','Vendi tudo. Dólar vai a sete.'],['@tiadozap_oficial','ABSURDO!!! Repassem antes que apaguem!!!'],['@colunista_bsb','O Planalto perdeu o controle da narrativa.'],['@oposicao_raiz','Impeachment já. Só isso.'],['@meme_politico','o governo tentando explicar isso: [cachorro tomando café na casa pegando fogo]'],['@contribuinte_cansado','E quem paga a conta somos nós, como sempre.'],['@sindicato_geral','Traição com quem te elegeu.']],
+  neu: [['@analista_politico','Jogada arriscada. O Centrão vai cobrar a fatura.'],['@jornal_meio_dia','Governo decide; mercado aguarda detalhes.'],['@cientista_politica','Efeito real só aparece daqui a seis meses.']],
+};
+
+const CAT_PROJ = {
+  economia:['refadm','grandesfortunas','dividendos','cortegastos','supersalarios','autonomiabc','novaindustria','ferrovias','privcorreios','desoneracao','cashback','mercosulue'],
+  social:['fim6x1','bolsaplus','mcmv','tarifazero','pne','maismedicos','prevmilitar'],
+  seguranca:['pecseg','antifaccao','maioridade','escolacivica','cannabis'],
+  ambiente:['licamb','mineracaoti','marcotemporal','margemeq','transicao'],
+  instituicoes:['distrital','fimreeleicao','iaregula','redes'],
+};
