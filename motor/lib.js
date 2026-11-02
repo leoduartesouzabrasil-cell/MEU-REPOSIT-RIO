@@ -673,7 +673,53 @@ function vela(ctx, x, y, h, t, seed = 1, cor = COR.bege) {
   ctx.restore();
 }
 
-window.CT = { COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
+
+// ======================================================================
+// MAQUETE 3D FOSCA (three.js, motor/vendor/three.min.js) — "maquete de papelão / brinquedo de madeira"
+// Cores chapadas da paleta, sombreamento em 3 degraus (toon), aresta de tinta, sombra dura, névoa bege.
+// Nada de reflexo, brilho ou bloom (o "3D brilhante" continua proibido). O WebGL desenha num canvas próprio,
+// que é composto no 2D: grão, títulos, etiquetas e legendas continuam por cima, como em qualquer cena.
+// Uso: const P = L.palco3d('nome', 1080, 1920); P.cena.add(P.malha(geo, cor)); ... P.camera(pos, alvo); P.desenhar(ctx);
+// Tudo deve ser função do tempo t (sem relógio interno), para o render paralelo dar o mesmo quadro.
+// ======================================================================
+const _palcos = {};
+function palco3d(chave, w = 1080, h = 1920, o = {}) {
+  if (_palcos[chave]) return _palcos[chave];
+  const T3 = window.THREE, { fundo3d = COR.bege, nevoa = [60, 140], fov = 34 } = o;
+  const tela = document.createElement('canvas'); tela.width = w; tela.height = h;
+  const r = new T3.WebGLRenderer({ canvas: tela, antialias: true, preserveDrawingBuffer: true });
+  r.setSize(w, h, false); r.setClearColor(fundo3d, 1);
+  r.shadowMap.enabled = true; r.shadowMap.type = T3.BasicShadowMap;              // sombra dura, de gravura
+  const cena = new T3.Scene(); cena.fog = new T3.Fog(fundo3d, nevoa[0], nevoa[1]);
+  const cam = new T3.PerspectiveCamera(fov, w / h, 0.1, 400);
+  const grad = new T3.DataTexture(new Uint8Array([120, 120, 120, 255, 200, 200, 200, 255, 255, 255, 255, 255]), 3, 1);
+  grad.minFilter = grad.magFilter = T3.NearestFilter; grad.needsUpdate = true;
+  cena.add(new T3.AmbientLight(0xffffff, 0.42));
+  const sol = new T3.DirectionalLight(0xffffff, 0.72); sol.position.set(-18, 30, 14); sol.castShadow = true;
+  sol.shadow.mapSize.set(2048, 2048); Object.assign(sol.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 90 });
+  sol.shadow.bias = -0.0015; cena.add(sol);
+  const mats = {}, linha = new T3.LineBasicMaterial({ color: COR.tinta });
+  const mat = cor => mats[cor] || (mats[cor] = new T3.MeshToonMaterial({ color: cor, gradientMap: grad }));
+  // malha com aresta de tinta (EdgesGeometry) e sombra; o.aresta = false tira a aresta
+  function malha(geo, cor, o2 = {}) {
+    const m = new T3.Mesh(geo, mat(cor)); m.castShadow = o2.sombra !== false; m.receiveShadow = true;
+    if (o2.aresta !== false) m.add(new T3.LineSegments(new T3.EdgesGeometry(geo, o2.angulo || 28), linha));
+    return m;
+  }
+  const v = new T3.Vector3();
+  return (_palcos[chave] = {
+    T3, r, cena, cam, tela, sol, mat, malha, w, h,
+    camera(pos, alvo) { cam.position.set(...pos); cam.lookAt(...alvo); cam.updateMatrixWorld(); },
+    // posição na tela (px) de um ponto do mundo ou de um objeto (+ deslocamento em y no mundo)
+    projetar(p, dy = 0) {
+      if (p.isObject3D) { p.updateMatrixWorld(); v.setFromMatrixPosition(p.matrixWorld); } else v.set(...p);
+      v.y += dy; v.project(cam); return { x: (v.x + 1) / 2 * w, y: (1 - v.y) / 2 * h, frente: v.z < 1 };
+    },
+    desenhar(ctx, x = 0, y = 0) { r.render(cena, cam); ctx.drawImage(tela, x, y); },
+  });
+}
+
+window.CT = { palco3d, COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,

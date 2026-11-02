@@ -474,3 +474,262 @@ def rock(dur, bpm=124, riff=((82.41, 4), (82.41, 4), (98.0, 2), (110.0, 2), (73.
         t += col
         i += 1
     return out[:int(dur * SR)]
+
+
+# ======================================================================
+# BANDA COMPLETA (rock trabalhado): filtros suaves por FFT, reverb, panorâmica, baixo, guitarra solo com
+# glissando e vibrato, sintetizador de fundo, tons, crash e ride, viradas e um arranjador por seções.
+# Tudo sintetizado aqui (sem amostras). Usado a partir do vídeo do voto distrital (audio/voto-distrital/previa.py).
+# ======================================================================
+def fpb(x, fc, ordem=2):
+    """Passa-baixa suave (resposta 1/sqrt(1+(f/fc)^2n), fase zero) por FFT."""
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR)
+    return np.fft.irfft(X / np.sqrt(1 + (f / fc) ** (2 * ordem)), len(x)).astype(np.float32)
+
+
+def fpa(x, fc, ordem=2):
+    """Passa-alta suave por FFT."""
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR) + 1e-9
+    return np.fft.irfft(X / np.sqrt(1 + (fc / f) ** (2 * ordem)), len(x)).astype(np.float32)
+
+
+def convolver(x, ir):
+    n = len(x) + len(ir) - 1; m = 1 << (n - 1).bit_length()
+    return np.fft.irfft(np.fft.rfft(x, m) * np.fft.rfft(ir, m), m)[:len(x)].astype(np.float32)
+
+
+def reverb(x, dur=1.8, brilho=4500, pre=0.018, seed=3):
+    """Reverb de sala (resposta ao impulso sintética, diferente em cada lado). Devolve (esq, dir) só do sinal molhado."""
+    r = np.random.default_rng(seed); n = int(dur * SR); t = np.arange(n) / SR
+    saidas = []
+    for lado in range(2):
+        ir = r.standard_normal(n).astype(np.float32) * np.exp(-t * 6.9 / dur)
+        ir = fpb(ir, brilho * (1 - 0.15 * lado)); ir[:int(pre * SR)] = 0
+        ir /= np.sqrt(np.sum(ir ** 2)) + 1e-9
+        saidas.append(convolver(x, ir) * 0.5)
+    return saidas[0], saidas[1]
+
+
+def pan(x, p):
+    """Panorâmica de potência constante: p -1 (esq) .. +1 (dir)."""
+    a = (p + 1) * np.pi / 4
+    return x * np.cos(a), x * np.sin(a)
+
+
+def comprimir(x, limiar=0.35, razao=3.0, janela=0.03):
+    """Compressor simples de barramento (envelope RMS suavizado)."""
+    k = int(janela * SR); e = np.sqrt(np.convolve(x ** 2, np.ones(k, np.float32) / k, "same")) + 1e-9
+    g = np.where(e > limiar, (limiar + (e - limiar) / razao) / e, 1.0)
+    g = np.convolve(g, np.ones(k, np.float32) / k, "same")
+    return (x * g).astype(np.float32)
+
+
+def baixo(nota, dur, vel=1.0, abafado=False):
+    """Baixo elétrico sintetizado: dente de serra + sub senoidal, passa-baixa com envelope, leve saturação."""
+    n = int((dur + 0.08) * SR); t = np.arange(n) / SR
+    x = 0.55 * (2 * ((t * nota) % 1.0) - 1) + 0.8 * np.sin(2 * np.pi * nota * t)
+    x = fpb(x.astype(np.float32), 900 if not abafado else 500)
+    e = env(n, a=0.004, d=0.18 if abafado else 0.6, s=0.0 if abafado else 0.55)
+    e[int(dur * SR):] *= np.exp(-np.arange(n - int(dur * SR)) / SR / 0.02)
+    return norm(np.tanh(x * e * 2.2).astype(np.float32), 0.85 * vel)
+
+
+def solo(notas, vel=0.8, brilho=3800):
+    """Guitarra solo: notas = [(freq, dur), ...] com glissando curto entre elas, vibrato que entra devagar e distorção.
+    freq 0 = pausa. Use dur negativa no glissando longo (bend)."""
+    total = sum(abs(d) for _, d in notas) + 0.6
+    n = int(total * SR); f = np.zeros(n, np.float32); amp = np.zeros(n, np.float32)
+    i0, ant = 0, None
+    for fr, d in notas:
+        k = int(abs(d) * SR); tt = np.arange(k) / SR
+        if fr:
+            g = 0.035 if d > 0 else abs(d) * 0.8
+            alvo = np.full(k, fr, np.float32)
+            if ant:
+                alvo = np.where(tt < g, ant * (fr / ant) ** (tt / g), fr).astype(np.float32)
+            vib = 1 + 0.012 * np.clip((tt - 0.18) / 0.25, 0, 1) * np.sin(2 * np.pi * 5.6 * tt)
+            f[i0:i0 + k] = alvo * vib
+            amp[i0:i0 + k] = np.minimum(1, tt / 0.01) * (0.75 + 0.25 * np.exp(-tt / 0.3))
+            ant = fr
+        i0 += k
+    f[i0:] = ant or 0; amp[i0:] = 0
+    amp = np.convolve(amp, np.ones(240, np.float32) / 240, "same")
+    fase = np.cumsum(f) / SR
+    x = (2 * (fase % 1.0) - 1) * 0.6 + np.sign(np.sin(2 * np.pi * fase)) * 0.3 + np.sin(2 * np.pi * 2 * fase) * 0.2
+    x = np.tanh(x * amp * 6.0)
+    return norm(fpb(fpa(x.astype(np.float32), 180), brilho), 0.8 * vel)
+
+
+def sinte(freqs, dur, vel=0.5, brilho=1400, ataque=0.6):
+    """Sintetizador de fundo (pad): dentes de serra desafinados, ataque lento, passa-baixa."""
+    n = int((dur + 0.8) * SR); t = np.arange(n) / SR; x = np.zeros(n, np.float32)
+    for fr in freqs:
+        for det in (-0.006, 0.0, 0.007):
+            x += (2 * ((t * fr * (1 + det) + det * 7) % 1.0) - 1).astype(np.float32)
+    e = np.clip(t / ataque, 0, 1) * np.clip((dur + 0.8 - t) / 0.8, 0, 1)
+    return norm(fpb(x * e, brilho), vel)
+
+
+def tom(f0=120.0, vel=1.0):
+    n = int(0.6 * SR); t = np.arange(n) / SR
+    fr = f0 * (1 + 0.5 * np.exp(-t * 30))
+    x = np.sin(2 * np.pi * np.cumsum(fr) / SR) * np.exp(-t * 7) + banda(ruido(0.6)[:n], 200, 3000) * np.exp(-t * 40) * 0.25
+    return norm(x.astype(np.float32), 0.9 * vel)
+
+
+def crash(vel=1.0, dur=2.6):
+    n = int(dur * SR); t = np.arange(n) / SR
+    x = fpa(ruido(dur)[:n], 2500) * (np.exp(-t * 1.6) * 0.8 + np.exp(-t * 18) * 0.6)
+    x += np.sin(2 * np.pi * 5200 * t) * np.exp(-t * 3) * 0.05
+    return norm(x.astype(np.float32), 0.75 * vel)
+
+
+def ride(vel=1.0):
+    n = int(0.9 * SR); t = np.arange(n) / SR
+    x = fpa(ruido(0.9)[:n], 5000) * np.exp(-t * 4) * 0.5 + np.sin(2 * np.pi * 3100 * t) * np.exp(-t * 6) * 0.25
+    return norm(x.astype(np.float32), 0.45 * vel)
+
+
+def virada(dur, vel=1.0):
+    """Virada de tons descendo em semicolcheias (fecha a seção e chama a próxima)."""
+    out = segundos(dur + 0.7); passos = max(4, int(dur / 0.075)); fs = np.geomspace(220, 80, passos)
+    for k in range(passos):
+        soma(out, tom(fs[k], vel * (0.7 + 0.3 * k / passos)) if k % 4 != 3 else caixa(vel), dur * k / passos)
+    return out
+
+
+# ------------------------------------------------ efeitos novos
+def relogio(dur, bpm=60):
+    """Tique-taque de relógio de parede (noite)."""
+    out = segundos(dur + 0.2); passo = 60 / bpm
+    for k in range(int(dur / passo)):
+        f = 3200 if k % 2 == 0 else 2600; n = int(0.03 * SR); tt = np.arange(n) / SR
+        soma(out, (banda(ruido(0.03)[:n], f - 800, f + 800) * np.exp(-tt * 260)).astype(np.float32), k * passo, 0.8)
+    return out
+
+
+def bloco_madeira(f=900.0, vel=1.0):
+    """'Toc' de bloco de madeira (cubo de voto empilhando)."""
+    n = int(0.18 * SR); t = np.arange(n) / SR
+    x = np.sin(2 * np.pi * f * t) * np.exp(-t * 38) + np.sin(2 * np.pi * f * 2.7 * t) * np.exp(-t * 60) * 0.4
+    return norm(x.astype(np.float32), 0.8 * vel)
+
+
+def metal(f0=220.0, dur=1.4, vel=1.0):
+    """Batida em lata/lixeira de metal: parciais inarmônicas decaindo."""
+    n = int(dur * SR); t = np.arange(n) / SR; x = np.zeros(n, np.float32)
+    for k, (m, a) in enumerate([(1, 1), (1.59, 0.7), (2.14, 0.6), (2.65, 0.45), (3.9, 0.3), (5.4, 0.2)]):
+        x += (a * np.sin(2 * np.pi * f0 * m * t) * np.exp(-t * (4 + k * 2.5))).astype(np.float32)
+    x += banda(ruido(dur)[:n], 1500, 7000) * np.exp(-t * 30) * 0.5
+    return norm(x, 0.8 * vel)
+
+
+def passos(n, intervalo=0.32, vel=0.6):
+    out = segundos(n * intervalo + 0.3)
+    for k in range(n):
+        m = int(0.08 * SR); tt = np.arange(m) / SR
+        x = banda(ruido(0.08)[:m], 120, 1400) * np.exp(-tt * 55) + np.sin(2 * np.pi * 70 * tt) * np.exp(-tt * 40) * 0.6
+        soma(out, x.astype(np.float32), k * intervalo, vel * (0.8 + 0.2 * (k % 2)))
+    return out
+
+
+def papel(dur=0.5, vel=0.7):
+    """Folha de papel deslizando / sendo manuseada."""
+    n = int(dur * SR); t = np.arange(n) / SR
+    x = banda(ruido(dur)[:n], 1800, 9000) * (0.4 + 0.6 * np.abs(np.sin(2 * np.pi * 7 * t))) * np.sin(np.pi * t / dur)
+    return norm(x.astype(np.float32), 0.5 * vel)
+
+
+def rabisco(dur=1.2, vel=0.7):
+    """Lápis riscando o papel (redesenho do mapa)."""
+    n = int(dur * SR); t = np.arange(n) / SR
+    mod = 0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 9 * t + 2 * np.sin(2 * np.pi * 1.3 * t)))
+    x = banda(ruido(dur)[:n], 2500, 8000) * mod * np.clip(t / 0.05, 0, 1) * np.clip((dur - t) / 0.1, 0, 1)
+    return norm(x.astype(np.float32), 0.45 * vel)
+
+
+def estaca(vel=1.0):
+    """Mourão de madeira cravado no chão (cerca do curral)."""
+    n = int(0.35 * SR); t = np.arange(n) / SR
+    x = np.sin(2 * np.pi * (90 + 120 * np.exp(-t * 40)) * t) * np.exp(-t * 14)
+    bm = bloco_madeira(420, 0.6); x[:len(bm)] += bm * 0.5
+    return norm(x.astype(np.float32), 0.85 * vel)
+
+
+def fanfarra_ironica(vel=0.7):
+    """Três notas de metal de 'vencedor' (sintetizadas), meio de brincadeira."""
+    out = segundos(1.6)
+    for k, (f, d) in enumerate([(392.0, 0.14), (523.3, 0.14), (659.3, 0.7)]):
+        n = int((d + 0.3) * SR); t = np.arange(n) / SR
+        x = sum((1 / h) * np.sin(2 * np.pi * f * h * t) for h in range(1, 7)) * np.clip(t / 0.02, 0, 1) * np.exp(-np.maximum(0, t - d) / 0.12)
+        soma(out, fpb(x.astype(np.float32), 2500), k * 0.15)
+    return norm(out, 0.7 * vel)
+
+
+# ------------------------------------------------ arranjador
+E1, G1, A1, B0, C1, D1 = 41.2, 49.0, 55.0, 30.87, 32.7, 36.71   # baixo (o baixo toca uma oitava abaixo da guitarra)
+
+
+def banda_secao(stems, t0, dur, bpm, acordes, estilo="palm", intens=1.0, virar=False, seed=1):
+    """Escreve uma seção da banda nos stems (dict de buffers mono: bat, baixo, gE, gD).
+    acordes = [(nota_guitarra_hz, colcheias), ...] em loop. estilos: palm (verso abafado), aberto (refrão),
+    pulo (didático, guitarra no contratempo e baixo em oitavas), tensao (semicolcheias abafadas, tons), meio (meio-tempo pesado)."""
+    col = 60 / bpm / 2
+    seq = [n for n, k in acordes for _ in range(k)]
+    passos_ = int(dur / col); fim_virada = dur - (2 * col * 2 if virar else 0)
+    r = np.random.default_rng(seed)
+    for i in range(passos_):
+        t = t0 + i * col; nota = seq[i % len(seq)]; p = i % 8; bx = nota / 2
+        h = (r.random() - 0.5) * 0.008                                                # humanização
+        if t - t0 < fim_virada:
+            # ---- bateria
+            if estilo == "meio":
+                if p == 0: soma(stems["bat"], bumbo(intens), t)
+                if p == 4: soma(stems["bat"], caixa(intens * 1.05), t)
+                soma(stems["bat"], ride(0.7 * intens) if p % 2 == 0 else chimbal(0.4 * intens), t)
+            elif estilo == "pulo":
+                if p in (0, 3, 4): soma(stems["bat"], bumbo(0.85 * intens), t)
+                if p in (2, 6): soma(stems["bat"], caixa(0.8 * intens), t)
+                soma(stems["bat"], chimbal(0.7 * intens, aberto=(p % 2 == 1)), t)
+            elif estilo == "tensao":
+                if p in (0, 3, 6): soma(stems["bat"], bumbo(0.9 * intens), t)
+                if p in (4,): soma(stems["bat"], caixa(0.9 * intens), t)
+                if p in (2, 7): soma(stems["bat"], tom(110 if p == 2 else 85, 0.6 * intens), t)
+                soma(stems["bat"], chimbal(0.55 * intens), t); soma(stems["bat"], chimbal(0.3 * intens), t + col / 2)
+            else:
+                if p in ((0, 4, 5) if estilo == "aberto" else (0, 4)): soma(stems["bat"], bumbo(intens), t)
+                if p in (2, 6): soma(stems["bat"], caixa((0.75 if estilo == "palm" else 1.0) * intens), t)
+                if estilo == "aberto": soma(stems["bat"], ride(0.6 * intens) if p % 2 == 0 else chimbal(0.35 * intens), t)
+                else: soma(stems["bat"], chimbal((0.6 if p % 2 == 0 else 0.4) * intens), t)
+            if estilo == "aberto" and i % 16 == 0: soma(stems["bat"], crash(0.7 * intens), t)
+        # ---- baixo
+        if estilo == "pulo":
+            soma(stems["baixo"], baixo(bx * (2 if p % 2 else 1), col * 0.8, 0.9 * intens, abafado=True), t)
+        elif estilo == "meio":
+            if p in (0, 3, 4, 6): soma(stems["baixo"], baixo(bx, col * (2 if p in (0, 4) else 1) * 0.95, intens), t)
+        else:
+            soma(stems["baixo"], baixo(bx, col * 0.9, (0.95 if p % 2 == 0 else 0.8) * intens, abafado=estilo in ("palm", "tensao")), t)
+        # ---- guitarras (duas, uma em cada lado, levemente diferentes)
+        for lado, (dt, det) in (("gE", (0.0, 1.0)), ("gD", (0.011, 1.0023))):
+            if estilo == "palm":
+                forte = p in (0, 3, 6)
+                soma(stems[lado], guitarra(nota * det, col * (1.5 if forte else 1), abafada=not forte, vel=(0.75 if forte else 0.5) * intens), t + dt + h)
+            elif estilo == "aberto":
+                if p in (0, 3, 6): soma(stems[lado], guitarra(nota * det, col * (3 if p != 6 else 2), abafada=False, vel=0.9 * intens), t + dt + h)
+            elif estilo == "pulo":
+                if p % 2 == 1: soma(stems[lado], guitarra(nota * 2 * det, col * 0.6, abafada=True, vel=0.8 * intens), t + dt + h)
+            elif estilo == "tensao":
+                soma(stems[lado], guitarra((nota * 1.0595 if p == 7 else nota) * det, col * 0.5, abafada=p != 7, vel=0.6 * intens), t + dt + h)
+                soma(stems[lado], guitarra(nota * det, col * 0.5, abafada=True, vel=0.4 * intens), t + col / 2 + dt + h)
+            elif estilo == "meio":
+                if p in (0, 4): soma(stems[lado], guitarra(nota * det, col * 3.6, abafada=False, vel=0.95 * intens), t + dt + h)
+    if virar:
+        soma(stems["bat"], virada(4 * col, 0.9 * intens), t0 + fim_virada)
+
+
+def banda_golpe(stems, t, nota, vel=1.0, anel=0.9):
+    """Golpe da banda inteira (carimbo musical): acorde aberto + baixo + bumbo + crash."""
+    for lado, (dt, det) in (("gE", (0.0, 1.0)), ("gD", (0.009, 1.0023))):
+        soma(stems[lado], guitarra(nota * det, anel, abafada=False, vel=vel), t + dt)
+    soma(stems["baixo"], baixo(nota / 2, anel, vel), t)
+    soma(stems["bat"], bumbo(vel), t); soma(stems["bat"], crash(0.8 * vel), t)

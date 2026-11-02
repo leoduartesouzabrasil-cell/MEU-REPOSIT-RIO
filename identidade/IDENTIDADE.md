@@ -102,6 +102,14 @@ Regras:
 - Elementos ilustrados se movem **"em dois"** (troca a cada 2 frames) para parecer feito à mão; texto e cortes ficam em 30 fps.
 - Ritmo: cortes no tempo da música, segurar cada manchete por 0,8 a 1,5 s.
 
+## 4b. Maquete 3D fosca (`L.palco3d`, three.js em `motor/vendor/`)
+Para explicações "na prática" (cidades, distritos, personagens), a cena pode montar uma maquete 3D. O estilo é de **maquete de papelão
+ou brinquedo de madeira**: cores chapadas da paleta (a pele dos personagens em tons de marrom é a única exceção), sombreamento em
+3 degraus (toon), aresta fina de tinta, sombra dura e névoa bege no fundo. Não usar reflexo, brilho, bloom nem texturas realistas.
+O WebGL é desenhado num canvas e composto no 2D. Título, fonte, etiquetas (posição via `P.projetar`) e legenda continuam no 2D,
+com uma faixa de papel atrás do título (y 270–410). Toda posição é função de `t`. Modelo: `motor/cenas/voto-distrital.js`.
+Marque sempre "exemplo ilustrativo · personagens fictícios" na linha da fonte.
+
 ## 5. Textura e acabamento (sempre ligados)
 
 1. Grão de papel animado (opacidade 8–14%).
@@ -114,6 +122,15 @@ Regras:
 
 Percussão marcial e/ou ritmo brasileiro (surdo, alfaia), um baque de impacto em cada **carimbo** e uma batida de máquina de escrever na **datilografia**.
 
+### 6a. Banda completa (desde o vídeo do voto distrital)
+`motor/som.py` tem um arranjador de rock (`banda_secao`, `banda_golpe`) com bateria e viradas (`virada`, `tom`, `crash`, `ride`), `baixo`,
+duas guitarras abertas em estéreo (esq./dir., levemente desafinadas e fora de tempo, como gravação dobrada), `solo` (guitarra solo com
+glissando e vibrato, para melodia-tema e "trombone triste"), `sinte` (fundo) e `reverb`/`pan`/`comprimir` na mixagem.
+Estilos de seção: `palm` (verso abafado, deixa espaço para a voz: ARQUIVO), `aberto` (refrão com crash e solo: CARTAZ final),
+`pulo` (didático, guitarra no contratempo: explicações e maquetes), `tensao` (semicolcheias e tons) e `meio` (meio-tempo pesado).
+Cada carimbo importante leva um `banda_golpe` (a banda inteira bate junto). Efeitos novos: `relogio`, `bloco_madeira`, `metal`,
+`passos`, `papel`, `rabisco`, `estaca`, `fanfarra_ironica`. Modelo: `audio/voto-distrital/previa.py`.
+
 ## 6b. Mixagem (regra fixa)
 
 A **voz do narrador sempre manda**: durante a fala, trilha + efeitos ficam ~16–18 dB abaixo da voz (medido em RMS),
@@ -122,7 +139,7 @@ e ~8 dB abaixo nas pausas. Estrondos e carimbos passam por limitador e nunca aba
 ## 7. Não fazer
 
 - Fontes arredondadas, script ou "tech".
-- Gradiente, glow, lens flare, brilho neon, 3D brilhante.
+- Gradiente, glow, lens flare, brilho neon, 3D brilhante (o 3D permitido é o fosco de maquete, seção 4b).
 - Fundo branco, preto puro ou paleta fora da tabela.
 - Movimento flutuante/elástico de app; aqui o movimento é firme e decidido.
 - Ficar o vídeo inteiro num registro só.

@@ -2,6 +2,7 @@
 
 Duração-alvo: 55–60 s (~160 palavras) · Reels 1080×1920 · legendado · trilha rock sintetizado · fecha com o logo O Camarada.
 Gancho: Hugo Motta quer votar ainda em 2026 a PEC do voto distrital misto (transição em 2030, sistema completo em 2034), antes da posse dos novos deputados.
+**Status: prévia sem narração pronta** (`motor/cenas/voto-distrital.js` + `audio/voto-distrital/previa.py`, 58,4 s). Trilha refeita com a banda completa (identidade 6a), a pedido do autor: "trilha melhor e mais trabalhada". Print: Agência Câmara, 28/10/2026 (`midia/voto-distrital/print-agencia-camara-2026-10-28.jpg`).
 Pedido do autor (v2): abrir com "NA CALADA DA NOITE ELES QUEREM JOGAR O SEU VOTO NO LIXO!" + print de notícia; contexto breve; "COMO ISSO FUNCIONARIA NA PRÁTICA?" com cenário e personagens em 3D, bem didático.
 
 ## Estrutura e ideia visual
