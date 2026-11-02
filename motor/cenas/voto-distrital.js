@@ -442,8 +442,8 @@ window.CENA = {
           ctx.fillStyle = cor; ctx.fillRect(X0, y0 + 90, W, 90);
           L.texto(ctx, String(v), X0 + W - 20, y0 + 160, { familia: FONTE.manchete, peso: 900, tam: 76, cor: cor === AMA ? TINTA : BEGE, alinhar: 'right' });
           L.texto(ctx, `hoje: ${a}`, X0, y0 + 230, { familia: FONTE.maquina, peso: 400, tam: 30, cor: TINTA });
-          if (q >= 1) L.aplicarCarimbo(ctx, seg(t, T.sim + 1.9 + i * 0.5, T.sim + 2.2 + i * 0.5), X0 + LARG - 110, y0 + 225, () =>
-            L.etiqueta(ctx, b > a ? `+${b - a}` : `−${a - b} CADEIRAS`, X0 + LARG - 110, y0 + 225, 1, { cor: b > a ? AZUL : VERM, tam: 40 }), 63 + i);
+          if (q >= 1) L.aplicarCarimbo(ctx, seg(t, T.sim + 1.9 + i * 0.5, T.sim + 2.2 + i * 0.5), X0 + LARG - 150, y0 + 225, () =>
+            L.etiqueta(ctx, b > a ? `+${b - a}` : `−${a - b} CADEIRAS`, X0 + LARG - 150, y0 + 225, 1, { cor: b > a ? AZUL : VERM, tam: 40 }), 63 + i);
         });
         if (t >= T.sim + 3.4) L.aplicarCarimbo(ctx, seg(t, T.sim + 3.4, T.sim + 3.7), CX, 1360, () => {
           ctx.fillStyle = TINTA; ctx.fillRect(X0, 1300, LARG, 116);
