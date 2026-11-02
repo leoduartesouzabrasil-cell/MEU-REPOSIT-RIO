@@ -8,9 +8,9 @@
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const T = Object.assign({
   n1: 0.3, n2: 1.2, n3: 2.1, n4: 2.9, cedula: 3.2, print: 4.6, sel: 6.0, ctx: 8.4, motta: 8.7, c1: 10.2, c2: 11.0, c3: 11.8, c4: 12.6,
-  metade: 13.6, pratica: 15.8, cidade: 18.2, distrito: 20.8, desce: 22.0, maria: 23.8, joao: 25.4, chuva: 27.0, conta: 28.6,
-  vence: 29.6, lixo: 31.0, lixoTxt: 32.6, mapa: 34.2, risca: 35.0, novo: 36.7, curral: 38.3, perde: 40.6, distritao: 44.4,
-  rej1: 45.6, rej2: 46.6, reforma: 48.8, jogada: 50.6, nao: 52.2, logo: 54.8, dur: 58.4,
+  metade: 13.6, pratica: 15.8, cidade: 18.2, distrito: 20.4, desce: 21.4, maria: 23.0, joao: 24.4, chuva: 25.8, conta: 27.2,
+  vence: 28.0, lixo: 29.2, lixoTxt: 30.6, mapa: 32.0, risca: 32.7, novo: 34.2, curral: 35.6, perde: 37.6, bancada: 41.0, sim: 44.4,
+  distritao: 49.2, rej1: 50.4, rej2: 51.2, reforma: 53.0, jogada: 54.6, nao: 56.0, logo: 58.2, dur: 61.8,
 }, (window.TEMPOS || {}).marcas || {});
 
 window.CENA = {
@@ -26,14 +26,14 @@ window.CENA = {
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, AZUL = COR.azul;
     let arquivo = true;
 
-    const ordem = [[0, abertura], [T.print, noticia], [T.ctx, contexto], [T.pratica, pratica], [T.cidade, maquete],
+    const ordem = [[0, abertura], [T.print, noticia], [T.ctx, contexto], [T.pratica, pratica], [T.cidade, maquete], [T.bancada, bancada],
       [T.distritao, distritao], [T.reforma, fecho], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.n1, T.n2, T.n3, T.n4, T.pratica + 0.1, T.vence, T.lixoTxt, T.curral + 1.0, T.rej1, T.rej2, T.reforma + 0.1, T.jogada, T.nao, T.logo];
+    const IMP = [T.n1, T.n2, T.n3, T.n4, T.pratica + 0.1, T.vence, T.lixoTxt, T.curral + 1.0, T.bancada + 1.8, T.sim + 3.4, T.rej1, T.rej2, T.reforma + 0.1, T.jogada, T.nao, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.print, BEGE, -24], [T.ctx, BEGE, 24], [T.pratica, VERM, -24], [T.cidade, BEGE, 24], [T.distritao, BEGE, -24],
+    [[T.print, BEGE, -24], [T.ctx, BEGE, 24], [T.pratica, VERM, -24], [T.cidade, BEGE, 24], [T.bancada, BEGE, -24], [T.distritao, BEGE, 24],
       [T.reforma, VERM, 24], [T.logo, BEGE, -24]].forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.25));
@@ -118,20 +118,17 @@ window.CENA = {
       L.fundo(ctx, BEGE);
       titulo('A NOTÍCIA', seg(lt, 0.1, 0.6));
       cred('Agência Câmara de Notícias · 28/10/2026', seg(lt, 0.3, 1.0));
-      const img = L.img.print, w = 840, s = w / img.width, h = 1000;
-      const z = lerp(1.0, 1.1, ease.saida(seg(lt, 0, 3.6))), sobe = ease.saida(seg(lt, 0, 0.6));
-      L.camera(ctx, { x: lerp(CX, 400, seg(lt, 0.8, 3.0)), y: lerp(960, 760, seg(lt, 0.8, 3.0)), zoom: z }, () => {
-        ctx.save(); ctx.translate(CX, 930 + (1 - sobe) * 600); ctx.rotate(-0.022);
-        ctx.fillStyle = 'rgba(28,23,20,0.35)'; ctx.fillRect(-w / 2 + 16, -h / 2 + 18, w, h);
-        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(-w / 2 - 10, -h / 2 - 10, w + 20, h + 20);
-        ctx.save(); ctx.beginPath(); ctx.rect(-w / 2, -h / 2, w, h); ctx.clip();
-        ctx.drawImage(img, -w / 2, -h / 2, w, img.height * s);
-        ctx.restore();
-        // seleção em "ainda neste ano" (linha 3 da manchete)
-        L.selecao(ctx, -w / 2 + 24, -h / 2 + 183, 330, 50, seg(t, T.sel, T.sel + 0.5), VERM);
-        ctx.restore();
-      });
-      if (t >= T.sel + 0.6) L.etiqueta(ctx, 'AINDA EM 2026', 760, 1330, seg(t, T.sel + 0.6, T.sel + 0.9), { cor: VERM, tam: 44 });
+      // o print inteiro, parado (sem flutuar nem cortar): 1300×1650 → 764×970, entre y 432 e 1402
+      const img = L.img.print, h = 970, s = h / img.height, w = img.width * s, x = CX - w / 2, y = 432;
+      const sobe = ease.saida(seg(lt, 0, 0.5));
+      ctx.save(); ctx.translate(0, (1 - sobe) * 1500);
+      ctx.fillStyle = 'rgba(28,23,20,0.35)'; ctx.fillRect(x + 14, y + 16, w, h);
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x - 8, y - 8, w + 16, h + 16);
+      ctx.drawImage(img, x, y, w, h);
+      // seleção em "ainda neste ano" (linha 3 da manchete; no recorte: x 39–547, y 286–358)
+      L.selecao(ctx, x + 36 * s, y + 284 * s, 516 * s, 76 * s, seg(t, T.sel, T.sel + 0.5), VERM);
+      ctx.restore();
+      if (t >= T.sel + 0.6) L.etiqueta(ctx, 'AINDA EM 2026', 760, 930, seg(t, T.sel + 0.6, T.sel + 0.9), { cor: VERM, tam: 44 });
     }
 
     // ------------------------------------------------ C. contexto (ARQUIVO, ficha datilografada)
@@ -396,6 +393,74 @@ window.CENA = {
       ctx.restore();
     }
 
+    // ------------------------------------------------ E2. a Câmara hoje e a simulação (ARQUIVO)
+    function bancada(lt) {
+      L.fundo(ctx, BEGE);
+      const sim = t >= T.sim;
+      titulo(sim ? 'COM OS MESMOS VOTOS DE 2026' : 'A CÂMARA HOJE', sim ? seg(t, T.sim, T.sim + 0.6) : seg(lt, 0.1, 0.7));
+      cred(sim ? 'simulação: Ranking dos Políticos (30/10/2026), distrital misto compensatório' : 'resultado de 2026 · fonte: CNN Brasil · Exame · DIAP',
+        sim ? seg(t, T.sim + 0.2, T.sim + 0.9) : seg(lt, 0.3, 1.0));
+      if (!sim || t < T.sim + 0.4) {
+        // hemiciclo de 513 cadeiras: PL (121) em azul à direita, federação PT-PCdoB-PV (88) em vermelho à esquerda
+        const sai = ease.entrada(seg(t, T.sim, T.sim + 0.4));
+        ctx.save(); ctx.translate(-sai * 1200, 0);
+        const p = seg(lt, 0.2, 1.6);
+        CADEIRAS.forEach(([x, y, k], i) => {
+          if (i / CADEIRAS.length > p) return;
+          ctx.fillStyle = k === 'pl' ? AZUL : k === 'pt' ? VERM : 'rgba(28,23,20,0.28)';
+          ctx.beginPath(); ctx.arc(x, y, 10.5, 0, 7); ctx.fill();
+        });
+        ctx.globalAlpha = seg(lt, 1.2, 1.6);
+        L.texto(ctx, '513', CX, 980, { familia: FONTE.manchete, peso: 900, tam: 120, cor: TINTA, alinhar: 'center' });
+        L.texto(ctx, 'DEPUTADOS', CX, 1030, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: TINTA, alinhar: 'center', tracking: 4 });
+        ctx.globalAlpha = 1;
+        if (lt > 1.8) {
+          L.aplicarCarimbo(ctx, seg(lt, 1.8, 2.1), CX, 1180, () => {
+            ctx.fillStyle = AZUL; ctx.fillRect(X0, 1110, LARG, 150);
+            L.texto(ctx, 'PL: 121 DEPUTADOS', CX, 1185, { familia: FONTE.bloco, peso: 400, tam: tamMax('PL: 121 DEPUTADOS', FONTE.bloco, 70, 400, 760), cor: BEGE, alinhar: 'center' });
+            L.texto(ctx, 'A MAIOR BANCADA · 23,6% DA CÂMARA', CX, 1236, { familia: FONTE.grotesca, peso: 700, tam: 28, cor: AMA, alinhar: 'center' });
+          }, 61);
+          selo('PL', 900, 560, AZUL, BEGE, seg(lt, 2.0, 2.3));
+          L.etiqueta(ctx, 'PT · PCdoB · PV: 88', 300, 1320, seg(lt, 2.6, 2.9), { cor: VERM, tam: 34 });
+        }
+        ctx.restore();
+      }
+      if (sim) {
+        const e = ease.saida(seg(t, T.sim + 0.2, T.sim + 0.7));
+        ctx.save(); ctx.translate((1 - e) * 1200, 0);
+        // duas linhas de barras: antes (proporcional, real) → depois (simulação)
+        const LIN = [['PL', AZUL, 121, 125, [['PL', AZUL, BEGE]]], ['PT · PCdoB · PV', VERM, 88, 80, [['PT', VERM, BEGE], ['PCdoB', COR.vermelhoEscuro, BEGE], ['PV', AMA, TINTA]]]];
+        LIN.forEach(([nome, cor, a, b, selos], i) => {
+          const y0 = 520 + i * 420, q = ease.saida(seg(t, T.sim + 0.9 + i * 0.5, T.sim + 1.9 + i * 0.5)), v = Math.round(lerp(a, b, q));
+          selos.forEach(([s, c1, c2], j) => selo(s, X0 + 60 + j * 118, y0 + 20, c1, c2, seg(t, T.sim + 0.5 + i * 0.3, T.sim + 0.8 + i * 0.3), selos.length > 1 ? 0.8 : 1));
+          L.texto(ctx, nome, X0 + (selos.length > 1 ? 400 : 140), y0 + 40, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: TINTA });
+          const W = v / 130 * LARG;
+          ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0 + 8, y0 + 98, a / 130 * LARG, 90);
+          ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.setLineDash([10, 8]); ctx.strokeRect(X0, y0 + 90, a / 130 * LARG, 90); ctx.setLineDash([]);
+          ctx.fillStyle = cor; ctx.fillRect(X0, y0 + 90, W, 90);
+          L.texto(ctx, String(v), X0 + W - 20, y0 + 160, { familia: FONTE.manchete, peso: 900, tam: 76, cor: cor === AMA ? TINTA : BEGE, alinhar: 'right' });
+          L.texto(ctx, `hoje: ${a}`, X0, y0 + 230, { familia: FONTE.maquina, peso: 400, tam: 30, cor: TINTA });
+          if (q >= 1) L.aplicarCarimbo(ctx, seg(t, T.sim + 1.9 + i * 0.5, T.sim + 2.2 + i * 0.5), X0 + LARG - 110, y0 + 225, () =>
+            L.etiqueta(ctx, b > a ? `+${b - a}` : `−${a - b} CADEIRAS`, X0 + LARG - 110, y0 + 225, 1, { cor: b > a ? AZUL : VERM, tam: 40 }), 63 + i);
+        });
+        if (t >= T.sim + 3.4) L.aplicarCarimbo(ctx, seg(t, T.sim + 3.4, T.sim + 3.7), CX, 1360, () => {
+          ctx.fillStyle = TINTA; ctx.fillRect(X0, 1300, LARG, 116);
+          L.texto(ctx, 'O MESMO VOTO, MENOS VAGAS', CX, 1380, { familia: FONTE.bloco, peso: 400, tam: tamMax('O MESMO VOTO, MENOS VAGAS', FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
+        }, 66);
+        ctx.restore();
+      }
+    }
+    // selo de partido (sigla em círculo com as cores da paleta; não é o logotipo oficial)
+    function selo(sigla, x, y, cor, corTexto, p, esc = 1) {
+      if (p <= 0) return;
+      ctx.save(); ctx.translate(x, y); ctx.scale(esc * lerp(0.5, 1, ease.carimbo(p)), esc * lerp(0.5, 1, ease.carimbo(p))); ctx.globalAlpha = clamp(p * 3);
+      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(5, 5, 54, 0, 7); ctx.fill();
+      ctx.fillStyle = cor; ctx.beginPath(); ctx.arc(0, 0, 54, 0, 7); ctx.fill();
+      ctx.strokeStyle = corTexto; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 45, 0, 7); ctx.stroke();
+      L.texto(ctx, sigla, 0, 13, { familia: FONTE.bloco, peso: 400, tam: Math.min(40, L.ajustar(ctx, sigla, FONTE.bloco, 76, 400)), cor: corTexto, alinhar: 'center' });
+      ctx.restore();
+    }
+
     // ------------------------------------------------ F. distritão (ARQUIVO)
     function distritao(lt) {
       L.fundo(ctx, BEGE);
@@ -448,7 +513,7 @@ window.CENA = {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Print: Agência Câmara de Notícias (28/10/2026)', 1110],
+      [['Print: Agência Câmara de Notícias (28/10/2026) · Simulação: Ranking dos Políticos', 1110],
         ['Foto: Lula Marques/Agência Brasil (CC BY 3.0 BR)', 1150],
         ['Fontes: Agência Câmara · CartaCapital · CNN Brasil · Metrópoles', 1200],
         ['Alma Preta · Congresso em Foco · InfoMoney', 1240],
@@ -494,3 +559,15 @@ function votosNum(i, t) {
   const tEnt = kk => (kk === 0 && primeiro !== null) ? primeiro : T.chuva + (kk + 1) / total * (T.conta - T.chuva) - 0.02;
   return { n, tEnt, primeiro: primeiro !== null };
 }
+
+// hemiciclo: 513 cadeiras em 10 fileiras; da esquerda para a direita: federação PT-PCdoB-PV (88), outros, PL (121)
+const CADEIRAS = (() => {
+  const fil = 10, r0 = 150, dr = 31, cx = 540, cy = 1010, raios = Array.from({ length: fil }, (_, i) => r0 + i * dr);
+  const soma = raios.reduce((a, b) => a + b, 0); let resto = 513; const pts = [];
+  raios.forEach((r, i) => {
+    const n = i === fil - 1 ? resto : Math.round(513 * r / soma); resto -= n;
+    for (let k = 0; k < n; k++) { const a = Math.PI - Math.PI * (k + 0.5) / n; pts.push([cx + r * Math.cos(a) * 1.0, cy - r * Math.sin(a), a]); }
+  });
+  pts.sort((p, q) => q[2] - p[2]);                     // da esquerda (ângulo π) para a direita (0)
+  return pts.map(([x, y], i) => [x, y, i < 88 ? 'pt' : i >= 513 - 121 ? 'pl' : 'outro']);
+})();

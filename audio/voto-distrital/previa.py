@@ -19,9 +19,9 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
 T = dict(n1=0.3, n2=1.2, n3=2.1, n4=2.9, cedula=3.2, print=4.6, sel=6.0, ctx=8.4, motta=8.7, c1=10.2, c2=11.0, c3=11.8, c4=12.6,
-         metade=13.6, pratica=15.8, cidade=18.2, distrito=20.8, desce=22.0, maria=23.8, joao=25.4, chuva=27.0, conta=28.6,
-         vence=29.6, lixo=31.0, lixoTxt=32.6, mapa=34.2, risca=35.0, novo=36.7, curral=38.3, perde=40.6, distritao=44.4,
-         rej1=45.6, rej2=46.6, reforma=48.8, jogada=50.6, nao=52.2, logo=54.8, dur=58.4)
+         metade=13.6, pratica=15.8, cidade=18.2, distrito=20.4, desce=21.4, maria=23.0, joao=24.4, chuva=25.8, conta=27.2,
+         vence=28.0, lixo=29.2, lixoTxt=30.6, mapa=32.0, risca=32.7, novo=34.2, curral=35.6, perde=37.6, bancada=41.0, sim=44.4,
+         distritao=49.2, rej1=50.4, rej2=51.2, reforma=53.0, jogada=54.6, nao=56.0, logo=58.2, dur=61.8)
 
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74       # notas das guitarras (power chords)
 
@@ -61,7 +61,12 @@ def trilha(T, N):
     som.banda_secao(st, T["mapa"], T["curral"] + 1.0 - T["mapa"], 124, ((E, 8), (E, 4), (G, 4)), "tensao", 0.75, virar=True, seed=4)
     som.banda_golpe(st, T["curral"] + 1.0, E, 1.0, anel=1.0)
     # ---------------- G. quem fica de fora: meio-tempo pesado
-    som.banda_secao(st, T["curral"] + 1.6, T["distritao"] - T["curral"] - 1.6, 124, ((E, 8), (C, 8)), "meio", 0.8, seed=5)
+    som.banda_secao(st, T["curral"] + 1.6, T["bancada"] - T["curral"] - 1.6, 124, ((E, 8), (C, 8)), "meio", 0.8, seed=5)
+    # ---------------- G2. a Câmara hoje (verso contido) e a simulação (tensão), golpes no PL e no "o mesmo voto, menos vagas"
+    som.banda_secao(st, T["bancada"], T["sim"] - T["bancada"], 124, ((E, 8), (G, 4), (D, 4)), "palm", 0.55, seed=8)
+    som.banda_golpe(st, T["bancada"] + 1.8, E, 0.85, anel=0.6)
+    som.banda_secao(st, T["sim"], T["distritao"] - T["sim"], 124, ((E, 8), (E, 4), (G, 4)), "tensao", 0.6, virar=True, seed=9)
+    som.banda_golpe(st, T["sim"] + 3.4, E, 0.95, anel=0.8)
     # ---------------- H. distritão: verso contido + golpes nos carimbos REJEITADO
     som.banda_secao(st, T["distritao"], T["reforma"] - T["distritao"], 124, ((E, 8), (G, 4), (A, 4)), "palm", 0.55, virar=True, seed=6)
     for t0 in (T["rej1"], T["rej2"]):
@@ -137,6 +142,15 @@ def trilha(T, N):
         soma(fx, som.passos(2, 0.25, 0.4), T["perde"] + 0.3 + k * 0.35, 0.5)
         soma(fx, som.tique(), T["perde"] + 0.6 + k * 0.35, 0.7)
     soma(fx, som.carimbo_sfx(), T["perde"] + 2.2, 0.7)
+    soma(fx, som.whoosh(), T["bancada"] - 0.35, 0.6)
+    soma(fx, som.contador(1.4, 26), T["bancada"] + 0.2, 0.45)                 # as 513 cadeiras surgindo
+    soma(fx, som.carimbo_sfx(), T["bancada"] + 1.8, 0.9); soma(fx, som.tique(), T["bancada"] + 2.0, 0.8); soma(fx, som.tique(), T["bancada"] + 2.6, 0.8)
+    soma(fx, som.whoosh(), T["sim"] - 0.1, 0.6)
+    for k in range(4):
+        soma(fx, som.tique(), T["sim"] + 0.5 + k * 0.15, 0.7)
+    soma(fx, som.contador(1.0, 10), T["sim"] + 0.9, 0.4); soma(fx, som.check(), T["sim"] + 1.9, 0.6)
+    soma(fx, som.contador(1.0, 10), T["sim"] + 1.4, 0.4); soma(fx, som.negacao(), T["sim"] + 2.4, 0.4)
+    soma(fx, som.carimbo_sfx(), T["sim"] + 3.4, 0.9); soma(fx, som.boom(), T["sim"] + 3.4, 0.5)
     soma(fx, som.whoosh(), T["distritao"] - 0.35, 0.6); soma(fx, som.papel(0.5), T["distritao"], 0.8)
     soma(fx, som.maquina(28, 0.022), T["distritao"] + 0.5, 0.5); soma(fx, som.maquina(26, 0.022), T["distritao"] + 0.9, 0.5)
     for t0 in (T["rej1"], T["rej2"]):

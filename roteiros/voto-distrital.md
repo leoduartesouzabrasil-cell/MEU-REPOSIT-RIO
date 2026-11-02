@@ -1,8 +1,8 @@
 # Plano + roteiro: "Voto distrital: seu voto no lixo" (ângulo: CONTRA) — v2
 
-Duração-alvo: 55–60 s (~160 palavras) · Reels 1080×1920 · legendado · trilha rock sintetizado · fecha com o logo O Camarada.
+Duração-alvo: ~60 s (~195 palavras; voz acelerada no montar.py) · Reels 1080×1920 · legendado · trilha rock sintetizado · fecha com o logo O Camarada.
 Gancho: Hugo Motta quer votar ainda em 2026 a PEC do voto distrital misto (transição em 2030, sistema completo em 2034), antes da posse dos novos deputados.
-**Status: prévia sem narração pronta, v3 em 2D** (`motor/cenas/voto-distrital.js` + `audio/voto-distrital/previa.py`, 58,4 s). Trilha refeita com a banda completa (identidade 6a), a pedido do autor: "trilha melhor e mais trabalhada". Print: Agência Câmara, 28/10/2026 (`midia/voto-distrital/print-agencia-camara-2026-10-28.jpg`).
+**Status: prévia sem narração pronta, v4 (2D, foto do Motta, Câmara + simulação; prévia 61,8 s)** (`motor/cenas/voto-distrital.js` + `audio/voto-distrital/previa.py`, 58,4 s). Trilha refeita com a banda completa (identidade 6a), a pedido do autor: "trilha melhor e mais trabalhada". Print: Agência Câmara, 28/10/2026 (`midia/voto-distrital/print-agencia-camara-2026-10-28.jpg`).
 Pedido do autor (v2): abrir com "NA CALADA DA NOITE ELES QUEREM JOGAR O SEU VOTO NO LIXO!" + print de notícia; contexto breve; "COMO ISSO FUNCIONARIA NA PRÁTICA?" com cenário e personagens, bem didático. **v3: o autor pediu para trocar o 3D por 2D.**
 
 ## Estrutura e ideia visual
@@ -44,20 +44,26 @@ NA TELA: **foto do Hugo Motta** (Lula Marques/Agência Brasil, 15/04/2026) grand
 > Juntos, eles são a maioria do bairro. Mas quem ganha é o empresário, com 40%.
 > E o voto deles? [pausa] Lixo.
 > E tem mais: quem desenha o mapa escolhe quem ganha. É só mexer a linha.
-
-NA TELA: carimbo "COMO ISSO FUNCIONARIA NA PRÁTICA?" · mapa 2D "VILA EXEMPLO" · "DISTRITO 1" · "1 DISTRITO = 1 VAGA" · barras 30% · 30% · 40% · "60% DOS VOTOS → LIXO" · "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA" · "CURRAL" · rodapé "Exemplo ilustrativo"
-
-### ÁUDIO #4: Quem perde e o fecho (firme, depois seco)
 > Quem não tem território perde espaço: mulheres, negros, movimentos sociais.
+
+NA TELA: carimbo "COMO ISSO FUNCIONARIA NA PRÁTICA?" · mapa 2D "VILA EXEMPLO" · "1 DISTRITO = 1 VAGA" · praça: pilhas 30% · 30% · 40% · "40% · ELEITO" · "60% DOS VOTOS → LIXO" · a caneta redesenha a linha · "EMPRESÁRIO: 40% → 55%" · "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA" · "CURRAL" · bonecos de fora: "MULHERES", "NEGROS", "JUVENTUDE", "MOVIMENTOS" · "SEM TERRITÓRIO, SEM VAGA" · linha da fonte: "exemplo ilustrativo · personagens fictícios"
+
+### ÁUDIO #4: A Câmara de hoje, a simulação e o fecho (firme, depois seco)
+> E olha a Câmara de hoje: o PL tem a maior bancada, com 121 deputados.
+> Numa simulação com os votos de 2026, no distrital misto, o PL sobe pra 125.
+> E a federação do PT, PCdoB e PV cai de 88 pra 80. [pausa] Com o mesmo voto do povo.
 > E pra transição, em 2030, está na mesa o distritão, que a Câmara já rejeitou duas vezes.
 > Mudar a regra do jogo no fim do mandato, sem debate, não é reforma. [pausa]
 > É jogada. [pausa] Não ao voto distrital.
 
-NA TELA: etiquetas fora da cerca · "DISTRITÃO · 2030?" + "REJEITADO 2017" / "REJEITADO 2021" · "ISSO NÃO É REFORMA." · "É JOGADA." · "NÃO AO VOTO DISTRITAL." · logo O Camarada
+NA TELA: hemiciclo com as 513 cadeiras (PL em azul, PT-PCdoB-PV em vermelho) · "PL: 121 DEPUTADOS · A MAIOR BANCADA · 23,6% DA CÂMARA" · selos PL / PT · PCdoB · PV · barras "PL 121 → 125 (+4)" e "PT · PCdoB · PV 88 → 80 (−8 CADEIRAS)" · "O MESMO VOTO, MENOS VAGAS" · fonte: "simulação: Ranking dos Políticos (30/10/2026), distrital misto compensatório" · "DISTRITÃO · 2030?" + "REJEITADO 2017" / "REJEITADO 2021" · "ISSO NÃO É REFORMA." · "É JOGADA." · "NÃO AO VOTO DISTRITAL." · logo O Camarada
 
 ---
 
 ## Notas de precisão (fontes em midia/voto-distrital/FONTES.md)
+- **O PL não tem maioria**: tem a **maior bancada** (121 de 513, 23,6%; maioria = 257). O autor pediu "o PL tem maioria"; o texto diz "a maior bancada".
+- **Simulação** (Ranking dos Políticos, 30/10/2026; fonte única, atribuída na tela): no compensatório, PL 121 → 125 e federação PT-PCdoB-PV 88 → 80. No paralelo, PL 116 e federação PT 79. A federação **PSOL-Rede ganharia** (15 → 21), assim como o PSB (15 → 19). Por isso **não dizer que "a esquerda" inteira perde**: falar da federação PT-PCdoB-PV. Os distritos são de algoritmo, e a PEC ainda não tem texto.
+- **Selos dos partidos**: são selos desenhados com a sigla nas cores da paleta, não os logotipos oficiais. O Commons estava bloqueando o acesso, e logos de partido são marcas registradas. Se o autor mandar os arquivos dos logos, dá para trocar.
 - "Na calada da noite" e "jogar o seu voto no lixo" são **retórica de opinião** (a expressão vem do abaixo-assinado). O fato por trás: a pressa em votar antes da posse e o voto no candidato derrotado do distrito, que não elege ninguém.
 - **Ainda não existe texto de PEC protocolado** nem data de votação: dizer "quer votar", nunca "vai votar".
 - No misto, o eleitor tem **dois votos**. O voto no partido (lista) continua contando. O "lixo" é o voto no candidato do distrito que perdeu. A narração diz "o voto deles" no contexto do distrito, então está correto. Não dizer que o voto inteiro é perdido.
