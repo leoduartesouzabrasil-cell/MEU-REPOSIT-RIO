@@ -56,7 +56,7 @@ NA TELA: carimbo "COMO ISSO FUNCIONARIA NA PRÁTICA?" · mapa 2D "VILA EXEMPLO" 
 > Mudar a regra do jogo no fim do mandato, sem debate, não é reforma. [pausa]
 > É jogada. [pausa] Não ao voto distrital.
 
-NA TELA: hemiciclo com as 513 cadeiras (PL em azul, PT-PCdoB-PV em vermelho) · "PL: 121 DEPUTADOS · A MAIOR BANCADA · 23,6% DA CÂMARA" · selos PL / PT · PCdoB · PV · barras "PL 121 → 125 (+4)" e "PT · PCdoB · PV 88 → 80 (−8 CADEIRAS)" · "O MESMO VOTO, MENOS VAGAS" · fonte: "simulação: Ranking dos Políticos (30/10/2026), distrital misto compensatório" · "DISTRITÃO · 2030?" + "REJEITADO 2017" / "REJEITADO 2021" · "ISSO NÃO É REFORMA." · "É JOGADA." · "NÃO AO VOTO DISTRITAL." · logo O Camarada
+NA TELA: hemiciclo com as 513 cadeiras (PL em azul, PT-PCdoB-PV em vermelho) · "PL: 121 DEPUTADOS · A MAIOR BANCADA · 23,6% DA CÂMARA" · logos dos partidos (PL / PT · PCdoB · PV, enviados pelo autor) · barras "PL 121 → 125 (+4)" e "PT · PCdoB · PV 88 → 80 (−8 CADEIRAS)" · "O MESMO VOTO, MENOS VAGAS" · fonte: "simulação: Ranking dos Políticos (30/10/2026), distrital misto compensatório" · "DISTRITÃO · 2030?" + "REJEITADO 2017" / "REJEITADO 2021" · "ISSO NÃO É REFORMA." · "É JOGADA." · "NÃO AO VOTO DISTRITAL." · logo O Camarada
 
 ---
 
