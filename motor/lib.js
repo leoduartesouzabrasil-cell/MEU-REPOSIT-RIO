@@ -719,7 +719,46 @@ function palco3d(chave, w = 1080, h = 1920, o = {}) {
   });
 }
 
-window.CT = { palco3d, COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
+// ======================================================================
+// Vinheta da série "DESMISTIFICANDO O COMUNISMO · com Léo Duarte" (3,5 s; música: audio/serie-comunismo/vinheta.py)
+// o = { ep: 'EP. 1 · O QUE É O COMUNISMO?', logo: imagem do logo bege }. t = tempo desde o início da vinheta.
+// ======================================================================
+function vinhetaComunismo(ctx, t, o) {
+  const CX = 540;
+  fundo(ctx, COR.vermelho);
+  raios(ctx, CX, 1180, 2400, 22, -0.25 + emDois(t) * 0.04, 'rgba(138,20,17,0.5)');
+  imagem(ctx, o.logo, CX, 300, 230, seg(t, 0, 0.3));
+  // estrela com foice e martelo
+  aplicarCarimbo(ctx, seg(t, 0.0, 0.25), CX, 700, () => estrela(ctx, CX, 700, 200, 0, COR.amarelo), 3);
+  aplicarCarimbo(ctx, seg(t, 0.15, 0.4), CX, 710, () => foiceMartelo(ctx, CX, 710, 165, COR.vermelho), 4);
+  // "DESMISTIFICANDO O" junto, em faixa de tinta
+  aplicarCarimbo(ctx, seg(t, 0.35, 0.6), CX, 985, () => {
+    ctx.fillStyle = COR.tinta; ctx.fillRect(130, 935, 820, 100);
+    const tam = Math.min(108, ajustar(ctx, 'DESMISTIFICANDO O', FONTE.manchete, 780));
+    texto(ctx, 'DESMISTIFICANDO O', CX, 1020, { tam, cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
+  }, 5);
+  // COMUNISMO sozinho, grande (o destaque)
+  aplicarCarimbo(ctx, seg(t, 0.55, 0.85), CX, 1118, () => {
+    ctx.save(); ctx.translate(CX, 1118);                         // reto (pedido do autor)
+    const tam = Math.min(220, ajustar(ctx, 'COMUNISMO', FONTE.bloco, 940, 400));
+    texto(ctx, 'COMUNISMO', 0, tam * 0.36, { familia: FONTE.bloco, peso: 400, tam, cor: COR.amarelo, alinhar: 'center', erro: COR.tinta, desloc: 9 });
+    ctx.restore();
+  }, 6);
+  // COM LÉO DUARTE: no canto direito, abaixo do COMUNISMO, mesma fonte e cor do "DESMISTIFICANDO", em faixa de tinta
+  // assinatura discreta no canto: filete amarelo + letra espaçada, alinhada à direita do COMUNISMO
+  if (t > 0.85) {
+    const q = ease.saida(seg(t, 0.85, 1.15)), txt = 'COM LÉO DUARTE', tam = 40;
+    ctx.save(); ctx.globalAlpha = q;
+    fonte(ctx, FONTE.manchete, tam, 900); ctx.letterSpacing = '6px'; const w = ctx.measureText(txt).width; ctx.letterSpacing = '0px';
+    ctx.fillStyle = COR.amarelo; ctx.fillRect(1000 - w - 26 - 60 * q, 1236, 60 * q, 5);
+    texto(ctx, txt, 1000, 1253, { tam, cor: COR.bege, alinhar: 'right', tracking: 6 });
+    ctx.restore();
+  }
+  // episódio
+  if (t > 1.9) etiqueta(ctx, o.ep, CX, 1400, seg(t, 1.9, 2.15), { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
+}
+
+window.CT = { vinhetaComunismo, palco3d, COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
