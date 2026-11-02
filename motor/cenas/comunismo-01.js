@@ -1,6 +1,6 @@
 // "DESMISTIFICANDO O COMUNISMO" · EP. 1: O que é o comunismo? Roteiro: roteiros/comunismo-01-o-que-e.md
-// A cena começa no GANCHO: o vídeo do Jones Manoel (0–16,3 s) numa moldura, recortado sem a legenda original dele e com a
-// nossa legenda. O vídeo é sobreposto na janela pela montagem (audio/comunismo-01/juntar.sh).
+// A cena começa no GANCHO: o vídeo do Jones Manoel (0–16,3 s) numa moldura, recortado sem a legenda de baixo dele (o título
+// de cima fica) e com a nossa legenda. O vídeo é sobreposto na janela pela montagem (audio/comunismo-01/juntar.sh).
 // Ordem: vinheta → fábricas (anos 1800, criança na fábrica, lei de 1833) → Marx e Engels + Manifesto + a frase da luta de classes →
 // quem trabalha × quem é dono → a padaria (500 pães, salário × lucro) → meios de produção × o que é seu ("comunista pode ter iPhone")
 // → próximo episódio → logo. PRÉVIA sem narração; com a narração, T vem de comunismo-01.tempos.js.
@@ -13,8 +13,9 @@ const T = Object.assign({
   nenhum: JONES + 24.4, leva: JONES + 25.6, salario: JONES + 27.2, lucro: JONES + 28.0, meios: JONES + 30.2, seu: JONES + 32.8,
   iphone: JONES + 34.8, proximo: JONES + 38.2, logo: JONES + 41.8, dur: JONES + 45.4,
 }, (window.TEMPOS || {}).marcas || {});
-// janela do vídeo do Jones (o recorte 576×535 do original, sem a legenda dele, escalado para 840×780): x 120, y 450
-const JANELA = { x: 120, y: 450, w: 840, h: 780 };
+// janela do vídeo do Jones: recorte 576×735 do original a partir do topo (mantém o título dele, tira a legenda de baixo),
+// escalado para 690×880
+const JANELA = { x: 195, y: 445, w: 690, h: 880 };
 // legenda da fala do Jones no NOSSO padrão (transcrição com tempo por palavra; a legenda original dele fica fora do recorte)
 const LEG_JONES = [{"t0": 0.0, "t1": 3.44, "p": [["Você", 0.0], ["está", 0.18], ["confundindo", 0.4], ["Marx", 1.02], ["com", 1.74], ["Jesus", 2.04], ["Cristo.", 2.3]]}, {"t0": 3.44, "t1": 6.02, "p": [["É", 3.44], ["a", 3.54], ["Bíblia", 3.64], ["Sagrada", 4.1], ["que", 4.76], ["fala:", 5.02]]}, {"t0": 6.08, "t1": 8.58, "p": [["“dai", 6.08], ["tudo", 6.24], ["aos", 6.64], ["pobres", 6.94], ["e", 7.46], ["me", 7.82], ["siga”.", 7.92]]}, {"t0": 8.58, "t1": 10.98, "p": [["Não", 8.58], ["é", 8.72], ["o", 8.9], ["Manifesto", 9.0], ["do", 9.54], ["Partido", 9.66], ["Comunista.", 9.94]]}, {"t0": 10.98, "t1": 12.86, "p": [["Nós,", 10.98], ["comunistas,", 11.28], ["a", 12.02], ["gente", 12.14], ["não", 12.28], ["defende", 12.46]]}, {"t0": 12.86, "t1": 13.78, "p": [["voto", 12.86], ["de", 13.18], ["pobreza.", 13.24]]}, {"t0": 13.78, "t1": 15.02, "p": [["Quem", 13.78], ["defende", 13.92], ["voto", 14.38], ["de", 14.64], ["pobreza", 14.74]]}, {"t0": 15.02, "t1": 16.3, "p": [["são", 15.02], ["os", 15.22], ["franciscanos.", 15.34]]}];
 
@@ -115,12 +116,12 @@ window.CENA = {
     // ------------------------------------------------ 0. o gancho: o vídeo do Jones numa moldura (o vídeo é sobreposto na montagem)
     function gancho(lt) {
       L.fundo(ctx, BEGE);
-      titulo('“É COMUNISTA, MAS TEM COISAS?”', seg(lt, 0.0, 0.6));
+      titulo('COMUNISTA TEM QUE SER POBRE?', seg(lt, 0.0, 0.6));
       cred('Jones Manoel, historiador', seg(lt, 0.2, 0.8));
       const { x, y, w, h } = JANELA;
       L.moldura(ctx, x, y, w, h, 30);
       ctx.fillStyle = TINTA; ctx.fillRect(x, y, w, h);                 // aqui entra o vídeo (juntar.sh)
-      L.texto(ctx, 'Vídeo: Jones Manoel', CX, y + h + 80, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
+      L.texto(ctx, 'Vídeo: Jones Manoel', CX, y + h + 72, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
     }
 
     // ------------------------------------------------ A. vinheta da série (3,5 s, música própria)

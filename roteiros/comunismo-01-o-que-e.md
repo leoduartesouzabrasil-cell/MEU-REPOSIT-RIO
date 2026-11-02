@@ -87,7 +87,7 @@ CARTAZ: "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · vinheta curta da s
 - Duração estimada: Jones 16,3 s + vinheta 3 s + narração ~48 s (≈150 palavras, VEL 1.20) + logo ≈ **70 s**.
 
 ## Gancho em moldura (pedido do autor)
-O vídeo do Jones NÃO entra em tela cheia: fica numa moldura dourada (janela 840×780 em x 120, y 450), recortado do original a partir de
-y = 200 (576×535), o que tira o título "É comunista mas tem coisas?" e a legenda dele. A nossa legenda (tarja padrão) mostra a fala dele,
-palavra por palavra, a partir da transcrição. Título da cena: "“É COMUNISTA, MAS TEM COISAS?”"; fonte: "Jones Manoel, historiador";
-crédito embaixo da moldura: "Vídeo: Jones Manoel". Montagem: `audio/comunismo-01/juntar.sh` sobrepõe o vídeo na janela e soma o áudio dele.
+O vídeo do Jones NÃO entra em tela cheia: fica numa moldura dourada (janela 690×880 em x 195, y 445), recortado do original do topo até
+y = 735 (576×735): **o título de cima dele ("É comunista mas tem coisas?") fica; a legenda de baixo sai**. A nossa legenda (tarja padrão)
+mostra a fala dele, palavra por palavra. Título da cena: "COMUNISTA TEM QUE SER POBRE?"; fonte: "Jones Manoel, historiador";
+crédito logo abaixo da moldura: "Vídeo: Jones Manoel". Montagem: `audio/comunismo-01/juntar.sh` sobrepõe o vídeo e soma o áudio dele.
