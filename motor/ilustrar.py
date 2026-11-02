@@ -1,6 +1,7 @@
 """Transforma uma foto recortada (PNG com fundo transparente) em ilustração de cartaz soviético.
 
-Uso: python3 motor/ilustrar.py <recorte.png> <saida.png> [--luz direita|esquerda] [--estatua] [--corte x0,y0,x1,y1]
+Uso: python3 motor/ilustrar.py <recorte.png> <saida.png> [--luz direita|esquerda] [--estatua] [--corte x0,y0,x1,y1] [--pele-sem-vermelho]
+(--pele-sem-vermelho: para rostos corados, em que o vermelho da pele viraria mancha; usado na capa do voto distrital)
 Requer: pip install opencv-python-headless numpy pillow
 
 Etapas (ver identidade/IDENTIDADE.md, seção "Capas"):
@@ -36,7 +37,7 @@ def rampa(lum, cores, suave=0.08):
     return cores[i] * (1 - f[..., None]) + cores[i + 1] * f[..., None]
 
 
-def ilustrar(caminho, saida, luz="direita", estatua=False, corte=None):
+def ilustrar(caminho, saida, luz="direita", estatua=False, corte=None, pele_sem_vermelho=False):
     rgba = cv2.imread(caminho, cv2.IMREAD_UNCHANGED)
     if corte:                                                 # recorte "x0,y0,x1,y1" em fração da imagem
         x0, y0, x1, y1 = corte
@@ -68,6 +69,9 @@ def ilustrar(caminho, saida, luz="direita", estatua=False, corte=None):
         pele = (sat > 0.12) & ((mat < 40) | (mat > 340)) & (val > 0.06) & ~((sat > 0.45) & ((mat < 14) | (mat > 335)) & (val > 0.35))
     vermelho = (sat > 0.45) & ((mat < 14) | (mat > 335)) & (val > 0.25)
     amarelo = (sat > 0.45) & (mat >= 35) & (mat < 65) & (val > 0.35)
+    if pele_sem_vermelho:            # pele corada (sat alta) não vira mancha vermelha: tudo no tom de pele
+        pele = pele | vermelho
+        vermelho = np.zeros_like(vermelho)
     out[pele] = rampa(lum, PELE)[pele]
     out[vermelho] = np.where(lum[vermelho, None] > 0.35, VERMELHO, VERM_ESC)
     out[amarelo] = np.where(lum[amarelo, None] > 0.5, AMARELO, OCRE)
@@ -106,4 +110,4 @@ def ilustrar(caminho, saida, luz="direita", estatua=False, corte=None):
 if __name__ == "__main__":
     a = sys.argv[1:]
     corte = tuple(map(float, a[a.index("--corte") + 1].split(","))) if "--corte" in a else None
-    ilustrar(a[0], a[1], a[a.index("--luz") + 1] if "--luz" in a else "direita", "--estatua" in a, corte)
+    ilustrar(a[0], a[1], a[a.index("--luz") + 1] if "--luz" in a else "direita", "--estatua" in a, corte, "--pele-sem-vermelho" in a)

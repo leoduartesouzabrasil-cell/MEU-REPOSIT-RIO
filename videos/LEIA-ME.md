@@ -9,6 +9,6 @@
 | 05 | Esquerda cirandeira | `05-esquerda-cirandeira.mp4` | `05-esquerda-cirandeira-capa.jpg` | `motor/cenas/esquerda-cirandeira.js` · `audio/esquerda-cirandeira/` |
 | 06 | A sua compra no mercado vai ficar mais cara com o Lula? | `06-cesta-basica.mp4` | `06-cesta-basica-capa.jpg` | `motor/cenas/cesta-basica.js` · `audio/cesta-basica/` |
 | 07 | Renan Santos: ele não é seu amigo (continuação da esquerda cirandeira; 1:21) | `07-renan-santos.mp4` | `07-renan-santos-capa.jpg` | `motor/cenas/renan-santos.js` · `audio/renan-santos/` |
-| 08 | Na calada da noite: seu voto no lixo (voto distrital; 1:25) | `08-voto-distrital.mp4` | — (aguardando arte do autor) | `motor/cenas/voto-distrital.js` · `audio/voto-distrital/` |
+| 08 | Na calada da noite: seu voto no lixo (voto distrital; 1:25) | `08-voto-distrital.mp4` | `08-voto-distrital-capa.jpg` | `motor/cenas/voto-distrital.js` · `audio/voto-distrital/` |
 
 Roteiros em `roteiros/`, fontes e créditos em `midia/<tema>/`. Para refazer um vídeo: ver `CLAUDE.md` (fluxo) e `ferramentas/LEIA-ME.md`.
