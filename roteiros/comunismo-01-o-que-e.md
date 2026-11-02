@@ -4,6 +4,13 @@ Pedido do autor: série sobre comunismo e socialismo, em linguagem popular, clar
 Vídeo 1 = o básico: onde e como nasceu a ideia, quem criou (Marx e Engels), a base (luta de classes), o ponto de partida do debate.
 Fontes de apoio indicadas pelo autor: Soberana / Ian Neves, Jones Manoel, professor Humberto. Fatos conferidos em fontes primárias (textos de Marx e Engels no marxists.org) e históricas (Parlamento britânico).
 
+## Abertura (pedido do autor): gancho com o vídeo do Jones Manoel + vinheta da série
+- Arquivo: `midia/comunismo-01/jones-manoel-original.mp4` (enviado pelo autor; 576×1024, 80,7 s, já tem legendas próprias queimadas na imagem).
+- Trecho A (0–19,6 s): "Você está confundindo Marx com Jesus Cristo. É a Bíblia Sagrada que fala 'dai tudo aos pobres e me siga'. Não é o Manifesto do Partido Comunista. Nós, comunistas, a gente não defende voto de pobreza. Quem defende voto de pobreza são os franciscanos. Inclusive, gosto muito de São Francisco de Assis. Mas essa não é a nossa praia."
+- Trecho B (49,2–54,4 s): "A proposta comunista é que todo mundo tenha prosperidade, que todo mundo viva bem."
+- Proposta: A + B (≈ 25 s), com um corte seco/flash entre eles. Crédito na tela: "Vídeo: Jones Manoel". Durante o trecho do Jones não entra a nossa tarja de legenda (o vídeo dele já é legendado; as duas se sobreporiam).
+- Depois: vinheta da série **DESMISTIFICANDO O COMUNISMO** (cena `motor/cenas/serie-comunismo-logo.js`): estrela amarela com foice e martelo, "DESMISTIFICANDO" em faixa de tinta, "O COMUNISMO" em amarelo, etiqueta "EP. 1 · O QUE É O COMUNISMO?".
+
 ## Pontos propostos (ordem do vídeo, ~60 s)
 1. **Gancho (desmente fake)**: "Comunismo quer tomar a sua casa, o seu celular?" → Não. (resposta no ponto 5)
 2. **Onde nasceu**: Europa, anos 1800, Revolução Industrial. Fábricas, jornadas enormes, criança trabalhando
