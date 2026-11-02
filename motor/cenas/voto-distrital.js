@@ -155,21 +155,17 @@ window.CENA = {
       });
       ctx.restore();
       }
-      // Hugo Motta: grande quando o nome é falado; depois encolhe e vira a foto do dossiê, presa na ficha
-      if (t >= T.motta) {
-        const e = ease.saida(seg(t, T.c1 - 0.5, T.c1)), entra = ease.saida(seg(t, T.motta, T.motta + 0.5));
-        const x = lerp(300, 776, e), y = lerp(480, 450, e) + (1 - entra) * 900, w = lerp(480, 150, e), h = lerp(520, 166, e);
-        L.moldura(ctx, x, y, w, h, lerp(30, 10, e));
-        L.foto(ctx, L.img.motta, x, y, w, h, { zoom: lerp(1.25, 1.6, e), dx: lerp(32, 15, e), dy: lerp(-60, -10, e), desfoque: (1 - seg(t, T.motta, T.motta + 0.6)) * 8 });
-        const pg = 1 - seg(t, T.c1 - 0.6, T.c1 - 0.3);
-        if (pg > 0) {
-          ctx.save(); ctx.globalAlpha = pg;
-          L.texto(ctx, 'Foto: Lula Marques/Agência Brasil', CX, 1060, { familia: FONTE.maquina, peso: 400, tam: 24, cor: TINTA, alinhar: 'center' });
-          L.etiqueta(ctx, 'HUGO MOTTA', CX, 1150, seg(t, T.motta + 0.4, T.motta + 0.7), { cor: VERM, tam: 56 });
-          L.texto(ctx, L.datilografar('PRESIDENTE DA CÂMARA · REPUBLICANOS-PB', seg(t, T.motta + 0.7, T.motta + 1.3)), CX, 1250, { familia: FONTE.grotesca, peso: 700, tam: 34, cor: TINTA, alinhar: 'center' });
-          ctx.restore();
-        }
-        if (e >= 1) L.texto(ctx, 'Foto: Lula Marques/Agência Brasil', x + w / 2, 636, { familia: FONTE.maquina, peso: 400, tam: 14, cor: TINTA, alinhar: 'center' });
+      // Hugo Motta: a foto aparece só quando o nome é falado e sai antes da ficha entrar
+      if (t >= T.motta && t < T.c1) {
+        const entra = ease.saida(seg(t, T.motta, T.motta + 0.5)), sai = ease.entrada(seg(t, T.c1 - 0.6, T.c1 - 0.2));
+        const x = 300, w = 480, h = 520;
+        ctx.save(); ctx.translate(-sai * 1300, (1 - entra) * 900);   // entra por baixo, sai pela esquerda
+        L.moldura(ctx, x, 480, w, h, 30);
+        L.foto(ctx, L.img.motta, x, 480, w, h, { zoom: 1.25, dx: 32, dy: -60, desfoque: (1 - seg(t, T.motta, T.motta + 0.6)) * 8 });
+        L.texto(ctx, 'Foto: Lula Marques/Agência Brasil', CX, 1060, { familia: FONTE.maquina, peso: 400, tam: 24, cor: TINTA, alinhar: 'center' });
+        L.etiqueta(ctx, 'HUGO MOTTA', CX, 1150, seg(t, T.motta + 0.4, T.motta + 0.7), { cor: VERM, tam: 56 });
+        L.texto(ctx, L.datilografar('PRESIDENTE DA CÂMARA · REPUBLICANOS-PB', seg(t, T.motta + 0.5, T.motta + 1.0)), CX, 1250, { familia: FONTE.grotesca, peso: 700, tam: 34, cor: TINTA, alinhar: 'center' });
+        ctx.restore();
       }
       // barra: metade lista do partido | metade distrito
       if (t >= T.metade) {
