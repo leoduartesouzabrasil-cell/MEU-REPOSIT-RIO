@@ -7,8 +7,8 @@
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const T = Object.assign({
-  n1: 0.3, n2: 1.2, n3: 2.1, n4: 2.9, cedula: 3.2, print: 4.6, sel: 6.0, ctx: 8.4, c1: 9.0, c2: 10.0, c3: 11.0, c4: 12.0,
-  metade: 13.2, pratica: 15.8, cidade: 18.2, distrito: 20.8, desce: 22.0, maria: 23.8, joao: 25.4, chuva: 27.0, conta: 28.6,
+  n1: 0.3, n2: 1.2, n3: 2.1, n4: 2.9, cedula: 3.2, print: 4.6, sel: 6.0, ctx: 8.4, motta: 8.7, c1: 10.2, c2: 11.0, c3: 11.8, c4: 12.6,
+  metade: 13.6, pratica: 15.8, cidade: 18.2, distrito: 20.8, desce: 22.0, maria: 23.8, joao: 25.4, chuva: 27.0, conta: 28.6,
   vence: 29.6, lixo: 31.0, lixoTxt: 32.6, mapa: 34.2, risca: 35.0, novo: 36.7, curral: 38.3, perde: 40.6, distritao: 44.4,
   rej1: 45.6, rej2: 46.6, reforma: 48.8, jogada: 50.6, nao: 52.2, logo: 54.8, dur: 58.4,
 }, (window.TEMPOS || {}).marcas || {});
@@ -17,6 +17,7 @@ window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
   imagens: {
     print: '../midia/voto-distrital/print-agencia-camara-2026-10-28.jpg',   // recorte 1300×1650
+    motta: '../midia/voto-distrital/hugo-motta-2026.jpg',                    // Lula Marques/Agência Brasil, 15/04/2026
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -138,8 +139,9 @@ window.CENA = {
       L.fundo(ctx, BEGE);
       titulo('O QUE ELES QUEREM VOTAR', seg(lt, 0.1, 0.7));
       cred('fonte: Agência Câmara · CartaCapital · CNN Brasil', seg(lt, 0.3, 1.0));
-      const sobe = ease.saida(seg(lt, 0, 0.5));
-      ctx.save(); ctx.translate(0, (1 - sobe) * 500);
+      const sobe = ease.saida(seg(t, T.c1 - 0.5, T.c1));
+      if (t >= T.c1 - 0.5) {
+      ctx.save(); ctx.translate(0, (1 - sobe) * 1100);
       ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 14, 446, LARG, 560);
       ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, 432, LARG, 560);
       ctx.fillStyle = VERM; ctx.fillRect(X0, 432, LARG, 16);
@@ -152,6 +154,23 @@ window.CENA = {
         L.texto(ctx, L.datilografar(s, seg(t, t0, t0 + 0.7)), X0 + 44, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 46, 400, 760), cor: TINTA });
       });
       ctx.restore();
+      }
+      // Hugo Motta: grande quando o nome é falado; depois encolhe e vira a foto do dossiê, presa na ficha
+      if (t >= T.motta) {
+        const e = ease.saida(seg(t, T.c1 - 0.5, T.c1)), entra = ease.saida(seg(t, T.motta, T.motta + 0.5));
+        const x = lerp(300, 776, e), y = lerp(480, 450, e) + (1 - entra) * 900, w = lerp(480, 150, e), h = lerp(520, 166, e);
+        L.moldura(ctx, x, y, w, h, lerp(30, 10, e));
+        L.foto(ctx, L.img.motta, x, y, w, h, { zoom: lerp(1.25, 1.6, e), dx: lerp(32, 15, e), dy: lerp(-60, -10, e), desfoque: (1 - seg(t, T.motta, T.motta + 0.6)) * 8 });
+        const pg = 1 - seg(t, T.c1 - 0.6, T.c1 - 0.3);
+        if (pg > 0) {
+          ctx.save(); ctx.globalAlpha = pg;
+          L.texto(ctx, 'Foto: Lula Marques/Agência Brasil', CX, 1060, { familia: FONTE.maquina, peso: 400, tam: 24, cor: TINTA, alinhar: 'center' });
+          L.etiqueta(ctx, 'HUGO MOTTA', CX, 1150, seg(t, T.motta + 0.4, T.motta + 0.7), { cor: VERM, tam: 56 });
+          L.texto(ctx, L.datilografar('PRESIDENTE DA CÂMARA · REPUBLICANOS-PB', seg(t, T.motta + 0.7, T.motta + 1.3)), CX, 1250, { familia: FONTE.grotesca, peso: 700, tam: 34, cor: TINTA, alinhar: 'center' });
+          ctx.restore();
+        }
+        if (e >= 1) L.texto(ctx, 'Foto: Lula Marques/Agência Brasil', x + w / 2, 636, { familia: FONTE.maquina, peso: 400, tam: 14, cor: TINTA, alinhar: 'center' });
+      }
       // barra: metade lista do partido | metade distrito
       if (t >= T.metade) {
         const p = ease.saida(seg(t, T.metade, T.metade + 0.6)), y = 1090, hB = 190;
@@ -434,9 +453,10 @@ window.CENA = {
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Print: Agência Câmara de Notícias (28/10/2026)', 1110],
-        ['Fontes: Agência Câmara · CartaCapital · CNN Brasil · Metrópoles', 1150],
-        ['Alma Preta · Congresso em Foco · InfoMoney', 1190],
-        ['Vila Exemplo: exemplo ilustrativo, personagens fictícios', 1240]].forEach(([s2, y]) =>
+        ['Foto: Lula Marques/Agência Brasil (CC BY 3.0 BR)', 1150],
+        ['Fontes: Agência Câmara · CartaCapital · CNN Brasil · Metrópoles', 1200],
+        ['Alma Preta · Congresso em Foco · InfoMoney', 1240],
+        ['Vila Exemplo: exemplo ilustrativo, personagens fictícios', 1290]].forEach(([s2, y]) =>
         L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

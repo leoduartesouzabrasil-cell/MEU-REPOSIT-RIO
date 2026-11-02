@@ -1,0 +1,4 @@
+| Arquivo | Autor | Licença | Origem | Baixado em | Descrição |
+|---|---|---|---|---|---|
+| hugo-motta-2026.jpg | Lula Marques/ Agência Brasil | CC BY 3.0 BR (Agência Brasil) | https://agenciabrasil.ebc.com.br/foto/2026-04/presidente-da-camara-dos-deputados-hugo-motta-1776292784-0 | 2026-11-02 | Brasília-DF – 15/04/2026 – Presidente da Câmara dos Deputados, Hugo Motta, durante coletiva após reunião de líderes. Foto: Lula Marques/ Agência Brasil. |
+| hugo-motta-2026b.jpg | Lula Marques/Agência Brasil | CC BY 3.0 BR (Agência Brasil) | https://agenciabrasil.ebc.com.br/foto/2026-03/coletiva-hugo-motta-1772650263 | 2026-11-02 | Brasília (DF), 04/03/2026 Presidenta da Câmara dos Deputados, Hugo Motta, e o relator da PEC da segurança, Deputado, Mendonça Filho, durante coletiva. Foto: Lula Marques/Agência Brasil |

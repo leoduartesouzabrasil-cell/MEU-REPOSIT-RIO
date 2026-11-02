@@ -18,8 +18,8 @@ sys.path.insert(0, str(AQUI.parent.parent / "motor"))
 import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
-T = dict(n1=0.3, n2=1.2, n3=2.1, n4=2.9, cedula=3.2, print=4.6, sel=6.0, ctx=8.4, c1=9.0, c2=10.0, c3=11.0, c4=12.0,
-         metade=13.2, pratica=15.8, cidade=18.2, distrito=20.8, desce=22.0, maria=23.8, joao=25.4, chuva=27.0, conta=28.6,
+T = dict(n1=0.3, n2=1.2, n3=2.1, n4=2.9, cedula=3.2, print=4.6, sel=6.0, ctx=8.4, motta=8.7, c1=10.2, c2=11.0, c3=11.8, c4=12.6,
+         metade=13.6, pratica=15.8, cidade=18.2, distrito=20.8, desce=22.0, maria=23.8, joao=25.4, chuva=27.0, conta=28.6,
          vence=29.6, lixo=31.0, lixoTxt=32.6, mapa=34.2, risca=35.0, novo=36.7, curral=38.3, perde=40.6, distritao=44.4,
          rej1=45.6, rej2=46.6, reforma=48.8, jogada=50.6, nao=52.2, logo=54.8, dur=58.4)
 
@@ -92,6 +92,8 @@ def trilha(T, N):
     soma(fx, som.rabisco(0.45, 0.8), T["sel"], 0.7)                            # seleção no "ainda neste ano"
     soma(fx, som.carimbo_sfx(), T["sel"] + 0.6, 0.6)
     soma(fx, som.whoosh(), T["ctx"] - 0.35, 0.6); soma(fx, som.papel(0.5), T["ctx"], 0.8)
+    soma(fx, som.whoosh(0.4), T["motta"] - 0.1, 0.6); soma(fx, som.carimbo_sfx(), T["motta"] + 0.4, 0.6)   # a foto do Motta
+    soma(fx, som.whoosh(0.35), T["c1"] - 0.5, 0.5); soma(fx, som.papel(0.5), T["c1"] - 0.4, 0.7)
     for t0, n in [(T["c1"], 20), (T["c2"], 22), (T["c3"], 24), (T["c3"] + 0.5, 20), (T["c4"], 32)]:
         soma(fx, som.maquina(n, 0.03), t0, 0.55)
     soma(fx, som.whoosh(0.35), T["metade"], 0.6); soma(fx, som.tique(), T["metade"] + 1.0, 0.9)

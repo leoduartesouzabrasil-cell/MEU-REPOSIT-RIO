@@ -35,7 +35,7 @@ NA TELA: carimbos "NA CALADA DA NOITE" / "ELES QUEREM JOGAR" / "O SEU VOTO NO LI
 > O presidente da Câmara, Hugo Motta, quer votar ainda este ano, antes da posse dos novos deputados, o voto distrital misto.
 > Metade das vagas de deputado e vereador sairia de listas dos partidos. A outra metade, de distritos.
 
-NA TELA: ficha "PEC · 2026 · ANTES DA POSSE · VALE EM 2034" · barra "METADE LISTA | METADE DISTRITO" · fonte "Agência Câmara · CartaCapital"
+NA TELA: **foto do Hugo Motta** (Lula Marques/Agência Brasil, 15/04/2026) grande, em moldura, quando o nome é falado, com "HUGO MOTTA" e "PRESIDENTE DA CÂMARA · REPUBLICANOS-PB"; depois a foto encolhe e fica presa na ficha · ficha "PEC · 2026 · ANTES DA POSSE · VALE EM 2034" · barra "METADE LISTA | METADE DISTRITO" · fonte "Agência Câmara · CartaCapital"
 
 ### ÁUDIO #3: Na prática (didático, calmo, quase contando uma história)
 > Como isso funcionaria na prática? [pausa]
