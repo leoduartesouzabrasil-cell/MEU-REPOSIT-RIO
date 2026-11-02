@@ -23,6 +23,8 @@ Fontes de apoio indicadas pelo autor: Soberana / Ian Neves, Jones Manoel, profes
 5. **Meios de produção × coisas pessoais** (o ponto crucial e o desmentido): o comunismo quer que fábrica, terra, máquinas
    (o que produz riqueza) sejam de todos, não de um patrão. A sua casa, a sua roupa e o seu celular continuam seus.
    O próprio Manifesto diz: o comunismo não tira de ninguém o poder de ter os produtos; tira o poder de usar isso para explorar o trabalho alheio.
+   Reforço (Soberana, entrevista de Engels em 1893, ed. Boitempo): "Nossa primeira exigência é a socialização de todos os meios de produção e instrumentos de produção."
+   Ou seja: o alvo são os MEIOS DE PRODUÇÃO, não a sua escova de dente.
 6. **O objetivo**: uma sociedade **sem classes**, onde quem trabalha controla a riqueza que produz
    (definição de Jones Manoel: "o trabalhador tem que ter o controle sobre a riqueza e a cultura que ele mesmo produz").
 7. **Gancho da série**: "E socialismo é a mesma coisa? Isso é o próximo vídeo."
