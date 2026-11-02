@@ -17,7 +17,9 @@ window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
   imagens: {
     print: '../midia/voto-distrital/print-agencia-camara-2026-10-28.jpg',   // recorte 1300×1650
-    motta: '../midia/voto-distrital/hugo-motta-2026.jpg',                    // Lula Marques/Agência Brasil, 15/04/2026
+    motta: '../midia/voto-distrital/hugo-motta-2026.jpg',
+    logo_pl: '../midia/voto-distrital/logos/pl.png', logo_pt: '../midia/voto-distrital/logos/pt.png',   // logos enviados pelo autor
+    logo_pcdob: '../midia/voto-distrital/logos/pcdob.png', logo_pv: '../midia/voto-distrital/logos/pv.png',                    // Lula Marques/Agência Brasil, 15/04/2026
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -420,7 +422,7 @@ window.CENA = {
             L.texto(ctx, 'PL: 121 DEPUTADOS', CX, 1185, { familia: FONTE.bloco, peso: 400, tam: tamMax('PL: 121 DEPUTADOS', FONTE.bloco, 70, 400, 760), cor: BEGE, alinhar: 'center' });
             L.texto(ctx, 'A MAIOR BANCADA · 23,6% DA CÂMARA', CX, 1236, { familia: FONTE.grotesca, peso: 700, tam: 28, cor: AMA, alinhar: 'center' });
           }, 61);
-          selo('PL', 900, 560, AZUL, BEGE, seg(lt, 2.0, 2.3));
+          selo('PL', 890, 570, AZUL, BEGE, seg(lt, 2.0, 2.3), 1.3);
           L.etiqueta(ctx, 'PT · PCdoB · PV: 88', 300, 1320, seg(lt, 2.6, 2.9), { cor: VERM, tam: 34 });
         }
         ctx.restore();
@@ -432,8 +434,8 @@ window.CENA = {
         const LIN = [['PL', AZUL, 121, 125, [['PL', AZUL, BEGE]]], ['PT · PCdoB · PV', VERM, 88, 80, [['PT', VERM, BEGE], ['PCdoB', COR.vermelhoEscuro, BEGE], ['PV', AMA, TINTA]]]];
         LIN.forEach(([nome, cor, a, b, selos], i) => {
           const y0 = 520 + i * 420, q = ease.saida(seg(t, T.sim + 0.9 + i * 0.5, T.sim + 1.9 + i * 0.5)), v = Math.round(lerp(a, b, q));
-          selos.forEach(([s, c1, c2], j) => selo(s, X0 + 60 + j * 118, y0 + 20, c1, c2, seg(t, T.sim + 0.5 + i * 0.3, T.sim + 0.8 + i * 0.3), selos.length > 1 ? 0.8 : 1));
-          L.texto(ctx, nome, X0 + (selos.length > 1 ? 400 : 140), y0 + 40, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: TINTA });
+          selos.forEach(([s, c1, c2], j) => selo(s, X0 + 66 + j * 136, y0 + 6, c1, c2, seg(t, T.sim + 0.5 + i * 0.3, T.sim + 0.8 + i * 0.3), selos.length > 1 ? 1.08 : 1.15));
+          L.texto(ctx, nome, X0 + (selos.length > 1 ? 440 : 160), y0 + 40, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: TINTA });
           const W = v / 130 * LARG;
           ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0 + 8, y0 + 98, a / 130 * LARG, 90);
           ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.setLineDash([10, 8]); ctx.strokeRect(X0, y0 + 90, a / 130 * LARG, 90); ctx.setLineDash([]);
@@ -450,14 +452,15 @@ window.CENA = {
         ctx.restore();
       }
     }
-    // selo de partido (sigla em círculo com as cores da paleta; não é o logotipo oficial)
+    // logo do partido (arquivo enviado pelo autor) em placa quadrada com sombra chapada; sem arquivo, selo com a sigla
     function selo(sigla, x, y, cor, corTexto, p, esc = 1) {
       if (p <= 0) return;
-      ctx.save(); ctx.translate(x, y); ctx.scale(esc * lerp(0.5, 1, ease.carimbo(p)), esc * lerp(0.5, 1, ease.carimbo(p))); ctx.globalAlpha = clamp(p * 3);
-      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(5, 5, 54, 0, 7); ctx.fill();
-      ctx.fillStyle = cor; ctx.beginPath(); ctx.arc(0, 0, 54, 0, 7); ctx.fill();
-      ctx.strokeStyle = corTexto; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 45, 0, 7); ctx.stroke();
-      L.texto(ctx, sigla, 0, 13, { familia: FONTE.bloco, peso: 400, tam: Math.min(40, L.ajustar(ctx, sigla, FONTE.bloco, 76, 400)), cor: corTexto, alinhar: 'center' });
+      const img = L.img['logo_' + sigla.toLowerCase()], k = esc * lerp(0.5, 1, ease.carimbo(p)), m = 56;
+      ctx.save(); ctx.translate(x, y); ctx.scale(k, k); ctx.globalAlpha = clamp(p * 3);
+      ctx.fillStyle = TINTA; ctx.fillRect(-m + 6, -m + 6, 2 * m, 2 * m);
+      if (img) ctx.drawImage(img, -m, -m, 2 * m, 2 * m);
+      else { ctx.fillStyle = cor; ctx.fillRect(-m, -m, 2 * m, 2 * m); L.texto(ctx, sigla, 0, 13, { familia: FONTE.bloco, peso: 400, tam: 36, cor: corTexto, alinhar: 'center' }); }
+      ctx.strokeStyle = BEGE; ctx.lineWidth = 4; ctx.strokeRect(-m, -m, 2 * m, 2 * m);
       ctx.restore();
     }
 
@@ -517,7 +520,8 @@ window.CENA = {
         ['Foto: Lula Marques/Agência Brasil (CC BY 3.0 BR)', 1150],
         ['Fontes: Agência Câmara · CartaCapital · CNN Brasil · Metrópoles', 1200],
         ['Alma Preta · Congresso em Foco · InfoMoney', 1240],
-        ['Vila Exemplo: exemplo ilustrativo, personagens fictícios', 1290]].forEach(([s2, y]) =>
+        ['Logotipos: PL, PT, PCdoB e PV (marcas dos partidos)', 1290],
+        ['Vila Exemplo: exemplo ilustrativo, personagens fictícios', 1330]].forEach(([s2, y]) =>
         L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }
