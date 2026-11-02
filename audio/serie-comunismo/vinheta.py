@@ -15,7 +15,7 @@ from som import SR, soma  # noqa: E402
 
 DUR = 3.5
 E, G, A, B = 82.41, 98.0, 110.0, 123.47
-T = dict(estrela=0.0, foice=0.15, desm=0.35, comun=0.55, leo=0.85, ep=1.2)
+T = dict(estrela=0.0, foice=0.15, desm=0.35, comun=0.55, leo=0.85, ep=1.9)   # o EP. entra depois (pedido do autor)
 
 
 def vinheta():
@@ -29,6 +29,8 @@ def vinheta():
     som.banda_golpe(st, T["comun"], A, 1.0, anel=0.28)
     soma(st["bat"], som.virada(0.3, 0.8), T["comun"] + 0.3)
     som.banda_golpe(st, T["leo"], B, 0.95, anel=0.32)
+    soma(st["sinte"], som.sinte([123.5, 185.0, 246.9], T["ep"] - T["leo"], 0.3, brilho=1100, ataque=0.15), T["leo"] + 0.2)   # segura a tensão até o EP.
+    soma(st["bat"], som.virada(0.35, 0.8), T["ep"] - 0.36)
     # acorde final soando + tema da série na guitarra solo
     som.banda_golpe(st, T["ep"], E, 1.0, anel=2.1)
     soma(st["bat"], som.crash(0.9, 2.3), T["ep"])
