@@ -27,6 +27,9 @@ E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74       # notas das gui
 
 
 def trilha(T, N):
+    T = dict(T)
+    T.setdefault("barPL", T["sim"] + 0.9); T.setdefault("barPT", T["sim"] + 1.4); T.setdefault("mesmo", T["sim"] + 3.4)
+    T.setdefault("esquerda", T["perde"] + 3.2)
     dur = N / SR
     st = {k: np.zeros(N + SR * 4, np.float32) for k in ("bat", "baixo", "gE", "gD", "solo", "sinte")}
     fx = np.zeros(N + SR * 4, np.float32)
@@ -66,7 +69,8 @@ def trilha(T, N):
     som.banda_secao(st, T["bancada"], T["sim"] - T["bancada"], 124, ((E, 8), (G, 4), (D, 4)), "palm", 0.55, seed=8)
     som.banda_golpe(st, T["bancada"] + 1.8, E, 0.85, anel=0.6)
     som.banda_secao(st, T["sim"], T["distritao"] - T["sim"], 124, ((E, 8), (E, 4), (G, 4)), "tensao", 0.6, virar=True, seed=9)
-    som.banda_golpe(st, T["sim"] + 3.4, E, 0.95, anel=0.8)
+    som.banda_golpe(st, T["mesmo"], E, 0.95, anel=0.8)
+    som.banda_golpe(st, T["esquerda"], C, 0.8, anel=0.5)
     # ---------------- H. distritão: verso contido + golpes nos carimbos REJEITADO
     som.banda_secao(st, T["distritao"], T["reforma"] - T["distritao"], 124, ((E, 8), (G, 4), (A, 4)), "palm", 0.55, virar=True, seed=6)
     for t0 in (T["rej1"], T["rej2"]):
@@ -147,10 +151,11 @@ def trilha(T, N):
     soma(fx, som.carimbo_sfx(), T["bancada"] + 1.8, 0.9); soma(fx, som.tique(), T["bancada"] + 2.0, 0.8); soma(fx, som.tique(), T["bancada"] + 2.6, 0.8)
     soma(fx, som.whoosh(), T["sim"] - 0.1, 0.6)
     for k in range(4):
-        soma(fx, som.tique(), T["sim"] + 0.5 + k * 0.15, 0.7)
-    soma(fx, som.contador(1.0, 10), T["sim"] + 0.9, 0.4); soma(fx, som.check(), T["sim"] + 1.9, 0.6)
-    soma(fx, som.contador(1.0, 10), T["sim"] + 1.4, 0.4); soma(fx, som.negacao(), T["sim"] + 2.4, 0.4)
-    soma(fx, som.carimbo_sfx(), T["sim"] + 3.4, 0.9); soma(fx, som.boom(), T["sim"] + 3.4, 0.5)
+        soma(fx, som.tique(), (T["barPL"] if k == 0 else T["barPT"]) - 0.4 + (k and (k - 1)) * 0.12, 0.7)
+    soma(fx, som.contador(1.0, 10), T["barPL"], 0.4); soma(fx, som.check(), T["barPL"] + 1.0, 0.6)
+    soma(fx, som.contador(1.0, 10), T["barPT"], 0.4); soma(fx, som.negacao(), T["barPT"] + 1.0, 0.4)
+    soma(fx, som.carimbo_sfx(), T["mesmo"], 0.9); soma(fx, som.boom(), T["mesmo"], 0.5)
+    soma(fx, som.carimbo_sfx(), T["esquerda"], 0.8)
     soma(fx, som.whoosh(), T["distritao"] - 0.35, 0.6); soma(fx, som.papel(0.5), T["distritao"], 0.8)
     soma(fx, som.maquina(28, 0.022), T["distritao"] + 0.5, 0.5); soma(fx, som.maquina(26, 0.022), T["distritao"] + 0.9, 0.5)
     for t0 in (T["rej1"], T["rej2"]):

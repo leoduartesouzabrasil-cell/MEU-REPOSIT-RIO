@@ -12,6 +12,8 @@ const T = Object.assign({
   vence: 28.0, lixo: 29.2, lixoTxt: 30.6, mapa: 32.0, risca: 32.7, novo: 34.2, curral: 35.6, perde: 37.6, bancada: 41.0, sim: 44.4,
   distritao: 49.2, rej1: 50.4, rej2: 51.2, reforma: 53.0, jogada: 54.6, nao: 56.0, logo: 58.2, dur: 61.8,
 }, (window.TEMPOS || {}).marcas || {});
+// marcas derivadas (a narração pode trazer as próprias)
+T.barPL ??= T.sim + 0.9; T.barPT ??= T.sim + 1.4; T.mesmo ??= T.sim + 3.4; T.esquerda ??= T.perde + 3.2;
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
@@ -31,7 +33,7 @@ window.CENA = {
     const ordem = [[0, abertura], [T.print, noticia], [T.ctx, contexto], [T.pratica, pratica], [T.cidade, maquete], [T.bancada, bancada],
       [T.distritao, distritao], [T.reforma, fecho], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.n1, T.n2, T.n3, T.n4, T.pratica + 0.1, T.vence, T.lixoTxt, T.curral + 1.0, T.bancada + 1.8, T.sim + 3.4, T.rej1, T.rej2, T.reforma + 0.1, T.jogada, T.nao, T.logo];
+    const IMP = [T.n1, T.n2, T.n3, T.n4, T.pratica + 0.1, T.vence, T.lixoTxt, T.curral + 1.0, T.bancada + 1.8, T.mesmo, T.esquerda, T.rej1, T.rej2, T.reforma + 0.1, T.jogada, T.nao, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 12);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
@@ -226,10 +228,11 @@ window.CENA = {
       if (t >= T.perde) {
         ['MULHERES', 'NEGROS', 'JUVENTUDE', 'MOVIMENTOS'].forEach((s, i) =>
           L.etiqueta(ctx, s, FORA_X[i], 975 - (i % 2) * 60, seg(t, T.perde + 0.6 + i * 0.35, T.perde + 0.9 + i * 0.35), { cor: [VERM, TINTA, AMA, AZUL][i], corTexto: i === 2 ? TINTA : BEGE, tam: 30 }));
-        L.aplicarCarimbo(ctx, seg(t, T.perde + 2.2, T.perde + 2.5), CX, 1340, () => {
-          ctx.fillStyle = TINTA; ctx.fillRect(X0, 1280, LARG, 120);
-          L.texto(ctx, 'SEM TERRITÓRIO, SEM VAGA', CX, 1362, { familia: FONTE.bloco, peso: 400, tam: tamMax('SEM TERRITÓRIO, SEM VAGA', FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
-        }, 39);
+        const esq = t >= T.esquerda, txt = esq ? 'PRINCIPALMENTE A ESQUERDA' : 'SEM TERRITÓRIO, SEM VAGA';
+        L.aplicarCarimbo(ctx, esq ? seg(t, T.esquerda, T.esquerda + 0.3) : seg(t, T.perde + 2.2, T.perde + 2.5), CX, 1340, () => {
+          ctx.fillStyle = esq ? VERM : TINTA; ctx.fillRect(X0, 1280, LARG, 120);
+          L.texto(ctx, txt, CX, 1362, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
+        }, esq ? 40 : 39);
       }
     }
 
@@ -433,8 +436,8 @@ window.CENA = {
         // duas linhas de barras: antes (proporcional, real) → depois (simulação)
         const LIN = [['PL', AZUL, 121, 125, [['PL', AZUL, BEGE]]], ['PT · PCdoB · PV', VERM, 88, 80, [['PT', VERM, BEGE], ['PCdoB', COR.vermelhoEscuro, BEGE], ['PV', AMA, TINTA]]]];
         LIN.forEach(([nome, cor, a, b, selos], i) => {
-          const y0 = 520 + i * 420, q = ease.saida(seg(t, T.sim + 0.9 + i * 0.5, T.sim + 1.9 + i * 0.5)), v = Math.round(lerp(a, b, q));
-          selos.forEach(([s, c1, c2], j) => selo(s, X0 + 66 + j * 136, y0 + 6, c1, c2, seg(t, T.sim + 0.5 + i * 0.3, T.sim + 0.8 + i * 0.3), selos.length > 1 ? 1.08 : 1.15));
+          const B = [T.barPL, T.barPT][i], y0 = 520 + i * 420, q = ease.saida(seg(t, B, B + 1.0)), v = Math.round(lerp(a, b, q));
+          selos.forEach(([s, c1, c2], j) => selo(s, X0 + 66 + j * 136, y0 + 6, c1, c2, seg(t, B - 0.4 + j * 0.12, B - 0.1 + j * 0.12), selos.length > 1 ? 1.08 : 1.15));
           L.texto(ctx, nome, X0 + (selos.length > 1 ? 440 : 160), y0 + 40, { familia: FONTE.grotesca, peso: 700, tam: 40, cor: TINTA });
           const W = v / 130 * LARG;
           ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0 + 8, y0 + 98, a / 130 * LARG, 90);
@@ -442,10 +445,10 @@ window.CENA = {
           ctx.fillStyle = cor; ctx.fillRect(X0, y0 + 90, W, 90);
           L.texto(ctx, String(v), X0 + W - 20, y0 + 160, { familia: FONTE.manchete, peso: 900, tam: 76, cor: cor === AMA ? TINTA : BEGE, alinhar: 'right' });
           L.texto(ctx, `hoje: ${a}`, X0, y0 + 230, { familia: FONTE.maquina, peso: 400, tam: 30, cor: TINTA });
-          if (q >= 1) L.aplicarCarimbo(ctx, seg(t, T.sim + 1.9 + i * 0.5, T.sim + 2.2 + i * 0.5), X0 + LARG - 150, y0 + 225, () =>
+          if (q >= 1) L.aplicarCarimbo(ctx, seg(t, B + 1.0, B + 1.3), X0 + LARG - 150, y0 + 225, () =>
             L.etiqueta(ctx, b > a ? `+${b - a}` : `−${a - b} CADEIRAS`, X0 + LARG - 150, y0 + 225, 1, { cor: b > a ? AZUL : VERM, tam: 40 }), 63 + i);
         });
-        if (t >= T.sim + 3.4) L.aplicarCarimbo(ctx, seg(t, T.sim + 3.4, T.sim + 3.7), CX, 1360, () => {
+        if (t >= T.mesmo) L.aplicarCarimbo(ctx, seg(t, T.mesmo, T.mesmo + 0.3), CX, 1360, () => {
           ctx.fillStyle = TINTA; ctx.fillRect(X0, 1300, LARG, 116);
           L.texto(ctx, 'O MESMO VOTO, MENOS VAGAS', CX, 1380, { familia: FONTE.bloco, peso: 400, tam: tamMax('O MESMO VOTO, MENOS VAGAS', FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
         }, 66);
