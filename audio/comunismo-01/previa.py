@@ -2,7 +2,7 @@
 A cena começa na vinheta (música própria: audio/serie-comunismo/vinheta.py, colada em t = 0). Depois, a banda completa:
 verso abafado e grave nas fábricas → verso firme em Marx/Engels/Manifesto → paradas em "quem trabalha × quem é dono" →
 groove didático na padaria → refrão aberto em "meios de produção × o que é seu" → golpes no próximo episódio → acorde final.
-O gancho do Jones Manoel vem antes, na montagem (juntar.sh). `trilha(T, N)` devolve (música estéreo, efeitos estéreo).
+O gancho do Jones Manoel (0–16,3 s) fica numa moldura na cena; o vídeo e o áudio dele entram na montagem (juntar.sh). `trilha(T, N)` devolve (música estéreo, efeitos estéreo).
 """
 import sys
 from pathlib import Path
@@ -16,9 +16,10 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 from vinheta import vinheta, DUR as DUR_VIN  # noqa: E402
 
-T = dict(fab=3.5, crianca=6.4, lei=7.8, marx=10.4, engels=11.1, manif=12.6, frase=14.4, sel=16.4,
-         classes=18.6, dono=19.6, padaria=21.0, paes=21.8, nenhum=24.4, leva=25.6, salario=27.2, lucro=28.0,
-         meios=30.2, seu=32.8, iphone=34.8, proximo=38.2, logo=41.8, dur=45.4)
+J = 16.3   # o gancho do Jones (o áudio dele entra na montagem: juntar.sh)
+T = dict(vin=J, fab=J + 3.5, crianca=J + 6.4, lei=J + 7.8, marx=J + 10.4, engels=J + 11.1, manif=J + 12.6, frase=J + 14.4,
+         sel=J + 16.4, classes=J + 18.6, dono=J + 19.6, padaria=J + 21.0, paes=J + 21.8, nenhum=J + 24.4, leva=J + 25.6,
+         salario=J + 27.2, lucro=J + 28.0, meios=J + 30.2, seu=J + 32.8, iphone=J + 34.8, proximo=J + 38.2, logo=J + 41.8, dur=J + 45.4)
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 
@@ -26,6 +27,8 @@ def trilha(T, N):
     dur = N / SR
     st = {k: np.zeros(N + SR * 4, np.float32) for k in ("bat", "baixo", "gE", "gD", "solo", "sinte")}
     fx = np.zeros(N + SR * 4, np.float32)
+    # gancho do Jones: só um fundo grave e baixo (a fala dele manda)
+    soma(st["sinte"], som.sinte([82.41, 123.5, 164.8], T["vin"] - 0.2, 0.12, brilho=600, ataque=1.5), 0)
     # fábricas: verso abafado, lento, com sinte grave (a dureza do trabalho)
     som.banda_secao(st, T["fab"], T["marx"] - T["fab"], 100, ((E, 8), (C, 8)), "palm", 0.5, virar=True, seed=1)
     soma(st["sinte"], som.sinte([82.41, 98.0, 123.5], T["marx"] - T["fab"], 0.3, brilho=800, ataque=1.0), T["fab"])
@@ -101,7 +104,7 @@ def trilha(T, N):
     esq, dir_ = esq + som.fpa(esq, 2500) * 0.35, dir_ + som.fpa(dir_, 2500) * 0.35
     ve, vd = vinheta()                                                         # já mixada e normalizada
     g = np.sqrt(np.mean(esq[int(T["fab"] * SR):int(T["marx"] * SR)] ** 2)) / max(np.sqrt(np.mean(ve ** 2)), 1e-9) * 1.4
-    soma(esq, ve * g, 0); soma(dir_, vd * g, 0)
+    soma(esq, ve * g, T["vin"]); soma(dir_, vd * g, T["vin"])
     f = fx[:N4]
     fl, fr = som.reverb(f * 0.4, 1.2, seed=9)
     return (esq, dir_), (f + fl * 0.5, f + fr * 0.5)

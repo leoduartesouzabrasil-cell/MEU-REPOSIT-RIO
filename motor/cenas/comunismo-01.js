@@ -1,16 +1,22 @@
 // "DESMISTIFICANDO O COMUNISMO" · EP. 1: O que é o comunismo? Roteiro: roteiros/comunismo-01-o-que-e.md
-// A cena começa na VINHETA. O gancho do Jones Manoel (0–16,3 s do vídeo dele) é colado ANTES, na montagem final
-// (audio/comunismo-01/juntar.sh), porque é vídeo de terceiro com legenda própria.
+// A cena começa no GANCHO: o vídeo do Jones Manoel (0–16,3 s) numa moldura, recortado sem a legenda original dele e com a
+// nossa legenda. O vídeo é sobreposto na janela pela montagem (audio/comunismo-01/juntar.sh).
 // Ordem: vinheta → fábricas (anos 1800, criança na fábrica, lei de 1833) → Marx e Engels + Manifesto + a frase da luta de classes →
 // quem trabalha × quem é dono → a padaria (500 pães, salário × lucro) → meios de produção × o que é seu ("comunista pode ter iPhone")
 // → próximo episódio → logo. PRÉVIA sem narração; com a narração, T vem de comunismo-01.tempos.js.
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
+const JONES = 16.3;   // o gancho: 0–16,3 s do vídeo do Jones Manoel, numa moldura (o vídeo entra na montagem: juntar.sh)
 const T = Object.assign({
-  fab: 3.5, crianca: 6.4, lei: 7.8, marx: 10.4, engels: 11.1, manif: 12.6, frase: 14.4, sel: 16.4,
-  classes: 18.6, dono: 19.6, padaria: 21.0, paes: 21.8, nenhum: 24.4, leva: 25.6, salario: 27.2, lucro: 28.0,
-  meios: 30.2, seu: 32.8, iphone: 34.8, proximo: 38.2, logo: 41.8, dur: 45.4,
+  vin: JONES, fab: JONES + 3.5, crianca: JONES + 6.4, lei: JONES + 7.8, marx: JONES + 10.4, engels: JONES + 11.1, manif: JONES + 12.6,
+  frase: JONES + 14.4, sel: JONES + 16.4, classes: JONES + 18.6, dono: JONES + 19.6, padaria: JONES + 21.0, paes: JONES + 21.8,
+  nenhum: JONES + 24.4, leva: JONES + 25.6, salario: JONES + 27.2, lucro: JONES + 28.0, meios: JONES + 30.2, seu: JONES + 32.8,
+  iphone: JONES + 34.8, proximo: JONES + 38.2, logo: JONES + 41.8, dur: JONES + 45.4,
 }, (window.TEMPOS || {}).marcas || {});
+// janela do vídeo do Jones (o recorte 576×535 do original, sem a legenda dele, escalado para 840×780): x 120, y 450
+const JANELA = { x: 120, y: 450, w: 840, h: 780 };
+// legenda da fala do Jones no NOSSO padrão (transcrição com tempo por palavra; a legenda original dele fica fora do recorte)
+const LEG_JONES = [{"t0": 0.0, "t1": 3.44, "p": [["Você", 0.0], ["está", 0.18], ["confundindo", 0.4], ["Marx", 1.02], ["com", 1.74], ["Jesus", 2.04], ["Cristo.", 2.3]]}, {"t0": 3.44, "t1": 6.02, "p": [["É", 3.44], ["a", 3.54], ["Bíblia", 3.64], ["Sagrada", 4.1], ["que", 4.76], ["fala:", 5.02]]}, {"t0": 6.08, "t1": 8.58, "p": [["“dai", 6.08], ["tudo", 6.24], ["aos", 6.64], ["pobres", 6.94], ["e", 7.46], ["me", 7.82], ["siga”.", 7.92]]}, {"t0": 8.58, "t1": 10.98, "p": [["Não", 8.58], ["é", 8.72], ["o", 8.9], ["Manifesto", 9.0], ["do", 9.54], ["Partido", 9.66], ["Comunista.", 9.94]]}, {"t0": 10.98, "t1": 12.86, "p": [["Nós,", 10.98], ["comunistas,", 11.28], ["a", 12.02], ["gente", 12.14], ["não", 12.28], ["defende", 12.46]]}, {"t0": 12.86, "t1": 13.78, "p": [["voto", 12.86], ["de", 13.18], ["pobreza.", 13.24]]}, {"t0": 13.78, "t1": 15.02, "p": [["Quem", 13.78], ["defende", 13.92], ["voto", 14.38], ["de", 14.64], ["pobreza", 14.74]]}, {"t0": 15.02, "t1": 16.3, "p": [["são", 15.02], ["os", 15.22], ["franciscanos.", 15.34]]}];
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
@@ -29,14 +35,14 @@ window.CENA = {
     const DONO = { roupa: TINTA, pele: '#E0B48A', tipo: 'terno', calca: TINTA, chapeu: 'cartola' };
     const PADEIRO = { roupa: BEGE, pele: '#5E3B26', tipo: 'avental', chapeu: 'padeiro' };
 
-    const ordem = [[0, vinheta], [T.fab, fabricas], [T.marx, autores], [T.classes, classes], [T.padaria, padaria],
+    const ordem = [[0, gancho], [T.vin, vinheta], [T.fab, fabricas], [T.marx, autores], [T.classes, classes], [T.padaria, padaria],
       [T.meios, meios], [T.proximo, proximo], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
     const IMP = [T.lei, T.sel, T.nenhum, T.lucro, T.iphone, T.proximo + 0.1, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.fab, BEGE, -24], [T.marx, BEGE, 24], [T.classes, BEGE, -24], [T.padaria, BEGE, 24], [T.meios, BEGE, -24],
+    [[T.vin, VERM, 24], [T.fab, BEGE, -24], [T.marx, BEGE, 24], [T.classes, BEGE, -24], [T.padaria, BEGE, 24], [T.meios, BEGE, -24],
       [T.proximo, VERM, 24], [T.logo, BEGE, -24]].forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
@@ -45,7 +51,7 @@ window.CENA = {
 
     // ------------------------------------------------ componentes padronizados
     function legenda() {
-      const LEG = (window.TEMPOS || {}).legendas;
+      const LEG = [...LEG_JONES, ...((window.TEMPOS || {}).legendas || [])];
       const l = LEG && LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
       if (!l) return;
       const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
@@ -104,6 +110,17 @@ window.CENA = {
       }
       if (p.chapeu === 'bone') { ctx.fillStyle = TINTA; ctx.fillRect(-31, -216, 62, 22); ctx.fillRect(0, -198, 46, 8); }
       ctx.restore();
+    }
+
+    // ------------------------------------------------ 0. o gancho: o vídeo do Jones numa moldura (o vídeo é sobreposto na montagem)
+    function gancho(lt) {
+      L.fundo(ctx, BEGE);
+      titulo('“É COMUNISTA, MAS TEM COISAS?”', seg(lt, 0.0, 0.6));
+      cred('Jones Manoel, historiador', seg(lt, 0.2, 0.8));
+      const { x, y, w, h } = JANELA;
+      L.moldura(ctx, x, y, w, h, 30);
+      ctx.fillStyle = TINTA; ctx.fillRect(x, y, w, h);                 // aqui entra o vídeo (juntar.sh)
+      L.texto(ctx, 'Vídeo: Jones Manoel', CX, y + h + 80, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
     }
 
     // ------------------------------------------------ A. vinheta da série (3,5 s, música própria)

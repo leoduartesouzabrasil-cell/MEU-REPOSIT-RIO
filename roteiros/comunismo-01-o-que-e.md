@@ -85,3 +85,9 @@ CARTAZ: "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · vinheta curta da s
 - Padaria e "500 pães": exemplo ilustrativo (rodapé "exemplo").
 - "Comunista pode ter iPhone, sim": paráfrase do argumento do Jones e do Manifesto (propriedade pessoal ≠ meios de produção).
 - Duração estimada: Jones 16,3 s + vinheta 3 s + narração ~48 s (≈150 palavras, VEL 1.20) + logo ≈ **70 s**.
+
+## Gancho em moldura (pedido do autor)
+O vídeo do Jones NÃO entra em tela cheia: fica numa moldura dourada (janela 840×780 em x 120, y 450), recortado do original a partir de
+y = 200 (576×535), o que tira o título "É comunista mas tem coisas?" e a legenda dele. A nossa legenda (tarja padrão) mostra a fala dele,
+palavra por palavra, a partir da transcrição. Título da cena: "“É COMUNISTA, MAS TEM COISAS?”"; fonte: "Jones Manoel, historiador";
+crédito embaixo da moldura: "Vídeo: Jones Manoel". Montagem: `audio/comunismo-01/juntar.sh` sobrepõe o vídeo na janela e soma o áudio dele.
