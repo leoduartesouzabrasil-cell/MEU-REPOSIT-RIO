@@ -16,6 +16,9 @@ let eventoResultado = null;
 let tmpCandidatos = null;
 let SET = null;
 let minAberto = null;
+let RED = null;      // redação de medida
+let NEG = null;      // mesa de negociação aberta
+let negCtl = null;
 
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tom = (v,bom,ruim,inv)=> inv ? (v<=bom?'ok':v>=ruim?'bad':'mid') : (v>=bom?'ok':v<=ruim?'bad':'mid');
@@ -36,6 +39,7 @@ const IC = {
   viagem:'<path d="M2 16l20-8-6 12-3-5z"/><path d="M13 15l-3 5"/>',
   emendas:'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
   cafepartido:'<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v3M12 3v3"/>',
+  ato:'<path d="M4 21V4"/><path d="M4 4h13l-2 4 2 4H4"/>',
   entrevista:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
 };
 const RAIO = '<svg class="rz" viewBox="0 0 24 24" aria-label="agenda"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
@@ -93,6 +97,9 @@ function chips(efs){
   }).join('')}</ul>`;
 }
 
+function htmlReacoes(posts){
+  return `<div class="rede"><p class="rede-t">Nas redes</p>${posts.map(p=>`<div class="post"><b>${esc(p.nome)}</b> <small>${esc(p.quem)}</small><p>${esc(p.texto)}</p></div>`).join('')}<small class="aviso">${AVISO_SIMULACAO}</small></div>`;
+}
 function reacoes(efs, fx){
   let a=(fx&&fx.aprov)||0;
   efs.forEach(e=>{ if (e.lbl==='Aprovação') a=e.v; });
@@ -158,7 +165,11 @@ function renderSetup(){
 }
 
 function setupIdentidade(){
-  return `<label class="campo"><span>Nome de urna</span><input id="f-nome" value="${esc(SET.pres.nome)}" placeholder="Ex.: Helena Damasceno" maxlength="32" autocomplete="off"></label>
+  return `<p class="rot" style="margin-top:0">Jogar como figura real</p>
+  <div class="carrossel">${PRES_REAIS.map((r,i)=>`<button class="ccard pres ${SET.pres.nome===r.nome?'sel':''}" data-a="presreal" data-v="${i}"><span class="cc-p" style="--pc:${(PARTIDOS.find(p=>p.id===r.partido)||{}).cor}">${r.partido}</span><b>${esc(r.nome)}</b><small>${esc(r.desc)}</small></button>`).join('')}</div>
+  <p class="dica">Simulação ficcional: as decisões do jogo são suas, não da pessoa real.</p>
+  <p class="rot">Ou crie seu próprio presidente</p>
+  <label class="campo"><span>Nome de urna</span><input id="f-nome" value="${esc(SET.pres.nome)}" placeholder="Ex.: Helena Damasceno" maxlength="32" autocomplete="off"></label>
   <div class="duo">
     <label class="campo"><span>Idade</span><input id="f-idade" type="number" inputmode="numeric" min="35" max="85" value="${SET.pres.idade}"></label>
     <label class="campo"><span>Estado</span><select id="f-uf">${ESTADOS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(e=>`<option value="${e.uf}" ${e.uf===SET.pres.uf?'selected':''}>${e.nome}</option>`).join('')}</select></label>
@@ -187,7 +198,9 @@ function setupCoalizao(){
   const dep=sel.reduce((a,p)=>a+p.dep,0), sen=sel.reduce((a,p)=>a+p.sen,0);
   const vk=SET.coalizao.join(',');
   if (SET._vk!==vk||!SET.viceOps.length){ SET._vk=vk; const pool=SET.coalizao.filter(x=>x!==own); const ps=pool.length?pool:[own];
-    SET.viceOps=[0,1,2].map(i=>{ const n=gerarNome(); return { ...n, partido:ps[i%ps.length], cargo:pick(PERFIS_MIN.politico).split('|')[n.gen==='f'?1:0] }; }); SET.vice=SET.viceOps[0]; }
+    let vs = VICES.filter(v=>SET.coalizao.includes(v[2]) && v[0]!==SET.pres.nome);
+    if (vs.length<3) vs = vs.concat(VICES.filter(v=>!vs.includes(v) && v[0]!==SET.pres.nome).sort((a,b)=>Math.hypot(a[4]-SET.pres.e,a[5]-SET.pres.s)-Math.hypot(b[4]-SET.pres.e,b[5]-SET.pres.s)));
+    SET.viceOps = vs.slice(0,4).map(v=>({ nome:v[0], gen:v[1], partido:v[2], cargo:v[3], e:v[4], s:v[5] })); SET.vice=SET.viceOps[0]; }
   const ord=lista.slice().sort((a,b)=>a.e-b.e);
   const cores=[]; ord.forEach(p=>{ const c=SET.coalizao.includes(p.id)?p.cor:'var(--off)'; for(let i=0;i<p.dep;i++) cores.push(c); });
   return `<div class="placa">
@@ -197,20 +210,21 @@ function setupCoalizao(){
   <p class="dica">Toque nos partidos para convidá-los. Quanto mais longe da sua ideologia, mais cargos eles exigem.</p>
   <div class="pgrid">${ord.map(p=>{ const a=p.id===own?'own':aceitacao(p); const on=SET.coalizao.includes(p.id);
     return `<button class="pchip ${on?'sel':''} ${a}" data-a="coal" data-v="${p.id}" ${a==='recusa'||a==='own'?'disabled':''} style="--pc:${p.cor}"><b>${p.id}</b><span>${p.dep} dep</span><em>${a==='own'?'seu':a==='aceita'?'topa':a==='exige'?'quer cargos':'recusa'}</em></button>`; }).join('')}</div>
-  <p class="rot">Vice-presidente</p>
+  <p class="rot">Vice-presidente</p><p class="dica">Vices de partidos fora da sua base deixam o partido deles mais próximo do governo.</p>
   <div class="tiles">${SET.viceOps.map((v,i)=>`<button class="tile row ${SET.vice===v?'sel':''}" data-a="vice" data-v="${i}">${avatar(v.nome,(lista.find(p=>p.id===v.partido)||{}).cor,40)}<span><b>${esc(v.nome)}</b><small>${v.partido} · ${v.cargo}</small></span></button>`).join('')}</div>`;
 }
 
 function setupMinisterios(){
   SETUP_PARTIDO=partidoSetup();
   const chave=SET.coalizao.join(',');
-  if (SET._chave!==chave){ SET._chave=chave; SET.cands={}; SET.esc={}; MINISTERIOS.forEach((m,i)=>{ SET.cands[m.id]=candidatosMinisterio(m.id,SET.coalizao,SETUP_PARTIDO); SET.esc[m.id]=[0,2,1,3][i%4]; }); }
+  if (SET._chave!==chave){ SET._chave=chave; SET.cands={}; SET.esc={}; const usados=new Set();
+    MINISTERIOS.forEach(m=>{ SET.cands[m.id]=candidatosMinisterio(m.id,SET.coalizao,SETUP_PARTIDO); const i=SET.cands[m.id].findIndex(c=>!usados.has(c.nome)); SET.esc[m.id]=Math.max(0,i); usados.add(SET.cands[m.id][SET.esc[m.id]].nome); }); }
   const tot={}; let W=0; MINISTERIOS.forEach(m=>{ W+=m.peso; const c=SET.cands[m.id][SET.esc[m.id]]; const k=c.partido||'Técnicos'; tot[k]=(tot[k]||0)+m.peso; });
   const lp=partidosSetup();
-  return `<p class="dica">Deslize para o lado e toque para escolher. <b>C</b> competência · <b>L</b> lealdade · <b>I</b> integridade. Aliados sem cargo votam menos com você.</p>
+  return `<p class="dica">Deslize para o lado e toque para escolher. <b>T</b> preparo técnico · <b>P</b> trânsito político · <b>A</b> afinidade com você. Aliados sem cargo votam menos com o governo.</p>
   <div class="partilha">${Object.entries(tot).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span><i style="background:${(lp.find(p=>p.id===k)||{cor:'var(--muted)'}).cor}"></i>${k} ${Math.round(v/W*100)}%</span>`).join('')}</div>
   ${MINISTERIOS.map(m=>`<section class="minbloco"><h3>${m.nome} <small>${'★'.repeat(m.peso)}</small></h3>
-    <div class="carrossel">${SET.cands[m.id].map((c,i)=>`<button class="ccard ${SET.esc[m.id]===i?'sel':''}" data-a="cand" data-v="${m.id}:${i}"><span class="cc-p" style="--pc:${c.partido?(lp.find(p=>p.id===c.partido)||{}).cor:'var(--muted)'}">${c.partido||'Técnic'+(c.gen==='f'?'a':'o')}</span><b>${esc(c.nome)}</b><small>${esc(c.desc)}</small><span class="stats"><i>C ${c.comp}</i><i>L ${c.leal}</i><i>I ${c.integ}</i></span></button>`).join('')}</div></section>`).join('')}`;
+    <div class="carrossel">${SET.cands[m.id].map((c,i)=>`<button class="ccard ${SET.esc[m.id]===i?'sel':''}" data-a="cand" data-v="${m.id}:${i}"><span class="cc-p" style="--pc:${c.partido?(lp.find(p=>p.id===c.partido)||{}).cor:'var(--muted)'}">${c.partido||'Sem partido'}</span><b>${esc(c.nome)}</b><small>${esc(c.desc)}</small><span class="stats"><i>T ${c.tec}</i><i>P ${c.pol}</i><i>A ${afinidade(c)}</i></span></button>`).join('')}</div></section>`).join('')}`;
 }
 
 function setupPromessas(){
@@ -248,7 +262,8 @@ function avancarSetup(){
 
 function iniciarJogo(){
   const own=partidoSetup();
-  const ministros={}; MINISTERIOS.forEach(m=>ministros[m.id]={...SET.cands[m.id][SET.esc[m.id]], desde:0});
+  const ministros={}, usados=new Set();
+  MINISTERIOS.forEach(m=>{ let c=SET.cands[m.id][SET.esc[m.id]]; if (usados.has(c.nome)) c=SET.cands[m.id].find(x=>!usados.has(x.nome))||c; usados.add(c.nome); ministros[m.id]={...c, desde:0}; });
   novoEstado({ pres:{...SET.pres, partido:own}, vice:SET.vice, coalizao:SET.coalizao, ministros, promessas:SET.promessas, dificuldade:SET.dificuldade,
     novoPartido: SET.modo==='novo'?{ nome:SET.novo.nome, sigla:own, cor:SET.novo.cor }:null });
   S.carimbos=[];
@@ -346,12 +361,13 @@ function abaCongresso(){
     <div class="metas"><div class="${S.baseCamara>=257?'ok':''}"><b>257</b><span>maioria absoluta</span></div><div class="${S.baseCamara>=308?'ok':''}"><b>308</b><span>PEC</span></div><div class="${S.baseSenado>=49?'ok':''}"><b>${S.baseSenado}/81</b><span>senado fiel</span></div></div>
     <p class="dica c">Boa vontade da presidência da Câmara: ${fmt(S.presCamara,0)}/100</p>
   </section>
-  ${S.projetos.length?`<h3 class="sec">Em votação</h3>${S.projetos.map(t=>{ const d=PROJETOS.find(p=>p.id===t.id); const pv=previsao({...d,artic:t.artic});
-    return `<article class="proj tr"><header><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><b>${d.nome}</b></header>
-    <div class="prev"><span>Vota em <b>${t.restante}</b> ${t.restante>1?'meses':'mês'}</span><span class="ch ${pv.chance}">chance ${pv.chance}</span></div>
+  <button class="caneta" data-a="redigir"><span class="cn-t">Caneta presidencial</span><b>Escrever uma medida</b><small>Descreva com suas palavras. A assessoria escolhe o instrumento (decreto, MP, PL, PLP ou PEC), o ministro dá parecer e você negocia os votos.</small></button>
+  ${S.projetos.length?`<h3 class="sec">Em tramitação</h3>${S.projetos.map(t=>{ const d=getProj(t.id); const pv=mapaVotos({...d,artic:t.artic,neg:t.neg});
+    return `<article class="proj tr"><header><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><b>${esc(d.nome)}</b></header>
+    <div class="prev"><span>Plenário em <b>${t.restante}</b> ${t.restante>1?'meses':'mês'}</span><span class="ch ${pv.chance}">chance ${pv.chance}</span></div>
     <div class="termo"><span style="width:${clamp(pv.c/513*100,0,100)}%"></span><i style="left:${pv.nc/513*100}%"></i></div>
-    <small class="dica">~${pv.c} votos previstos de ${pv.nc} necessários · articulação ${'●'.repeat(t.artic)}${'○'.repeat(3-t.artic)}</small>
-    ${t.artic<3?`<button class="btn-s" data-a="articular" data-v="${t.id}" ${S.ap<1?'disabled':''}>Articular votos · 1 ${RAIO}</button>`:''}</article>`; }).join('')}`:''}
+    <small class="dica">Câmara ~${pv.c}/${pv.nc} · Senado ~${pv.s}/${pv.ns}${pv.contra.length?` · resistem: ${pv.contra.slice(0,3).join(', ')}`:''}</small>
+    <button class="btn-s yel" data-a="negociar" data-v="${t.id}">Abrir mesa de negociação</button></article>`; }).join('')}`:''}
   <h3 class="sec">Mandar ao Congresso</h3>
   <div class="filtros">${cats.map(([k,n])=>`<button class="${filtroProj===k?'sel':''}" data-a="filtro" data-v="${k}">${n}</button>`).join('')}</div>
   ${disp.map(d=>{ const pv=previsao({...d,artic:0});
@@ -360,14 +376,15 @@ function abaCongresso(){
     <div class="bts"><button class="btn-s yel" data-a="propor" data-v="${d.id}" ${S.ap<1?'disabled':''}>Enviar ${d.tipo} · 1 ${RAIO}</button>${d.mp?`<button class="btn-s" data-a="mp" data-v="${d.id}" ${S.ap<1?'disabled':''}>Medida Provisória</button>`:''}</div></article>`; }).join('')||'<p class="dica">Nada nesta categoria agora.</p>'}
   <h3 class="sec">Partidos</h3>
   <section class="card">${S.partidos.slice().sort((a,b)=>b.dep-a.dep).map(p=>{ const on=S.coalizao.includes(p.id), own=p.id===S.pres.partido;
-    return `<div class="partido ${on?'on':''}" style="--pc:${p.cor}"><div class="pt-n"><b>${p.id}</b><small>${p.dep} dep · ${p.sen} sen · ${own?'seu partido':on?'base':'fora'}</small></div>${barra(p.sat)}
+    return `<div class="partido ${on?'on':''}" style="--pc:${p.cor}"><div class="pt-n"><b>${p.id}</b><small>${p.dep} dep · ${p.sen} sen · ${own?'seu partido':on?'base':'fora'}${LIDERES[p.id]?` · ${LIDERES[p.id]}`:''}</small></div>${barra(p.sat)}
     ${own?'<span></span>':`<div class="pt-bt"><button class="btn-s" data-a="acao-cafe" data-v="${p.id}" ${S.ap<1?'disabled':''}>${on?'Agradar':'Convidar'}</button>${on?`<button class="btn-s ghost" data-a="romper" data-v="${p.id}" aria-label="Romper com ${p.id}">✕</button>`:''}</div>`}</div>`; }).join('')}</section>
-  ${S.aprovadas.length?`<h3 class="sec">Leis do seu governo</h3><section class="card"><ul class="leis">${S.aprovadas.map(id=>`<li>${PROJETOS.find(p=>p.id===id).nome}</li>`).join('')}</ul></section>`:''}`;
+  ${S.aprovadas.length?`<h3 class="sec">Leis do seu governo</h3><section class="card"><ul class="leis">${S.aprovadas.map(id=>`<li>${esc((getProj(id)||{nome:id}).nome)}</li>`).join('')}</ul></section>`:''}`;
 }
 
 function abaAcoes(){
   return `<p class="dica">Você tem <b>${S.ap}</b> ${RAIO} de agenda este mês. Eles recarregam no próximo mês.</p>
-  <div class="acoes">${ACOES.map(a=>`<button class="acao" data-a="acao-${a.id}" ${S.ap<a.custo?'disabled':''}>${icon(a.id,'big')}<b>${a.nome}</b><small>${a.desc}</small><span class="custo">${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>`;
+  <div class="acoes">${ACOES.map(a=>`<button class="acao" data-a="acao-${a.id}" ${S.ap<a.custo?'disabled':''}>${icon(a.id,'big')}<b>${a.nome}</b><small>${a.desc}</small><span class="custo">${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>
+  <button class="poder" data-a="poder"><span class="cn-t">Projeto de poder</span><b>Romper com a ordem constitucional?</b><small>Regime militar ou revolução socialista: caminhos com etapas, requisitos e consequências históricas. ${S.poder&&(S.poder.militar||S.poder.socialista)?'Um caminho já está em andamento.':''}</small></button>`;
 }
 
 function abaBrasil(){
@@ -415,10 +432,10 @@ function abaEquipe(){
   <p class="dica">Toque num ministro para ver detalhes. Trocar custa 1 ${RAIO}; o partido que perde a pasta se irrita.</p>
   ${MINISTERIOS.map(m=>{ const mi=S.ministros[m.id]; const p=mi.partido?P(mi.partido):null; const c=compMin(m.id); const ab=minAberto===m.id;
     return `<article class="mrow ${ab?'ab':''}"><button class="mrow-h" data-a="minab" data-v="${m.id}">${avatar(mi.nome,p?p.cor:'var(--muted)',40)}<span><small>${m.nome}</small><b>${esc(mi.nome)}</b></span><em class="${c>0.3?'ok':c<0?'bad':'mid'}">${c>0.3?'Forte':c<0?'Fraco':'Regular'}</em></button>
-    ${ab?`<div class="mrow-d"><p>${esc(mi.desc)} · ${mi.partido||'sem partido'} · desde ${dataCurta(mi.desde||0)}</p>
-      <div class="linha"><span>Competência</span>${barra(mi.comp)}<b>${mi.comp}</b></div>
-      <div class="linha"><span>Lealdade</span>${barra(mi.leal)}<b>${mi.leal}</b></div>
-      <div class="linha"><span>Integridade</span>${barra(mi.integ)}<b>${mi.integ}</b></div>
+    ${ab?`<div class="mrow-d"><p>${esc(mi.desc)} · ${mi.partido||'sem partido'} · no cargo desde ${dataCurta(mi.desde||0)}</p>
+      <div class="linha"><span>Preparo técnico</span>${barra(mi.tec)}<b>${mi.tec}</b></div>
+      <div class="linha"><span>Trânsito político</span>${barra(mi.pol)}<b>${mi.pol}</b></div>
+      <div class="linha"><span>Afinidade com você</span>${barra(afinidade(mi))}<b>${afinidade(mi)}</b></div>
       <button class="btn-s yel" data-a="trocar" data-v="${m.id}" ${S.ap<1?'disabled':''}>Trocar ministro · 1 ${RAIO}</button></div>`:''}</article>`; }).join('')}`;
 }
 
@@ -448,7 +465,7 @@ function escolherOpcao(i){
   const ref=S.pendentes[0]; const ev=getEvento(ref); const op=ev.opcoes[i];
   const efs=applyFx(op.fx);
   logar(ev.cat, `${ev.titulo}: ${op.txt}.`);
-  eventoResultado={ titulo:ev.titulo, escolha:op.txt, res:op.res, efs, rede:reacoes(efs, op.fx) };
+  eventoResultado={ titulo:ev.titulo, escolha:op.txt, res:op.res, efs, rede:htmlReacoes(reacoesReais(null, (op.fx&&op.fx.aprov)||0)) };
   calcBase(); mostrarResultado();
 }
 function mostrarResultado(){
@@ -527,6 +544,146 @@ function mostrarCarimbos(){
   setTimeout(()=>{ toastEl.hidden=true; mostrarCarimbos(); }, 3200);
 }
 
+// ---------- caneta presidencial (medidas em texto livre) ----------
+const EXEMPLOS_MED = [
+  'Zerar o imposto de importação do arroz e do feijão por seis meses para segurar o preço da comida',
+  'Criar um programa nacional de creches em tempo integral para crianças de 0 a 3 anos',
+  'Proibir o uso de celulares por alunos em todas as escolas do país',
+  'Tributar em 15% os lucros que multinacionais enviam ao exterior',
+  'Instituir mandato de 10 anos para os ministros do STF',
+  'Reduzir a maioridade penal para 16 anos em crimes hediondos',
+];
+
+function previaFx(fx){
+  const out=[]; const add=(lbl,v,suf='')=>{ if (v && Math.abs(v)>=0.005) out.push({lbl,v:Math.round(v*100)/100,suf}); };
+  add('Aprovação', fx.aprov, ' pts');
+  const e=fx.eco||{}; add('Crescimento', e.pibShock, ' p.p.'); add('Inflação', e.inflShock, ' p.p.'); add('Resultado primário', e.primario, '% PIB'); add('Confiança do mercado', e.conf);
+  Object.entries(fx.grp||{}).forEach(([k,v])=>add(GRUPOS.find(g=>g.id===k).nome, v));
+  const nm={pobreza:'Tendência da pobreza',homic:'Tendência de homicídios',desmat:'Tendência do desmatamento',educ:'Educação (tendência)',saude:'Saúde (tendência)',infra:'Infraestrutura (tendência)'};
+  Object.entries(fx.mod||{}).forEach(([k,v])=>add(nm[k]||k, v*100, '%/ano'));
+  Object.entries(fx.rel||{}).forEach(([k,v])=>add(PAISES.find(c=>c.id===k).nome, v));
+  return out;
+}
+
+function placarPrevisto(pv){
+  const bar=(nome,sim,nec,tot)=>`<div class="placar mini"><div class="pl-h"><span>${nome}</span><small>${sim} previstos · precisa ${nec}</small></div><div class="pl-b"><span class="s" style="width:${clamp(sim/tot*100,0,100)}%"></span><i style="left:${nec/tot*100}%"></i></div></div>`;
+  return bar('Câmara',pv.c,pv.nc,513)+bar('Senado',pv.s,pv.ns,81)+`<p class="dica">Chance <b class="ch ${pv.chance}">${pv.chance}</b>${pv.contra.length?` · bancadas que resistem: ${pv.contra.slice(0,4).join(', ')}`:''}</p>`;
+}
+
+async function abrirRedacao(){ RED = RED && RED.fase!=='feito' ? RED : { fase:'texto', texto:'' }; renderRedacao(); const sp = await obterIA(); RED.temIA = !!sp; if (RED.fase==='texto') renderRedacao(); }
+
+function renderRedacao(){
+  const r = RED;
+  if (r.fase==='texto'){
+    return abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">Caneta presidencial</span><span>${S.ap} ${RAIO} de agenda</span></div>
+      <h2 class="ev-t sm">Qual é a sua medida?</h2>
+      <p class="ev-x">Escreva com suas palavras, como se ditasse para a Casa Civil.</p>
+      <textarea id="f-medida" class="area" rows="5" maxlength="1500" placeholder="Ex.: Criar um vale-gás mensal para famílias do CadÚnico, pago pela Caixa">${esc(r.texto||'')}</textarea>
+      <div class="filtros wrap">${EXEMPLOS_MED.map((x,i)=>`<button data-a="exmed" data-v="${i}">${esc(x.length>46?x.slice(0,44)+'…':x)}</button>`).join('')}</div>
+      ${r.erro?`<p class="st-msg">${esc(r.erro)}</p>`:''}
+      <p class="dica">${r.temIA===false?'Sem IA neste aparelho: a assessoria classifica por palavras-chave. Abra o jogo pelo link do Claude para a análise completa.':'A análise jurídica, os efeitos e o parecer do ministro são feitos por IA (Claude).'}</p>
+      <button class="btn-g yel" data-a="red-analisar">Enviar à assessoria</button>
+      <button class="lnk c" data-a="fechar">Cancelar</button></div>`);
+  }
+  if (r.fase==='carregando'){
+    return abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">Casa Civil</span></div><h2 class="ev-t sm">${esc(r.msg||'Analisando…')}</h2>
+      <div class="carregando"><i></i><i></i><i></i></div><p class="dica c">A primeira análise pode levar até um minuto.</p>
+      <button class="lnk c" data-a="red-parar">Parar</button></div>`);
+  }
+  const d = r.def, inst = INSTRUMENTOS[d.instrumento], m = S.ministros[d.ministerio], mi = MIN(d.ministerio);
+  const pv = d.instrumento==='DECRETO' ? null : mapaVotos(d);
+  const par = r.parecer;
+  abrirModal(`<div class="ev">
+    <div class="ev-top"><span class="tag ${d.instrumento==='PEC'||d.instrumento==='MP'?'red':'yel'}">${inst.nome}</span><span>${d.ia?'Análise por IA':'Análise automática'}</span></div>
+    <h2 class="ev-t sm">${esc(d.nome)}</h2>
+    ${d.desc?`<p class="ev-x">${esc(d.desc)}</p>`:''}
+    <div class="despacho"><small>Por que ${d.instrumento==='DECRETO'?'decreto':d.instrumento}</small><p>${esc(d.motivo||inst.regra)}</p></div>
+    ${d.inconst?`<p class="st-msg">A assessoria aponta inconstitucionalidade: alta chance de o STF derrubar.</p>`:''}
+    <div class="linha2"><span>Pasta</span><b>${mi.nome}</b></div>
+    <div class="linha2"><span>Posição</span><b>${rotE(d.e)} · ${rotS(d.s)}</b></div>
+    <div class="linha2"><span>Apelo popular</span><b>${d.pop>0.4?'alto':d.pop>0?'moderado':d.pop>-0.4?'baixo':'impopular'}</b></div>
+    ${d.apoia&&d.apoia.length?`<div class="linha2"><span>Apoiam</span><b>${esc(d.apoia.join(', '))}</b></div>`:''}
+    ${d.resiste&&d.resiste.length?`<div class="linha2"><span>Resistem</span><b>${esc(d.resiste.join(', '))}</b></div>`:''}
+    <p class="rot">Efeitos estimados</p>${chips(previaFx(d.fx))||'<p class="dica">Efeito pequeno.</p>'}
+    <p class="rot">${pv?'Previsão de votos hoje':'Sem votação'}</p>
+    ${pv?placarPrevisto(pv):`<p class="dica">Decretos não passam pelo Congresso. Risco jurídico estimado: ${Math.round(d.risco*100)}%.</p>`}
+    ${par?`<div class="parecer ${par.parecer}"><div class="pr-h">${avatar(m.nome,(P(m.partido)||{}).cor,40)}<span><small>Parecer simulado</small><b>${esc(m.nome)}</b><em>${par.parecer==='favoravel'?'Favorável':par.parecer==='contrario'?'Contrário':'Com ressalvas'}</em></span></div>
+      <p>“${esc(par.fala||'')}”</p>${(par.pontos||[]).length?`<ul>${par.pontos.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+      ${par.o_que_falta?`<p class="dica"><b>Para aprovar:</b> ${esc(par.o_que_falta)}</p>`:''}
+      ${par.ajuste&&par.ajuste.descricao&&!r.ajusteAplicado?`<button class="btn-s" data-a="red-ajuste">Aceitar ajuste: ${esc(par.ajuste.descricao)}</button>`:r.ajusteAplicado?'<p class="dica">Ajuste do ministro incorporado ao texto.</p>':''}
+      <small class="aviso">${AVISO_SIMULACAO}</small></div>`
+      :`<button class="btn-s wide" data-a="red-parecer">Pedir parecer de ${esc(m.nome)}</button>`}
+    <button class="btn-g yel" data-a="red-protocolar" ${S.ap<1?'disabled':''}>${d.instrumento==='DECRETO'?'Assinar decreto':d.instrumento==='MP'?'Editar MP':'Protocolar no Congresso'} · 1 ${RAIO}</button>
+    <button class="lnk c" data-a="red-editar">Reescrever</button></div>`);
+}
+
+async function redAnalisar(){
+  const el=document.getElementById('f-medida'); const txt=(el?el.value:RED.texto||'').trim();
+  RED.texto=txt; RED.erro='';
+  if (txt.length<12){ RED.erro='Descreva a medida com um pouco mais de detalhe.'; return renderRedacao(); }
+  RED.fase='carregando'; RED.msg='A Subchefia de Assuntos Jurídicos analisa o texto…'; renderRedacao();
+  negCtl = new AbortController();
+  let raw=null, aviso='';
+  try { raw = await interpretarIA(txt, negCtl.signal); }
+  catch(e){ if (e && e.code==='cancelled'){ RED.fase='texto'; return renderRedacao(); } aviso = e&&e.code==='refused' ? 'A IA recusou analisar esse texto; usamos a análise automática.' : 'A análise por IA falhou; usamos a análise automática.'; }
+  if (!raw) raw = interpretarLocal(txt);
+  RED.def = normalizarMedida(raw, txt); RED.parecer=null; RED.ajusteAplicado=false; RED.fase='proposta';
+  if (aviso) RED.def.desc = aviso+' '+(RED.def.desc||'');
+  if (!modal.hidden) renderRedacao();
+}
+
+async function redParecer(){
+  const d=RED.def, pv = d.instrumento==='DECRETO' ? { c:0,s:0,nc:0,ns:0,contra:[] } : mapaVotos(d);
+  RED.fase='carregando'; RED.msg=`${S.ministros[d.ministerio].nome} analisa a medida…`; renderRedacao();
+  negCtl = new AbortController();
+  let par=null;
+  try { par = await parecerIA(d, pv, negCtl.signal); }
+  catch(e){ if (e && e.code==='cancelled'){ RED.fase='proposta'; return renderRedacao(); } }
+  RED.parecer = par || parecerLocal(d, pv); RED.fase='proposta';
+  if (!modal.hidden) renderRedacao();
+}
+
+// ---------- mesa de negociação ----------
+function renderNeg(){
+  const t = S.projetos.find(x=>x.id===NEG.id);
+  if (!t){ NEG=null; fecharModal(); return render(); }
+  const d = getProj(t.id), pv = mapaVotos({...d, artic:t.artic, neg:t.neg});
+  const linhas = pv.linhas.filter(l=>l.dep>0);
+  abrirModal(`<div class="ev">
+    <div class="ev-top"><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><span>Plenário em ${t.restante} ${t.restante>1?'meses':'mês'} · ${S.ap} ${RAIO}</span></div>
+    <h2 class="ev-t sm">${esc(d.nome)}</h2>
+    ${NEG.msg?`<div class="despacho"><small>Resultado</small><p>${esc(NEG.msg)}</p></div>`:''}
+    ${placarPrevisto(pv)}
+    <p class="rot">Mapa de votos por bancada</p>
+    <div class="mapav">${linhas.map(l=>`<button class="mv" data-a="neg-bancada" data-v="${l.id}" ${l.id===S.pres.partido||S.ap<1?'disabled':''} style="--pc:${l.cor}"><b>${l.id}</b><span class="mv-b"><span style="width:${Math.round(l.pc*100)}%"></span></span><em class="${l.pc>=0.6?'ok':l.pc<0.4?'bad':''}">${l.simC}/${l.dep}</em></button>`).join('')}</div>
+    <p class="dica">Toque numa bancada para negociar com ela.</p>
+    <p class="rot">Articulação</p>
+    <div class="negs">${NEG_ACOES.filter(a=>a.id!=='bancada').map(a=>`<button class="neg" data-a="neg-${a.id}" ${S.ap<a.custo?'disabled':''}><b>${a.nome}</b><small>${a.desc}</small><span>${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>
+    ${(t.hist||[]).length?`<p class="rot">Histórico</p><ul class="news">${t.hist.slice(0,5).map(h=>`<li><p>${esc(h.txt)}</p><small>${dataCurta(h.t)}</small></li>`).join('')}</ul>`:''}
+    <button class="btn-g yel" data-a="neg-fechar">Voltar ao Congresso</button></div>`);
+}
+function negExec(acao, alvo, modo){ NEG.msg = negociar(NEG.id, acao, alvo, modo); renderNeg(); }
+
+// ---------- projeto de poder ----------
+function renderPoder(confirmar){
+  S.poder = S.poder || { militar:0, socialista:0, tMil:-9, tSoc:-9 };
+  const bloco = path=>{
+    const R=RUPTURAS[path], st=estadoRuptura(path);
+    return `<section class="rupt" style="--rc:${R.cor}"><h3>${R.nome}</h3><p class="dica">${R.intro}</p>
+      <ol class="etapas">${R.etapas.map((et,i)=>{ const feito=i<S.poder[path], atual=i===S.poder[path];
+        return `<li class="${feito?'feito':atual?'atual':''}"><b>${et.nome}</b><small>${et.desc}</small>
+        ${atual?`<div class="reqs">${st.reqs.map(r=>`<span class="${r.ok?'ok':'bad'}">${r.nome} ${fmt(r.atual,0)}/${r.v}</span>`).join('')}</div>
+        ${st.outro?'<small class="dica">Outro projeto de poder já está em curso.</small>':st.emVoto?'<small class="dica">Etapa em votação no Congresso.</small>':st.espera?'<small class="dica">Aguarde ao menos dois meses entre as etapas.</small>':''}
+        ${confirmar===path?`<div class="bts"><button class="btn-s red" data-a="poder-ok" data-v="${path}">Confirmar: ${et.final?'executar a ruptura':'executar etapa'}</button><button class="btn-s" data-a="poder">Cancelar</button></div>`:
+          `<button class="btn-s ${et.final?'red':'yel'}" data-a="poder-pre" data-v="${path}" ${st.ok?'':'disabled'}>${et.final?'Executar a ruptura':'Executar etapa'} · 2 ${RAIO}</button>`}`:''}</li>`; }).join('')}</ol></section>`;
+  };
+  abrirModal(`<div class="ev"><div class="ev-top"><span class="tag red">Projeto de poder</span><span>${S.ap} ${RAIO}</span></div>
+    <h2 class="ev-t sm">Romper a ordem constitucional</h2>
+    <p class="ev-x">A Constituição de 1988 protege a forma federativa, o voto direto, a separação de Poderes e os direitos individuais (art. 60, § 4º). Rupturas cobram um preço alto: sanções, isolamento, resistência nas ruas e nas instituições. Cada etapa tem requisitos de apoio político.</p>
+    ${bloco('militar')}${bloco('socialista')}
+    <button class="lnk c" data-a="fechar-render">Fechar</button></div>`);
+}
+
 // ---------- fim ----------
 function notaFinal(){
   const h=S.hist, e=S.eco, el=S.flags.eleicao;
@@ -534,6 +691,8 @@ function notaFinal(){
   const media=k=>h[k].reduce((a,b)=>a+b,0)/h[k].length;
   let n=S.aprov*0.6 + cumpridas*8 + media('pib')*4 - Math.max(0,e.ipca-4.5)*3 - Math.max(0,e.divida-82.4)*0.6 + S.aprovadas.length*1.2 + (el&&el.vence?8:0) + (S.carimbos||[]).length*0.5;
   if (S.fim.tipo==='impeachment') n-=40; if (S.fim.tipo==='renuncia') n-=30;
+  if (['ditadura','golpe_fracassado','deposto'].includes(S.fim.tipo)) n=Math.min(n,20);
+  if (S.fim.tipo==='socialismo') n-=15;
   if (S.dificuldade==='dificil') n*=1.1; if (S.dificuldade==='facil') n*=0.9;
   const letra=n>=85?'S':n>=72?'A':n>=58?'B':n>=45?'C':n>=30?'D':'F';
   return { pontos:Math.max(0,Math.round(n*20)), letra, cumpridas };
@@ -542,13 +701,21 @@ function notaFinal(){
 function renderFim(){
   checarCarimbos(); S.novosCarimbos=[];
   const f=S.fim, h=S.hist, e=S.eco, el=S.flags.eleicao, nf=notaFinal();
-  const titulo=f.tipo==='impeachment'?'Impeachment':f.tipo==='renuncia'?'Renúncia':el&&el.vence?(S.flags.desistiu?'Sucessor eleito':'Reeleito!'):'Fim do mandato';
+  const FINAIS = {
+    ditadura:['Regime militar','O Congresso é fechado, ministros do STF são afastados e a imprensa passa por censura prévia. Os Estados Unidos e a União Europeia impõem sanções; o Mercosul suspende o Brasil pela cláusula democrática do Protocolo de Ushuaia. Opositores partem para o exílio. Como em 1964, o regime promete ser "provisório".'],
+    golpe_fracassado:['Golpe fracassado','O Alto Comando se divide e a ruptura não se sustenta. O Congresso aprova seu afastamento, a Polícia Federal cumpre o mandado de prisão e o STF abre ação penal por tentativa de golpe de Estado e abolição violenta do Estado Democrático de Direito (arts. 359-L e 359-M do Código Penal). Você fica inelegível.'],
+    socialismo:['República Socialista','A nova Constituição é promulgada. Bancos e setores estratégicos passam ao controle estatal, a reforma agrária avança e um sistema de conselhos populares é criado. O real perde metade do valor, há fuga de capitais, sanções americanas e forte oposição interna. O país entra numa fase de incerteza que os livros de história ainda vão julgar.'],
+    deposto:['Deposto pelas Forças Armadas','Com o país dividido pela Constituinte, tanques ocupam Brasília. As Forças Armadas não reconhecem a nova Constituição e depõem o governo, como fizeram com João Goulart em 1º de abril de 1964. Você parte para o exílio.'],
+  };
+  const especial = FINAIS[f.tipo];
+  const titulo=especial?especial[0]:f.tipo==='impeachment'?'Impeachment':f.tipo==='renuncia'?'Renúncia':el&&el.vence?(S.flags.desistiu?'Sucessor eleito':'Reeleito!'):'Fim do mandato';
   const linha=(n,a,b,d=1,suf='')=>`<div class="rs-r"><span>${n}</span><b>${fmt(b,d)}${suf}</b><em>era ${fmt(a,d)}${suf}</em></div>`;
   const resumo=`${S.pres.nome} (${S.pres.partido}): nota ${nf.letra} e ${nf.pontos} pontos em A FAIXA. Aprovação final de ${fmt(S.aprov,0)}%, ${S.aprovadas.length} leis aprovadas, ${(S.carimbos||[]).length} carimbos.`;
   app.innerHTML=`<section class="final">
     <p class="capa-ano">${dataTurno(Math.min(S.t,47))}</p>
     <h1 class="final-t">${titulo}</h1>
     <div class="nota-final"><span class="letra l-${nf.letra}">${nf.letra}</span><span><b>${nf.pontos.toLocaleString('pt-BR')}</b><small>pontos</small></span></div>
+    ${especial?`<div class="despacho"><small>Desfecho</small><p>${especial[1]}</p></div>`:''}
     <p class="ev-x c">${esc(S.pres.nome)} termina com ${fmt(S.aprov,0)}% de aprovação, ${S.aprovadas.length} ${S.aprovadas.length===1?'lei aprovada':'leis aprovadas'} e ${nf.cumpridas} de 3 promessas cumpridas.</p>
     <section class="card"><h3 class="ct">Aprovação no mandato</h3>${spark(h.aprov,{h:90,ref:50,min:10,max:80})}</section>
     <section class="card"><h3 class="ct">O Brasil que você entrega</h3><div class="rs">
@@ -612,14 +779,36 @@ document.addEventListener('click', ev=>{
   if (a==='novojogo'){ apagarSave(); S=null; tela='inicio'; fecharModal(); render(); return window.scrollTo(0,0); }
   if (a==='copiar'){ const el=document.getElementById('resumo-txt'); const ok=()=>{ b.textContent='Copiado!'; }; const falha=()=>{ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent='Texto selecionado: copie manualmente'; }; try{ navigator.clipboard.writeText(el.textContent).then(ok,falha); }catch(e){ falha(); } return; }
   if (a==='propor'||a==='mp'){ if (S.ap<1) return; propor(v, a==='mp'); calcBase(); salvar(); const d=PROJETOS.find(p=>p.id===v); return feedbackAcao(a==='mp'?'Medida Provisória editada':'Projeto enviado', a==='mp'?`${d.nome} já está valendo. O Congresso tem 4 meses para aprovar, ou a MP cai.`:`${d.nome} começa a tramitar e vai a plenário em ${d.tram} meses. Articule votos até lá.`); }
+  if (a==='presreal'){ const r=PRES_REAIS[+v]; SET.pres={...SET.pres, nome:r.nome, idade:r.idade, uf:r.uf, bg:r.bg, e:r.e, s:r.s}; SET.modo='existente'; SET.partido=r.partido; SET.coalizao=[]; return renderMantendoScroll(); }
+  if (a==='redigir') return abrirRedacao();
+  if (a==='exmed'){ RED.texto=EXEMPLOS_MED[+v]; return renderRedacao(); }
+  if (a==='red-analisar') return redAnalisar();
+  if (a==='red-parar'){ negCtl&&negCtl.abort(); return; }
+  if (a==='red-parecer') return redParecer();
+  if (a==='red-ajuste'){ aplicarAjuste(RED.def, RED.parecer.ajuste); RED.ajusteAplicado=true; return renderRedacao(); }
+  if (a==='red-editar'){ RED.fase='texto'; return renderRedacao(); }
+  if (a==='red-protocolar'){ if (S.ap<1) return; const txt=protocolarMedida(RED.def); const d=RED.def; RED=null; calcBase(); salvar();
+    abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">${INSTRUMENTOS[d.instrumento].nome}</span></div><h2 class="ev-t sm">${esc(d.nome)}</h2><div class="despacho"><small>Despacho do presidente</small><p>${esc(txt)}</p></div>${d.instrumento==='DECRETO'?chips(d.efeitos):''}${htmlReacoes(reacoesReais(d))}${d.instrumento!=='DECRETO'?`<button class="btn-g yel" data-a="negociar" data-v="${d.id}">Abrir mesa de negociação</button>`:''}<button class="${d.instrumento!=='DECRETO'?'lnk c':'btn-g yel'}" data-a="fechar-render">${d.instrumento!=='DECRETO'?'Depois':'Continuar'}</button></div>`); return; }
+  if (a==='negociar'){ NEG={ id:v, msg:'' }; return renderNeg(); }
+  if (a==='neg-fechar'){ NEG=null; fecharModal(); return renderMantendoScroll(); }
+  if (a==='neg-bancada'){ const p=P(v); const l=LIDERES[v]; return abrirModal(`<div class="ev"><h2 class="ev-t sm">Negociar com o ${v}</h2><p class="ev-x">${p.dep} deputados e ${p.sen} senadores. ${l?`Quem negocia é ${l}, presidente do partido.`:''}</p><div class="ops"><button class="op" data-a="neg-modo" data-v="${v}:cargos"><span><b>Oferecer cargos</b><small>Diretorias e segundo escalão. Funciona melhor com partidos fisiológicos.</small></span></button><button class="op" data-a="neg-modo" data-v="${v}:emendas"><span><b>Pagar emendas da bancada</b><small>Custa ao Orçamento.</small></span></button><button class="op" data-a="neg-modo" data-v="${v}:texto"><span><b>Aceitar mudanças no texto</b><small>O projeto se aproxima da posição do partido e perde parte do efeito.</small></span></button></div><button class="lnk c" data-a="neg-volta">Voltar</button></div>`); }
+  if (a==='neg-modo'){ const [pid,modo]=v.split(':'); return negExec('bancada', pid, modo); }
+  if (a==='neg-volta') return renderNeg();
+  if (a==='neg-frente') return abrirModal(`<div class="ev"><h2 class="ev-t sm">Qual frente parlamentar?</h2><div class="ops lista">${FRENTES.map(f=>{ const d=getProj(NEG.id); const tag=((d.frentes||FRENTES_PROJ[d.id]||{})[f.id])||0; return `<button class="op" data-a="neg-frente-ok" data-v="${f.id}"><span><b>${f.nome}</b><small>${f.apelido}${f.lider?' · '+f.lider:''} · ${tag>0.2?'tende a apoiar':tag<-0.2?'tende a votar contra':'neutra'}</small></span></button>`; }).join('')}</div><button class="lnk c" data-a="neg-volta">Voltar</button></div>`);
+  if (a==='neg-frente-ok') return negExec('frente', v);
+  if (a.startsWith('neg-') && NEG_ACOES.some(x=>'neg-'+x.id===a)) return negExec(a.slice(4));
+  if (a==='poder') return renderPoder();
+  if (a==='poder-pre') return renderPoder(v);
+  if (a==='poder-ok'){ const txt=avancarRuptura(v); salvar(); if (S.fim){ fecharModal(); abrirModal(`<div class="ev"><div class="ev-top"><span class="tag red">Ruptura</span></div><h2 class="ev-t sm">${esc(RUPTURAS[v].nome)}</h2><div class="despacho"><p>${esc(txt||'')}</p></div><button class="btn-g yel" data-a="fechar-render">Ver o desfecho</button></div>`); return; } return feedbackAcao(RUPTURAS[v].nome, txt||'Não foi possível executar a etapa.'); }
   if (a==='articular'){ const t=S.projetos.find(x=>x.id===v); if (!t||S.ap<1) return; S.ap--; t.artic++; S.eco.primTemp-=0.02; S.partidos.filter(p=>S.coalizao.includes(p.id)).forEach(p=>p.sat=clamp(p.sat+1,0,100)); logar('Congresso',`Planalto articula votos para: ${PROJETOS.find(p=>p.id===v).nome}.`); salvar(); return renderMantendoScroll(); }
   if (a==='romper') return abrirModal(`<div class="ev"><h2 class="ev-t sm">Romper com o ${v}?</h2><p class="ev-x">O partido deixa a base e seus ministros são trocados por técnicos.</p><div class="ops"><button class="op" data-a="romper-ok" data-v="${v}"><span>Sim, romper</span></button><button class="op" data-a="fechar"><span>Cancelar</span></button></div></div>`);
   if (a==='romper-ok'){ romperPartido(v); salvar(); fecharModal(); return renderMantendoScroll(); }
   if (a==='trocar'){ const mi=MIN(v); tmpCandidatos={ min:v, lista:candidatosMinisterio(v,S.coalizao,S.pres.partido) };
-    return abrirModal(`<div class="ev"><h2 class="ev-t sm">Novo nome para ${mi.nome}</h2><p class="ev-x">Sai ${esc(S.ministros[v].nome)}. Quem entra?</p><div class="ops lista">${tmpCandidatos.lista.map((c,i)=>`<button class="op" data-a="trocar-ok" data-v="${i}"><span><b>${esc(c.nome)} · ${c.partido||'Técnico'}</b><small>${esc(c.desc)} · C ${c.comp} · L ${c.leal} · I ${c.integ}</small></span></button>`).join('')}</div><button class="lnk c" data-a="fechar">Cancelar</button></div>`); }
+    if (!tmpCandidatos.lista.length) return feedbackAcao('Sem nomes disponíveis','Todos os nomes cotados para esta pasta já estão no governo.');
+    return abrirModal(`<div class="ev"><h2 class="ev-t sm">Novo nome para ${mi.nome}</h2><p class="ev-x">Sai ${esc(S.ministros[v].nome)}. Quem entra?</p><div class="ops lista">${tmpCandidatos.lista.map((c,i)=>`<button class="op" data-a="trocar-ok" data-v="${i}"><span><b>${esc(c.nome)} · ${c.partido||'sem partido'}</b><small>${esc(c.desc)} · Técnico ${c.tec} · Político ${c.pol} · Afinidade ${afinidade(c)}</small></span></button>`).join('')}</div><button class="lnk c" data-a="fechar">Cancelar</button></div>`); }
   if (a==='trocar-ok'){ if (S.ap<1) return; trocarMinistro(tmpCandidatos.min, tmpCandidatos.lista[+v]); minAberto=null; salvar(); fecharModal(); return renderMantendoScroll(); }
   // ações
-  if (a==='acao-pronunciamento'||a==='acao-emendas'||a==='acao-entrevista') return executarAcao(a.slice(5));
+  if (a==='acao-pronunciamento'||a==='acao-emendas'||a==='acao-entrevista'||a==='acao-ato') return executarAcao(a.slice(5));
   if (a==='acao-visitaestado') return modalEscolha('Visitar um estado','Os estados com menor aprovação aparecem primeiro.', ESTADOS.slice().sort((x,y)=>aprovUF(x.uf)-aprovUF(y.uf)).map(e=>({v:e.uf,t:e.nome,s:`Aprovação ${fmt(aprovUF(e.uf),0)}%`})), 'acao-visita');
   if (a==='acao-visita') return executarAcao('visitaestado', v);
   if (a==='acao-reuniaogrupo') return modalEscolha('Receber no Planalto','Quem você chama para conversar?', GRUPOS.map(g=>({v:g.id,t:g.nome,s:`Relação ${fmt(S.grp[g.id],0)}/100`})), 'reuniao');

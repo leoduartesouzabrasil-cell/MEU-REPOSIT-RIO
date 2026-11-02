@@ -15,7 +15,7 @@ const EVENTOS_AGENDADOS = [
       { txt:'Foco na economia: responsabilidade fiscal e crescimento', fx:{ aprov:1, grp:{mercado:10, industria:5}, eco:{conf:6, dolarPct:-1.5} }, res:'O dólar recua no primeiro pregão do ano.' },
     ]},
   { t:1, id:'mesas', cat:'Congresso', titulo:'Eleição das Mesas da Câmara e do Senado',
-    texto:'Fevereiro de 2027: a nova legislatura toma posse e elege os presidentes das duas Casas, que controlam a pauta por dois anos. O Centrão tem candidato forte; seu partido quer lançar nome próprio.',
+    texto:'Fevereiro de 2027: a nova legislatura toma posse e termina o biênio de Hugo Motta (Republicanos-PB) na Câmara e de Davi Alcolumbre (União-AP) no Senado. Os novos presidentes controlarão a pauta por dois anos. O Centrão tem candidato forte; seu partido quer lançar nome próprio.',
     opcoes:[
       { txt:'Apoiar o candidato do Centrão (União/PP/Republicanos)', fx:{ presCamara:20, party:{'União':10,'PP':10,'Republicanos':8}, party2:{own:-6} }, res:'O candidato do Centrão vence com folga e promete "pauta de governabilidade", com preço.' },
       { txt:'Lançar candidato do seu partido', fx:{ custom:'mesaPropria' }, res:'' },

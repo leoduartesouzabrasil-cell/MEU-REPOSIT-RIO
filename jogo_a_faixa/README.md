@@ -20,6 +20,14 @@ Formato vertical pensado para celular, nas cores preto, vermelho e amarelo: plac
 - **Sociedade e mundo:** 12 grupos de pressão, 12 parceiros internacionais e 27 estados com aprovação própria.
 - **Mais de 60 eventos:** crises, desastres, escândalos, eleições municipais de 2028, vagas no STF, novo presidente do Banco Central, Olimpíadas de 2028, Copa de 2030 e a eleição presidencial de outubro de 2030.
 
+## Novidades da versão 3
+
+- **Caneta presidencial:** o jogador escreve a medida com as próprias palavras. Pelo link do Claude, uma IA faz o papel da assessoria jurídica da Casa Civil: escolhe o instrumento (decreto, MP, PL, PLP ou PEC) conforme a Constituição, estima efeitos e aponta quem apoia e quem resiste. Em seguida, o ministro da área dá um parecer simulado e sugere ajustes. Sem IA (arquivo local), a classificação é feita por palavras-chave.
+- **Mesa de negociação:** mapa de votos por bancada, conversas com presidentes de partido (cargos, emendas, mudanças no texto), acordos com as frentes parlamentares (ruralista, evangélica, da bala, sindical, ambientalista), presidente da Câmara, senadores, governadores, manifestações, greve geral, campanha nas redes, urgência e adiamento.
+- **Pessoas reais:** ministros, vices, presidentes de partido, comentaristas e presidentes jogáveis são figuras públicas reais, com a trajetória descrita. Escândalos atingem servidores e contratos das pastas, nunca as pessoas. Falas e pareceres são simulações ficcionais, e isso aparece sinalizado no jogo.
+- **Projeto de poder:** caminhos de ruptura (regime militar ou revolução socialista), com etapas, requisitos de apoio, votações no Congresso, plebiscito e desfechos históricos (1937, 1964, 1973, 8 de janeiro de 2023).
+- **STF:** decretos e leis inconstitucionais podem ser suspensos por ADI.
+
 ## Fontes dos dados iniciais
 
 Os dados foram consultados em novembro de 2026:
@@ -27,4 +35,4 @@ Os dados foram consultados em novembro de 2026:
 - Indicadores do Boletim Focus/BCB, IBGE/PNAD e Banco Central: Selic de cerca de 13,5%, IPCA de cerca de 5%, PIB de cerca de 1,9%, desemprego de cerca de 5,6% e dívida bruta de cerca de 82% do PIB.
 - Calendário: posse em 5 de janeiro (EC 111/2021), aposentadorias compulsórias no STF aos 75 anos e mandato do presidente do BC até o fim de 2028.
 
-Ministros, vices e demais personagens são fictícios.
+As pessoas citadas são figuras públicas reais. As descrições usam fatos conhecidos até 2026. Suas falas e decisões dentro do jogo são ficção.

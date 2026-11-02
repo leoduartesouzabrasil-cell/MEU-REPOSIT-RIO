@@ -118,6 +118,8 @@ const BACKGROUNDS = [
   { id:'jurista', nome:'Jurista / ex-magistrado', desc:'Judiciário +12; mais resistência a escândalos.', fx:{ grp:{judiciario:12} , bonus:{escandalo:-0.3} } },
   { id:'medico', nome:'Médico sanitarista', desc:'Saúde rende mais; crises sanitárias pesam menos.', fx:{ bonus:{saude:10} } },
   { id:'pastor', nome:'Líder religioso', desc:'Evangélicos +18; movimentos sociais e imprensa −6.', fx:{ grp:{evangelicos:18, movsociais:-6, imprensa:-6} } },
+  { id:'parlamentar', nome:'Parlamentar de carreira', desc:'Conhece o Congresso por dentro: todos os partidos +5 e +4 de articulação.', fx:{ party:{all:5}, bonus:{artic:4} } },
+  { id:'movimento', nome:'Liderança de movimento social', desc:'Movimentos sociais +15 e sindicatos +6; mercado e agro −8.', fx:{ grp:{movsociais:15, sindicatos:6, mercado:-8, agro:-8} } },
   { id:'governador', nome:'Ex-governador', desc:'Governadores +12 e +4 pontos de articulação no Congresso.', fx:{ grp:{governadores:12}, bonus:{artic:4} } },
 ];
 
@@ -245,10 +247,29 @@ const PROJETOS = [
   { id:'cashback', nome:'Cashback tributário para baixa renda', tipo:'PLP', e:-4, s:0, we:1, ws:0, pop:0.7, tram:2,
     desc:'Devolução de CBS/IBS na conta de luz, gás e alimentos para famílias do CadÚnico.',
     fx:{ aprov:3, reg:{NE:2}, eco:{primario:-0.1, inflShock:-0.1}, mod:{pobreza:-0.02} } },
+  { id:'anistia', nome:'PL da Anistia aos condenados do 8 de janeiro', tipo:'PL', e:5, s:8, we:0.3, ws:1, pop:-0.1, tram:3,
+    desc:'Perdoa ou reduz penas de condenados pelos ataques às sedes dos Três Poderes em 8 de janeiro de 2023. Tema que divide o país desde 2024.',
+    fx:{ grp:{evangelicos:8, militares:6, judiciario:-20, imprensa:-10, movsociais:-12}, stf:-15, party:{PL:12} } },
+  { id:'blindagem', nome:'PEC das Prerrogativas (PEC da Blindagem)', tipo:'PEC', e:1, s:2, we:0.2, ws:0.3, pop:-0.9, tram:2,
+    desc:'Exige aval do Congresso para processar parlamentares. Em 2025 uma proposta parecida passou na Câmara e caiu no Senado após protestos em todas as capitais.',
+    fx:{ aprov:-6, party:{all:12}, grp:{imprensa:-15, judiciario:-12, movsociais:-8}, presCamara:15 } },
+  { id:'reformaagraria', nome:'Reforma agrária ampliada', tipo:'PL', e:-8, s:-3, we:1, ws:0.2, pop:0.2, tram:4,
+    desc:'Desapropriação de latifúndios improdutivos, meta de 100 mil famílias assentadas e crédito do Pronaf para assentamentos.',
+    fx:{ grp:{movsociais:15, agro:-20, mercado:-6}, eco:{primario:-0.06}, mod:{pobreza:-0.02} } },
+  { id:'bigtechs', nome:'Imposto digital sobre big techs', tipo:'PLP', e:-4, s:0, we:1, ws:0, pop:0.5, tram:3,
+    desc:'Contribuição de 3% sobre a receita bruta de plataformas digitais com faturamento global acima de US$ 750 milhões.',
+    fx:{ eco:{primario:0.08}, rel:{EUA:-12, UE:2}, grp:{imprensa:4} } },
+  { id:'foro', nome:'PEC do fim do foro privilegiado', tipo:'PEC', e:0, s:0, we:0, ws:0.2, pop:0.9, tram:4,
+    desc:'Autoridades passam a ser julgadas na primeira instância por crimes comuns, exceto os chefes dos Três Poderes.',
+    fx:{ aprov:4, party:{all:-8}, grp:{imprensa:8, judiciario:4} } },
+  { id:'armas', nome:'Ampliação do porte de armas para CACs', tipo:'PL', e:4, s:8, we:0.2, ws:1, pop:-0.2, tram:3,
+    desc:'Revoga restrições de 2023 a colecionadores, atiradores e caçadores e amplia o porte para moradores de áreas rurais.',
+    fx:{ grp:{militares:6, agro:6, movsociais:-10, imprensa:-6}, mod:{homic:0.02} } },
 ];
 
 // Medidas de agenda (ações do presidente)
 const ACOES = [
+  { id:'ato', nome:'Convocar ato em defesa do governo', custo:1, desc:'Chama apoiadores às ruas. Se a mobilização for grande, pressiona o Congresso; se esvaziar, vira piada.' },
   { id:'pronunciamento', nome:'Pronunciamento em rede nacional', custo:1, desc:'Fala na TV e no rádio. Rende aprovação, mas o efeito cai se repetido.' },
   { id:'visitaestado', nome:'Visitar um estado', custo:1, desc:'Agenda de entregas e comício. Sobe a aprovação no estado e na região.' },
   { id:'reuniaogrupo', nome:'Reunião com grupo de interesse', custo:1, desc:'Melhora a relação com um setor da sociedade.' },
@@ -271,7 +292,7 @@ const CARIMBOS = [
   { id:'recessao', nome:'Recessão técnica', desc:'PIB negativo', chk:s=>s.eco.pib<0 },
   { id:'dolar7', nome:'Dólar a sete', desc:'Dólar acima de R$ 7', chk:s=>s.eco.dolar>=7 },
   { id:'tesoura', nome:'Mão de tesoura', desc:'Superávit primário de 1% do PIB', chk:s=>s.eco.primario>=1 },
-  { id:'constituinte', nome:'Emendou a Constituição', desc:'Aprovou uma PEC', chk:s=>s.aprovadas.some(id=>PROJETOS.find(p=>p.id===id).tipo==='PEC') },
+  { id:'constituinte', nome:'Emendou a Constituição', desc:'Aprovou uma PEC', chk:s=>s.aprovadas.some(id=>(getProj(id)||{}).tipo==='PEC') },
   { id:'reformista', nome:'Reformista', desc:'8 projetos aprovados', chk:s=>s.aprovadas.length>=8 },
   { id:'caducou', nome:'Caducou', desc:'Deixou uma MP perder a validade', chk:s=>!!s.flags.mpCaiu },
   { id:'amigos', nome:'Amigo de todos', desc:'Média das relações externas acima de 65', chk:s=>Object.values(s.rel).reduce((a,b)=>a+b,0)/Object.keys(s.rel).length>=65 },
@@ -290,9 +311,9 @@ const REACOES = {
 };
 
 const CAT_PROJ = {
-  economia:['refadm','grandesfortunas','dividendos','cortegastos','supersalarios','autonomiabc','novaindustria','ferrovias','privcorreios','desoneracao','cashback','mercosulue'],
-  social:['fim6x1','bolsaplus','mcmv','tarifazero','pne','maismedicos','prevmilitar'],
-  seguranca:['pecseg','antifaccao','maioridade','escolacivica','cannabis'],
+  economia:['bigtechs','refadm','grandesfortunas','dividendos','cortegastos','supersalarios','autonomiabc','novaindustria','ferrovias','privcorreios','desoneracao','cashback','mercosulue'],
+  social:['reformaagraria','fim6x1','bolsaplus','mcmv','tarifazero','pne','maismedicos','prevmilitar'],
+  seguranca:['armas','anistia','pecseg','antifaccao','maioridade','escolacivica','cannabis'],
   ambiente:['licamb','mineracaoti','marcotemporal','margemeq','transicao'],
-  instituicoes:['distrital','fimreeleicao','iaregula','redes'],
+  instituicoes:['blindagem','foro','distrital','fimreeleicao','iaregula','redes'],
 };

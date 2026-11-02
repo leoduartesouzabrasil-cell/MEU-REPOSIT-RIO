@@ -5,7 +5,7 @@
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const COPOM = [0,2,4,5,6,8,10,11];
 const TOTAL_TURNOS = 48;
-const SAVE_KEY = 'afaixa_save_v1';
+const SAVE_KEY = 'afaixa_save_v2';
 
 let S = null;
 
@@ -22,37 +22,32 @@ const P = id=>S.partidos.find(p=>p.id===id);
 const MIN = id=>MINISTERIOS.find(m=>m.id===id);
 const dist = (a,b)=>Math.hypot(a.e-b.e, a.s-b.s);
 
-function gerarNome(){
-  const f = Math.random()<0.45;
-  return { nome:`${pick(f?NOMES_F:NOMES_M)} ${pick(SOBRENOMES)}`, gen: f?'f':'m' };
+// ---------- pessoas reais ----------
+function pessoa(arr){
+  const [nome,gen,partido,desc,e,s2,tec,pol]=arr;
+  return { nome, gen, partido, desc, e, s:s2, tec, pol, desde: S? S.t : 0 };
 }
-
-function gerarMinistro(minId, partido, opts={}){
-  const n = gerarNome();
-  const tecnico = !partido || (opts.forcaTec);
-  const own = partido && partido===(S? S.pres.partido : (typeof SETUP_PARTIDO!=='undefined'? SETUP_PARTIDO : null));
-  const integBase = tecnico? rint(65,95) : rint(35,88);
-  return {
-    nome:n.nome, gen:n.gen, partido: tecnico? null : partido,
-    perfil: tecnico? 'tecnico':'politico',
-    desc: pick(tecnico? PERFIS_MIN.tecnico : PERFIS_MIN.politico).split('|')[n.gen==='f'?1:0],
-    comp: tecnico? rint(60,92) : rint(45,82),
-    leal: own? rint(72,96) : tecnico? rint(55,82) : rint(42,80),
-    integ: integBase,
-    desde: S? S.t : 0,
-  };
+function ocupados(){ return S ? Object.values(S.ministros).map(m=>m.nome) : []; }
+function afinidade(m){
+  const pres = S ? S.pres : (typeof SET!=='undefined' && SET ? SET.pres : {e:0,s:0});
+  const own = S ? S.pres.partido : (typeof SETUP_PARTIDO!=='undefined' ? SETUP_PARTIDO : null);
+  const coal = S ? S.coalizao : (typeof SET!=='undefined' && SET ? SET.coalizao : []);
+  let a = 88 - dist(m, pres)*4.5;
+  if (m.partido && m.partido===own) a += 10;
+  else if (m.partido && !coal.includes(m.partido)) a -= 12;
+  return Math.round(clamp(a, 5, 99));
 }
-
-function candidatosMinisterio(minId, coalizao, presPartido){
-  const out = [gerarMinistro(minId, null)];
-  out.push(gerarMinistro(minId, presPartido));
-  const aliados = coalizao.filter(p=>p!==presPartido);
-  const pool = aliados.length? aliados.slice() : PARTIDOS.map(p=>p.id).filter(p=>p!==presPartido);
-  for (let i=0;i<2;i++){
-    const p = pool.length? pool.splice(Math.floor(Math.random()*pool.length),1)[0] : presPartido;
-    out.push(gerarMinistro(minId, p));
-  }
-  return out;
+function candidatosMinisterio(minId, coalizao, presPartido, excluir=[]){
+  const usados = new Set([...ocupados(), ...excluir]);
+  const lista = (PESSOAS_MIN[minId]||[]).filter(p=>!usados.has(p[0])).map(pessoa);
+  const nota = m=>(m.partido===presPartido?3:0) + (m.partido && coalizao.includes(m.partido)?2:0) + (!m.partido?1.5:0) + Math.random();
+  return lista.sort((x,y)=>nota(y)-nota(x));
+}
+function substituto(minId){
+  const c = candidatosMinisterio(minId, S.coalizao, S.pres.partido, [S.ministros[minId] && S.ministros[minId].nome]);
+  const m = c.find(x=>!x.partido) || c.find(x=>S.coalizao.includes(x.partido)) || c[0];
+  if (m) return m;
+  return { nome:'Secretário-executivo (interino)', gen:'m', partido:null, desc:'Servidor de carreira que responde pela pasta até nova nomeação', e:S.pres.e, s:S.pres.s, tec:62, pol:30, desde:S.t, interino:true };
 }
 
 // ---------- criação do jogo ----------
@@ -125,15 +120,15 @@ function leanGrupos(){
 }
 
 function apMax(){
-  let a = 3;
+  let a = 4;
   if (S.dificuldade==='facil') a++;
-  const cc = S.ministros.casacivil; if (cc && cc.comp>=80) a++;
+  const cc = S.ministros.casacivil; if (cc && cc.pol>=80) a++;
   return a;
 }
 
 function compMin(id){
   const m = S.ministros[id]; if (!m) return 0;
-  let c = m.comp;
+  let c = m.tec*0.75 + m.pol*0.25 - (afinidade(m)<35?6:0);
   const bg = BACKGROUNDS.find(b=>b.id===S.pres.bg);
   if (bg && bg.fx.bonus && bg.fx.bonus[id]) c += bg.fx.bonus[id];
   return (c-60)/40; // ~ -0.4 .. +0.9
@@ -259,6 +254,14 @@ const CUSTOM = {
     if (fx.modo==='estatal'){ p.sat = clamp(p.sat+11,0,100); S.grp.imprensa -= 3; return `Um indicado do ${p.id} assume a presidência de uma estatal.`; }
     p.sat = clamp(p.sat-16,0,100); S.aprovShock += 1; S.grp.imprensa += 3; return `O ${p.id} ameaça romper. A imprensa elogia a firmeza.`;
   },
+  stfSuspende(fx){
+    const d = getProj(fx.id); if (!d) return '';
+    if (fx.modo==='descumpre'){ S.grp.judiciario=clamp(S.grp.judiciario-25,0,100); S.stf=clamp(S.stf-25,0,100); S.grp.imprensa=clamp(S.grp.imprensa-12,0,100); S.flags.impeachRisk=(S.flags.impeachRisk||0)+2; S.aprovShock-=3; S.rel.UE=clamp(S.rel.UE-5,0,100);
+      return 'Crise institucional aberta. Juristas falam em crime de responsabilidade (art. 85 da Constituição) e o pedido de impeachment ganha força.'; }
+    if (fx.modo==='negocia' && Math.random()<0.5){ escalarEfeitos(d,0.6); return 'Acordo com o relator: a medida volta a valer com alcance reduzido.'; }
+    applyFx(inverterFx(d.fx)); S.aprovadas = S.aprovadas.filter(x=>x!==fx.id); S.grp.judiciario=clamp(S.grp.judiciario+3,0,100);
+    return 'A medida fica suspensa e seus efeitos estruturais são revertidos.';
+  },
   impeachmentrisco(){ S.flags.impeachRisk = (S.flags.impeachRisk||0)+1; S.aprovShock -= 1; return 'O pedido segue na gaveta do presidente da Câmara, que agora tem uma carta na manga.'; },
   pfAliado(fx){
     const p = P(S.flags._pfp) || P(S.pres.partido);
@@ -266,11 +269,12 @@ const CUSTOM = {
     p.sat=clamp(p.sat-10,0,100); S.grp.imprensa += 5; S.aprovShock += 1; return `O ${p.id} reclama de "abandono", mas a opinião pública aprova.`;
   },
   desincomp(fx){
-    const pol = MINISTERIOS.filter(m=>S.ministros[m.id] && S.ministros[m.id].perfil==='politico');
+    const pol = MINISTERIOS.filter(m=>S.ministros[m.id] && S.ministros[m.id].partido);
     if (fx.modo==='fica'){ pol.forEach(m=>{ const p=P(S.ministros[m.id].partido); if(p) p.sat=clamp(p.sat-5,0,100); }); return `${pol.length} ministros políticos permanecem, mas seus partidos reclamam de perder candidatos.`; }
     let n=0;
-    pol.forEach(m=>{ if (Math.random()<0.65){ n++; S.ministros[m.id] = gerarMinistro(m.id, null); } });
-    return `${n} ministros deixam o governo para disputar eleições. Secretários-executivos técnicos assumem as pastas.`;
+    const sairam=[];
+    pol.forEach(m=>{ if (Math.random()<0.55){ sairam.push(S.ministros[m.id].nome); S.ministros[m.id] = substituto(m.id); } });
+    return sairam.length? `Deixam o governo para disputar as eleições: ${sairam.join(', ')}. Nomes sem filiação assumem as pastas.` : 'Nenhum ministro deixa o governo.';
   },
   copa(){
     const r = Math.random();
@@ -305,7 +309,7 @@ const CUSTOM = {
     if (fx.modo==='emendas'){ applyFx({ eco:{gasto:0.05} }); p.sat = clamp(p.sat+16,0,100); return `Emendas pagas, o ${p.id} recua.`; }
     S.coalizao = S.coalizao.filter(x=>x!==p.id);
     // ministros do partido deixam o governo
-    for (const id in S.ministros) if (S.ministros[id].partido===p.id) S.ministros[id] = gerarMinistro(id, null);
+    for (const id in S.ministros) if (S.ministros[id].partido===p.id) S.ministros[id] = substituto(id);
     calcBase();
     return `O ${p.id} entrega os cargos e deixa a base do governo. Técnicos assumem os ministérios que eram do partido.`;
   },
@@ -318,20 +322,21 @@ const CUSTOM = {
     const m = S.ministros[fx.min]; if (!m) return '';
     const p = m.partido? P(m.partido) : null;
     if (fx.modo==='demite'){
-      S.aprovShock -= 1; if (p) p.sat = clamp(p.sat-8,0,100);
-      S.ministros[fx.min] = gerarMinistro(fx.min, null);
-      return `${m.nome} é exonerad${m.gen==='f'?'a':'o'}. ${S.ministros[fx.min].nome}, ${S.ministros[fx.min].desc}, assume a pasta.`;
+      S.aprovShock -= 0.5; if (p) p.sat = clamp(p.sat-8,0,100);
+      const novo = substituto(fx.min); S.ministros[fx.min] = novo;
+      return `${m.nome} deixa a pasta para "facilitar as investigações". ${novo.nome} assume o ministério.`;
     }
-    if (fx.modo==='afasta'){ S.aprovShock -= 2; m.comp -= 5; return `${m.nome} se licencia até a conclusão das investigações. A pasta perde ritmo.`; }
-    const pego = Math.random() < (100-m.integ)/100 + 0.15;
-    if (pego){ S.aprovShock -= 6; S.grp.imprensa -= 8; S.flags.impeachRisk=(S.flags.impeachRisk||0)+1; S.ministros[fx.min] = gerarMinistro(fx.min,null); if(p) p.sat=clamp(p.sat-10,0,100);
-      return `Novas provas surgem e ${m.nome} cai mesmo assim, duas semanas depois. O desgaste respinga no Planalto.`; }
-    if (p) p.sat = clamp(p.sat+5,0,100); m.leal = clamp(m.leal+10,0,100); S.aprovShock -= 1.5;
-    return `A investigação não avança. ${m.nome} fica no cargo, mais leal do que nunca.`;
+    if (fx.modo==='afasta'){ S.aprovShock -= 1.5; S.grp.imprensa = clamp(S.grp.imprensa+2,0,100); return `Servidores envolvidos são exonerados e a CGU abre auditoria. ${m.nome} segue no cargo.`; }
+    if (Math.random()<0.45){ S.aprovShock -= 5; S.grp.imprensa -= 8; S.flags.impeachRisk=(S.flags.impeachRisk||0)+1; S.cpi = Math.max(S.cpi,3);
+      return `Novos documentos vazam e a oposição instala uma CPI sobre os contratos da pasta. O desgaste respinga no Planalto.`; }
+    if (p) p.sat = clamp(p.sat+5,0,100); S.aprovShock -= 1;
+    return `O caso esfria no noticiário. A base aliada agradece o apoio.`;
   },
 };
 
 // ---------- Congresso ----------
+function getProj(id){ return PROJETOS.find(p=>p.id===id) || (S && S.medidas && S.medidas[id]) || null; }
+
 function probVoto(p, proj, casa){
   let base;
   if (p.id===S.pres.partido) base = 0.92;
@@ -343,12 +348,16 @@ function probVoto(p, proj, casa){
   const popEf = (proj.pop||0) * (S.aprov-32)/90 * (0.5 + p.fis*0.6);
   const art = (proj.artic||0)*0.045;
   const pc = casa==='camara'? (S.presCamara-50)/450 : (S.stf-50)/2000;
-  return clamp(base + align + popEf + art + pc + (S.aprov-45)/350, 0.01, 0.985);
+  let fr = 0;
+  const tags = proj.frentes || FRENTES_PROJ[proj.id] || {};
+  FRENTES.forEach(f=>{ const t=tags[f.id]; if (!t) return; fr += (f.share[p.id]||0) * t * 0.24 * (0.6 + (S.grp[f.grp]||50)/100); });
+  const ng = proj.neg ? ((proj.neg.p&&proj.neg.p[p.id])||0) + (proj.neg.g||0) + (casa==='senado'?(proj.neg.sen||0):(proj.neg.cam||0)) : 0;
+  return clamp(base + align + popEf + art + pc + fr + ng + (S.aprov-45)/350, 0.01, 0.985);
 }
 
 function votar(proj){
-  const def = PROJETOS.find(x=>x.id===proj.id);
-  const p2 = { ...def, artic:proj.artic };
+  const def = getProj(proj.id);
+  const p2 = { ...def, artic:proj.artic, neg:proj.neg };
   const res = { camara:[], senado:[] };
   let simC=0, naoC=0, simS=0, naoS=0;
   S.partidos.forEach(p=>{
@@ -424,7 +433,7 @@ function atualizarPartidos(inicial){
 
 // ---------- tramitação ----------
 function propor(id, comoMP){
-  const def = PROJETOS.find(p=>p.id===id);
+  const def = getProj(id);
   const proj = { id, tIni:S.t, restante: comoMP? 4 : def.tram, artic:0, mp:!!comoMP };
   S.projetos.push(proj);
   S.ap -= 1;
@@ -442,7 +451,7 @@ function processarTramitacao(){
     proj.restante--;
     if (proj.restante>0) continue;
     const r = votar(proj);
-    const def = PROJETOS.find(p=>p.id===proj.id);
+    const def = getProj(proj.id);
     S.projetos = S.projetos.filter(p=>p!==proj);
     r.mp = proj.mp;
     if (r.aprovado){
@@ -457,8 +466,29 @@ function processarTramitacao(){
       r.efeitos = [{ txt: proj.mp ? 'A MP perde a validade. Os efeitos fiscais e estruturais são revertidos.' : 'Derrota do governo no plenário. O projeto só poderá ser reapresentado em 6 meses.', livre:true }];
       logar('Congresso', `REJEITADO: ${def.nome}. ${r.okC? 'Passou na Câmara, caiu no Senado.' : `Câmara: ${r.simC} sim, ${r.naoC} não.`}`);
     }
+    if (def.ruptura){ r.efeitos = [{ txt: concluirEtapaVotada(def, r.aprovado), livre:true }]; }
     S.pendentes.push({ tipo:'voto', voto:r });
   }
+}
+
+function processarRiscoJuridico(){
+  if (!S.riscoJur || !S.riscoJur.length) return;
+  S.riscoJur = S.riscoJur.filter(r=>{
+    if (S.t < r.t+1) return true;
+    if (r.posLei && !S.aprovadas.includes(r.id)) return false;
+    if (Math.random() < r.p) S.pendentes.push({ id:'stf:'+r.id, t:S.t });
+    return false;
+  });
+}
+function eventoSTF(mid){
+  const d = getProj(mid) || { nome:'medida do governo' };
+  return { id:'stf:'+mid, cat:'Judiciário', titulo:'STF suspende medida do governo',
+    texto:`Atendendo a uma ação direta de inconstitucionalidade (ADI) de partidos de oposição e da OAB, o relator no Supremo suspende "${d.nome}". O plenário virtual deve confirmar a decisão.`,
+    opcoes:[
+      { txt:'Acatar a decisão e recorrer pela AGU', fx:{ custom:'stfSuspende', id:mid, modo:'acata' } },
+      { txt:'Negociar um novo texto com o relator', fx:{ custom:'stfSuspende', id:mid, modo:'negocia' } },
+      { txt:'Descumprir a decisão do Supremo', fx:{ custom:'stfSuspende', id:mid, modo:'descumpre' } },
+    ]};
 }
 
 // ---------- simulação mensal ----------
@@ -601,19 +631,20 @@ function getEvento(ref){
   if (id.startsWith('saida:')) return eventoSaida(id.split(':')[1]);
   if (id.startsWith('adesao:')) return eventoAdesao(id.split(':')[1]);
   if (id==='impeachment') return eventoImpeachment();
+  if (id.startsWith('stf:')) return eventoSTF(id.slice(4));
   return EVENTOS_AGENDADOS.find(e=>e.id===id) || EVENTOS_ALEATORIOS.find(e=>e.id===id) || eventosAnuais(ref.t).find(e=>e.id===id);
 }
 
 function eventoEscandalo(minId){
   const m = S.ministros[minId], mi = MIN(minId);
-  const casos = ['contratos superfaturados na pasta','uso de jatinho de empresário em viagem particular','emendas direcionadas a ONG de parentes','mensagens com lobista investigado pela PF','compra de imóvel incompatível com a renda'];
+  const casos = ['contratos superfaturados de TI','fraude em licitação de obras','desvio de emendas por uma ONG conveniada','cobrança de propina por um servidor para liberar convênios','direcionamento de compras emergenciais'];
   const caso = S.flags['_caso'+minId] || (S.flags['_caso'+minId] = pick(casos));
-  return { id:'escandalo:'+minId, cat:'Escândalo', titulo:`Denúncia contra ${m? (m.gen==='f'?'a ministra':'o ministro'):'ministro'} de ${mi.nome}`,
-    texto:`Reportagem revela suspeitas de ${caso} envolvendo ${m?m.nome:'o titular'}${m&&m.partido?` (${m.partido})`:''}. A oposição pede a cabeça e fala em CPI.`,
+  return { id:'escandalo:'+minId, cat:'Escândalo', titulo:`PF mira contratos do Ministério de ${mi.nome}`,
+    texto:`Operação da Polícia Federal investiga ${caso} na pasta. Servidores e um lobista são alvo de busca e apreensão. Não há acusação contra ${m?(m.gen==='f'?'a ministra ':'o ministro ')+m.nome:'o titular'}, mas a oposição exige a saída e fala em CPI.`,
     opcoes:[
-      { txt:'Exonerar imediatamente', fx:{ custom:'escandalo', min:minId, modo:'demite' } },
-      { txt:'Afastar até o fim das investigações', fx:{ custom:'escandalo', min:minId, modo:'afasta' } },
-      { txt:'Manter e defender publicamente', fx:{ custom:'escandalo', min:minId, modo:'defende' } },
+      { txt:'Trocar o comando da pasta', fx:{ custom:'escandalo', min:minId, modo:'demite' } },
+      { txt:'Exonerar os servidores envolvidos e manter o ministro', fx:{ custom:'escandalo', min:minId, modo:'afasta' } },
+      { txt:'Minimizar o caso publicamente', fx:{ custom:'escandalo', min:minId, modo:'defende' } },
     ]};
 }
 function eventoSaida(pid){
@@ -678,7 +709,7 @@ function enfileirarEventos(){
   if (t>1) for (const id in S.ministros){
     const m = S.ministros[id];
     if (S.cooldowns['esc'+id]!=null && t - S.cooldowns['esc'+id] < 8) continue;
-    if (Math.random() < (100-m.integ)/100*0.016*fatorBg){
+    if (!m.interino && Math.random() < 0.007*fatorBg){
       S.cooldowns['esc'+id] = t; delete S.flags['_caso'+id];
       S.pendentes.push({ id:'escandalo:'+id, t }); break;
     }
@@ -691,6 +722,7 @@ function enfileirarEventos(){
     if (S.coalizao.includes(p.id) && p.sat<24 && p.dep>=5){ S.cooldowns['p'+p.id]=t; S.pendentes.push({ id:'saida:'+p.id, t }); }
     else if (!S.coalizao.includes(p.id) && p.sat>62 && p.dep>=5){ S.cooldowns['p'+p.id]=t; S.pendentes.push({ id:'adesao:'+p.id, t }); }
   });
+  processarRiscoJuridico();
   // impeachment
   if (S.aprov<22 && S.baseCamara<172 && (S.flags.impeachRisk||0)>0 && Math.random()<0.4 && t<44){
     S.pendentes.push({ id:'impeachment', t });
@@ -835,7 +867,7 @@ function trocarMinistro(minId, novo){
 function romperPartido(pid){
   S.coalizao = S.coalizao.filter(x=>x!==pid);
   const p = P(pid); p.sat = clamp(p.sat-20,0,100);
-  for (const id in S.ministros) if (S.ministros[id].partido===pid) S.ministros[id] = gerarMinistro(id, null);
+  for (const id in S.ministros) if (S.ministros[id].partido===pid) S.ministros[id] = substituto(id);
   calcBase();
   logar('Congresso', `Governo rompe com o ${pid}. Ministros do partido são substituídos por técnicos.`);
 }

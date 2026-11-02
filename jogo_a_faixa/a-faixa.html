@@ -346,6 +346,68 @@ h1,h2,h3{margin:0; text-wrap:balance; font-weight:400}
 #toast span{font-size:.82rem}
 @keyframes toast{0%{transform:translate(-50%,-140%)}10%,85%{transform:translate(-50%,0)}100%{transform:translate(-50%,-140%)}}
 
+/* ---------- caneta, negociação, poder ---------- */
+.caneta,.poder{display:flex; flex-direction:column; gap:.25rem; text-align:left; border:0; border-radius:var(--r); padding:1rem; background:var(--yel); color:#1a1300; box-shadow:0 5px 0 var(--yel2)}
+.poder{background:var(--s1); color:var(--ink); border:2px solid var(--red); box-shadow:0 5px 0 var(--red2); margin-top:.4rem}
+.cn-t{font:800 .66rem var(--f-b); text-transform:uppercase; letter-spacing:.16em; opacity:.8}
+.poder .cn-t{color:var(--red); opacity:1}
+.caneta b,.poder b{font:400 1.5rem/1.05 var(--f-d); text-transform:uppercase; letter-spacing:.02em}
+.caneta small,.poder small{font-size:.82rem; line-height:1.4}
+.poder small{color:var(--muted)}
+.area{width:100%; min-height:120px; resize:vertical; font:500 1rem/1.45 var(--f-b); color:var(--ink); background:var(--bg); border:2px solid var(--s3); border-radius:12px; padding:.8rem}
+.area:focus{border-color:var(--yel); outline:none}
+.filtros.wrap{flex-wrap:wrap; margin:0; padding:0; overflow:visible}
+.filtros.wrap button{font-size:.75rem; padding:.35rem .65rem; text-align:left}
+.linha2{display:flex; justify-content:space-between; gap:1rem; font-size:.86rem; padding:.35rem 0; border-bottom:1px solid var(--line)}
+.linha2 span{color:var(--muted); flex:none}
+.linha2 b{text-align:right; font-weight:600}
+.carregando{display:flex; gap:.5rem; justify-content:center; padding:1.2rem 0}
+.carregando i{width:14px; height:14px; border-radius:50%; background:var(--yel); animation:pula 1s infinite ease-in-out}
+.carregando i:nth-child(2){animation-delay:.15s; background:var(--red)} .carregando i:nth-child(3){animation-delay:.3s}
+@keyframes pula{0%,80%,100%{transform:scale(.5); opacity:.5}40%{transform:scale(1); opacity:1}}
+.parecer{background:var(--bg); border:2px solid var(--s3); border-radius:14px; padding:.85rem; display:flex; flex-direction:column; gap:.5rem}
+.parecer.favoravel{border-color:var(--yel)} .parecer.contrario{border-color:var(--red)}
+.parecer p{margin:0; font-size:.95rem; line-height:1.45}
+.parecer ul{margin:0; padding-left:1.1rem; font-size:.85rem; color:var(--muted); display:grid; gap:.2rem}
+.pr-h{display:flex; gap:.7rem; align-items:center}
+.pr-h span{display:flex; flex-direction:column}
+.pr-h small{font:800 .6rem var(--f-b); text-transform:uppercase; letter-spacing:.14em; color:var(--muted)}
+.pr-h em{font-style:normal; font-size:.75rem; font-weight:800; text-transform:uppercase; color:var(--yel)}
+.parecer.contrario .pr-h em{color:var(--red)}
+.placar.mini{padding:.6rem .7rem; margin-bottom:.45rem}
+.placar.mini .pl-b{height:12px; justify-content:flex-start}
+.placar.mini .pl-b .s{width:auto; transition:none}
+.mapav{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.35rem}
+.mv{display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; gap:.2rem .4rem; text-align:left; background:var(--bg); border:1px solid var(--line); border-left:5px solid var(--pc); border-radius:10px; padding:.4rem .5rem}
+.mv b{font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mv em{font-style:normal; font-size:.72rem; font-weight:800; color:var(--muted); grid-row:1; grid-column:2}
+.mv em.ok{color:var(--yel)} .mv em.bad{color:var(--red)}
+.mv-b{grid-column:1/-1; height:5px; background:var(--s3); border-radius:999px; overflow:hidden; display:block}
+.mv-b span{display:block; height:100%; background:var(--yel)}
+.mv:disabled{opacity:.6}
+.negs{display:grid; gap:.4rem}
+.neg{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.1rem .6rem; text-align:left; background:var(--s2); border:2px solid var(--s3); border-radius:12px; padding:.6rem .75rem}
+.neg b{font-size:.9rem} .neg small{grid-column:1; color:var(--muted); font-size:.75rem; line-height:1.3}
+.neg span{grid-row:1/3; grid-column:2; align-self:center; color:var(--yel)}
+.neg:disabled{opacity:.4}
+.btn-s.red{background:var(--red); border-color:var(--red); color:#fff}
+.btn-s.wide{width:100%; padding:.8rem}
+.aviso{display:block; font-size:.66rem; color:var(--muted); line-height:1.35}
+.post small{color:var(--muted); font-size:.68rem}
+.ccard.pres{flex-basis:62%}
+.rupt{border-left:5px solid var(--rc); padding-left:.8rem}
+.rupt h3{font:400 1.4rem var(--f-d); text-transform:uppercase; color:var(--rc)}
+.etapas{list-style:none; padding:0; margin:.4rem 0 0; display:grid; gap:.5rem; counter-reset:et}
+.etapas li{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:.6rem .7rem; display:flex; flex-direction:column; gap:.3rem; opacity:.55; counter-increment:et}
+.etapas li b::before{content:counter(et)". "; color:var(--rc)}
+.etapas li.atual{opacity:1; border-color:var(--rc)}
+.etapas li.feito{opacity:.9}
+.etapas li.feito b::after{content:" ✓"; color:var(--yel)}
+.etapas small{font-size:.78rem; color:var(--muted); line-height:1.35}
+.reqs{display:flex; flex-wrap:wrap; gap:.3rem}
+.reqs span{font-size:.7rem; font-weight:700; padding:.2rem .5rem; border-radius:999px; background:var(--s3)}
+.reqs span.ok{background:var(--yel); color:#1a1300} .reqs span.bad{background:var(--red2); color:#fff}
+
 /* ---------- final ---------- */
 .final{padding:2.5rem max(16px,env(safe-area-inset-right,0px)) 3rem max(16px,env(safe-area-inset-left,0px)); display:flex; flex-direction:column; gap:1rem}
 .final-t{font:400 clamp(2.8rem,14vw,4rem)/.95 var(--f-d); text-transform:uppercase; text-shadow:0 5px 0 var(--red)}
@@ -483,6 +545,8 @@ const BACKGROUNDS = [
   { id:'jurista', nome:'Jurista / ex-magistrado', desc:'Judiciário +12; mais resistência a escândalos.', fx:{ grp:{judiciario:12} , bonus:{escandalo:-0.3} } },
   { id:'medico', nome:'Médico sanitarista', desc:'Saúde rende mais; crises sanitárias pesam menos.', fx:{ bonus:{saude:10} } },
   { id:'pastor', nome:'Líder religioso', desc:'Evangélicos +18; movimentos sociais e imprensa −6.', fx:{ grp:{evangelicos:18, movsociais:-6, imprensa:-6} } },
+  { id:'parlamentar', nome:'Parlamentar de carreira', desc:'Conhece o Congresso por dentro: todos os partidos +5 e +4 de articulação.', fx:{ party:{all:5}, bonus:{artic:4} } },
+  { id:'movimento', nome:'Liderança de movimento social', desc:'Movimentos sociais +15 e sindicatos +6; mercado e agro −8.', fx:{ grp:{movsociais:15, sindicatos:6, mercado:-8, agro:-8} } },
   { id:'governador', nome:'Ex-governador', desc:'Governadores +12 e +4 pontos de articulação no Congresso.', fx:{ grp:{governadores:12}, bonus:{artic:4} } },
 ];
 
@@ -610,10 +674,29 @@ const PROJETOS = [
   { id:'cashback', nome:'Cashback tributário para baixa renda', tipo:'PLP', e:-4, s:0, we:1, ws:0, pop:0.7, tram:2,
     desc:'Devolução de CBS/IBS na conta de luz, gás e alimentos para famílias do CadÚnico.',
     fx:{ aprov:3, reg:{NE:2}, eco:{primario:-0.1, inflShock:-0.1}, mod:{pobreza:-0.02} } },
+  { id:'anistia', nome:'PL da Anistia aos condenados do 8 de janeiro', tipo:'PL', e:5, s:8, we:0.3, ws:1, pop:-0.1, tram:3,
+    desc:'Perdoa ou reduz penas de condenados pelos ataques às sedes dos Três Poderes em 8 de janeiro de 2023. Tema que divide o país desde 2024.',
+    fx:{ grp:{evangelicos:8, militares:6, judiciario:-20, imprensa:-10, movsociais:-12}, stf:-15, party:{PL:12} } },
+  { id:'blindagem', nome:'PEC das Prerrogativas (PEC da Blindagem)', tipo:'PEC', e:1, s:2, we:0.2, ws:0.3, pop:-0.9, tram:2,
+    desc:'Exige aval do Congresso para processar parlamentares. Em 2025 uma proposta parecida passou na Câmara e caiu no Senado após protestos em todas as capitais.',
+    fx:{ aprov:-6, party:{all:12}, grp:{imprensa:-15, judiciario:-12, movsociais:-8}, presCamara:15 } },
+  { id:'reformaagraria', nome:'Reforma agrária ampliada', tipo:'PL', e:-8, s:-3, we:1, ws:0.2, pop:0.2, tram:4,
+    desc:'Desapropriação de latifúndios improdutivos, meta de 100 mil famílias assentadas e crédito do Pronaf para assentamentos.',
+    fx:{ grp:{movsociais:15, agro:-20, mercado:-6}, eco:{primario:-0.06}, mod:{pobreza:-0.02} } },
+  { id:'bigtechs', nome:'Imposto digital sobre big techs', tipo:'PLP', e:-4, s:0, we:1, ws:0, pop:0.5, tram:3,
+    desc:'Contribuição de 3% sobre a receita bruta de plataformas digitais com faturamento global acima de US$ 750 milhões.',
+    fx:{ eco:{primario:0.08}, rel:{EUA:-12, UE:2}, grp:{imprensa:4} } },
+  { id:'foro', nome:'PEC do fim do foro privilegiado', tipo:'PEC', e:0, s:0, we:0, ws:0.2, pop:0.9, tram:4,
+    desc:'Autoridades passam a ser julgadas na primeira instância por crimes comuns, exceto os chefes dos Três Poderes.',
+    fx:{ aprov:4, party:{all:-8}, grp:{imprensa:8, judiciario:4} } },
+  { id:'armas', nome:'Ampliação do porte de armas para CACs', tipo:'PL', e:4, s:8, we:0.2, ws:1, pop:-0.2, tram:3,
+    desc:'Revoga restrições de 2023 a colecionadores, atiradores e caçadores e amplia o porte para moradores de áreas rurais.',
+    fx:{ grp:{militares:6, agro:6, movsociais:-10, imprensa:-6}, mod:{homic:0.02} } },
 ];
 
 // Medidas de agenda (ações do presidente)
 const ACOES = [
+  { id:'ato', nome:'Convocar ato em defesa do governo', custo:1, desc:'Chama apoiadores às ruas. Se a mobilização for grande, pressiona o Congresso; se esvaziar, vira piada.' },
   { id:'pronunciamento', nome:'Pronunciamento em rede nacional', custo:1, desc:'Fala na TV e no rádio. Rende aprovação, mas o efeito cai se repetido.' },
   { id:'visitaestado', nome:'Visitar um estado', custo:1, desc:'Agenda de entregas e comício. Sobe a aprovação no estado e na região.' },
   { id:'reuniaogrupo', nome:'Reunião com grupo de interesse', custo:1, desc:'Melhora a relação com um setor da sociedade.' },
@@ -636,7 +719,7 @@ const CARIMBOS = [
   { id:'recessao', nome:'Recessão técnica', desc:'PIB negativo', chk:s=>s.eco.pib<0 },
   { id:'dolar7', nome:'Dólar a sete', desc:'Dólar acima de R$ 7', chk:s=>s.eco.dolar>=7 },
   { id:'tesoura', nome:'Mão de tesoura', desc:'Superávit primário de 1% do PIB', chk:s=>s.eco.primario>=1 },
-  { id:'constituinte', nome:'Emendou a Constituição', desc:'Aprovou uma PEC', chk:s=>s.aprovadas.some(id=>PROJETOS.find(p=>p.id===id).tipo==='PEC') },
+  { id:'constituinte', nome:'Emendou a Constituição', desc:'Aprovou uma PEC', chk:s=>s.aprovadas.some(id=>(getProj(id)||{}).tipo==='PEC') },
   { id:'reformista', nome:'Reformista', desc:'8 projetos aprovados', chk:s=>s.aprovadas.length>=8 },
   { id:'caducou', nome:'Caducou', desc:'Deixou uma MP perder a validade', chk:s=>!!s.flags.mpCaiu },
   { id:'amigos', nome:'Amigo de todos', desc:'Média das relações externas acima de 65', chk:s=>Object.values(s.rel).reduce((a,b)=>a+b,0)/Object.keys(s.rel).length>=65 },
@@ -655,12 +738,229 @@ const REACOES = {
 };
 
 const CAT_PROJ = {
-  economia:['refadm','grandesfortunas','dividendos','cortegastos','supersalarios','autonomiabc','novaindustria','ferrovias','privcorreios','desoneracao','cashback','mercosulue'],
-  social:['fim6x1','bolsaplus','mcmv','tarifazero','pne','maismedicos','prevmilitar'],
-  seguranca:['pecseg','antifaccao','maioridade','escolacivica','cannabis'],
+  economia:['bigtechs','refadm','grandesfortunas','dividendos','cortegastos','supersalarios','autonomiabc','novaindustria','ferrovias','privcorreios','desoneracao','cashback','mercosulue'],
+  social:['reformaagraria','fim6x1','bolsaplus','mcmv','tarifazero','pne','maismedicos','prevmilitar'],
+  seguranca:['armas','anistia','pecseg','antifaccao','maioridade','escolacivica','cannabis'],
   ambiente:['licamb','mineracaoti','marcotemporal','margemeq','transicao'],
-  instituicoes:['distrital','fimreeleicao','iaregula','redes'],
+  instituicoes:['blindagem','foro','distrital','fimreeleicao','iaregula','redes'],
 };
+
+</script>
+<script>
+// =====================================================================
+// A FAIXA — pessoas reais
+// Figuras públicas brasileiras com descrição factual da trajetória
+// (situação conhecida até 2026). "tec" (preparo técnico para a pasta) e
+// "pol" (trânsito político) são atributos de jogo, não avaliações pessoais.
+// Escândalos do jogo atingem servidores e contratos das pastas, nunca as
+// pessoas reais. Falas nas redes e pareceres são simulações ficcionais.
+// =====================================================================
+
+// [nome, gênero, partido|null, descrição, eixo econômico, eixo social, tec, pol]
+const PESSOAS_MIN = {
+  casacivil: [
+    ['Rui Costa','m','PT','Ministro da Casa Civil no governo Lula 3; ex-governador da Bahia (2015–2022)',-4,-2,72,62],
+    ['Gleisi Hoffmann','f','PT','Ex-presidente nacional do PT; ministra das Relações Institucionais (2025) e ex-ministra da Casa Civil (2011–2014)',-6,-5,60,74],
+    ['Jaques Wagner','m','PT','Senador pela Bahia e líder do governo no Senado; ex-governador e ex-ministro da Casa Civil e da Defesa',-4,-2,66,88],
+    ['Ciro Nogueira','m','PP','Senador pelo Piauí e presidente nacional do PP; ministro da Casa Civil (2021–2022)',5,4,55,90],
+    ['Gilberto Kassab','m','PSD','Presidente nacional do PSD; ex-prefeito de São Paulo e ex-ministro das Cidades e da Ciência',3,2,66,92],
+  ],
+  fazenda: [
+    ['Fernando Haddad','m','PT','Ministro da Fazenda no governo Lula 3 (arcabouço fiscal e reforma tributária); ex-prefeito de SP e ex-ministro da Educação',-3,-4,80,70],
+    ['Henrique Meirelles','m','PSD','Presidente do Banco Central (2003–2010) e ministro da Fazenda (2016–2018), criador do teto de gastos',5,1,88,60],
+    ['Paulo Guedes','m',null,'Ministro da Economia (2019–2022); economista liberal formado em Chicago',9,4,72,38],
+    ['Armínio Fraga','m',null,'Presidente do Banco Central (1999–2002); economista, fundador da Gávea Investimentos',6,-1,92,40],
+    ['Nelson Barbosa','m','PT','Ministro da Fazenda e do Planejamento no governo Dilma; professor da FGV e da UnB',-4,-2,82,50],
+    ['Pérsio Arida','m',null,'Um dos formuladores do Plano Real; ex-presidente do BNDES e do Banco Central',5,-2,90,42],
+  ],
+  planej: [
+    ['Simone Tebet','f','MDB','Ministra do Planejamento e Orçamento no governo Lula 3; ex-senadora e candidata à Presidência em 2022',2,0,72,76],
+    ['Esther Dweck','f',null,'Ministra da Gestão e Inovação em Serviços Públicos no governo Lula 3; economista da UFRJ',-5,-3,78,45],
+    ['Ana Carla Abrão','f',null,'Economista, ex-secretária da Fazenda de Goiás, especialista em gestão pública e RH do Estado',5,-1,82,35],
+    ['Bruno Funchal','m',null,'Ex-secretário do Tesouro Nacional e ex-secretário especial de Fazenda (2020–2021)',6,0,80,35],
+    ['Marcos Mendes','m',null,'Economista do Insper, um dos formuladores do teto de gastos de 2016',6,0,84,30],
+  ],
+  itamaraty: [
+    ['Mauro Vieira','m',null,'Chanceler nos governos Dilma e Lula 3; diplomata de carreira',-2,-2,84,50],
+    ['Celso Amorim','m','PT','Chanceler (1993–1994 e 2003–2010), ministro da Defesa (2011–2014) e assessor especial da Presidência',-5,-3,90,58],
+    ['Aloysio Nunes','m','PSDB','Chanceler (2017–2018) e ex-senador por São Paulo',3,-1,70,62],
+    ['Carlos França','m',null,'Chanceler (2021–2022), diplomata de carreira',2,2,74,40],
+    ['Ernesto Araújo','m',null,'Chanceler (2019–2021), diplomata defensor de uma política externa conservadora',6,9,55,25],
+  ],
+  defesa: [
+    ['José Múcio Monteiro','m',null,'Ministro da Defesa no governo Lula 3; ex-presidente do TCU e ex-deputado por Pernambuco',2,2,66,80],
+    ['Hamilton Mourão','m','Republicanos','Senador pelo RS; general da reserva e vice-presidente da República (2019–2022)',5,7,62,50],
+    ['Raul Jungmann','m',null,'Ministro da Defesa (2016–2018) e primeiro ministro da Segurança Pública (2018)',2,0,72,58],
+    ['Aldo Rebelo','m',null,'Ministro da Defesa (2015–2016) e ex-presidente da Câmara, de trajetória no PCdoB',-1,3,62,62],
+    ['Fernando Azevedo e Silva','m',null,'General da reserva, ministro da Defesa (2019–2021)',3,4,70,40],
+  ],
+  justica: [
+    ['Ricardo Lewandowski','m',null,'Ministro da Justiça e Segurança Pública no governo Lula 3; ex-presidente do STF',-2,-3,82,55],
+    ['Sergio Moro','m','União','Senador pelo Paraná; ex-juiz da Lava Jato e ministro da Justiça (2019–2020)',5,5,65,40],
+    ['Guilherme Derrite','m','PP','Deputado federal por SP e ex-secretário da Segurança Pública de SP; capitão da reserva da PM',6,8,58,55],
+    ['José Eduardo Cardozo','m','PT','Ministro da Justiça (2011–2016) e advogado-geral da União (2016)',-4,-4,74,55],
+  ],
+  saude: [
+    ['Alexandre Padilha','m','PT','Ministro da Saúde (2011–2014 e a partir de 2025); médico infectologista',-5,-4,74,70],
+    ['Nísia Trindade','f',null,'Primeira mulher a presidir a Fiocruz; ministra da Saúde (2023–2025)',-4,-5,84,40],
+    ['Luiz Henrique Mandetta','m','União','Ministro da Saúde (2019–2020) no início da pandemia; médico ortopedista',4,2,76,58],
+    ['Marcelo Queiroga','m','PL','Ministro da Saúde (2021–2022); médico cardiologista',6,7,60,45],
+    ['José Gomes Temporão','m',null,'Ministro da Saúde (2007–2010); sanitarista e pesquisador da Fiocruz',-4,-5,82,45],
+    ['Drauzio Varella','m',null,'Médico oncologista e comunicador; referência nacional em saúde pública',-2,-4,80,25],
+  ],
+  educacao: [
+    ['Camilo Santana','m','PT','Ministro da Educação no governo Lula 3; ex-governador do Ceará, referência em alfabetização',-4,-2,76,74],
+    ['Mendonça Filho','m','União','Deputado federal por PE; ministro da Educação (2016–2018), aprovou o Novo Ensino Médio',4,3,66,66],
+    ['Priscila Cruz','f',null,'Cofundadora e presidente-executiva do Todos Pela Educação',0,-3,82,30],
+    ['Tabata Amaral','f','PSB','Deputada federal por SP, ativista da educação pública',-2,-4,66,60],
+    ['Cristovam Buarque','m',null,'Ministro da Educação (2003–2004), ex-governador do DF e ex-senador',-2,-2,72,45],
+  ],
+  agricultura: [
+    ['Carlos Fávaro','m','PSD','Ministro da Agricultura no governo Lula 3; senador e produtor rural de Mato Grosso',3,3,68,72],
+    ['Tereza Cristina','f','PP','Senadora por MS; ministra da Agricultura (2019–2022) e ex-líder da bancada ruralista',6,5,78,78],
+    ['Pedro Lupion','m','PP','Deputado federal pelo Paraná e presidente da Frente Parlamentar da Agropecuária',7,6,58,80],
+    ['Blairo Maggi','m',null,'Ministro da Agricultura (2016–2018), ex-governador de MT e empresário da soja',6,3,76,58],
+    ['Roberto Rodrigues','m',null,'Ministro da Agricultura (2003–2006); coordenador do Centro de Agronegócio da FGV',3,1,86,50],
+  ],
+  ambiente: [
+    ['Marina Silva','f','Rede','Ministra do Meio Ambiente (2003–2008 e no governo Lula 3), ex-senadora pelo Acre',-3,-1,82,55],
+    ['Izabella Teixeira','f',null,'Ministra do Meio Ambiente (2010–2016), negociadora do Acordo de Paris',-2,-3,84,40],
+    ['Sônia Guajajara','f','PSOL','Ministra dos Povos Indígenas no governo Lula 3; liderança histórica da Apib',-7,-7,62,50],
+    ['Carlos Nobre','m',null,'Climatologista, referência mundial em Amazônia e mudanças climáticas',-2,-3,92,20],
+    ['Ricardo Salles','m','Novo','Deputado federal por SP; ministro do Meio Ambiente (2019–2021)',8,6,50,45],
+  ],
+  social: [
+    ['Wellington Dias','m','PT','Ministro do Desenvolvimento Social no governo Lula 3; quatro vezes governador do Piauí',-5,-1,70,76],
+    ['Tereza Campello','f','PT','Ministra do Desenvolvimento Social (2011–2016), à frente do Brasil Sem Miséria',-6,-4,84,42],
+    ['Damares Alves','f','Republicanos','Senadora pelo DF; ministra da Mulher, da Família e dos Direitos Humanos (2019–2022)',4,9,50,58],
+    ['João Roma','m','PL','Ministro da Cidadania (2021–2022), responsável pelo Auxílio Brasil',5,5,58,52],
+  ],
+  minas: [
+    ['Alexandre Silveira','m','PSD','Ministro de Minas e Energia no governo Lula 3; senador por Minas Gerais',3,2,62,78],
+    ['Magda Chambriard','f',null,'Presidente da Petrobras a partir de 2024; ex-diretora-geral da ANP',-2,-1,84,40],
+    ['Jean Paul Prates','m','PT','Presidente da Petrobras (2023–2024) e ex-senador pelo RN',-3,-2,78,55],
+    ['Bento Albuquerque','m',null,'Almirante de esquadra; ministro de Minas e Energia (2019–2022)',5,4,74,40],
+    ['Adriano Pires','m',null,'Economista, fundador do Centro Brasileiro de Infraestrutura (CBIE)',6,1,78,30],
+  ],
+  transportes: [
+    ['Renan Filho','m','MDB','Ministro dos Transportes no governo Lula 3; ex-governador de Alagoas',0,1,70,78],
+    ['Tarcísio de Freitas','m','Republicanos','Ministro da Infraestrutura (2019–2022) e governador de SP eleito em 2022; engenheiro militar',6,6,84,72],
+    ['Silvio Costa Filho','m','Republicanos','Ministro de Portos e Aeroportos no governo Lula 3; deputado federal por PE',3,4,60,72],
+    ['Márcio França','m','PSB','Ex-governador de SP e ministro no governo Lula 3 (Portos e Aeroportos; Empreendedorismo)',-1,0,60,70],
+  ],
+  cidades: [
+    ['Jader Filho','m','MDB','Ministro das Cidades no governo Lula 3, à frente do Minha Casa, Minha Vida',0,1,62,70],
+    ['Guilherme Boulos','m','PSOL','Ministro da Secretaria-Geral da Presidência (2025); ex-coordenador do MTST',-8,-6,58,60],
+    ['Rogério Marinho','m','PL','Senador pelo RN; ministro do Desenvolvimento Regional (2020–2022) e relator da reforma trabalhista',7,6,70,74],
+    ['Eduardo Paes','m','PSD','Prefeito do Rio de Janeiro (2009–2016 e a partir de 2021)',2,-1,78,82],
+    ['Raquel Rolnik','f',null,'Urbanista da FAU-USP e ex-relatora da ONU para o direito à moradia',-6,-6,86,25],
+  ],
+  mdic: [
+    ['Geraldo Alckmin','m','PSB','Vice-presidente e ministro do Desenvolvimento, Indústria e Comércio no governo Lula 3; quatro vezes governador de SP',2,3,76,84],
+    ['Luiza Trajano','f',null,'Presidente do conselho do Magazine Luiza e fundadora do Grupo Mulheres do Brasil',0,-3,80,50],
+    ['Paulo Skaf','m',null,'Presidente da Fiesp (2004–2021)',5,4,66,64],
+    ['Josué Gomes da Silva','m',null,'Empresário da Coteminas e ex-presidente da Fiesp',2,1,70,48],
+  ],
+  trabalho: [
+    ['Luiz Marinho','m','PT','Ministro do Trabalho no governo Lula 3; ex-presidente da CUT',-7,-3,66,66],
+    ['Paulo Paim','m','PT','Senador pelo RS, autor do Estatuto do Idoso e defensor histórico da redução da jornada',-7,-4,60,60],
+    ['Erika Hilton','f','PSOL','Deputada federal por SP, autora da PEC pelo fim da escala 6x1',-8,-9,55,55],
+    ['Paulinho da Força','m','Solidariedade','Deputado federal por SP, presidente do Solidariedade e fundador da Força Sindical',-2,2,52,74],
+  ],
+  ciencia: [
+    ['Luciana Santos','f','PCdoB','Ministra da Ciência e Tecnologia no governo Lula 3; presidente nacional do PCdoB',-6,-4,64,64],
+    ['Marcos Pontes','m','PL','Senador por SP, primeiro astronauta brasileiro e ministro da Ciência (2019–2022)',5,5,66,46],
+    ['Helena Nader','f',null,'Presidente da Academia Brasileira de Ciências; bioquímica da Unifesp',-3,-5,88,35],
+    ['Miguel Nicolelis','m',null,'Neurocientista, pioneiro em interfaces cérebro-máquina',-6,-5,86,20],
+    ['Sérgio Rezende','m',null,'Ministro da Ciência e Tecnologia (2005–2010); físico da UFPE',-3,-3,84,45],
+  ],
+};
+
+// Vices possíveis
+const VICES = [
+  ['Geraldo Alckmin','m','PSB','Vice-presidente no governo Lula 3; quatro vezes governador de SP',2,3],
+  ['Simone Tebet','f','MDB','Ministra do Planejamento; ex-senadora por MS',2,0],
+  ['Tereza Cristina','f','PP','Senadora por MS e ex-ministra da Agricultura',6,5],
+  ['Hamilton Mourão','m','Republicanos','Senador pelo RS e vice-presidente (2019–2022)',5,7],
+  ['Marina Silva','f','Rede','Ministra do Meio Ambiente; ex-senadora pelo Acre',-3,-1],
+  ['Ratinho Júnior','m','PSD','Governador do Paraná (eleito em 2018 e 2022)',4,5],
+  ['Romeu Zema','m','Novo','Governador de Minas Gerais (eleito em 2018 e 2022)',8,5],
+  ['Eduardo Leite','m','PSD','Governador do Rio Grande do Sul (eleito em 2018 e 2022)',3,-2],
+  ['Helder Barbalho','m','MDB','Governador do Pará (eleito em 2018 e 2022), anfitrião da COP30',1,1],
+  ['Camilo Santana','m','PT','Ministro da Educação; ex-governador do Ceará',-4,-2],
+  ['Michelle Bolsonaro','f','PL','Presidente do PL Mulher e ex-primeira-dama (2019–2022)',6,9],
+  ['Tabata Amaral','f','PSB','Deputada federal por SP',-2,-4],
+];
+
+// Presidentes que podem ser escolhidos (figuras reais)
+const PRES_REAIS = [
+  { nome:'Luiz Inácio Lula da Silva', partido:'PT', uf:'PE', idade:81, bg:'sindicalista', e:-5.5, s:-3.5, desc:'Presidente em três mandatos; ex-líder metalúrgico do ABC' },
+  { nome:'Flávio Bolsonaro', partido:'PL', uf:'RJ', idade:45, bg:'parlamentar', e:7, s:8.5, desc:'Senador pelo RJ e candidato do PL à Presidência em 2026' },
+  { nome:'Tarcísio de Freitas', partido:'Republicanos', uf:'SP', idade:51, bg:'governador', e:6, s:6, desc:'Governador de SP eleito em 2022; ex-ministro da Infraestrutura' },
+  { nome:'Ratinho Júnior', partido:'PSD', uf:'PR', idade:45, bg:'governador', e:4, s:5, desc:'Governador do Paraná' },
+  { nome:'Ronaldo Caiado', partido:'União', uf:'GO', idade:77, bg:'governador', e:6, s:7, desc:'Governador de Goiás; médico e líder ruralista' },
+  { nome:'Romeu Zema', partido:'Novo', uf:'MG', idade:62, bg:'empresario', e:8.5, s:5, desc:'Governador de MG; empresário do varejo' },
+  { nome:'Simone Tebet', partido:'MDB', uf:'MS', idade:56, bg:'parlamentar', e:2, s:0, desc:'Ministra do Planejamento; ex-senadora' },
+  { nome:'Eduardo Leite', partido:'PSD', uf:'RS', idade:41, bg:'governador', e:3, s:-2, desc:'Governador do Rio Grande do Sul' },
+  { nome:'Marina Silva', partido:'Rede', uf:'AC', idade:68, bg:'parlamentar', e:-3, s:-1, desc:'Ministra do Meio Ambiente; três vezes candidata à Presidência' },
+  { nome:'Guilherme Boulos', partido:'PSOL', uf:'SP', idade:44, bg:'movimento', e:-8, s:-6, desc:'Ex-coordenador do MTST; ministro da Secretaria-Geral' },
+];
+
+// Lideranças partidárias (presidentes de partido conhecidos até 2026)
+const LIDERES = {
+  PT:'Edinho Silva', PL:'Valdemar Costa Neto', PSD:'Gilberto Kassab', MDB:'Baleia Rossi', PP:'Ciro Nogueira',
+  'União':'Antonio Rueda', Republicanos:'Marcos Pereira', PSB:'Carlos Siqueira', PDT:'Carlos Lupi', PSOL:'Paula Coradi',
+  PCdoB:'Luciana Santos', Solidariedade:'Paulinho da Força', Podemos:'Renata Abreu', PSDB:'Marconi Perillo', Avante:'Luis Tibé', PV:'José Luiz Penna',
+};
+const MESA_INICIAL = { camara:'Hugo Motta (Republicanos-PB)', senado:'Davi Alcolumbre (União-AP)' };
+
+// Frentes parlamentares: fração de cada bancada que integra a frente
+const FRENTES = [
+  { id:'fpa', nome:'Frente Parlamentar da Agropecuária', apelido:'bancada ruralista', lider:'Pedro Lupion (PP-PR)', grp:'agro',
+    share:{PL:.6,PP:.75,'União':.65,PSD:.65,MDB:.6,Republicanos:.55,Podemos:.5,PSDB:.5,Novo:.5,PRD:.6,Avante:.5,Solidariedade:.4,PSB:.2,PDT:.2,PT:.05} },
+  { id:'fpe', nome:'Frente Parlamentar Evangélica', apelido:'bancada da Bíblia', lider:null, grp:'evangelicos',
+    share:{PL:.45,Republicanos:.7,PP:.3,'União':.3,PSD:.25,MDB:.25,Podemos:.3,PRD:.4,Avante:.3,PSDB:.15,PSB:.1,PDT:.1,PT:.05,Novo:.2} },
+  { id:'bala', nome:'Frente Parlamentar da Segurança Pública', apelido:'bancada da bala', lider:null, grp:'militares',
+    share:{PL:.45,PP:.3,'União':.3,Republicanos:.3,PSD:.2,MDB:.15,Novo:.3,Podemos:.2,PRD:.3,Avante:.2} },
+  { id:'trab', nome:'Frente em Defesa dos Trabalhadores', apelido:'bancada sindical', lider:null, grp:'sindicatos',
+    share:{PT:.8,PSOL:.9,PCdoB:.9,PDT:.6,PSB:.5,Rede:.6,PV:.4,Solidariedade:.6,MDB:.1,PSD:.05} },
+  { id:'amb', nome:'Frente Parlamentar Ambientalista', apelido:'bancada verde', lider:null, grp:'ambientalistas',
+    share:{PSOL:.9,Rede:1,PV:.9,PT:.6,PSB:.5,PDT:.4,PCdoB:.6,MDB:.1,PSDB:.2,PSD:.05} },
+];
+
+// Como as frentes reagem aos projetos pré-definidos (-1 contra, +1 a favor)
+const FRENTES_PROJ = {
+  fim6x1:{trab:1}, refadm:{trab:-1}, pecseg:{bala:.7}, antifaccao:{bala:1,fpe:.4}, maioridade:{bala:1,fpe:.8,trab:-.4},
+  grandesfortunas:{fpa:-.6,trab:.8}, cortegastos:{trab:-.8}, bolsaplus:{trab:.4}, tarifazero:{trab:.6},
+  licamb:{fpa:-1,amb:1}, mineracaoti:{fpa:.6,amb:-1}, marcotemporal:{fpa:1,amb:-1}, margemeq:{amb:-.8}, transicao:{amb:.8},
+  cannabis:{fpe:-1,bala:-.6}, escolacivica:{bala:.8,fpe:.6,trab:-.5}, mercosulue:{fpa:.7}, desoneracao:{trab:.3},
+  prevmilitar:{bala:-1}, redes:{fpe:-.7}, anistia:{bala:1,fpe:.6,trab:-.8}, blindagem:{}, reformaagraria:{fpa:-1,trab:.7,amb:.3},
+  bigtechs:{fpe:-.3}, foro:{}, aborto:{fpe:1}, armas:{bala:1,fpe:.4,trab:-.5},
+};
+
+// Comentaristas reais: [nome, quem é, e, s, [elogios], [críticas]]
+const COMENTARISTAS = [
+  ['Miriam Leitão','jornalista, O Globo e GloboNews',1,-3,['Do ponto de vista fiscal, a medida é defensável. Falta saber se o governo vai executar.','Uma notícia boa, rara nesta semana em Brasília.'],['O custo disso vai aparecer na conta de juros. A economia não perdoa improviso.','É um erro que o país já cometeu antes, e pagou caro.']],
+  ['Reinaldo Azevedo','jornalista, BandNews e UOL',1,-2,['Correto e dentro da Constituição. Os inimigos da democracia que se acalmem.','Gol do governo. Sem firula.'],['Isso aí não para em pé no Supremo, e o governo sabe.','Erro político primário. Vai entregar o discurso de bandeja para a oposição.']],
+  ['Andréia Sadi','jornalista, GloboNews',0,-2,['Nos bastidores, aliados comemoram: o Planalto ganhou fôlego.','Interlocutores do presidente dizem que a jogada foi calculada.'],['Aliados admitem, reservadamente, que a decisão saiu cara.','No Congresso, a leitura é de que o governo perdeu a mão.']],
+  ['Natuza Nery','jornalista, GloboNews',-1,-3,['Movimento inteligente: o governo pautou o debate em vez de reagir.','A medida desarma parte da oposição.'],['O governo abriu um flanco que não precisava abrir.','A conta política dessa decisão vai chegar.']],
+  ['Merval Pereira','colunista, O Globo',3,0,['Acerto do governo, que mostrou responsabilidade.','Uma decisão de estadista, para variar.'],['O populismo cobra seu preço mais cedo ou mais tarde.','Mais um passo na direção errada.']],
+  ['Leonardo Sakamoto','jornalista, UOL',-5,-6,['Quem ganha com isso são os mais pobres. Já era hora.','Uma vitória de quem vive do próprio trabalho.'],['Mais uma vez, a conta fica com o trabalhador.','Direitos não deveriam estar na mesa de negociação.']],
+  ['Mônica Bergamo','colunista, Folha de S.Paulo',-2,-3,['Ministros contam que a decisão foi tomada pessoalmente pelo presidente.','Repercussão positiva entre empresários e lideranças sociais.'],['A coluna apurou que até aliados ficaram contrariados.','Gente próxima do Planalto não esconde o desconforto.']],
+  ['Alexandre Garcia','comentarista político',6,7,['Finalmente uma decisão de bom senso.','O brasileiro de bem agradece.'],['Mais Estado, mais imposto, menos liberdade. Já vimos esse filme.','Quem vai pagar isso é você, que trabalha.']],
+  ['Felipe Neto','youtuber e influenciador',-3,-5,['Isso aqui é o mínimo que se espera de um governo sério.','Bom ver uma decisão que pensa nas pessoas.'],['Não dá para passar pano para isso.','Decisão péssima. E eu vou falar mesmo.']],
+  ['Nikolas Ferreira','deputado federal (PL-MG) e influenciador',7,9,['Pelo menos uma vez, o governo ouviu a população.','Vitória da família brasileira.'],['Isso é um ataque direto ao cidadão de bem. Não vamos aceitar.','Querem decidir a sua vida por você.']],
+  ['Jones Manoel','historiador e comunicador marxista',-9,-6,['Passo pequeno, mas na direção certa. A luta continua.','A classe trabalhadora arrancou essa.'],['Governo de conciliação faz isso: entrega para o mercado.','É o capital mandando, como sempre.']],
+  ['Kim Kataguiri','deputado federal (União-SP)',7,3,['Medida correta. Raramente digo isso deste governo.','Menos burocracia, mais liberdade. Apoio.'],['Gasto sem lastro. Alguém vai pagar a conta.','Mais um puxadinho fiscal.']],
+  ['Erika Hilton','deputada federal (PSOL-SP)',-8,-9,['Conquista do povo trabalhador. Seguimos.','Isso muda a vida real das pessoas.'],['Retrocesso. Não vamos aceitar calados.','Mais uma vez, os de sempre pagam a conta.']],
+  ['Samuel Pessôa','economista, FGV Ibre',5,-1,['A medida tem racionalidade econômica.','Bom desenho; o efeito aparece em dois anos.'],['A economia política disso não fecha.','Quem vai financiar? A conta não fecha.']],
+  ['Laura Carvalho','economista, USP',-5,-5,['Política bem desenhada, com efeito distributivo claro.','A evidência empírica sustenta essa escolha.'],['Medida regressiva: pesa mais sobre os mais pobres.','Austeridade na hora errada aprofunda a desigualdade.']],
+  ['Monica de Bolle','economista, Peterson Institute',2,-4,['Uma resposta técnica correta.','Raro ver evidência guiando a política pública.'],['Faltou dado e sobrou improviso.','O mercado vai cobrar, e com razão.']],
+  ['Tabata Amaral','deputada federal (PSB-SP)',-2,-4,['Política pública séria, com foco em resultado.','É assim que se faz: com dados e diálogo.'],['Faltou ouvir quem está na ponta.','Do jeito que está, não vai funcionar.']],
+  ['Pablo Marçal','empresário e influenciador',8,6,['Isso aqui é atitude! Quem é forte entende.','Tá vendo? Dá para fazer quando quer.'],['Estado inchado, quem trabalha que se vire.','Mais imposto pra sustentar a máquina. Acorda!']],
+];
+
+const AVISO_SIMULACAO = 'Reações e pareceres são simulações ficcionais inspiradas no perfil público de cada pessoa; não são falas reais.';
 
 </script>
 <script>
@@ -681,7 +981,7 @@ const EVENTOS_AGENDADOS = [
       { txt:'Foco na economia: responsabilidade fiscal e crescimento', fx:{ aprov:1, grp:{mercado:10, industria:5}, eco:{conf:6, dolarPct:-1.5} }, res:'O dólar recua no primeiro pregão do ano.' },
     ]},
   { t:1, id:'mesas', cat:'Congresso', titulo:'Eleição das Mesas da Câmara e do Senado',
-    texto:'Fevereiro de 2027: a nova legislatura toma posse e elege os presidentes das duas Casas, que controlam a pauta por dois anos. O Centrão tem candidato forte; seu partido quer lançar nome próprio.',
+    texto:'Fevereiro de 2027: a nova legislatura toma posse e termina o biênio de Hugo Motta (Republicanos-PB) na Câmara e de Davi Alcolumbre (União-AP) no Senado. Os novos presidentes controlarão a pauta por dois anos. O Centrão tem candidato forte; seu partido quer lançar nome próprio.',
     opcoes:[
       { txt:'Apoiar o candidato do Centrão (União/PP/Republicanos)', fx:{ presCamara:20, party:{'União':10,'PP':10,'Republicanos':8}, party2:{own:-6} }, res:'O candidato do Centrão vence com folga e promete "pauta de governabilidade", com preço.' },
       { txt:'Lançar candidato do seu partido', fx:{ custom:'mesaPropria' }, res:'' },
@@ -1142,7 +1442,7 @@ const EVENTOS_ALEATORIOS = [
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const COPOM = [0,2,4,5,6,8,10,11];
 const TOTAL_TURNOS = 48;
-const SAVE_KEY = 'afaixa_save_v1';
+const SAVE_KEY = 'afaixa_save_v2';
 
 let S = null;
 
@@ -1159,37 +1459,32 @@ const P = id=>S.partidos.find(p=>p.id===id);
 const MIN = id=>MINISTERIOS.find(m=>m.id===id);
 const dist = (a,b)=>Math.hypot(a.e-b.e, a.s-b.s);
 
-function gerarNome(){
-  const f = Math.random()<0.45;
-  return { nome:`${pick(f?NOMES_F:NOMES_M)} ${pick(SOBRENOMES)}`, gen: f?'f':'m' };
+// ---------- pessoas reais ----------
+function pessoa(arr){
+  const [nome,gen,partido,desc,e,s2,tec,pol]=arr;
+  return { nome, gen, partido, desc, e, s:s2, tec, pol, desde: S? S.t : 0 };
 }
-
-function gerarMinistro(minId, partido, opts={}){
-  const n = gerarNome();
-  const tecnico = !partido || (opts.forcaTec);
-  const own = partido && partido===(S? S.pres.partido : (typeof SETUP_PARTIDO!=='undefined'? SETUP_PARTIDO : null));
-  const integBase = tecnico? rint(65,95) : rint(35,88);
-  return {
-    nome:n.nome, gen:n.gen, partido: tecnico? null : partido,
-    perfil: tecnico? 'tecnico':'politico',
-    desc: pick(tecnico? PERFIS_MIN.tecnico : PERFIS_MIN.politico).split('|')[n.gen==='f'?1:0],
-    comp: tecnico? rint(60,92) : rint(45,82),
-    leal: own? rint(72,96) : tecnico? rint(55,82) : rint(42,80),
-    integ: integBase,
-    desde: S? S.t : 0,
-  };
+function ocupados(){ return S ? Object.values(S.ministros).map(m=>m.nome) : []; }
+function afinidade(m){
+  const pres = S ? S.pres : (typeof SET!=='undefined' && SET ? SET.pres : {e:0,s:0});
+  const own = S ? S.pres.partido : (typeof SETUP_PARTIDO!=='undefined' ? SETUP_PARTIDO : null);
+  const coal = S ? S.coalizao : (typeof SET!=='undefined' && SET ? SET.coalizao : []);
+  let a = 88 - dist(m, pres)*4.5;
+  if (m.partido && m.partido===own) a += 10;
+  else if (m.partido && !coal.includes(m.partido)) a -= 12;
+  return Math.round(clamp(a, 5, 99));
 }
-
-function candidatosMinisterio(minId, coalizao, presPartido){
-  const out = [gerarMinistro(minId, null)];
-  out.push(gerarMinistro(minId, presPartido));
-  const aliados = coalizao.filter(p=>p!==presPartido);
-  const pool = aliados.length? aliados.slice() : PARTIDOS.map(p=>p.id).filter(p=>p!==presPartido);
-  for (let i=0;i<2;i++){
-    const p = pool.length? pool.splice(Math.floor(Math.random()*pool.length),1)[0] : presPartido;
-    out.push(gerarMinistro(minId, p));
-  }
-  return out;
+function candidatosMinisterio(minId, coalizao, presPartido, excluir=[]){
+  const usados = new Set([...ocupados(), ...excluir]);
+  const lista = (PESSOAS_MIN[minId]||[]).filter(p=>!usados.has(p[0])).map(pessoa);
+  const nota = m=>(m.partido===presPartido?3:0) + (m.partido && coalizao.includes(m.partido)?2:0) + (!m.partido?1.5:0) + Math.random();
+  return lista.sort((x,y)=>nota(y)-nota(x));
+}
+function substituto(minId){
+  const c = candidatosMinisterio(minId, S.coalizao, S.pres.partido, [S.ministros[minId] && S.ministros[minId].nome]);
+  const m = c.find(x=>!x.partido) || c.find(x=>S.coalizao.includes(x.partido)) || c[0];
+  if (m) return m;
+  return { nome:'Secretário-executivo (interino)', gen:'m', partido:null, desc:'Servidor de carreira que responde pela pasta até nova nomeação', e:S.pres.e, s:S.pres.s, tec:62, pol:30, desde:S.t, interino:true };
 }
 
 // ---------- criação do jogo ----------
@@ -1262,15 +1557,15 @@ function leanGrupos(){
 }
 
 function apMax(){
-  let a = 3;
+  let a = 4;
   if (S.dificuldade==='facil') a++;
-  const cc = S.ministros.casacivil; if (cc && cc.comp>=80) a++;
+  const cc = S.ministros.casacivil; if (cc && cc.pol>=80) a++;
   return a;
 }
 
 function compMin(id){
   const m = S.ministros[id]; if (!m) return 0;
-  let c = m.comp;
+  let c = m.tec*0.75 + m.pol*0.25 - (afinidade(m)<35?6:0);
   const bg = BACKGROUNDS.find(b=>b.id===S.pres.bg);
   if (bg && bg.fx.bonus && bg.fx.bonus[id]) c += bg.fx.bonus[id];
   return (c-60)/40; // ~ -0.4 .. +0.9
@@ -1396,6 +1691,14 @@ const CUSTOM = {
     if (fx.modo==='estatal'){ p.sat = clamp(p.sat+11,0,100); S.grp.imprensa -= 3; return `Um indicado do ${p.id} assume a presidência de uma estatal.`; }
     p.sat = clamp(p.sat-16,0,100); S.aprovShock += 1; S.grp.imprensa += 3; return `O ${p.id} ameaça romper. A imprensa elogia a firmeza.`;
   },
+  stfSuspende(fx){
+    const d = getProj(fx.id); if (!d) return '';
+    if (fx.modo==='descumpre'){ S.grp.judiciario=clamp(S.grp.judiciario-25,0,100); S.stf=clamp(S.stf-25,0,100); S.grp.imprensa=clamp(S.grp.imprensa-12,0,100); S.flags.impeachRisk=(S.flags.impeachRisk||0)+2; S.aprovShock-=3; S.rel.UE=clamp(S.rel.UE-5,0,100);
+      return 'Crise institucional aberta. Juristas falam em crime de responsabilidade (art. 85 da Constituição) e o pedido de impeachment ganha força.'; }
+    if (fx.modo==='negocia' && Math.random()<0.5){ escalarEfeitos(d,0.6); return 'Acordo com o relator: a medida volta a valer com alcance reduzido.'; }
+    applyFx(inverterFx(d.fx)); S.aprovadas = S.aprovadas.filter(x=>x!==fx.id); S.grp.judiciario=clamp(S.grp.judiciario+3,0,100);
+    return 'A medida fica suspensa e seus efeitos estruturais são revertidos.';
+  },
   impeachmentrisco(){ S.flags.impeachRisk = (S.flags.impeachRisk||0)+1; S.aprovShock -= 1; return 'O pedido segue na gaveta do presidente da Câmara, que agora tem uma carta na manga.'; },
   pfAliado(fx){
     const p = P(S.flags._pfp) || P(S.pres.partido);
@@ -1403,11 +1706,12 @@ const CUSTOM = {
     p.sat=clamp(p.sat-10,0,100); S.grp.imprensa += 5; S.aprovShock += 1; return `O ${p.id} reclama de "abandono", mas a opinião pública aprova.`;
   },
   desincomp(fx){
-    const pol = MINISTERIOS.filter(m=>S.ministros[m.id] && S.ministros[m.id].perfil==='politico');
+    const pol = MINISTERIOS.filter(m=>S.ministros[m.id] && S.ministros[m.id].partido);
     if (fx.modo==='fica'){ pol.forEach(m=>{ const p=P(S.ministros[m.id].partido); if(p) p.sat=clamp(p.sat-5,0,100); }); return `${pol.length} ministros políticos permanecem, mas seus partidos reclamam de perder candidatos.`; }
     let n=0;
-    pol.forEach(m=>{ if (Math.random()<0.65){ n++; S.ministros[m.id] = gerarMinistro(m.id, null); } });
-    return `${n} ministros deixam o governo para disputar eleições. Secretários-executivos técnicos assumem as pastas.`;
+    const sairam=[];
+    pol.forEach(m=>{ if (Math.random()<0.55){ sairam.push(S.ministros[m.id].nome); S.ministros[m.id] = substituto(m.id); } });
+    return sairam.length? `Deixam o governo para disputar as eleições: ${sairam.join(', ')}. Nomes sem filiação assumem as pastas.` : 'Nenhum ministro deixa o governo.';
   },
   copa(){
     const r = Math.random();
@@ -1442,7 +1746,7 @@ const CUSTOM = {
     if (fx.modo==='emendas'){ applyFx({ eco:{gasto:0.05} }); p.sat = clamp(p.sat+16,0,100); return `Emendas pagas, o ${p.id} recua.`; }
     S.coalizao = S.coalizao.filter(x=>x!==p.id);
     // ministros do partido deixam o governo
-    for (const id in S.ministros) if (S.ministros[id].partido===p.id) S.ministros[id] = gerarMinistro(id, null);
+    for (const id in S.ministros) if (S.ministros[id].partido===p.id) S.ministros[id] = substituto(id);
     calcBase();
     return `O ${p.id} entrega os cargos e deixa a base do governo. Técnicos assumem os ministérios que eram do partido.`;
   },
@@ -1455,20 +1759,21 @@ const CUSTOM = {
     const m = S.ministros[fx.min]; if (!m) return '';
     const p = m.partido? P(m.partido) : null;
     if (fx.modo==='demite'){
-      S.aprovShock -= 1; if (p) p.sat = clamp(p.sat-8,0,100);
-      S.ministros[fx.min] = gerarMinistro(fx.min, null);
-      return `${m.nome} é exonerad${m.gen==='f'?'a':'o'}. ${S.ministros[fx.min].nome}, ${S.ministros[fx.min].desc}, assume a pasta.`;
+      S.aprovShock -= 0.5; if (p) p.sat = clamp(p.sat-8,0,100);
+      const novo = substituto(fx.min); S.ministros[fx.min] = novo;
+      return `${m.nome} deixa a pasta para "facilitar as investigações". ${novo.nome} assume o ministério.`;
     }
-    if (fx.modo==='afasta'){ S.aprovShock -= 2; m.comp -= 5; return `${m.nome} se licencia até a conclusão das investigações. A pasta perde ritmo.`; }
-    const pego = Math.random() < (100-m.integ)/100 + 0.15;
-    if (pego){ S.aprovShock -= 6; S.grp.imprensa -= 8; S.flags.impeachRisk=(S.flags.impeachRisk||0)+1; S.ministros[fx.min] = gerarMinistro(fx.min,null); if(p) p.sat=clamp(p.sat-10,0,100);
-      return `Novas provas surgem e ${m.nome} cai mesmo assim, duas semanas depois. O desgaste respinga no Planalto.`; }
-    if (p) p.sat = clamp(p.sat+5,0,100); m.leal = clamp(m.leal+10,0,100); S.aprovShock -= 1.5;
-    return `A investigação não avança. ${m.nome} fica no cargo, mais leal do que nunca.`;
+    if (fx.modo==='afasta'){ S.aprovShock -= 1.5; S.grp.imprensa = clamp(S.grp.imprensa+2,0,100); return `Servidores envolvidos são exonerados e a CGU abre auditoria. ${m.nome} segue no cargo.`; }
+    if (Math.random()<0.45){ S.aprovShock -= 5; S.grp.imprensa -= 8; S.flags.impeachRisk=(S.flags.impeachRisk||0)+1; S.cpi = Math.max(S.cpi,3);
+      return `Novos documentos vazam e a oposição instala uma CPI sobre os contratos da pasta. O desgaste respinga no Planalto.`; }
+    if (p) p.sat = clamp(p.sat+5,0,100); S.aprovShock -= 1;
+    return `O caso esfria no noticiário. A base aliada agradece o apoio.`;
   },
 };
 
 // ---------- Congresso ----------
+function getProj(id){ return PROJETOS.find(p=>p.id===id) || (S && S.medidas && S.medidas[id]) || null; }
+
 function probVoto(p, proj, casa){
   let base;
   if (p.id===S.pres.partido) base = 0.92;
@@ -1480,12 +1785,16 @@ function probVoto(p, proj, casa){
   const popEf = (proj.pop||0) * (S.aprov-32)/90 * (0.5 + p.fis*0.6);
   const art = (proj.artic||0)*0.045;
   const pc = casa==='camara'? (S.presCamara-50)/450 : (S.stf-50)/2000;
-  return clamp(base + align + popEf + art + pc + (S.aprov-45)/350, 0.01, 0.985);
+  let fr = 0;
+  const tags = proj.frentes || FRENTES_PROJ[proj.id] || {};
+  FRENTES.forEach(f=>{ const t=tags[f.id]; if (!t) return; fr += (f.share[p.id]||0) * t * 0.24 * (0.6 + (S.grp[f.grp]||50)/100); });
+  const ng = proj.neg ? ((proj.neg.p&&proj.neg.p[p.id])||0) + (proj.neg.g||0) + (casa==='senado'?(proj.neg.sen||0):(proj.neg.cam||0)) : 0;
+  return clamp(base + align + popEf + art + pc + fr + ng + (S.aprov-45)/350, 0.01, 0.985);
 }
 
 function votar(proj){
-  const def = PROJETOS.find(x=>x.id===proj.id);
-  const p2 = { ...def, artic:proj.artic };
+  const def = getProj(proj.id);
+  const p2 = { ...def, artic:proj.artic, neg:proj.neg };
   const res = { camara:[], senado:[] };
   let simC=0, naoC=0, simS=0, naoS=0;
   S.partidos.forEach(p=>{
@@ -1561,7 +1870,7 @@ function atualizarPartidos(inicial){
 
 // ---------- tramitação ----------
 function propor(id, comoMP){
-  const def = PROJETOS.find(p=>p.id===id);
+  const def = getProj(id);
   const proj = { id, tIni:S.t, restante: comoMP? 4 : def.tram, artic:0, mp:!!comoMP };
   S.projetos.push(proj);
   S.ap -= 1;
@@ -1579,7 +1888,7 @@ function processarTramitacao(){
     proj.restante--;
     if (proj.restante>0) continue;
     const r = votar(proj);
-    const def = PROJETOS.find(p=>p.id===proj.id);
+    const def = getProj(proj.id);
     S.projetos = S.projetos.filter(p=>p!==proj);
     r.mp = proj.mp;
     if (r.aprovado){
@@ -1594,8 +1903,29 @@ function processarTramitacao(){
       r.efeitos = [{ txt: proj.mp ? 'A MP perde a validade. Os efeitos fiscais e estruturais são revertidos.' : 'Derrota do governo no plenário. O projeto só poderá ser reapresentado em 6 meses.', livre:true }];
       logar('Congresso', `REJEITADO: ${def.nome}. ${r.okC? 'Passou na Câmara, caiu no Senado.' : `Câmara: ${r.simC} sim, ${r.naoC} não.`}`);
     }
+    if (def.ruptura){ r.efeitos = [{ txt: concluirEtapaVotada(def, r.aprovado), livre:true }]; }
     S.pendentes.push({ tipo:'voto', voto:r });
   }
+}
+
+function processarRiscoJuridico(){
+  if (!S.riscoJur || !S.riscoJur.length) return;
+  S.riscoJur = S.riscoJur.filter(r=>{
+    if (S.t < r.t+1) return true;
+    if (r.posLei && !S.aprovadas.includes(r.id)) return false;
+    if (Math.random() < r.p) S.pendentes.push({ id:'stf:'+r.id, t:S.t });
+    return false;
+  });
+}
+function eventoSTF(mid){
+  const d = getProj(mid) || { nome:'medida do governo' };
+  return { id:'stf:'+mid, cat:'Judiciário', titulo:'STF suspende medida do governo',
+    texto:`Atendendo a uma ação direta de inconstitucionalidade (ADI) de partidos de oposição e da OAB, o relator no Supremo suspende "${d.nome}". O plenário virtual deve confirmar a decisão.`,
+    opcoes:[
+      { txt:'Acatar a decisão e recorrer pela AGU', fx:{ custom:'stfSuspende', id:mid, modo:'acata' } },
+      { txt:'Negociar um novo texto com o relator', fx:{ custom:'stfSuspende', id:mid, modo:'negocia' } },
+      { txt:'Descumprir a decisão do Supremo', fx:{ custom:'stfSuspende', id:mid, modo:'descumpre' } },
+    ]};
 }
 
 // ---------- simulação mensal ----------
@@ -1738,19 +2068,20 @@ function getEvento(ref){
   if (id.startsWith('saida:')) return eventoSaida(id.split(':')[1]);
   if (id.startsWith('adesao:')) return eventoAdesao(id.split(':')[1]);
   if (id==='impeachment') return eventoImpeachment();
+  if (id.startsWith('stf:')) return eventoSTF(id.slice(4));
   return EVENTOS_AGENDADOS.find(e=>e.id===id) || EVENTOS_ALEATORIOS.find(e=>e.id===id) || eventosAnuais(ref.t).find(e=>e.id===id);
 }
 
 function eventoEscandalo(minId){
   const m = S.ministros[minId], mi = MIN(minId);
-  const casos = ['contratos superfaturados na pasta','uso de jatinho de empresário em viagem particular','emendas direcionadas a ONG de parentes','mensagens com lobista investigado pela PF','compra de imóvel incompatível com a renda'];
+  const casos = ['contratos superfaturados de TI','fraude em licitação de obras','desvio de emendas por uma ONG conveniada','cobrança de propina por um servidor para liberar convênios','direcionamento de compras emergenciais'];
   const caso = S.flags['_caso'+minId] || (S.flags['_caso'+minId] = pick(casos));
-  return { id:'escandalo:'+minId, cat:'Escândalo', titulo:`Denúncia contra ${m? (m.gen==='f'?'a ministra':'o ministro'):'ministro'} de ${mi.nome}`,
-    texto:`Reportagem revela suspeitas de ${caso} envolvendo ${m?m.nome:'o titular'}${m&&m.partido?` (${m.partido})`:''}. A oposição pede a cabeça e fala em CPI.`,
+  return { id:'escandalo:'+minId, cat:'Escândalo', titulo:`PF mira contratos do Ministério de ${mi.nome}`,
+    texto:`Operação da Polícia Federal investiga ${caso} na pasta. Servidores e um lobista são alvo de busca e apreensão. Não há acusação contra ${m?(m.gen==='f'?'a ministra ':'o ministro ')+m.nome:'o titular'}, mas a oposição exige a saída e fala em CPI.`,
     opcoes:[
-      { txt:'Exonerar imediatamente', fx:{ custom:'escandalo', min:minId, modo:'demite' } },
-      { txt:'Afastar até o fim das investigações', fx:{ custom:'escandalo', min:minId, modo:'afasta' } },
-      { txt:'Manter e defender publicamente', fx:{ custom:'escandalo', min:minId, modo:'defende' } },
+      { txt:'Trocar o comando da pasta', fx:{ custom:'escandalo', min:minId, modo:'demite' } },
+      { txt:'Exonerar os servidores envolvidos e manter o ministro', fx:{ custom:'escandalo', min:minId, modo:'afasta' } },
+      { txt:'Minimizar o caso publicamente', fx:{ custom:'escandalo', min:minId, modo:'defende' } },
     ]};
 }
 function eventoSaida(pid){
@@ -1815,7 +2146,7 @@ function enfileirarEventos(){
   if (t>1) for (const id in S.ministros){
     const m = S.ministros[id];
     if (S.cooldowns['esc'+id]!=null && t - S.cooldowns['esc'+id] < 8) continue;
-    if (Math.random() < (100-m.integ)/100*0.016*fatorBg){
+    if (!m.interino && Math.random() < 0.007*fatorBg){
       S.cooldowns['esc'+id] = t; delete S.flags['_caso'+id];
       S.pendentes.push({ id:'escandalo:'+id, t }); break;
     }
@@ -1828,6 +2159,7 @@ function enfileirarEventos(){
     if (S.coalizao.includes(p.id) && p.sat<24 && p.dep>=5){ S.cooldowns['p'+p.id]=t; S.pendentes.push({ id:'saida:'+p.id, t }); }
     else if (!S.coalizao.includes(p.id) && p.sat>62 && p.dep>=5){ S.cooldowns['p'+p.id]=t; S.pendentes.push({ id:'adesao:'+p.id, t }); }
   });
+  processarRiscoJuridico();
   // impeachment
   if (S.aprov<22 && S.baseCamara<172 && (S.flags.impeachRisk||0)>0 && Math.random()<0.4 && t<44){
     S.pendentes.push({ id:'impeachment', t });
@@ -1972,7 +2304,7 @@ function trocarMinistro(minId, novo){
 function romperPartido(pid){
   S.coalizao = S.coalizao.filter(x=>x!==pid);
   const p = P(pid); p.sat = clamp(p.sat-20,0,100);
-  for (const id in S.ministros) if (S.ministros[id].partido===pid) S.ministros[id] = gerarMinistro(id, null);
+  for (const id in S.ministros) if (S.ministros[id].partido===pid) S.ministros[id] = substituto(id);
   calcBase();
   logar('Congresso', `Governo rompe com o ${pid}. Ministros do partido são substituídos por técnicos.`);
 }
@@ -1982,6 +2314,425 @@ function salvar(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catc
 function carregar(){ try{ const j = localStorage.getItem(SAVE_KEY); if (j){ S = JSON.parse(j); return true; } }catch(e){} return false; }
 function temSave(){ try{ return !!localStorage.getItem(SAVE_KEY); }catch(e){ return false; } }
 function apagarSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+
+</script>
+<script>
+// =====================================================================
+// A FAIXA — medidas do jogador (texto livre + IA), negociação e rupturas
+// =====================================================================
+
+const INSTRUMENTOS = {
+  DECRETO:{ nome:'Decreto presidencial', regra:'Vale na hora, sem votação. Só regulamenta leis e organiza a administração (art. 84). Pode ser derrubado pelo STF ou por decreto legislativo.' },
+  MP:{ nome:'Medida Provisória', regra:'Vale na hora, mas o Congresso tem 120 dias para aprovar por maioria simples (art. 62). Se não votar, caduca.' },
+  PL:{ nome:'Projeto de Lei ordinária', regra:'Maioria simples dos presentes na Câmara e no Senado.' },
+  PLP:{ nome:'Projeto de Lei Complementar', regra:'Maioria absoluta: 257 deputados e 41 senadores.' },
+  PEC:{ nome:'Proposta de Emenda à Constituição', regra:'3/5 em dois turnos: 308 deputados e 49 senadores. Não pode abolir cláusulas pétreas (art. 60, § 4º).' },
+};
+
+// ---------- normalização ----------
+const lim = (v,a,b,d=0)=>{ v=Number(v); return isFinite(v)? clamp(v,a,b) : d; };
+
+function normalizarMedida(raw, texto){
+  const ef = raw.efeitos || {};
+  const grp = {}; Object.entries(ef.grupos||{}).forEach(([k,v])=>{ if (GRUPOS.some(g=>g.id===k)) grp[k]=Math.round(lim(v,-20,20)); });
+  const rel = {}; Object.entries(ef.relacoes||{}).forEach(([k,v])=>{ if (PAISES.some(c=>c.id===k)) rel[k]=Math.round(lim(v,-15,15)); });
+  const mod = {}; Object.entries(ef.tendencias||{}).forEach(([k,v])=>{ if (['pobreza','homic','desmat','educ','saude','infra'].includes(k)) mod[k]=lim(v,-0.08,0.08); });
+  const frentes = {}; Object.entries(raw.frentes||{}).forEach(([k,v])=>{ if (FRENTES.some(f=>f.id===k)) frentes[k]=lim(v,-1,1); });
+  let inst = String(raw.instrumento||'PL').toUpperCase().replace(/[^A-Z]/g,'');
+  if (!INSTRUMENTOS[inst]) inst = 'PL';
+  const fx = { aprov:lim(ef.aprov,-6,6), grp, rel, mod, eco:{ pibShock:lim(ef.pib,-1,1), inflShock:lim(ef.inflacao,-1,1), primario:lim(ef.primario,-0.6,0.6), conf:lim(ef.confianca_mercado,-15,15) } };
+  const min = MINISTERIOS.some(m=>m.id===raw.ministerio) ? raw.ministerio : 'casacivil';
+  return {
+    id: 'u'+((S.medidaSeq=(S.medidaSeq||0)+1)), custom:true, texto,
+    nome: String(raw.titulo||texto).slice(0,90), desc: String(raw.resumo||'').slice(0,400),
+    instrumento: inst, tipo: inst==='MP'?'PL':inst==='DECRETO'?'DECRETO':inst, mp: inst==='MP',
+    motivo: String(raw.motivo_instrumento||'').slice(0,300),
+    ministerio: min, e:lim(raw.e,-10,10), s:lim(raw.s,-10,10), we:lim(raw.peso_economico,0,1,0.6), ws:lim(raw.peso_social,0,1,0.4),
+    pop:lim(raw.pop,-1,1), tram: Math.round(lim(raw.meses_tramitacao,1,6,3)), inconst: !!raw.inconstitucional, risco: lim(raw.risco_juridico,0,1,0.1),
+    frentes, fx, apoia: (raw.quem_apoia||[]).slice(0,4).map(String), resiste: (raw.quem_resiste||[]).slice(0,4).map(String), ia: !!raw._ia,
+  };
+}
+
+// ---------- interpretação offline (sem IA) ----------
+const LEXICO = [
+  [/reduz\w* (de )?impost|isen[çc]|cortar? impost|zera\w* (o )?impost|desoner/i, { min:'fazenda', e:4, pop:.4, fx:{eco:{primario:-0.18, pibShock:.2}, grp:{comercio:6, industria:6}} }],
+  [/grandes fortunas|super[- ]?ricos|bilion[aá]ri|dividendo|taxar (os )?ricos|imposto sobre heran/i, { min:'fazenda', e:-7, pop:.5, fx:{eco:{primario:.2, conf:-8}, grp:{mercado:-12, sindicatos:6}}, fr:{trab:.6} }],
+  [/aument\w* (o |os )?impost|cria\w* (um |novo )?(imposto|tributo)|nova contribui/i, { min:'fazenda', e:-3, pop:-.5, fx:{eco:{primario:.2}, grp:{comercio:-8, industria:-8}} }],
+  [/jornada|6x1|escala|f[ée]rias|clt|trabalhador|sal[aá]rio m[ií]nimo/i, { min:'trabalho', e:-5, pop:.6, fx:{grp:{sindicatos:10, industria:-8, comercio:-8}, eco:{pibShock:-.15}}, fr:{trab:1} }],
+  [/pol[ií]cia|seguran[çc]a|crime|fac[çc][ãa]o|pres[ií]dio|pris[ãa]o|pena /i, { min:'justica', s:4, pop:.5, fx:{mod:{homic:-.03}, grp:{militares:4}}, fr:{bala:.8} }],
+  [/\barma|porte de arma|cac\b/i, { min:'justica', s:8, pop:-.1, fx:{grp:{movsociais:-8}}, fr:{bala:1, fpe:.4} }],
+  [/sa[uú]de|\bsus\b|hospital|m[ée]dic|vacina|rem[ée]dio/i, { min:'saude', e:-2, pop:.7, fx:{mod:{saude:.05}, eco:{primario:-.1}} }],
+  [/escola|educa|professor|universidade|ensino|creche/i, { min:'educacao', e:-2, pop:.6, fx:{mod:{educ:.05}, eco:{primario:-.1}} }],
+  [/desmat|amaz[oô]n|ambient|clima|floresta|carbono|ibama|queimada/i, { min:'ambiente', e:-1, s:-3, pop:.2, fx:{mod:{desmat:-.04}, grp:{ambientalistas:10, agro:-6}, rel:{UE:4}}, fr:{amb:1, fpa:-.5} }],
+  [/reforma agr[aá]ria|assentament|latif[uú]ndio|\bmst\b/i, { min:'agricultura', e:-7, fx:{grp:{movsociais:12, agro:-15}}, fr:{fpa:-1, trab:.6} }],
+  [/agro|safra|produtor rural|plano safra|pecu[aá]ria/i, { min:'agricultura', e:3, pop:.2, fx:{grp:{agro:10}}, fr:{fpa:.8} }],
+  [/privatiz|desestatiz|concess[ãa]o|vender (a |as )?estata/i, { min:'fazenda', e:7, pop:-.3, fx:{grp:{mercado:10, sindicatos:-12}, eco:{conf:6, primario:.05}} }],
+  [/estatiz|nacionaliz|reestatiz/i, { min:'minas', e:-8, pop:.1, fx:{grp:{mercado:-18, sindicatos:8}, eco:{conf:-12, dolarPct:3}} }],
+  [/bolsa fam[ií]lia|aux[ií]lio|renda b[aá]sica|fome|pobreza|cesta b[aá]sica|vale[- ]|cad[uú]nico|benef[ií]cio|botij|g[aá]s de cozinha|transfer[eê]ncia de renda/i, { min:'social', e:-5, pop:.8, fx:{mod:{pobreza:-.04}, eco:{primario:-.15, pibShock:.1}, aprov:2} }],
+  [/moradia|habita|minha casa|saneamento|aluguel/i, { min:'cidades', e:-3, pop:.7, fx:{mod:{infra:.02}, eco:{primario:-.1, pibShock:.15}} }],
+  [/energia|petr[oó]leo|petrobras|combust[ií]vel|gasolina|diesel|conta de luz/i, { min:'minas', e:-1, pop:.5, fx:{eco:{inflShock:-.2, primario:-.05}} }],
+  [/estrada|rodovia|ferrovia|porto|aeroporto|transporte|[oô]nibus|metr[oô]/i, { min:'transportes', e:0, pop:.5, fx:{mod:{infra:.03}, eco:{primario:-.08}} }],
+  [/ind[uú]stria|f[aá]brica|exporta|importa|tarifa de importa/i, { min:'mdic', e:-1, pop:.2, fx:{grp:{industria:8}} }],
+  [/ci[eê]ncia|pesquisa|tecnologia|intelig[eê]ncia artificial|semicondutor/i, { min:'ciencia', e:-1, pop:.2, fx:{eco:{primario:-.03}} }],
+  [/aborto/i, { min:'saude', s:/legaliz|descriminaliz|direito/i, pop:-.3, fx:{grp:{evangelicos:-15, movsociais:8}}, fr:{fpe:-1} }],
+  [/maconha|cannabis|drogas/i, { min:'justica', s:-6, pop:-.2, fx:{grp:{evangelicos:-10}}, fr:{fpe:-1, bala:-.5} }],
+  [/fam[ií]lia tradicional|igreja|religi|ideologia de g[eê]nero|escola sem partido/i, { min:'educacao', s:8, pop:0, fx:{grp:{evangelicos:12, movsociais:-10}}, fr:{fpe:1} }],
+  [/for[çc]as armadas|militar|ex[ée]rcito|defesa nacional/i, { min:'defesa', s:4, fx:{grp:{militares:10}, eco:{primario:-.04}}, fr:{bala:.6} }],
+  [/china|estados unidos|eua|mercosul|acordo comercial|uni[ãa]o europeia|brics/i, { min:'itamaraty', e:1, fx:{} }],
+  [/reelei[çc][ãa]o|mandato|voto|elei[çc][ãa]o|partido|congresso|stf|supremo/i, { min:'casacivil', e:0, fx:{grp:{imprensa:2}} }],
+];
+
+function interpretarLocal(texto){
+  const t = texto.toLowerCase();
+  let e=0, s=0, n=0, pop=0, min=null;
+  const fx = { aprov:0, grp:{}, rel:{}, mod:{}, eco:{} }; const fr = {};
+  const soma=(o,k,v)=>{ o[k]=(o[k]||0)+v; };
+  LEXICO.forEach(([re, r])=>{
+    if (!re.test(texto)) return;
+    n++; if (!min) min=r.min;
+    if (r.e) e+=r.e;
+    if (r.s instanceof RegExp) s += r.s.test(texto)? -8 : 8; else if (r.s) s+=r.s;
+    pop += r.pop||0;
+    const f=r.fx||{};
+    if (f.aprov) fx.aprov+=f.aprov;
+    ['grp','rel','mod','eco'].forEach(k=>Object.entries(f[k]||{}).forEach(([a,v])=>soma(fx[k],a,v)));
+    Object.entries(r.fr||{}).forEach(([a,v])=>soma(fr,a,v));
+  });
+  if (n>1){ e/=n*0.8; s/=n*0.8; pop/=n; }
+  let inst = 'PL';
+  if (/constitui|\bpec\b|emenda constitucional|reelei|mandato de|cl[aá]usula/i.test(t)) inst='PEC';
+  else if (/decreto|regulament/i.test(t)) inst='DECRETO';
+  else if (/medida provis|\bmp\b|urgente|imediat/i.test(t)) inst='MP';
+  else if (/grandes fortunas|lei complementar/i.test(t)) inst='PLP';
+  const titulo = texto.trim().replace(/\s+/g,' ');
+  return { _ia:false, titulo: titulo.charAt(0).toUpperCase()+titulo.slice(1,80)+(titulo.length>80?'…':''),
+    resumo: n? 'Classificação automática por palavras-chave (modo sem IA). Os efeitos são estimativas genéricas.' : 'A assessoria não conseguiu identificar a área com clareza; a medida foi tratada como de baixo impacto.',
+    instrumento:inst, motivo_instrumento: INSTRUMENTOS[inst].regra, ministerio:min||'casacivil', e, s, peso_economico:0.6, peso_social:0.4, pop:clamp(pop,-1,1), meses_tramitacao: inst==='PEC'?4:3,
+    inconstitucional:false, risco_juridico: inst==='DECRETO'?0.35:0.1,
+    efeitos:{ aprov:fx.aprov, pib:fx.eco.pibShock, inflacao:fx.eco.inflShock, primario:fx.eco.primario, confianca_mercado:fx.eco.conf, grupos:fx.grp, tendencias:fx.mod, relacoes:fx.rel },
+    frentes: fr };
+}
+
+// ---------- IA ----------
+let _sample;
+async function obterIA(){
+  if (_sample!==undefined) return _sample;
+  try { _sample = (window.claude && window.claude.use) ? await window.claude.use('sample') : null; } catch(e){ _sample = null; }
+  return _sample;
+}
+function resumoEstado(){
+  const e=S.eco;
+  return `Data: ${dataTurno(S.t)}. Presidente: ${S.pres.nome} (${S.pres.partido}), posição econômica ${S.pres.e} e social ${S.pres.s} (escala -10 a 10). Aprovação ${fmt(S.aprov,0)}%. PIB ${fmt(e.pib)}%, IPCA ${fmt(e.ipca)}%, Selic ${fmt(e.selic,2)}%, desemprego ${fmt(e.desemp)}%, dólar R$ ${fmt(e.dolar,2)}, dívida bruta ${fmt(e.divida)}% do PIB, resultado primário ${fmt(e.primario??0,2)}% do PIB. Base fiel na Câmara: ${S.baseCamara} de 513.`;
+}
+async function interpretarIA(texto, signal){
+  const sample = await obterIA();
+  if (!sample) return null;
+  const prompt = `Você é a Subchefia de Assuntos Jurídicos da Casa Civil num jogo de simulação política realista do Brasil. O jogador é o presidente da República e escreveu uma medida. Classifique-a e estime efeitos REALISTAS (a maioria das medidas tem efeito modesto; medidas radicais têm custos altos).
+
+${resumoEstado()}
+
+Regras da Constituição de 1988 que você deve aplicar:
+- DECRETO (art. 84): só regulamenta lei existente ou organiza a administração. Não cria imposto, crime, nem despesa sem lei.
+- MP (art. 62): relevância e urgência; vale 60+60 dias. Proibida para direito penal e processual, eleitoral, partidos, nacionalidade, matéria de lei complementar e confisco de poupança.
+- PL: lei ordinária, maioria simples. PLP: lei complementar, maioria absoluta (ex.: imposto sobre grandes fortunas, normas gerais tributárias, sistema financeiro).
+- PEC: 3/5 em dois turnos nas duas Casas. Cláusulas pétreas (forma federativa, voto direto secreto universal e periódico, separação de Poderes, direitos e garantias individuais) não podem ser abolidas: se a medida tenta isso, inconstitucional=true e risco_juridico alto.
+
+Texto do presidente:
+"""${texto.slice(0,1500)}"""
+
+Responda SOMENTE com um objeto JSON neste formato:
+{"titulo":"ementa curta, até 70 caracteres","resumo":"1 a 2 frases objetivas","instrumento":"DECRETO|MP|PL|PLP|PEC","motivo_instrumento":"1 frase citando o artigo","ministerio":"um de: ${MINISTERIOS.map(m=>m.id).join(', ')}","e":0,"s":0,"peso_economico":0.6,"peso_social":0.4,"pop":0,"meses_tramitacao":3,"inconstitucional":false,"risco_juridico":0.1,"efeitos":{"aprov":0,"pib":0,"inflacao":0,"primario":0,"confianca_mercado":0,"grupos":{},"tendencias":{},"relacoes":{}},"frentes":{},"quem_apoia":["até 3 atores"],"quem_resiste":["até 3 atores"]}
+
+Escalas: e = posição econômica da medida (-10 esquerda/estatista, +10 direita/liberal); s = posição nos costumes (-10 progressista, +10 conservadora); pop -1 a 1 (apelo popular); aprov -6 a 6 (pontos de aprovação); pib -1 a 1 (choque temporário no crescimento, em pontos percentuais); inflacao -1 a 1; primario -0.6 a 0.6 (% do PIB por ano; positivo melhora as contas, gasto novo é negativo); confianca_mercado -15 a 15.
+grupos (-20 a 20), use só estas chaves: ${GRUPOS.map(g=>g.id).join(', ')}.
+tendencias (-0.08 a 0.08 ao ano; negativo reduz o indicador), use só: pobreza, homic, desmat, educ, saude, infra.
+relacoes (-15 a 15), use só: ${PAISES.map(c=>c.id).join(', ')}.
+frentes (-1 contra a +1 a favor), use só: fpa (agropecuária), fpe (evangélica), bala (segurança), trab (trabalhadores), amb (ambientalista).`;
+  const r = await sample.json(prompt, { modelTier:'default', signal });
+  if (!r || typeof r!=='object') throw { code:'invalid_json' };
+  r._ia = true;
+  return r;
+}
+
+function parecerLocal(def, pv){
+  const m = S.ministros[def.ministerio];
+  const d = Math.hypot(def.e-m.e, def.s-m.s);
+  const parecer = d<4?'favoravel':d<9?'com_ressalvas':'contrario';
+  const falta = pv.c>=pv.nc && pv.s>=pv.ns ? 'Pelas contas da articulação, os votos existem hoje. Não vale arriscar perdê-los com demora.' : `Faltam cerca de ${Math.max(0,pv.nc-pv.c)} votos na Câmara e ${Math.max(0,pv.ns-pv.s)} no Senado. É preciso negociar com ${pv.contra.slice(0,2).join(' e ')||'o centro'}.`;
+  const fala = { favoravel:'A medida está alinhada com o que defendemos para a pasta. Tenho condições de defendê-la no Congresso.', com_ressalvas:'A direção é razoável, mas o texto precisa de ajustes para não gerar resistência desnecessária.', contrario:'Recomendo cautela: a medida contraria a linha da pasta e pode nos custar apoio.' }[parecer];
+  return { parecer, fala, pontos:[ def.fx.eco.primario<-0.1?'O impacto fiscal precisa de fonte de compensação.':'O impacto fiscal é administrável.', def.pop>0.3?'Tem apelo popular, o que ajuda a pressionar o Congresso.':'O apelo popular é baixo; a votação dependerá de negociação.' ],
+    o_que_falta: falta, ajuste:{ descricao:'Moderar o texto para atrair o centro.', e_delta: -Math.sign(def.e)*1.5, s_delta: -Math.sign(def.s)*1.5, pop_delta:0, custo_fator:0.85, efeito_fator:0.85 }, _ia:false };
+}
+
+async function parecerIA(def, pv, signal){
+  const sample = await obterIA();
+  if (!sample) return null;
+  const m = S.ministros[def.ministerio], mi = MIN(def.ministerio);
+  const prompt = `Num jogo de simulação política do Brasil, escreva o parecer interno do ministro responsável sobre uma medida proposta pelo presidente. O parecer é uma SIMULAÇÃO: escreva em tom profissional, coerente com as posições públicas conhecidas da pessoa e da sua área, sem caricatura, sem atribuir fatos pessoais inventados nem condutas ilegais.
+
+Ministro(a): ${m.nome} — ${m.desc}. Partido: ${m.partido||'sem partido'}. Posição econômica ${m.e}, social ${m.s} (escala -10 a 10). Pasta: ${mi.nome}.
+${resumoEstado()}
+
+Medida (${INSTRUMENTOS[def.instrumento].nome}): ${def.nome}. ${def.desc}
+Posição da medida: econômica ${fmt(def.e)}, social ${fmt(def.s)}; apelo popular ${fmt(def.pop,1)}; efeito fiscal ${fmt(def.fx.eco.primario,2)}% do PIB/ano.
+Previsão de votos: Câmara ~${pv.c} de ${pv.nc} necessários; Senado ~${pv.s} de ${pv.ns}. Bancadas mais resistentes: ${pv.contra.join(', ')||'nenhuma relevante'}.
+
+Responda SOMENTE com JSON:
+{"parecer":"favoravel|com_ressalvas|contrario","fala":"2 a 4 frases em primeira pessoa","pontos":["até 3 pontos técnicos"],"o_que_falta":"1 frase sobre o que é preciso para aprovar","ajuste":{"descricao":"1 frase com a mudança sugerida no texto","e_delta":0,"s_delta":0,"pop_delta":0,"custo_fator":1,"efeito_fator":1}}
+Limites do ajuste: e_delta e s_delta entre -3 e 3, pop_delta entre -0.3 e 0.3, custo_fator entre 0.5 e 1.2, efeito_fator entre 0.6 e 1.1.`;
+  const r = await sample.json(prompt, { modelTier:'default', signal });
+  if (!r || typeof r!=='object') throw { code:'invalid_json' };
+  r._ia = true;
+  return r;
+}
+
+function aplicarAjuste(def, aj){
+  if (!aj) return def;
+  def.e = clamp(def.e + lim(aj.e_delta,-3,3), -10, 10);
+  def.s = clamp(def.s + lim(aj.s_delta,-3,3), -10, 10);
+  def.pop = clamp(def.pop + lim(aj.pop_delta,-0.3,0.3), -1, 1);
+  const cf = lim(aj.custo_fator,0.5,1.2,1), ef = lim(aj.efeito_fator,0.6,1.1,1);
+  if (def.fx.eco.primario<0) def.fx.eco.primario *= cf;
+  escalarEfeitos(def, ef);
+  def.ajustada = (def.ajustada||0)+1;
+  return def;
+}
+function escalarEfeitos(def, f){
+  const fx=def.fx;
+  fx.aprov*=f; fx.eco.pibShock*=f; fx.eco.conf*=f;
+  for (const k in fx.grp) fx.grp[k]=Math.round(fx.grp[k]*f);
+  for (const k in fx.mod) fx.mod[k]*=f;
+  for (const k in fx.rel) fx.rel[k]=Math.round(fx.rel[k]*f);
+}
+
+// ---------- previsão detalhada ----------
+function mapaVotos(def){
+  const linhas = S.partidos.map(p=>{
+    const pc = probVoto(p, def, 'camara'), ps = probVoto(p, def, 'senado');
+    return { id:p.id, cor:p.cor, dep:p.dep, sen:p.sen, pc, ps, simC:Math.round(p.dep*0.925*pc), simS:Math.round(p.sen*0.95*ps) };
+  }).sort((a,b)=>b.dep-a.dep);
+  const c = linhas.reduce((a,l)=>a+l.simC,0), s = linhas.reduce((a,l)=>a+l.simS,0);
+  const nc = def.tipo==='PEC'?308:def.tipo==='PLP'?257:Math.round(513*0.925/2)+1, ns = def.tipo==='PEC'?49:def.tipo==='PLP'?41:39;
+  const contra = linhas.filter(l=>l.dep>=8 && l.pc<0.45).sort((a,b)=>b.dep-a.dep).map(l=>l.id);
+  const m = Math.min((c-nc)/40,(s-ns)/6);
+  return { linhas, c, s, nc, ns, contra, chance: m>0.6?'alta':m>-0.1?'incerta':'baixa' };
+}
+
+// ---------- protocolar medida do jogador ----------
+function protocolarMedida(def){
+  S.medidas = S.medidas || {};
+  S.medidas[def.id] = def;
+  if (def.instrumento==='DECRETO'){
+    S.ap -= 1;
+    def.efeitos = applyFx(def.fx);
+    S.decretos = S.decretos || []; S.decretos.push({ id:def.id, t:S.t });
+    S.aprovadas.push(def.id);
+    if (def.risco>0.3 || def.inconst) (S.riscoJur = S.riscoJur||[]).push({ id:def.id, t:S.t, p: clamp(def.risco + (def.inconst?0.4:0),0,0.95) });
+    logar('Governo', `Decreto publicado no Diário Oficial: ${def.nome}.`);
+    return `Decreto publicado no Diário Oficial da União. Já está valendo.${def.risco>0.3?' A assessoria jurídica alerta: há risco de o STF suspender.':''}`;
+  }
+  propor(def.id, def.mp);
+  if (def.inconst) (S.riscoJur = S.riscoJur||[]).push({ id:def.id, t:S.t+def.tram, p:0.7, posLei:true });
+  return def.mp ? `MP publicada e já valendo. O Congresso tem 4 meses para convertê-la em lei.` : `${INSTRUMENTOS[def.instrumento].nome} protocolado. Vai a plenário em ${def.tram} ${def.tram>1?'meses':'mês'}. Use a mesa de negociação para garantir os votos.`;
+}
+
+// ---------- mesa de negociação ----------
+const NEG_ACOES = [
+  { id:'bancada', nome:'Negociar com uma bancada', custo:1, desc:'Cargos, emendas ou mudanças no texto em troca de votos de um partido.' },
+  { id:'frente', nome:'Acordo com uma frente parlamentar', custo:1, desc:'Ruralistas, evangélicos, bancada da bala, sindical ou ambientalista votam em bloco.' },
+  { id:'camara', nome:'Ligar para o presidente da Câmara', custo:1, desc:'Ele controla a pauta e influencia o Centrão.' },
+  { id:'senado', nome:'Jantar com senadores', custo:1, desc:'Reforça os votos no Senado.' },
+  { id:'ministro', nome:'Escalar o ministro para defender', custo:1, desc:'O ministro da área percorre gabinetes e comissões.' },
+  { id:'governadores', nome:'Pedir apoio aos governadores', custo:1, desc:'Governadores pressionam suas bancadas, mas cobram convênios.' },
+  { id:'rua', nome:'Convocar manifestações', custo:1, desc:'Leva apoiadores às ruas. Pode lotar ou esvaziar, e a oposição pode reagir.' },
+  { id:'greve', nome:'Pedir greve geral às centrais', custo:2, desc:'Só para pautas trabalhistas ou populares. Pressão forte, custo econômico alto.' },
+  { id:'redes', nome:'Campanha nas redes e na TV', custo:1, desc:'Funciona melhor quando a medida é popular.' },
+  { id:'urgencia', nome:'Pedir urgência', custo:1, desc:'Leva o projeto a plenário no fim deste mês.' },
+  { id:'adiar', nome:'Adiar a votação', custo:1, desc:'Ganha um mês para negociar. Irrita a Mesa.' },
+];
+
+function negociar(projId, acao, alvo, modo){
+  const t = S.projetos.find(x=>x.id===projId); if (!t) return 'Projeto não encontrado.';
+  const def = getProj(projId);
+  const a = NEG_ACOES.find(x=>x.id===acao);
+  if (S.ap < a.custo) return 'Sem pontos de agenda neste mês.';
+  t.neg = t.neg || { p:{}, g:0, cam:0, sen:0 }; t.hist = t.hist || [];
+  const addP=(id,v)=>{ t.neg.p[id]=(t.neg.p[id]||0)+v; };
+  let txt='';
+  S.ap -= a.custo;
+  if (acao==='bancada'){
+    const p = P(alvo); const lider = LIDERES[alvo] ? `${LIDERES[alvo]}, presidente do ${alvo}` : `a cúpula do ${alvo}`;
+    if (modo==='cargos'){ addP(alvo, 0.13*(0.6+p.fis)); p.sat=clamp(p.sat+4,0,100); S.grp.imprensa=clamp(S.grp.imprensa-1,0,100); txt=`Você recebe ${lider}. Diretorias em estatais e cargos de segundo escalão selam o apoio da bancada.`; }
+    else if (modo==='emendas'){ addP(alvo, 0.11*(0.6+p.fis)); S.eco.primTemp-=0.02; txt=`Acordo com ${lider}: emendas da bancada serão pagas antes da votação.`; }
+    else { addP(alvo, 0.18); def.e += (p.e-def.e)*0.25; def.s += (p.s-def.s)*0.25; if (def.fx) escalarEfeitos(def, 0.88); txt=`${lider[0].toUpperCase()+lider.slice(1)} exige mudanças no texto. O relator incorpora as emendas da bancada e o projeto fica mais moderado.`; }
+  }
+  if (acao==='frente'){
+    const f = FRENTES.find(x=>x.id===alvo);
+    def.frentes = { ...(def.frentes || FRENTES_PROJ[def.id] || {}) };
+    const tag = def.frentes[f.id]||0;
+    if (tag<0){ def.frentes[f.id] = tag*0.3; if (def.fx) escalarEfeitos(def, 0.9); S.grp[f.grp]=clamp(S.grp[f.grp]+4,0,100); txt=`Acordo com a ${f.nome} (${f.apelido}): o texto ganha exceções pedidas pela frente, que deixa de fechar questão contra.`; }
+    else { def.frentes[f.id] = Math.min(1, tag+0.4); S.grp[f.grp]=clamp(S.grp[f.grp]+2,0,100); txt=`A ${f.nome}${f.lider?`, presidida por ${f.lider},`:''} orienta seus membros a votar a favor.`; }
+  }
+  if (acao==='camara'){
+    const v = S.presCamara>=50? 0.05 : 0.02; t.neg.cam += v; S.presCamara=clamp(S.presCamara-3,0,100);
+    txt = S.presCamara>=50 ? 'O presidente da Câmara promete pautar com boa vontade e conversar com os líderes do Centrão. Em troca, quer prestígio.' : 'O presidente da Câmara ouve, mas não promete nada. A relação com o Planalto está fria.';
+  }
+  if (acao==='senado'){ t.neg.sen += 0.07; txt='Jantar com senadores na residência oficial. O líder do governo no Senado contabiliza novos votos.'; }
+  if (acao==='ministro'){
+    const m = S.ministros[def.ministerio||'casacivil'] || S.ministros.casacivil;
+    const v = clamp((m.pol-45)/550, 0.005, 0.07); t.neg.g += v;
+    txt = `${m.nome} passa a semana no Congresso defendendo o projeto em comissões e gabinetes. ${m.pol>=70?'O trânsito político ajuda.':'O trânsito no Congresso é limitado.'}`;
+  }
+  if (acao==='governadores'){
+    if (S.grp.governadores>=45){ t.neg.g += 0.045; S.eco.primTemp-=0.03; txt='Governadores aliados ligam para suas bancadas. Em troca, convênios e obras nos estados.'; }
+    else { t.neg.g += 0.01; txt='Os governadores estão insatisfeitos com o Planalto e fazem pouco esforço.'; }
+  }
+  if (acao==='rua'){
+    const esq = (def.e||0) <= 0;
+    const g = esq ? (S.grp.movsociais+S.grp.sindicatos)/2 : (S.grp.evangelicos+S.grp.agro)/2;
+    const publico = (g*0.5 + S.aprov*0.5) + rnd(-12,12) + (def.pop||0)*10;
+    if (publico>58){ t.neg.g += 0.06; S.aprovShock += 1; txt=`${esq?'Centrais, MST e estudantes':'Igrejas, produtores e grupos conservadores'} lotam a Esplanada e avenidas em 20 capitais. Deputados sentem a pressão.`; }
+    else if (publico>42){ t.neg.g += 0.025; txt='Atos médios em algumas capitais. Repercussão moderada.'; }
+    else { t.neg.g -= 0.02; S.aprovShock -= 1.5; txt='Os atos esvaziam. A oposição posta fotos das praças vazias e o governo vira meme.'; }
+    if (Math.random()<0.15){ S.aprovShock -= 2; S.grp.imprensa=clamp(S.grp.imprensa-3,0,100); txt+=' Há confronto com a polícia em uma das capitais.'; }
+    if (Math.random()<0.3){ t.neg.g -= 0.015; txt+=' A oposição convoca contra-atos para o fim de semana.'; }
+  }
+  if (acao==='greve'){
+    const trabalhista = (def.frentes||FRENTES_PROJ[def.id]||{}).trab>0 || (def.e||0)<-2;
+    if (S.grp.sindicatos<50 || !trabalhista){ S.ap += 1; txt = S.grp.sindicatos<50 ? 'As centrais sindicais recusam: a relação com o governo está ruim.' : 'As centrais recusam convocar greve geral por uma pauta que não é dos trabalhadores.'; }
+    else { t.neg.g += 0.09; applyFx({ eco:{pibShock:-0.35}, grp:{mercado:-8, comercio:-8, industria:-6, sindicatos:6} }); txt='Greve geral: transporte, bancos, escolas e fábricas param por 24 horas em todo o país. O Congresso sente a pressão; empresários reclamam do prejuízo.'; }
+  }
+  if (acao==='redes'){ const v=(def.pop||0)*0.05; t.neg.g += v; S.aprovShock += (def.pop||0)>0?0.5:-0.5; txt = v>0.015 ? 'A campanha viraliza e deputados indecisos recebem milhares de mensagens de eleitores.' : 'A campanha não engaja: o tema tem pouco apelo popular.'; }
+  if (acao==='urgencia'){
+    if (S.presCamara<40){ S.ap += 1; txt='O presidente da Câmara nega o pedido de urgência.'; }
+    else { t.restante = 1; S.presCamara=clamp(S.presCamara-2,0,100); txt='Urgência aprovada: o projeto vai a plenário no fim deste mês.'; }
+  }
+  if (acao==='adiar'){
+    if (t.mp && (S.t - t.tIni) >= 3){ S.ap += 1; txt='Não dá para adiar: a MP caduca se não for votada até o fim do prazo.'; }
+    else { t.restante += 1; S.presCamara=clamp(S.presCamara-4,0,100); txt='Votação adiada por um mês. Líderes reclamam de "pauta travada".'; }
+  }
+  t.hist.unshift({ t:S.t, txt });
+  logar('Congresso', `${def.nome}: ${txt}`);
+  calcBase(); salvar();
+  return txt;
+}
+
+// ---------- ato em defesa do governo (ação geral) ----------
+ACOES_FX.ato = function(){
+  const esq = S.pres.e <= 0;
+  const g = esq ? (S.grp.movsociais+S.grp.sindicatos)/2 : (S.grp.evangelicos+S.grp.agro)/2;
+  const publico = g*0.5 + S.aprov*0.5 + rnd(-12,12);
+  if (publico>58){ S.aprovShock += 2; S.presCamara=clamp(S.presCamara+4,0,100); logar('Agenda','Ato em defesa do governo reúne multidão.'); return 'Multidão nas ruas em defesa do governo. O Congresso recebe o recado.'; }
+  if (publico>42){ S.aprovShock += 0.5; logar('Agenda','Ato em defesa do governo tem adesão moderada.'); return 'Adesão moderada. Bom para a militância, pouco efeito fora dela.'; }
+  S.aprovShock -= 2; logar('Agenda','Ato governista esvaziado vira piada nas redes.'); return 'O ato esvazia e vira piada nas redes. Aprovação −2.';
+};
+
+// ---------- rupturas institucionais ----------
+const RUPTURAS = {
+  militar: { nome:'Regime militar', cor:'var(--yel)',
+    intro:'O caminho do autogolpe. O Brasil viveu isso em 1937 (Estado Novo) e em 1964, com 21 anos de ditadura, censura, tortura e o AI-5. Em 8 de janeiro de 2023 houve a tentativa de ruptura mais recente, e os envolvidos foram processados pelos crimes contra o Estado Democrático de Direito (Lei 14.197/2021).',
+    etapas:[
+      { nome:'Cortejar a caserna', desc:'Reajuste de soldos, reequipamento e generais em cargos civis.', req:{}, fx:{ grp:{militares:15, judiciario:-6, imprensa:-5}, eco:{primario:-0.08} } },
+      { nome:'GLO permanente nas capitais', desc:'Garantia da Lei e da Ordem prolongada, com tropas nas ruas e comando militar na segurança pública.', req:{militares:62}, fx:{ grp:{militares:8, movsociais:-12, imprensa:-10, judiciario:-10}, aprov:-1, rel:{UE:-6, EUA:-4}, idx:{seg:4} } },
+      { nome:'Estado de Defesa', desc:'Art. 136: restringe direitos de reunião e sigilo de comunicações. O Congresso precisa aprovar por maioria absoluta em 10 dias.', req:{militares:70, aprov:38}, voto:{ tipo:'PLP', e:5, s:8, we:0.4, ws:1, pop:-0.4, tram:1 } },
+      { nome:'Ruptura institucional', desc:'Fechar o Congresso e afastar ministros do STF com apoio das Forças Armadas. Arts. 359-L e 359-M do Código Penal: crime contra o Estado Democrático de Direito.', req:{militares:80, governadores:55}, final:true },
+    ]},
+  socialista: { nome:'Revolução socialista', cor:'var(--red)',
+    intro:'O caminho da ruptura pela esquerda. As Reformas de Base de João Goulart, em 1964, terminaram em golpe militar; no Chile, o governo de Salvador Allende caiu em 1973. A Constituição de 1988 só pode ser substituída por um novo poder constituinte, e o mercado, o agro e as Forças Armadas reagem.',
+    etapas:[
+      { nome:'Conselhos populares', desc:'Decreto de participação social cria conselhos populares com voz sobre o orçamento federal.', req:{}, fx:{ grp:{movsociais:12, sindicatos:6, mercado:-10, imprensa:-5, agro:-5} } },
+      { nome:'Plebiscito por Constituinte exclusiva', desc:'O Congresso precisa autorizar o plebiscito (decreto legislativo, maioria simples). Depois, o povo decide nas urnas.', req:{movsociais:65, aprov:46}, voto:{ tipo:'PL', e:-7, s:-4, we:1, ws:0.3, pop:0.3, tram:2 }, plebiscito:true },
+      { nome:'Nacionalizações e reforma agrária radical', desc:'Bancos e Petrobras sob controle estatal, desapropriação de latifúndios, controle de capitais.', req:{sindicatos:62, movsociais:70}, fx:{ grp:{mercado:-35, agro:-30, industria:-20, militares:-15, sindicatos:10, movsociais:12, imprensa:-8}, eco:{conf:-30, dolarPct:25, pibShock:-2, inflShock:3}, rel:{EUA:-30, UE:-12, China:8, Russia:6, Venezuela:15}, mod:{pobreza:-0.05} } },
+      { nome:'Promulgar a nova Constituição', desc:'A Constituinte aprova uma República Socialista com planejamento estatal dos setores estratégicos.', req:{aprov:50, movsociais:75, sindicatos:70}, final:true },
+    ]},
+};
+const ROT_REQ = { militares:'Forças Armadas', governadores:'Governadores', aprov:'Aprovação', movsociais:'Movimentos sociais', sindicatos:'Centrais sindicais' };
+function valorReq(k){ return k==='aprov' ? S.aprov : S.grp[k]; }
+
+function estadoRuptura(path){
+  S.poder = S.poder || { militar:0, socialista:0, tMil:-9, tSoc:-9, pend:null };
+  const R = RUPTURAS[path], i = S.poder[path], et = R.etapas[i];
+  if (!et) return { fim:true };
+  const reqs = Object.entries(et.req).map(([k,v])=>({ k, nome:ROT_REQ[k], v, atual:valorReq(k), ok:valorReq(k)>=v }));
+  const ult = path==='militar'? S.poder.tMil : S.poder.tSoc;
+  const espera = S.t - ult < 2;
+  const outro = path==='militar'? S.poder.socialista : S.poder.militar;
+  const emVoto = S.projetos.some(p=>{ const d=getProj(p.id); return d && d.ruptura && d.ruptura.path===path; });
+  return { i, et, reqs, ok: reqs.every(r=>r.ok) && !espera && !emVoto && outro===0 && S.ap>=2, espera, outro, emVoto };
+}
+
+function avancarRuptura(path){
+  const st = estadoRuptura(path); if (!st.ok) return null;
+  const R = RUPTURAS[path], et = st.et;
+  S.ap -= 2;
+  if (path==='militar') S.poder.tMil = S.t; else S.poder.tSoc = S.t;
+  logar('Crise', `${R.nome}: ${et.nome}.`);
+  if (et.voto){
+    const id = `rupt_${path}_${st.i}`;
+    S.medidas = S.medidas||{};
+    S.medidas[id] = { id, nome:et.nome, desc:et.desc, ...et.voto, custom:true, instrumento: et.voto.tipo, ruptura:{ path, i:st.i, plebiscito:!!et.plebiscito }, fx:{ aprov:0, grp:{}, rel:{}, mod:{}, eco:{} } };
+    propor(id, false); S.ap += 1; // propor já desconta 1
+    S.flags.impeachRisk = (S.flags.impeachRisk||0) + (path==='militar'?1:0);
+    return `${et.nome} enviado ao Congresso. A votação será em ${et.voto.tram} ${et.voto.tram>1?'meses':'mês'}. Juristas, OAB e imprensa reagem com alarme.`;
+  }
+  if (et.final) return finalRuptura(path);
+  const efs = applyFx(et.fx);
+  S.poder[path]++;
+  reacoesRuptura(path);
+  return `${et.nome}: medida em vigor.`;
+}
+
+function reacoesRuptura(path){
+  if (path==='militar'){ S.grp.judiciario=clamp(S.grp.judiciario-6,0,100); S.stf=clamp(S.stf-8,0,100); S.rel.EUA=clamp(S.rel.EUA-3,0,100); S.rel.UE=clamp(S.rel.UE-5,0,100); S.flags.impeachRisk=(S.flags.impeachRisk||0)+1; logar('Crise','OAB, entidades da sociedade civil e ex-presidentes do STF divulgam nota em defesa da democracia.'); }
+  else { S.grp.militares=clamp(S.grp.militares-6,0,100); S.grp.mercado=clamp(S.grp.mercado-6,0,100); S.eco.conf=clamp(S.eco.conf-6,0,100); S.eco.dolar*=1.03; logar('Crise','Entidades empresariais e o agro acusam o governo de "rumo ao autoritarismo"; o dólar dispara.'); }
+}
+
+function concluirEtapaVotada(def, aprovado){
+  const { path, i, plebiscito } = def.ruptura;
+  if (!aprovado){
+    S.aprovShock -= 4;
+    if (path==='militar'){ S.flags.impeachRisk=(S.flags.impeachRisk||0)+2; S.grp.militares=clamp(S.grp.militares-8,0,100); }
+    return 'O Congresso rejeita. A ruptura perde força e a oposição fala em impeachment.';
+  }
+  if (plebiscito){
+    const sim = clamp(S.aprov + rnd(-6,6) + (S.grp.movsociais-60)*0.2, 10, 90);
+    if (sim<50){ S.aprovShock -= 5; return `Plebiscito: ${fmt(100-sim,1)}% votam NÃO à Constituinte. Derrota histórica do governo.`; }
+    S.poder[path]=i+1; reacoesRuptura(path);
+    return `Plebiscito: ${fmt(sim,1)}% votam SIM. Uma Assembleia Constituinte exclusiva será eleita.`;
+  }
+  S.poder[path]=i+1; reacoesRuptura(path);
+  return 'Aprovado. As Forças Armadas assumem o controle da segurança nas capitais sob Estado de Defesa.';
+}
+
+function finalRuptura(path){
+  if (path==='militar'){
+    const sc = (S.grp.militares-75)/8 + (S.grp.governadores-55)/14 + (S.aprov-40)/14 + (S.baseCamara-257)/140 - (S.grp.judiciario-25)/25 - (S.rel.EUA-30)/40 - 0.6;
+    const p = 1/(1+Math.exp(-sc));
+    if (Math.random()<p){ S.fim = { tipo:'ditadura' }; return 'Tanques nas ruas de Brasília. O Congresso é fechado e ministros do STF são afastados. Começa um regime de exceção.'; }
+    S.fim = { tipo:'golpe_fracassado' }; return 'O Alto Comando se divide e parte das tropas não adere. O STF determina sua prisão e o Congresso aprova o afastamento.';
+  }
+  const sc = (S.aprov-50)/9 + (S.grp.movsociais-70)/10 + (S.grp.sindicatos-65)/12 - (S.grp.militares-30)/14 - 0.3;
+  const p = 1/(1+Math.exp(-sc));
+  if (Math.random()<p){ S.fim = { tipo:'socialismo' }; return 'A nova Constituição é promulgada em sessão solene. Nasce a República Socialista do Brasil, sob sanções e forte oposição interna.'; }
+  if (S.grp.militares>35){ S.fim = { tipo:'deposto' }; return 'Com o país dividido, as Forças Armadas se recusam a reconhecer a nova Constituição e depõem o governo, como em 1964.'; }
+  S.fim = { tipo:'impeachment' }; return 'A Constituinte se fragmenta e o Congresso aprova seu impeachment.';
+}
+
+// ---------- reações de figuras públicas ----------
+function reacoesReais(def, aprovFx){
+  const pega = a=>a[Math.floor(Math.random()*a.length)];
+  const lista = COMENTARISTAS.map(c=>({ c, d: def ? Math.hypot((def.e||0)-c[2], (def.s||0)-c[3]) : Math.random()*10 }));
+  let posts;
+  if (def && (def.e||def.s)){
+    lista.sort((a,b)=>a.d-b.d);
+    const fav = pega(lista.slice(0,4)).c, con = pega(lista.slice(-4)).c;
+    posts = [[fav, pega(fav[4])], [con, pega(con[5])]];
+  } else {
+    const a = pega(COMENTARISTAS), b = pega(COMENTARISTAS.filter(x=>x!==a));
+    posts = aprovFx>0 ? [[a,pega(a[4])],[b,pega(b[5])]] : aprovFx<0 ? [[a,pega(a[5])],[b,pega(b[5])]] : [[a,pega(a[4])],[b,pega(b[5])]];
+  }
+  return posts.map(([c,t])=>({ nome:c[0], quem:c[1], texto:t }));
+}
 
 </script>
 <script>
@@ -2003,6 +2754,9 @@ let eventoResultado = null;
 let tmpCandidatos = null;
 let SET = null;
 let minAberto = null;
+let RED = null;      // redação de medida
+let NEG = null;      // mesa de negociação aberta
+let negCtl = null;
 
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tom = (v,bom,ruim,inv)=> inv ? (v<=bom?'ok':v>=ruim?'bad':'mid') : (v>=bom?'ok':v<=ruim?'bad':'mid');
@@ -2023,6 +2777,7 @@ const IC = {
   viagem:'<path d="M2 16l20-8-6 12-3-5z"/><path d="M13 15l-3 5"/>',
   emendas:'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
   cafepartido:'<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v3M12 3v3"/>',
+  ato:'<path d="M4 21V4"/><path d="M4 4h13l-2 4 2 4H4"/>',
   entrevista:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
 };
 const RAIO = '<svg class="rz" viewBox="0 0 24 24" aria-label="agenda"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
@@ -2080,6 +2835,9 @@ function chips(efs){
   }).join('')}</ul>`;
 }
 
+function htmlReacoes(posts){
+  return `<div class="rede"><p class="rede-t">Nas redes</p>${posts.map(p=>`<div class="post"><b>${esc(p.nome)}</b> <small>${esc(p.quem)}</small><p>${esc(p.texto)}</p></div>`).join('')}<small class="aviso">${AVISO_SIMULACAO}</small></div>`;
+}
 function reacoes(efs, fx){
   let a=(fx&&fx.aprov)||0;
   efs.forEach(e=>{ if (e.lbl==='Aprovação') a=e.v; });
@@ -2145,7 +2903,11 @@ function renderSetup(){
 }
 
 function setupIdentidade(){
-  return `<label class="campo"><span>Nome de urna</span><input id="f-nome" value="${esc(SET.pres.nome)}" placeholder="Ex.: Helena Damasceno" maxlength="32" autocomplete="off"></label>
+  return `<p class="rot" style="margin-top:0">Jogar como figura real</p>
+  <div class="carrossel">${PRES_REAIS.map((r,i)=>`<button class="ccard pres ${SET.pres.nome===r.nome?'sel':''}" data-a="presreal" data-v="${i}"><span class="cc-p" style="--pc:${(PARTIDOS.find(p=>p.id===r.partido)||{}).cor}">${r.partido}</span><b>${esc(r.nome)}</b><small>${esc(r.desc)}</small></button>`).join('')}</div>
+  <p class="dica">Simulação ficcional: as decisões do jogo são suas, não da pessoa real.</p>
+  <p class="rot">Ou crie seu próprio presidente</p>
+  <label class="campo"><span>Nome de urna</span><input id="f-nome" value="${esc(SET.pres.nome)}" placeholder="Ex.: Helena Damasceno" maxlength="32" autocomplete="off"></label>
   <div class="duo">
     <label class="campo"><span>Idade</span><input id="f-idade" type="number" inputmode="numeric" min="35" max="85" value="${SET.pres.idade}"></label>
     <label class="campo"><span>Estado</span><select id="f-uf">${ESTADOS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(e=>`<option value="${e.uf}" ${e.uf===SET.pres.uf?'selected':''}>${e.nome}</option>`).join('')}</select></label>
@@ -2174,7 +2936,9 @@ function setupCoalizao(){
   const dep=sel.reduce((a,p)=>a+p.dep,0), sen=sel.reduce((a,p)=>a+p.sen,0);
   const vk=SET.coalizao.join(',');
   if (SET._vk!==vk||!SET.viceOps.length){ SET._vk=vk; const pool=SET.coalizao.filter(x=>x!==own); const ps=pool.length?pool:[own];
-    SET.viceOps=[0,1,2].map(i=>{ const n=gerarNome(); return { ...n, partido:ps[i%ps.length], cargo:pick(PERFIS_MIN.politico).split('|')[n.gen==='f'?1:0] }; }); SET.vice=SET.viceOps[0]; }
+    let vs = VICES.filter(v=>SET.coalizao.includes(v[2]) && v[0]!==SET.pres.nome);
+    if (vs.length<3) vs = vs.concat(VICES.filter(v=>!vs.includes(v) && v[0]!==SET.pres.nome).sort((a,b)=>Math.hypot(a[4]-SET.pres.e,a[5]-SET.pres.s)-Math.hypot(b[4]-SET.pres.e,b[5]-SET.pres.s)));
+    SET.viceOps = vs.slice(0,4).map(v=>({ nome:v[0], gen:v[1], partido:v[2], cargo:v[3], e:v[4], s:v[5] })); SET.vice=SET.viceOps[0]; }
   const ord=lista.slice().sort((a,b)=>a.e-b.e);
   const cores=[]; ord.forEach(p=>{ const c=SET.coalizao.includes(p.id)?p.cor:'var(--off)'; for(let i=0;i<p.dep;i++) cores.push(c); });
   return `<div class="placa">
@@ -2184,20 +2948,21 @@ function setupCoalizao(){
   <p class="dica">Toque nos partidos para convidá-los. Quanto mais longe da sua ideologia, mais cargos eles exigem.</p>
   <div class="pgrid">${ord.map(p=>{ const a=p.id===own?'own':aceitacao(p); const on=SET.coalizao.includes(p.id);
     return `<button class="pchip ${on?'sel':''} ${a}" data-a="coal" data-v="${p.id}" ${a==='recusa'||a==='own'?'disabled':''} style="--pc:${p.cor}"><b>${p.id}</b><span>${p.dep} dep</span><em>${a==='own'?'seu':a==='aceita'?'topa':a==='exige'?'quer cargos':'recusa'}</em></button>`; }).join('')}</div>
-  <p class="rot">Vice-presidente</p>
+  <p class="rot">Vice-presidente</p><p class="dica">Vices de partidos fora da sua base deixam o partido deles mais próximo do governo.</p>
   <div class="tiles">${SET.viceOps.map((v,i)=>`<button class="tile row ${SET.vice===v?'sel':''}" data-a="vice" data-v="${i}">${avatar(v.nome,(lista.find(p=>p.id===v.partido)||{}).cor,40)}<span><b>${esc(v.nome)}</b><small>${v.partido} · ${v.cargo}</small></span></button>`).join('')}</div>`;
 }
 
 function setupMinisterios(){
   SETUP_PARTIDO=partidoSetup();
   const chave=SET.coalizao.join(',');
-  if (SET._chave!==chave){ SET._chave=chave; SET.cands={}; SET.esc={}; MINISTERIOS.forEach((m,i)=>{ SET.cands[m.id]=candidatosMinisterio(m.id,SET.coalizao,SETUP_PARTIDO); SET.esc[m.id]=[0,2,1,3][i%4]; }); }
+  if (SET._chave!==chave){ SET._chave=chave; SET.cands={}; SET.esc={}; const usados=new Set();
+    MINISTERIOS.forEach(m=>{ SET.cands[m.id]=candidatosMinisterio(m.id,SET.coalizao,SETUP_PARTIDO); const i=SET.cands[m.id].findIndex(c=>!usados.has(c.nome)); SET.esc[m.id]=Math.max(0,i); usados.add(SET.cands[m.id][SET.esc[m.id]].nome); }); }
   const tot={}; let W=0; MINISTERIOS.forEach(m=>{ W+=m.peso; const c=SET.cands[m.id][SET.esc[m.id]]; const k=c.partido||'Técnicos'; tot[k]=(tot[k]||0)+m.peso; });
   const lp=partidosSetup();
-  return `<p class="dica">Deslize para o lado e toque para escolher. <b>C</b> competência · <b>L</b> lealdade · <b>I</b> integridade. Aliados sem cargo votam menos com você.</p>
+  return `<p class="dica">Deslize para o lado e toque para escolher. <b>T</b> preparo técnico · <b>P</b> trânsito político · <b>A</b> afinidade com você. Aliados sem cargo votam menos com o governo.</p>
   <div class="partilha">${Object.entries(tot).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span><i style="background:${(lp.find(p=>p.id===k)||{cor:'var(--muted)'}).cor}"></i>${k} ${Math.round(v/W*100)}%</span>`).join('')}</div>
   ${MINISTERIOS.map(m=>`<section class="minbloco"><h3>${m.nome} <small>${'★'.repeat(m.peso)}</small></h3>
-    <div class="carrossel">${SET.cands[m.id].map((c,i)=>`<button class="ccard ${SET.esc[m.id]===i?'sel':''}" data-a="cand" data-v="${m.id}:${i}"><span class="cc-p" style="--pc:${c.partido?(lp.find(p=>p.id===c.partido)||{}).cor:'var(--muted)'}">${c.partido||'Técnic'+(c.gen==='f'?'a':'o')}</span><b>${esc(c.nome)}</b><small>${esc(c.desc)}</small><span class="stats"><i>C ${c.comp}</i><i>L ${c.leal}</i><i>I ${c.integ}</i></span></button>`).join('')}</div></section>`).join('')}`;
+    <div class="carrossel">${SET.cands[m.id].map((c,i)=>`<button class="ccard ${SET.esc[m.id]===i?'sel':''}" data-a="cand" data-v="${m.id}:${i}"><span class="cc-p" style="--pc:${c.partido?(lp.find(p=>p.id===c.partido)||{}).cor:'var(--muted)'}">${c.partido||'Sem partido'}</span><b>${esc(c.nome)}</b><small>${esc(c.desc)}</small><span class="stats"><i>T ${c.tec}</i><i>P ${c.pol}</i><i>A ${afinidade(c)}</i></span></button>`).join('')}</div></section>`).join('')}`;
 }
 
 function setupPromessas(){
@@ -2235,7 +3000,8 @@ function avancarSetup(){
 
 function iniciarJogo(){
   const own=partidoSetup();
-  const ministros={}; MINISTERIOS.forEach(m=>ministros[m.id]={...SET.cands[m.id][SET.esc[m.id]], desde:0});
+  const ministros={}, usados=new Set();
+  MINISTERIOS.forEach(m=>{ let c=SET.cands[m.id][SET.esc[m.id]]; if (usados.has(c.nome)) c=SET.cands[m.id].find(x=>!usados.has(x.nome))||c; usados.add(c.nome); ministros[m.id]={...c, desde:0}; });
   novoEstado({ pres:{...SET.pres, partido:own}, vice:SET.vice, coalizao:SET.coalizao, ministros, promessas:SET.promessas, dificuldade:SET.dificuldade,
     novoPartido: SET.modo==='novo'?{ nome:SET.novo.nome, sigla:own, cor:SET.novo.cor }:null });
   S.carimbos=[];
@@ -2333,12 +3099,13 @@ function abaCongresso(){
     <div class="metas"><div class="${S.baseCamara>=257?'ok':''}"><b>257</b><span>maioria absoluta</span></div><div class="${S.baseCamara>=308?'ok':''}"><b>308</b><span>PEC</span></div><div class="${S.baseSenado>=49?'ok':''}"><b>${S.baseSenado}/81</b><span>senado fiel</span></div></div>
     <p class="dica c">Boa vontade da presidência da Câmara: ${fmt(S.presCamara,0)}/100</p>
   </section>
-  ${S.projetos.length?`<h3 class="sec">Em votação</h3>${S.projetos.map(t=>{ const d=PROJETOS.find(p=>p.id===t.id); const pv=previsao({...d,artic:t.artic});
-    return `<article class="proj tr"><header><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><b>${d.nome}</b></header>
-    <div class="prev"><span>Vota em <b>${t.restante}</b> ${t.restante>1?'meses':'mês'}</span><span class="ch ${pv.chance}">chance ${pv.chance}</span></div>
+  <button class="caneta" data-a="redigir"><span class="cn-t">Caneta presidencial</span><b>Escrever uma medida</b><small>Descreva com suas palavras. A assessoria escolhe o instrumento (decreto, MP, PL, PLP ou PEC), o ministro dá parecer e você negocia os votos.</small></button>
+  ${S.projetos.length?`<h3 class="sec">Em tramitação</h3>${S.projetos.map(t=>{ const d=getProj(t.id); const pv=mapaVotos({...d,artic:t.artic,neg:t.neg});
+    return `<article class="proj tr"><header><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><b>${esc(d.nome)}</b></header>
+    <div class="prev"><span>Plenário em <b>${t.restante}</b> ${t.restante>1?'meses':'mês'}</span><span class="ch ${pv.chance}">chance ${pv.chance}</span></div>
     <div class="termo"><span style="width:${clamp(pv.c/513*100,0,100)}%"></span><i style="left:${pv.nc/513*100}%"></i></div>
-    <small class="dica">~${pv.c} votos previstos de ${pv.nc} necessários · articulação ${'●'.repeat(t.artic)}${'○'.repeat(3-t.artic)}</small>
-    ${t.artic<3?`<button class="btn-s" data-a="articular" data-v="${t.id}" ${S.ap<1?'disabled':''}>Articular votos · 1 ${RAIO}</button>`:''}</article>`; }).join('')}`:''}
+    <small class="dica">Câmara ~${pv.c}/${pv.nc} · Senado ~${pv.s}/${pv.ns}${pv.contra.length?` · resistem: ${pv.contra.slice(0,3).join(', ')}`:''}</small>
+    <button class="btn-s yel" data-a="negociar" data-v="${t.id}">Abrir mesa de negociação</button></article>`; }).join('')}`:''}
   <h3 class="sec">Mandar ao Congresso</h3>
   <div class="filtros">${cats.map(([k,n])=>`<button class="${filtroProj===k?'sel':''}" data-a="filtro" data-v="${k}">${n}</button>`).join('')}</div>
   ${disp.map(d=>{ const pv=previsao({...d,artic:0});
@@ -2347,14 +3114,15 @@ function abaCongresso(){
     <div class="bts"><button class="btn-s yel" data-a="propor" data-v="${d.id}" ${S.ap<1?'disabled':''}>Enviar ${d.tipo} · 1 ${RAIO}</button>${d.mp?`<button class="btn-s" data-a="mp" data-v="${d.id}" ${S.ap<1?'disabled':''}>Medida Provisória</button>`:''}</div></article>`; }).join('')||'<p class="dica">Nada nesta categoria agora.</p>'}
   <h3 class="sec">Partidos</h3>
   <section class="card">${S.partidos.slice().sort((a,b)=>b.dep-a.dep).map(p=>{ const on=S.coalizao.includes(p.id), own=p.id===S.pres.partido;
-    return `<div class="partido ${on?'on':''}" style="--pc:${p.cor}"><div class="pt-n"><b>${p.id}</b><small>${p.dep} dep · ${p.sen} sen · ${own?'seu partido':on?'base':'fora'}</small></div>${barra(p.sat)}
+    return `<div class="partido ${on?'on':''}" style="--pc:${p.cor}"><div class="pt-n"><b>${p.id}</b><small>${p.dep} dep · ${p.sen} sen · ${own?'seu partido':on?'base':'fora'}${LIDERES[p.id]?` · ${LIDERES[p.id]}`:''}</small></div>${barra(p.sat)}
     ${own?'<span></span>':`<div class="pt-bt"><button class="btn-s" data-a="acao-cafe" data-v="${p.id}" ${S.ap<1?'disabled':''}>${on?'Agradar':'Convidar'}</button>${on?`<button class="btn-s ghost" data-a="romper" data-v="${p.id}" aria-label="Romper com ${p.id}">✕</button>`:''}</div>`}</div>`; }).join('')}</section>
-  ${S.aprovadas.length?`<h3 class="sec">Leis do seu governo</h3><section class="card"><ul class="leis">${S.aprovadas.map(id=>`<li>${PROJETOS.find(p=>p.id===id).nome}</li>`).join('')}</ul></section>`:''}`;
+  ${S.aprovadas.length?`<h3 class="sec">Leis do seu governo</h3><section class="card"><ul class="leis">${S.aprovadas.map(id=>`<li>${esc((getProj(id)||{nome:id}).nome)}</li>`).join('')}</ul></section>`:''}`;
 }
 
 function abaAcoes(){
   return `<p class="dica">Você tem <b>${S.ap}</b> ${RAIO} de agenda este mês. Eles recarregam no próximo mês.</p>
-  <div class="acoes">${ACOES.map(a=>`<button class="acao" data-a="acao-${a.id}" ${S.ap<a.custo?'disabled':''}>${icon(a.id,'big')}<b>${a.nome}</b><small>${a.desc}</small><span class="custo">${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>`;
+  <div class="acoes">${ACOES.map(a=>`<button class="acao" data-a="acao-${a.id}" ${S.ap<a.custo?'disabled':''}>${icon(a.id,'big')}<b>${a.nome}</b><small>${a.desc}</small><span class="custo">${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>
+  <button class="poder" data-a="poder"><span class="cn-t">Projeto de poder</span><b>Romper com a ordem constitucional?</b><small>Regime militar ou revolução socialista: caminhos com etapas, requisitos e consequências históricas. ${S.poder&&(S.poder.militar||S.poder.socialista)?'Um caminho já está em andamento.':''}</small></button>`;
 }
 
 function abaBrasil(){
@@ -2402,10 +3170,10 @@ function abaEquipe(){
   <p class="dica">Toque num ministro para ver detalhes. Trocar custa 1 ${RAIO}; o partido que perde a pasta se irrita.</p>
   ${MINISTERIOS.map(m=>{ const mi=S.ministros[m.id]; const p=mi.partido?P(mi.partido):null; const c=compMin(m.id); const ab=minAberto===m.id;
     return `<article class="mrow ${ab?'ab':''}"><button class="mrow-h" data-a="minab" data-v="${m.id}">${avatar(mi.nome,p?p.cor:'var(--muted)',40)}<span><small>${m.nome}</small><b>${esc(mi.nome)}</b></span><em class="${c>0.3?'ok':c<0?'bad':'mid'}">${c>0.3?'Forte':c<0?'Fraco':'Regular'}</em></button>
-    ${ab?`<div class="mrow-d"><p>${esc(mi.desc)} · ${mi.partido||'sem partido'} · desde ${dataCurta(mi.desde||0)}</p>
-      <div class="linha"><span>Competência</span>${barra(mi.comp)}<b>${mi.comp}</b></div>
-      <div class="linha"><span>Lealdade</span>${barra(mi.leal)}<b>${mi.leal}</b></div>
-      <div class="linha"><span>Integridade</span>${barra(mi.integ)}<b>${mi.integ}</b></div>
+    ${ab?`<div class="mrow-d"><p>${esc(mi.desc)} · ${mi.partido||'sem partido'} · no cargo desde ${dataCurta(mi.desde||0)}</p>
+      <div class="linha"><span>Preparo técnico</span>${barra(mi.tec)}<b>${mi.tec}</b></div>
+      <div class="linha"><span>Trânsito político</span>${barra(mi.pol)}<b>${mi.pol}</b></div>
+      <div class="linha"><span>Afinidade com você</span>${barra(afinidade(mi))}<b>${afinidade(mi)}</b></div>
       <button class="btn-s yel" data-a="trocar" data-v="${m.id}" ${S.ap<1?'disabled':''}>Trocar ministro · 1 ${RAIO}</button></div>`:''}</article>`; }).join('')}`;
 }
 
@@ -2435,7 +3203,7 @@ function escolherOpcao(i){
   const ref=S.pendentes[0]; const ev=getEvento(ref); const op=ev.opcoes[i];
   const efs=applyFx(op.fx);
   logar(ev.cat, `${ev.titulo}: ${op.txt}.`);
-  eventoResultado={ titulo:ev.titulo, escolha:op.txt, res:op.res, efs, rede:reacoes(efs, op.fx) };
+  eventoResultado={ titulo:ev.titulo, escolha:op.txt, res:op.res, efs, rede:htmlReacoes(reacoesReais(null, (op.fx&&op.fx.aprov)||0)) };
   calcBase(); mostrarResultado();
 }
 function mostrarResultado(){
@@ -2514,6 +3282,146 @@ function mostrarCarimbos(){
   setTimeout(()=>{ toastEl.hidden=true; mostrarCarimbos(); }, 3200);
 }
 
+// ---------- caneta presidencial (medidas em texto livre) ----------
+const EXEMPLOS_MED = [
+  'Zerar o imposto de importação do arroz e do feijão por seis meses para segurar o preço da comida',
+  'Criar um programa nacional de creches em tempo integral para crianças de 0 a 3 anos',
+  'Proibir o uso de celulares por alunos em todas as escolas do país',
+  'Tributar em 15% os lucros que multinacionais enviam ao exterior',
+  'Instituir mandato de 10 anos para os ministros do STF',
+  'Reduzir a maioridade penal para 16 anos em crimes hediondos',
+];
+
+function previaFx(fx){
+  const out=[]; const add=(lbl,v,suf='')=>{ if (v && Math.abs(v)>=0.005) out.push({lbl,v:Math.round(v*100)/100,suf}); };
+  add('Aprovação', fx.aprov, ' pts');
+  const e=fx.eco||{}; add('Crescimento', e.pibShock, ' p.p.'); add('Inflação', e.inflShock, ' p.p.'); add('Resultado primário', e.primario, '% PIB'); add('Confiança do mercado', e.conf);
+  Object.entries(fx.grp||{}).forEach(([k,v])=>add(GRUPOS.find(g=>g.id===k).nome, v));
+  const nm={pobreza:'Tendência da pobreza',homic:'Tendência de homicídios',desmat:'Tendência do desmatamento',educ:'Educação (tendência)',saude:'Saúde (tendência)',infra:'Infraestrutura (tendência)'};
+  Object.entries(fx.mod||{}).forEach(([k,v])=>add(nm[k]||k, v*100, '%/ano'));
+  Object.entries(fx.rel||{}).forEach(([k,v])=>add(PAISES.find(c=>c.id===k).nome, v));
+  return out;
+}
+
+function placarPrevisto(pv){
+  const bar=(nome,sim,nec,tot)=>`<div class="placar mini"><div class="pl-h"><span>${nome}</span><small>${sim} previstos · precisa ${nec}</small></div><div class="pl-b"><span class="s" style="width:${clamp(sim/tot*100,0,100)}%"></span><i style="left:${nec/tot*100}%"></i></div></div>`;
+  return bar('Câmara',pv.c,pv.nc,513)+bar('Senado',pv.s,pv.ns,81)+`<p class="dica">Chance <b class="ch ${pv.chance}">${pv.chance}</b>${pv.contra.length?` · bancadas que resistem: ${pv.contra.slice(0,4).join(', ')}`:''}</p>`;
+}
+
+async function abrirRedacao(){ RED = RED && RED.fase!=='feito' ? RED : { fase:'texto', texto:'' }; renderRedacao(); const sp = await obterIA(); RED.temIA = !!sp; if (RED.fase==='texto') renderRedacao(); }
+
+function renderRedacao(){
+  const r = RED;
+  if (r.fase==='texto'){
+    return abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">Caneta presidencial</span><span>${S.ap} ${RAIO} de agenda</span></div>
+      <h2 class="ev-t sm">Qual é a sua medida?</h2>
+      <p class="ev-x">Escreva com suas palavras, como se ditasse para a Casa Civil.</p>
+      <textarea id="f-medida" class="area" rows="5" maxlength="1500" placeholder="Ex.: Criar um vale-gás mensal para famílias do CadÚnico, pago pela Caixa">${esc(r.texto||'')}</textarea>
+      <div class="filtros wrap">${EXEMPLOS_MED.map((x,i)=>`<button data-a="exmed" data-v="${i}">${esc(x.length>46?x.slice(0,44)+'…':x)}</button>`).join('')}</div>
+      ${r.erro?`<p class="st-msg">${esc(r.erro)}</p>`:''}
+      <p class="dica">${r.temIA===false?'Sem IA neste aparelho: a assessoria classifica por palavras-chave. Abra o jogo pelo link do Claude para a análise completa.':'A análise jurídica, os efeitos e o parecer do ministro são feitos por IA (Claude).'}</p>
+      <button class="btn-g yel" data-a="red-analisar">Enviar à assessoria</button>
+      <button class="lnk c" data-a="fechar">Cancelar</button></div>`);
+  }
+  if (r.fase==='carregando'){
+    return abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">Casa Civil</span></div><h2 class="ev-t sm">${esc(r.msg||'Analisando…')}</h2>
+      <div class="carregando"><i></i><i></i><i></i></div><p class="dica c">A primeira análise pode levar até um minuto.</p>
+      <button class="lnk c" data-a="red-parar">Parar</button></div>`);
+  }
+  const d = r.def, inst = INSTRUMENTOS[d.instrumento], m = S.ministros[d.ministerio], mi = MIN(d.ministerio);
+  const pv = d.instrumento==='DECRETO' ? null : mapaVotos(d);
+  const par = r.parecer;
+  abrirModal(`<div class="ev">
+    <div class="ev-top"><span class="tag ${d.instrumento==='PEC'||d.instrumento==='MP'?'red':'yel'}">${inst.nome}</span><span>${d.ia?'Análise por IA':'Análise automática'}</span></div>
+    <h2 class="ev-t sm">${esc(d.nome)}</h2>
+    ${d.desc?`<p class="ev-x">${esc(d.desc)}</p>`:''}
+    <div class="despacho"><small>Por que ${d.instrumento==='DECRETO'?'decreto':d.instrumento}</small><p>${esc(d.motivo||inst.regra)}</p></div>
+    ${d.inconst?`<p class="st-msg">A assessoria aponta inconstitucionalidade: alta chance de o STF derrubar.</p>`:''}
+    <div class="linha2"><span>Pasta</span><b>${mi.nome}</b></div>
+    <div class="linha2"><span>Posição</span><b>${rotE(d.e)} · ${rotS(d.s)}</b></div>
+    <div class="linha2"><span>Apelo popular</span><b>${d.pop>0.4?'alto':d.pop>0?'moderado':d.pop>-0.4?'baixo':'impopular'}</b></div>
+    ${d.apoia&&d.apoia.length?`<div class="linha2"><span>Apoiam</span><b>${esc(d.apoia.join(', '))}</b></div>`:''}
+    ${d.resiste&&d.resiste.length?`<div class="linha2"><span>Resistem</span><b>${esc(d.resiste.join(', '))}</b></div>`:''}
+    <p class="rot">Efeitos estimados</p>${chips(previaFx(d.fx))||'<p class="dica">Efeito pequeno.</p>'}
+    <p class="rot">${pv?'Previsão de votos hoje':'Sem votação'}</p>
+    ${pv?placarPrevisto(pv):`<p class="dica">Decretos não passam pelo Congresso. Risco jurídico estimado: ${Math.round(d.risco*100)}%.</p>`}
+    ${par?`<div class="parecer ${par.parecer}"><div class="pr-h">${avatar(m.nome,(P(m.partido)||{}).cor,40)}<span><small>Parecer simulado</small><b>${esc(m.nome)}</b><em>${par.parecer==='favoravel'?'Favorável':par.parecer==='contrario'?'Contrário':'Com ressalvas'}</em></span></div>
+      <p>“${esc(par.fala||'')}”</p>${(par.pontos||[]).length?`<ul>${par.pontos.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+      ${par.o_que_falta?`<p class="dica"><b>Para aprovar:</b> ${esc(par.o_que_falta)}</p>`:''}
+      ${par.ajuste&&par.ajuste.descricao&&!r.ajusteAplicado?`<button class="btn-s" data-a="red-ajuste">Aceitar ajuste: ${esc(par.ajuste.descricao)}</button>`:r.ajusteAplicado?'<p class="dica">Ajuste do ministro incorporado ao texto.</p>':''}
+      <small class="aviso">${AVISO_SIMULACAO}</small></div>`
+      :`<button class="btn-s wide" data-a="red-parecer">Pedir parecer de ${esc(m.nome)}</button>`}
+    <button class="btn-g yel" data-a="red-protocolar" ${S.ap<1?'disabled':''}>${d.instrumento==='DECRETO'?'Assinar decreto':d.instrumento==='MP'?'Editar MP':'Protocolar no Congresso'} · 1 ${RAIO}</button>
+    <button class="lnk c" data-a="red-editar">Reescrever</button></div>`);
+}
+
+async function redAnalisar(){
+  const el=document.getElementById('f-medida'); const txt=(el?el.value:RED.texto||'').trim();
+  RED.texto=txt; RED.erro='';
+  if (txt.length<12){ RED.erro='Descreva a medida com um pouco mais de detalhe.'; return renderRedacao(); }
+  RED.fase='carregando'; RED.msg='A Subchefia de Assuntos Jurídicos analisa o texto…'; renderRedacao();
+  negCtl = new AbortController();
+  let raw=null, aviso='';
+  try { raw = await interpretarIA(txt, negCtl.signal); }
+  catch(e){ if (e && e.code==='cancelled'){ RED.fase='texto'; return renderRedacao(); } aviso = e&&e.code==='refused' ? 'A IA recusou analisar esse texto; usamos a análise automática.' : 'A análise por IA falhou; usamos a análise automática.'; }
+  if (!raw) raw = interpretarLocal(txt);
+  RED.def = normalizarMedida(raw, txt); RED.parecer=null; RED.ajusteAplicado=false; RED.fase='proposta';
+  if (aviso) RED.def.desc = aviso+' '+(RED.def.desc||'');
+  if (!modal.hidden) renderRedacao();
+}
+
+async function redParecer(){
+  const d=RED.def, pv = d.instrumento==='DECRETO' ? { c:0,s:0,nc:0,ns:0,contra:[] } : mapaVotos(d);
+  RED.fase='carregando'; RED.msg=`${S.ministros[d.ministerio].nome} analisa a medida…`; renderRedacao();
+  negCtl = new AbortController();
+  let par=null;
+  try { par = await parecerIA(d, pv, negCtl.signal); }
+  catch(e){ if (e && e.code==='cancelled'){ RED.fase='proposta'; return renderRedacao(); } }
+  RED.parecer = par || parecerLocal(d, pv); RED.fase='proposta';
+  if (!modal.hidden) renderRedacao();
+}
+
+// ---------- mesa de negociação ----------
+function renderNeg(){
+  const t = S.projetos.find(x=>x.id===NEG.id);
+  if (!t){ NEG=null; fecharModal(); return render(); }
+  const d = getProj(t.id), pv = mapaVotos({...d, artic:t.artic, neg:t.neg});
+  const linhas = pv.linhas.filter(l=>l.dep>0);
+  abrirModal(`<div class="ev">
+    <div class="ev-top"><span class="tag ${t.mp?'red':'yel'}">${t.mp?'MP':d.tipo}</span><span>Plenário em ${t.restante} ${t.restante>1?'meses':'mês'} · ${S.ap} ${RAIO}</span></div>
+    <h2 class="ev-t sm">${esc(d.nome)}</h2>
+    ${NEG.msg?`<div class="despacho"><small>Resultado</small><p>${esc(NEG.msg)}</p></div>`:''}
+    ${placarPrevisto(pv)}
+    <p class="rot">Mapa de votos por bancada</p>
+    <div class="mapav">${linhas.map(l=>`<button class="mv" data-a="neg-bancada" data-v="${l.id}" ${l.id===S.pres.partido||S.ap<1?'disabled':''} style="--pc:${l.cor}"><b>${l.id}</b><span class="mv-b"><span style="width:${Math.round(l.pc*100)}%"></span></span><em class="${l.pc>=0.6?'ok':l.pc<0.4?'bad':''}">${l.simC}/${l.dep}</em></button>`).join('')}</div>
+    <p class="dica">Toque numa bancada para negociar com ela.</p>
+    <p class="rot">Articulação</p>
+    <div class="negs">${NEG_ACOES.filter(a=>a.id!=='bancada').map(a=>`<button class="neg" data-a="neg-${a.id}" ${S.ap<a.custo?'disabled':''}><b>${a.nome}</b><small>${a.desc}</small><span>${RAIO.repeat(a.custo)}</span></button>`).join('')}</div>
+    ${(t.hist||[]).length?`<p class="rot">Histórico</p><ul class="news">${t.hist.slice(0,5).map(h=>`<li><p>${esc(h.txt)}</p><small>${dataCurta(h.t)}</small></li>`).join('')}</ul>`:''}
+    <button class="btn-g yel" data-a="neg-fechar">Voltar ao Congresso</button></div>`);
+}
+function negExec(acao, alvo, modo){ NEG.msg = negociar(NEG.id, acao, alvo, modo); renderNeg(); }
+
+// ---------- projeto de poder ----------
+function renderPoder(confirmar){
+  S.poder = S.poder || { militar:0, socialista:0, tMil:-9, tSoc:-9 };
+  const bloco = path=>{
+    const R=RUPTURAS[path], st=estadoRuptura(path);
+    return `<section class="rupt" style="--rc:${R.cor}"><h3>${R.nome}</h3><p class="dica">${R.intro}</p>
+      <ol class="etapas">${R.etapas.map((et,i)=>{ const feito=i<S.poder[path], atual=i===S.poder[path];
+        return `<li class="${feito?'feito':atual?'atual':''}"><b>${et.nome}</b><small>${et.desc}</small>
+        ${atual?`<div class="reqs">${st.reqs.map(r=>`<span class="${r.ok?'ok':'bad'}">${r.nome} ${fmt(r.atual,0)}/${r.v}</span>`).join('')}</div>
+        ${st.outro?'<small class="dica">Outro projeto de poder já está em curso.</small>':st.emVoto?'<small class="dica">Etapa em votação no Congresso.</small>':st.espera?'<small class="dica">Aguarde ao menos dois meses entre as etapas.</small>':''}
+        ${confirmar===path?`<div class="bts"><button class="btn-s red" data-a="poder-ok" data-v="${path}">Confirmar: ${et.final?'executar a ruptura':'executar etapa'}</button><button class="btn-s" data-a="poder">Cancelar</button></div>`:
+          `<button class="btn-s ${et.final?'red':'yel'}" data-a="poder-pre" data-v="${path}" ${st.ok?'':'disabled'}>${et.final?'Executar a ruptura':'Executar etapa'} · 2 ${RAIO}</button>`}`:''}</li>`; }).join('')}</ol></section>`;
+  };
+  abrirModal(`<div class="ev"><div class="ev-top"><span class="tag red">Projeto de poder</span><span>${S.ap} ${RAIO}</span></div>
+    <h2 class="ev-t sm">Romper a ordem constitucional</h2>
+    <p class="ev-x">A Constituição de 1988 protege a forma federativa, o voto direto, a separação de Poderes e os direitos individuais (art. 60, § 4º). Rupturas cobram um preço alto: sanções, isolamento, resistência nas ruas e nas instituições. Cada etapa tem requisitos de apoio político.</p>
+    ${bloco('militar')}${bloco('socialista')}
+    <button class="lnk c" data-a="fechar-render">Fechar</button></div>`);
+}
+
 // ---------- fim ----------
 function notaFinal(){
   const h=S.hist, e=S.eco, el=S.flags.eleicao;
@@ -2521,6 +3429,8 @@ function notaFinal(){
   const media=k=>h[k].reduce((a,b)=>a+b,0)/h[k].length;
   let n=S.aprov*0.6 + cumpridas*8 + media('pib')*4 - Math.max(0,e.ipca-4.5)*3 - Math.max(0,e.divida-82.4)*0.6 + S.aprovadas.length*1.2 + (el&&el.vence?8:0) + (S.carimbos||[]).length*0.5;
   if (S.fim.tipo==='impeachment') n-=40; if (S.fim.tipo==='renuncia') n-=30;
+  if (['ditadura','golpe_fracassado','deposto'].includes(S.fim.tipo)) n=Math.min(n,20);
+  if (S.fim.tipo==='socialismo') n-=15;
   if (S.dificuldade==='dificil') n*=1.1; if (S.dificuldade==='facil') n*=0.9;
   const letra=n>=85?'S':n>=72?'A':n>=58?'B':n>=45?'C':n>=30?'D':'F';
   return { pontos:Math.max(0,Math.round(n*20)), letra, cumpridas };
@@ -2529,13 +3439,21 @@ function notaFinal(){
 function renderFim(){
   checarCarimbos(); S.novosCarimbos=[];
   const f=S.fim, h=S.hist, e=S.eco, el=S.flags.eleicao, nf=notaFinal();
-  const titulo=f.tipo==='impeachment'?'Impeachment':f.tipo==='renuncia'?'Renúncia':el&&el.vence?(S.flags.desistiu?'Sucessor eleito':'Reeleito!'):'Fim do mandato';
+  const FINAIS = {
+    ditadura:['Regime militar','O Congresso é fechado, ministros do STF são afastados e a imprensa passa por censura prévia. Os Estados Unidos e a União Europeia impõem sanções; o Mercosul suspende o Brasil pela cláusula democrática do Protocolo de Ushuaia. Opositores partem para o exílio. Como em 1964, o regime promete ser "provisório".'],
+    golpe_fracassado:['Golpe fracassado','O Alto Comando se divide e a ruptura não se sustenta. O Congresso aprova seu afastamento, a Polícia Federal cumpre o mandado de prisão e o STF abre ação penal por tentativa de golpe de Estado e abolição violenta do Estado Democrático de Direito (arts. 359-L e 359-M do Código Penal). Você fica inelegível.'],
+    socialismo:['República Socialista','A nova Constituição é promulgada. Bancos e setores estratégicos passam ao controle estatal, a reforma agrária avança e um sistema de conselhos populares é criado. O real perde metade do valor, há fuga de capitais, sanções americanas e forte oposição interna. O país entra numa fase de incerteza que os livros de história ainda vão julgar.'],
+    deposto:['Deposto pelas Forças Armadas','Com o país dividido pela Constituinte, tanques ocupam Brasília. As Forças Armadas não reconhecem a nova Constituição e depõem o governo, como fizeram com João Goulart em 1º de abril de 1964. Você parte para o exílio.'],
+  };
+  const especial = FINAIS[f.tipo];
+  const titulo=especial?especial[0]:f.tipo==='impeachment'?'Impeachment':f.tipo==='renuncia'?'Renúncia':el&&el.vence?(S.flags.desistiu?'Sucessor eleito':'Reeleito!'):'Fim do mandato';
   const linha=(n,a,b,d=1,suf='')=>`<div class="rs-r"><span>${n}</span><b>${fmt(b,d)}${suf}</b><em>era ${fmt(a,d)}${suf}</em></div>`;
   const resumo=`${S.pres.nome} (${S.pres.partido}): nota ${nf.letra} e ${nf.pontos} pontos em A FAIXA. Aprovação final de ${fmt(S.aprov,0)}%, ${S.aprovadas.length} leis aprovadas, ${(S.carimbos||[]).length} carimbos.`;
   app.innerHTML=`<section class="final">
     <p class="capa-ano">${dataTurno(Math.min(S.t,47))}</p>
     <h1 class="final-t">${titulo}</h1>
     <div class="nota-final"><span class="letra l-${nf.letra}">${nf.letra}</span><span><b>${nf.pontos.toLocaleString('pt-BR')}</b><small>pontos</small></span></div>
+    ${especial?`<div class="despacho"><small>Desfecho</small><p>${especial[1]}</p></div>`:''}
     <p class="ev-x c">${esc(S.pres.nome)} termina com ${fmt(S.aprov,0)}% de aprovação, ${S.aprovadas.length} ${S.aprovadas.length===1?'lei aprovada':'leis aprovadas'} e ${nf.cumpridas} de 3 promessas cumpridas.</p>
     <section class="card"><h3 class="ct">Aprovação no mandato</h3>${spark(h.aprov,{h:90,ref:50,min:10,max:80})}</section>
     <section class="card"><h3 class="ct">O Brasil que você entrega</h3><div class="rs">
@@ -2599,14 +3517,36 @@ document.addEventListener('click', ev=>{
   if (a==='novojogo'){ apagarSave(); S=null; tela='inicio'; fecharModal(); render(); return window.scrollTo(0,0); }
   if (a==='copiar'){ const el=document.getElementById('resumo-txt'); const ok=()=>{ b.textContent='Copiado!'; }; const falha=()=>{ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent='Texto selecionado: copie manualmente'; }; try{ navigator.clipboard.writeText(el.textContent).then(ok,falha); }catch(e){ falha(); } return; }
   if (a==='propor'||a==='mp'){ if (S.ap<1) return; propor(v, a==='mp'); calcBase(); salvar(); const d=PROJETOS.find(p=>p.id===v); return feedbackAcao(a==='mp'?'Medida Provisória editada':'Projeto enviado', a==='mp'?`${d.nome} já está valendo. O Congresso tem 4 meses para aprovar, ou a MP cai.`:`${d.nome} começa a tramitar e vai a plenário em ${d.tram} meses. Articule votos até lá.`); }
+  if (a==='presreal'){ const r=PRES_REAIS[+v]; SET.pres={...SET.pres, nome:r.nome, idade:r.idade, uf:r.uf, bg:r.bg, e:r.e, s:r.s}; SET.modo='existente'; SET.partido=r.partido; SET.coalizao=[]; return renderMantendoScroll(); }
+  if (a==='redigir') return abrirRedacao();
+  if (a==='exmed'){ RED.texto=EXEMPLOS_MED[+v]; return renderRedacao(); }
+  if (a==='red-analisar') return redAnalisar();
+  if (a==='red-parar'){ negCtl&&negCtl.abort(); return; }
+  if (a==='red-parecer') return redParecer();
+  if (a==='red-ajuste'){ aplicarAjuste(RED.def, RED.parecer.ajuste); RED.ajusteAplicado=true; return renderRedacao(); }
+  if (a==='red-editar'){ RED.fase='texto'; return renderRedacao(); }
+  if (a==='red-protocolar'){ if (S.ap<1) return; const txt=protocolarMedida(RED.def); const d=RED.def; RED=null; calcBase(); salvar();
+    abrirModal(`<div class="ev"><div class="ev-top"><span class="tag yel">${INSTRUMENTOS[d.instrumento].nome}</span></div><h2 class="ev-t sm">${esc(d.nome)}</h2><div class="despacho"><small>Despacho do presidente</small><p>${esc(txt)}</p></div>${d.instrumento==='DECRETO'?chips(d.efeitos):''}${htmlReacoes(reacoesReais(d))}${d.instrumento!=='DECRETO'?`<button class="btn-g yel" data-a="negociar" data-v="${d.id}">Abrir mesa de negociação</button>`:''}<button class="${d.instrumento!=='DECRETO'?'lnk c':'btn-g yel'}" data-a="fechar-render">${d.instrumento!=='DECRETO'?'Depois':'Continuar'}</button></div>`); return; }
+  if (a==='negociar'){ NEG={ id:v, msg:'' }; return renderNeg(); }
+  if (a==='neg-fechar'){ NEG=null; fecharModal(); return renderMantendoScroll(); }
+  if (a==='neg-bancada'){ const p=P(v); const l=LIDERES[v]; return abrirModal(`<div class="ev"><h2 class="ev-t sm">Negociar com o ${v}</h2><p class="ev-x">${p.dep} deputados e ${p.sen} senadores. ${l?`Quem negocia é ${l}, presidente do partido.`:''}</p><div class="ops"><button class="op" data-a="neg-modo" data-v="${v}:cargos"><span><b>Oferecer cargos</b><small>Diretorias e segundo escalão. Funciona melhor com partidos fisiológicos.</small></span></button><button class="op" data-a="neg-modo" data-v="${v}:emendas"><span><b>Pagar emendas da bancada</b><small>Custa ao Orçamento.</small></span></button><button class="op" data-a="neg-modo" data-v="${v}:texto"><span><b>Aceitar mudanças no texto</b><small>O projeto se aproxima da posição do partido e perde parte do efeito.</small></span></button></div><button class="lnk c" data-a="neg-volta">Voltar</button></div>`); }
+  if (a==='neg-modo'){ const [pid,modo]=v.split(':'); return negExec('bancada', pid, modo); }
+  if (a==='neg-volta') return renderNeg();
+  if (a==='neg-frente') return abrirModal(`<div class="ev"><h2 class="ev-t sm">Qual frente parlamentar?</h2><div class="ops lista">${FRENTES.map(f=>{ const d=getProj(NEG.id); const tag=((d.frentes||FRENTES_PROJ[d.id]||{})[f.id])||0; return `<button class="op" data-a="neg-frente-ok" data-v="${f.id}"><span><b>${f.nome}</b><small>${f.apelido}${f.lider?' · '+f.lider:''} · ${tag>0.2?'tende a apoiar':tag<-0.2?'tende a votar contra':'neutra'}</small></span></button>`; }).join('')}</div><button class="lnk c" data-a="neg-volta">Voltar</button></div>`);
+  if (a==='neg-frente-ok') return negExec('frente', v);
+  if (a.startsWith('neg-') && NEG_ACOES.some(x=>'neg-'+x.id===a)) return negExec(a.slice(4));
+  if (a==='poder') return renderPoder();
+  if (a==='poder-pre') return renderPoder(v);
+  if (a==='poder-ok'){ const txt=avancarRuptura(v); salvar(); if (S.fim){ fecharModal(); abrirModal(`<div class="ev"><div class="ev-top"><span class="tag red">Ruptura</span></div><h2 class="ev-t sm">${esc(RUPTURAS[v].nome)}</h2><div class="despacho"><p>${esc(txt||'')}</p></div><button class="btn-g yel" data-a="fechar-render">Ver o desfecho</button></div>`); return; } return feedbackAcao(RUPTURAS[v].nome, txt||'Não foi possível executar a etapa.'); }
   if (a==='articular'){ const t=S.projetos.find(x=>x.id===v); if (!t||S.ap<1) return; S.ap--; t.artic++; S.eco.primTemp-=0.02; S.partidos.filter(p=>S.coalizao.includes(p.id)).forEach(p=>p.sat=clamp(p.sat+1,0,100)); logar('Congresso',`Planalto articula votos para: ${PROJETOS.find(p=>p.id===v).nome}.`); salvar(); return renderMantendoScroll(); }
   if (a==='romper') return abrirModal(`<div class="ev"><h2 class="ev-t sm">Romper com o ${v}?</h2><p class="ev-x">O partido deixa a base e seus ministros são trocados por técnicos.</p><div class="ops"><button class="op" data-a="romper-ok" data-v="${v}"><span>Sim, romper</span></button><button class="op" data-a="fechar"><span>Cancelar</span></button></div></div>`);
   if (a==='romper-ok'){ romperPartido(v); salvar(); fecharModal(); return renderMantendoScroll(); }
   if (a==='trocar'){ const mi=MIN(v); tmpCandidatos={ min:v, lista:candidatosMinisterio(v,S.coalizao,S.pres.partido) };
-    return abrirModal(`<div class="ev"><h2 class="ev-t sm">Novo nome para ${mi.nome}</h2><p class="ev-x">Sai ${esc(S.ministros[v].nome)}. Quem entra?</p><div class="ops lista">${tmpCandidatos.lista.map((c,i)=>`<button class="op" data-a="trocar-ok" data-v="${i}"><span><b>${esc(c.nome)} · ${c.partido||'Técnico'}</b><small>${esc(c.desc)} · C ${c.comp} · L ${c.leal} · I ${c.integ}</small></span></button>`).join('')}</div><button class="lnk c" data-a="fechar">Cancelar</button></div>`); }
+    if (!tmpCandidatos.lista.length) return feedbackAcao('Sem nomes disponíveis','Todos os nomes cotados para esta pasta já estão no governo.');
+    return abrirModal(`<div class="ev"><h2 class="ev-t sm">Novo nome para ${mi.nome}</h2><p class="ev-x">Sai ${esc(S.ministros[v].nome)}. Quem entra?</p><div class="ops lista">${tmpCandidatos.lista.map((c,i)=>`<button class="op" data-a="trocar-ok" data-v="${i}"><span><b>${esc(c.nome)} · ${c.partido||'sem partido'}</b><small>${esc(c.desc)} · Técnico ${c.tec} · Político ${c.pol} · Afinidade ${afinidade(c)}</small></span></button>`).join('')}</div><button class="lnk c" data-a="fechar">Cancelar</button></div>`); }
   if (a==='trocar-ok'){ if (S.ap<1) return; trocarMinistro(tmpCandidatos.min, tmpCandidatos.lista[+v]); minAberto=null; salvar(); fecharModal(); return renderMantendoScroll(); }
   // ações
-  if (a==='acao-pronunciamento'||a==='acao-emendas'||a==='acao-entrevista') return executarAcao(a.slice(5));
+  if (a==='acao-pronunciamento'||a==='acao-emendas'||a==='acao-entrevista'||a==='acao-ato') return executarAcao(a.slice(5));
   if (a==='acao-visitaestado') return modalEscolha('Visitar um estado','Os estados com menor aprovação aparecem primeiro.', ESTADOS.slice().sort((x,y)=>aprovUF(x.uf)-aprovUF(y.uf)).map(e=>({v:e.uf,t:e.nome,s:`Aprovação ${fmt(aprovUF(e.uf),0)}%`})), 'acao-visita');
   if (a==='acao-visita') return executarAcao('visitaestado', v);
   if (a==='acao-reuniaogrupo') return modalEscolha('Receber no Planalto','Quem você chama para conversar?', GRUPOS.map(g=>({v:g.id,t:g.nome,s:`Relação ${fmt(S.grp[g.id],0)}/100`})), 'reuniao');
