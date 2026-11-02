@@ -54,6 +54,12 @@ Duração máxima: 50 a 60 s.
 3. **Narração**: o autor manda 4 áudios. Antes de usar, comparar `md5sum` com áudios antigos (já chegaram arquivos repetidos de outros vídeos) e transcrever. Montar com `audio/<nome>/montar.py` (modelos: `audio/cesta-basica/montar.py`, `audio/esquerda-cirandeira/montar.py`): voz acelerada (VEL 1.08–1.20), pausas compactadas, marcas de T por frase falada, CORRECOES da transcrição, legendas.
 4. **Render** em segundo plano (`run_in_background`), comprimir (`-crf 24 -tune grain`) para `saida/<nome>-FINAL.mp4`, enviar e fazer commit/push.
 5. **Capa**: arte do autor + título; conferir o recorte 3:4 do grid (y 240–1680).
+6. **Legenda do post** (texto que acompanha o Reels): 1 parágrafo curto de contexto/chamada, em tom de militância, com 1–2 emojis (ex.: 🔥🚨), fatos conferidos como no roteiro; depois uma linha em branco e o rodapé fixo:
+   ```
+   🚩Narrador: Léo Duarte
+   VÍDEOS NOVOS TODOS OS DIAS!
+   ```
+   Salvar em `roteiros/<nome>.md` (seção "Legenda do post") e enviar pronta para copiar.
 
 ## Preferências do autor (valem para todos os vídeos)
 - Legenda: tarja escura do tamanho da frase, filete vermelho, texto bege 48 px, y 1466–1542 (não usar faixa transparente).

@@ -76,3 +76,11 @@ NA TELA: hemiciclo com as 513 cadeiras (PL em azul, PT-PCdoB-PV em vermelho) · 
 ## Notas técnicas
 - v2 usava uma maquete 3D (`L.palco3d`, three.js). Na v3 o autor pediu 2D: a cena desenha o mapa, as casinhas, os bonecos, as pilhas de votos, a urna, a lixeira, a caneta e a cerca direto no canvas 2D. A função 3D ficou na biblioteca, documentada, para quando for pedida.
 - Trilha: banda completa (`audio/voto-distrital/previa.py`), com os mesmos tempos da cena.
+
+## Legenda do post
+```
+Na calada da noite, a Câmara quer mudar a regra do jogo! Hugo Motta quer votar ainda este ano o voto distrital misto, antes da posse dos novos deputados. No distrito, só o mais votado leva, e o voto de quem perdeu vai pro lixo. Não podemos deixar isso passar sem debate: espalhe este vídeo! 🔥🚨
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```
