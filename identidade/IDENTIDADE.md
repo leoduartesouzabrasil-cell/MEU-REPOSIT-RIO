@@ -106,9 +106,9 @@ Regras:
 Para explicações "na prática" (cidades, distritos, personagens), a cena pode montar uma maquete 3D. O estilo é de **maquete de papelão
 ou brinquedo de madeira**: cores chapadas da paleta (a pele dos personagens em tons de marrom é a única exceção), sombreamento em
 3 degraus (toon), aresta fina de tinta, sombra dura e névoa bege no fundo. Não usar reflexo, brilho, bloom nem texturas realistas.
+**O autor prefere explicações em 2D**: no voto distrital a maquete 3D foi trocada por uma versão 2D (mapa de casinhas de cartaz + praça com bonecos, `motor/cenas/voto-distrital.js`). Use o 3D só se for pedido.
 O WebGL é desenhado num canvas e composto no 2D. Título, fonte, etiquetas (posição via `P.projetar`) e legenda continuam no 2D,
-com uma faixa de papel atrás do título (y 270–410). Toda posição é função de `t`. Modelo: `motor/cenas/voto-distrital.js`.
-Marque sempre "exemplo ilustrativo · personagens fictícios" na linha da fonte.
+com uma faixa de papel atrás do título (y 270–410). Toda posição é função de `t`. Marque sempre "exemplo ilustrativo · personagens fictícios" na linha da fonte.
 
 ## 5. Textura e acabamento (sempre ligados)
 

@@ -2,8 +2,8 @@
 
 Duração-alvo: 55–60 s (~160 palavras) · Reels 1080×1920 · legendado · trilha rock sintetizado · fecha com o logo O Camarada.
 Gancho: Hugo Motta quer votar ainda em 2026 a PEC do voto distrital misto (transição em 2030, sistema completo em 2034), antes da posse dos novos deputados.
-**Status: prévia sem narração pronta** (`motor/cenas/voto-distrital.js` + `audio/voto-distrital/previa.py`, 58,4 s). Trilha refeita com a banda completa (identidade 6a), a pedido do autor: "trilha melhor e mais trabalhada". Print: Agência Câmara, 28/10/2026 (`midia/voto-distrital/print-agencia-camara-2026-10-28.jpg`).
-Pedido do autor (v2): abrir com "NA CALADA DA NOITE ELES QUEREM JOGAR O SEU VOTO NO LIXO!" + print de notícia; contexto breve; "COMO ISSO FUNCIONARIA NA PRÁTICA?" com cenário e personagens em 3D, bem didático.
+**Status: prévia sem narração pronta, v3 em 2D** (`motor/cenas/voto-distrital.js` + `audio/voto-distrital/previa.py`, 58,4 s). Trilha refeita com a banda completa (identidade 6a), a pedido do autor: "trilha melhor e mais trabalhada". Print: Agência Câmara, 28/10/2026 (`midia/voto-distrital/print-agencia-camara-2026-10-28.jpg`).
+Pedido do autor (v2): abrir com "NA CALADA DA NOITE ELES QUEREM JOGAR O SEU VOTO NO LIXO!" + print de notícia; contexto breve; "COMO ISSO FUNCIONARIA NA PRÁTICA?" com cenário e personagens, bem didático. **v3: o autor pediu para trocar o 3D por 2D.**
 
 ## Estrutura e ideia visual
 1. **Abertura (CARTAZ, 0–5 s):** fundo vermelho, carimbos em sequência: "NA CALADA DA NOITE" / "ELES QUEREM JOGAR" / "O SEU VOTO NO LIXO!".
@@ -13,14 +13,13 @@ Pedido do autor (v2): abrir com "NA CALADA DA NOITE ELES QUEREM JOGAR O SEU VOTO
    (Print da Agência Câmara porque é de uso livre com crédito. O g1 é protegido e bloqueia acesso automático.)
 3. **Contexto (ARQUIVO, 9–20 s):** ficha datilografada com "PEC" · "VOTAÇÃO AINDA EM 2026" · "ANTES DA POSSE (FEV/2027)" · "VALE EM 2034".
    Depois, uma barra dividida "METADE LISTA DO PARTIDO | METADE DISTRITO".
-4. **"COMO ISSO FUNCIONARIA NA PRÁTICA?" (carimbo; 3D, 20–45 s):** maquete 3D de uma cidade fictícia, **Vila Exemplo**.
-   - Estilo: low-poly **fosco**, cores chapadas da paleta (bege, vermelho, amarelo, azul só no contraponto, tinta), sombra dura e grão de papel por cima, como uma maquete de papelão ou um brinquedo de madeira. Nada de "3D brilhante".
-   - Linhas vermelhas no chão dividem a cidade em 3 distritos. A câmera desce no **Distrito 1**.
-   - Três candidatos em pedestais: **a Professora**, **o Líder comunitário** e **o Empresário**. Barras 3D sobem: 30% · 30% · 40%.
-   - Personagens: a **Dona Maria** pega a cédula e vota na Professora, e o **seu João** vota no Líder. Os votos viram blocos que voam para as pilhas.
-   - O Empresário leva a única vaga. Os blocos da Professora e do Líder (**60% do distrito**) caem numa lixeira 3D. Etiqueta: "60% DOS VOTOS → LIXO".
-   - Uma caneta gigante redesenha a linha do distrito e engole um bairro vizinho. As barras mudam e o resultado vira: "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA".
-   - Uma cerca de madeira fecha o distrito: "CURRAL".
+4. **"COMO ISSO FUNCIONARIA NA PRÁTICA?" (carimbo; ilustração 2D, 18–44 s):** a **Vila Exemplo** vista de cima, como um mapa de casinhas de cartaz (telhados vermelhos, amarelos e tinta).
+   - Linhas vermelhas dividem a cidade em 3 distritos ("1 DISTRITO = 1 VAGA"). A câmera dá zoom no **Distrito 1**, e a cena vira a praça.
+   - Na praça, três candidatos de cartaz em pedestais: **a Professora**, **o Líder comunitário** e **o Empresário**. Acima de cada um, uma pilha de cubos (cada cubo = 5%).
+   - A **Dona Maria** vota na Professora e o **seu João** no Líder: a urna mostra "FIM" e o cubo voa até a pilha. Depois o povo do distrito chega e as pilhas sobem até 30% · 30% · 40%.
+   - O Empresário sobe no pedestal ("40% · ELEITO"). A lixeira entra, e os cubos da Professora e do Líder (**60%**) voam para dentro dela: "60% DOS VOTOS → LIXO".
+   - De volta ao mapa, uma caneta apaga a linha do distrito e a redesenha mais embaixo, engolindo um bairro de telhados azuis: "EMPRESÁRIO: 40% → 55%" e "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA".
+   - Uma cerca de madeira sobe em volta do distrito: "CURRAL". Do lado de fora ficam quatro bonecos: "MULHERES", "NEGROS", "JUVENTUDE", "MOVIMENTOS" → "SEM TERRITÓRIO, SEM VAGA".
 5. **Quem perde (ARQUIVO → CARTAZ, 45–52 s):** etiquetas que ficam fora da cerca: "MULHERES", "NEGROS", "JUVENTUDE", "MOVIMENTOS".
    Ficha "DISTRITÃO · 2030?" com os carimbos "REJEITADO 2017" / "REJEITADO 2021".
 6. **Fecho (CARTAZ, 52–60 s):** sol nascente: "ISSO NÃO É REFORMA." → "É JOGADA." → "NÃO AO VOTO DISTRITAL." Logo O Camarada com créditos.
@@ -46,7 +45,7 @@ NA TELA: ficha "PEC · 2026 · ANTES DA POSSE · VALE EM 2034" · barra "METADE 
 > E o voto deles? [pausa] Lixo.
 > E tem mais: quem desenha o mapa escolhe quem ganha. É só mexer a linha.
 
-NA TELA: carimbo "COMO ISSO FUNCIONARIA NA PRÁTICA?" · maquete 3D "VILA EXEMPLO" · "DISTRITO 1" · "1 DISTRITO = 1 VAGA" · barras 30% · 30% · 40% · "60% DOS VOTOS → LIXO" · "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA" · "CURRAL" · rodapé "Exemplo ilustrativo"
+NA TELA: carimbo "COMO ISSO FUNCIONARIA NA PRÁTICA?" · mapa 2D "VILA EXEMPLO" · "DISTRITO 1" · "1 DISTRITO = 1 VAGA" · barras 30% · 30% · 40% · "60% DOS VOTOS → LIXO" · "QUEM DESENHA O MAPA ESCOLHE QUEM GANHA" · "CURRAL" · rodapé "Exemplo ilustrativo"
 
 ### ÁUDIO #4: Quem perde e o fecho (firme, depois seco)
 > Quem não tem território perde espaço: mulheres, negros, movimentos sociais.
@@ -66,11 +65,8 @@ NA TELA: etiquetas fora da cerca · "DISTRITÃO · 2030?" + "REJEITADO 2017" / "
 - "Metade/metade" é a divisão mais citada (Alma Preta, Congresso em Foco). A Tribuna de Minas fala em 2/3 + 1/3. Conferir se o texto sair.
 - Distritão: "está na mesa" (negociação), não decidido. Rejeitado em 19/09/2017 (238 × 205) e retirado em 11/08/2021 (423 × 35), segundo a Agência Câmara.
 - "Antes da posse": CartaCapital; confirmar na CNN.
-- O exemplo do Reino Unido (34% dos votos → 63% das cadeiras) saiu desta versão para dar lugar ao 3D. Fica como reserva.
+- O exemplo do Reino Unido (34% dos votos → 63% das cadeiras) saiu desta versão para dar lugar ao exemplo da Vila Exemplo. Fica como reserva.
 
-## Notas técnicas do 3D
-- O motor roda no Chromium (Playwright), então dá para usar **three.js** (versão fixa, vendorizada em `motor/vendor/`) num canvas WebGL que é composto no canvas 2D da cena.
-  Assim o grão, as legendas, os carimbos e as fontes continuam no 2D, por cima.
-- Materiais `MeshToonMaterial`/`MeshLambertMaterial` com as cores da paleta, sombra dura, sem reflexo nem bloom. Os personagens são estilizados (cilindro + esfera + cabelo/acessório), em estilo de maquete.
-- Nova função na lib: `L.maquete3d(...)`, que precisa ser documentada no IDENTIDADE.md como "3D fosco de maquete", diferente do 3D brilhante proibido.
-- O render é determinístico por tempo `t` (sem relógio interno do three.js), para o render paralelo funcionar.
+## Notas técnicas
+- v2 usava uma maquete 3D (`L.palco3d`, three.js). Na v3 o autor pediu 2D: a cena desenha o mapa, as casinhas, os bonecos, as pilhas de votos, a urna, a lixeira, a caneta e a cerca direto no canvas 2D. A função 3D ficou na biblioteca, documentada, para quando for pedida.
+- Trilha: banda completa (`audio/voto-distrital/previa.py`), com os mesmos tempos da cena.

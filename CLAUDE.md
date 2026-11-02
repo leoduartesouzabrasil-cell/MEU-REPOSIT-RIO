@@ -59,7 +59,8 @@ Duração máxima: 50 a 60 s.
 - Legenda: tarja escura do tamanho da frase, filete vermelho, texto bege 48 px, y 1466–1542 (não usar faixa transparente).
 - Nada sobreposto: título y 330, fonte dos dados y 384, conteúdo até y ~1420; crédito de foto logo ABAIXO da foto.
 - Fotos de pessoas: as mais atuais com licença livre (Agência Brasil, Câmara/Senado via Commons, TSE como último recurso); enquadramento MANUAL de cada uma com `ferramentas/enq.py` (rosto inteiro com ombros, sem estourar a borda).
-- Trilha: rock sintetizado (`som.rock`, guitarra + bateria) — o autor não gosta da flauta.
+- Trilha: rock sintetizado, agora com a banda completa (`som.banda_secao`/`banda_golpe`, ver identidade 6a; modelo `audio/voto-distrital/previa.py`). O autor pediu trilha "melhor e mais trabalhada" e não gosta da flauta.
+- Explicações didáticas em **2D** (mapa, bonecos, pilhas de votos), não em 3D (o autor pediu para trocar a maquete 3D do voto distrital por 2D).
 - Tom: leve/irônico quando pedido; fatos sempre conferidos (lista nominal de votações via dados abertos da Câmara).
 - Duração-alvo ~50–60 s; se a narração não couber, entregar e oferecer versão curta (cortes de apoio, sem regravar).
 

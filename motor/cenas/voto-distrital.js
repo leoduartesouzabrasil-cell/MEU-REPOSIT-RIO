@@ -1,6 +1,6 @@
 // "Voto distrital: seu voto no lixo" (ângulo: contra). Roteiro: roteiros/voto-distrital.md
 // Abertura CARTAZ noturna → print da notícia (Agência Câmara) → contexto (ficha) → "como isso funcionaria na prática?" →
-// maquete 3D fosca da Vila Exemplo (distritos, Dona Maria e seu João votam, o empresário leva, 60% dos votos no lixo,
+// Vila Exemplo em 2D (distritos, Dona Maria e seu João votam, o empresário leva, 60% dos votos no lixo,
 // a caneta redesenha o mapa, o curral, quem fica de fora) → distritão (rejeitado 2017/2021) → cartaz final → logo.
 // PRÉVIA sem narração (tempos estimados). Com a narração, T vem de voto-distrital.tempos.js.
 // Render: node motor/render.js voto-distrital saida/voto-distrital.mp4 --audio audio/voto-distrital/previa.wav
@@ -180,47 +180,23 @@ window.CENA = {
       carimbar('NA PRÁTICA?', 1040, T.pratica + 0.6, BEGE, 210, FONTE.manchete, 23, { erro: TINTA, desloc: 6 });
     }
 
-    // ------------------------------------------------ E. a maquete 3D (Vila Exemplo)
+    // ------------------------------------------------ E. a Vila Exemplo em 2D (mapa → praça do distrito 1 → mapa redesenhado → curral)
     function maquete(lt) {
-      arquivo = false;
-      const M = montar(L), P = M.P;
-      atualizar(M, t);
-      P.desenhar(ctx);
-      ctx.fillStyle = 'rgba(237,224,196,0.92)'; ctx.fillRect(0, 270, 1080, 140); ctx.fillStyle = TINTA; ctx.fillRect(X0, 408, LARG, 3);
-      // rótulos 2D por cima do 3D
-      const Pj = (o, dy) => P.projetar(o, dy);
-      titulo(t < T.mapa ? 'VILA EXEMPLO · DISTRITO 1' : t < T.perde ? 'O MAPA' : 'QUEM FICA DE FORA', seg(lt, 0.2, 0.8));
+      L.fundo(ctx, BEGE);
+      const zIn = ease.saida(seg(t, T.desce, T.desce + 0.7)), zOut = ease.saida(seg(t, T.mapa, T.mapa + 0.7));
+      const praca = t >= T.desce + 0.45 && t < T.mapa + 0.35;
+      const aPraca = seg(t, T.desce + 0.45, T.desce + 0.75) * (1 - seg(t, T.mapa, T.mapa + 0.35));
+      const zoom = t < T.mapa ? lerp(1, 2.6, zIn) : lerp(2.6, 1, zOut);
+      if (aPraca < 1) L.camera(ctx, { x: lerp(540, 540, zIn), y: t < T.mapa ? lerp(960, 600, zIn) : lerp(600, 960, zOut), zoom }, () => mapa());
+      if (praca) { ctx.save(); ctx.globalAlpha = aPraca; L.fundo(ctx, BEGE); pracaD1(); ctx.restore(); }
+      // faixa de papel atrás do título (padrão)
+      titulo(praca && aPraca > 0.5 ? 'VILA EXEMPLO · DISTRITO 1' : t < T.mapa ? 'VILA EXEMPLO' : t < T.perde ? 'O MAPA' : 'QUEM FICA DE FORA', seg(lt, 0.2, 0.8));
       cred('exemplo ilustrativo · personagens fictícios', seg(lt, 0.4, 1.0));
-      if (t < T.desce + 0.6) {
-        M.distritos.forEach(([nome, x], i) => {
-          const q = Pj([x, 0.3, 0]); L.etiqueta(ctx, nome, q.x, q.y, seg(t, T.cidade + 1.2 + i * 0.25, T.cidade + 1.5 + i * 0.25) * (1 - seg(t, T.desce, T.desce + 0.4)), { cor: i === 0 ? VERM : TINTA, tam: 34 });
-        });
-        if (t >= T.distrito) L.etiqueta(ctx, '1 DISTRITO = 1 VAGA', CX, 1330, seg(t, T.distrito, T.distrito + 0.3) * (1 - seg(t, T.desce, T.desce + 0.3)), { cor: VERM, tam: 46 });
-      }
-      if (t >= T.desce + 0.8 && t < T.mapa) {
-        // nomes dos candidatos e percentuais
-        M.cand.forEach((c, i) => {
-          const q = Pj(c.pessoa, -0.35), pc = seg(t, T.desce + 0.8 + i * 0.25, T.desce + 1.1 + i * 0.25);
-          L.etiqueta(ctx, c.nome, q.x, q.y, pc * (1 - seg(t, T.lixo + 1.4, T.lixo + 1.8) * (i < 2 ? 1 : 0)), { cor: c.corEtq, corTexto: c.corTexto, tam: 28 });
-          const n = votosNum(i, t).n, pct = Math.round(n * 5);
-          if (pct > 0 && t < T.lixo + 0.2) {
-            const qb = P.projetar([c.x, 0.31 + n * 0.64 + 0.5, -3.2]);
-            L.etiqueta(ctx, pct + '%', qb.x, Math.max(470, qb.y), 1, { cor: BEGE, corTexto: TINTA, tam: 40 });
-          }
-        });
-        const qm = Pj(M.maria, 2.3), qj = Pj(M.joao, 2.3);
-        L.etiqueta(ctx, 'DONA MARIA', qm.x, qm.y, seg(t, T.maria - 0.4, T.maria) * (1 - seg(t, T.chuva, T.chuva + 0.3)), { cor: AMA, corTexto: TINTA, tam: 30 });
-        L.etiqueta(ctx, 'SEU JOÃO', qj.x, qj.y, seg(t, T.joao - 0.4, T.joao) * (1 - seg(t, T.chuva, T.chuva + 0.3)), { cor: VERM, tam: 30 });
-        if (t >= T.vence) {
-          const q0 = Pj(M.cand[2].pessoa, 2.7), q = { x: q0.x, y: Math.max(470, q0.y) };
-          L.aplicarCarimbo(ctx, seg(t, T.vence, T.vence + 0.3), q.x, q.y, () => L.etiqueta(ctx, 'ELEITO', q.x, q.y, 1, { cor: AMA, corTexto: TINTA, tam: 44 }), 31);
-        }
-        if (t >= T.lixoTxt) {
-          L.aplicarCarimbo(ctx, seg(t, T.lixoTxt, T.lixoTxt + 0.3), CX, 1330, () => {
-            ctx.fillStyle = TINTA; ctx.fillRect(X0, 1262, LARG, 132);
-            L.texto(ctx, '60% DOS VOTOS → LIXO', CX, 1352, { familia: FONTE.bloco, peso: 400, tam: tamMax('60% DOS VOTOS → LIXO', FONTE.bloco, 70, 400, 780), cor: BEGE, alinhar: 'center' });
-          }, 33);
-        }
+      // rótulos do mapa
+      if (t < T.desce) {
+        [['DISTRITO 1', 600], ['DISTRITO 2', 920], ['DISTRITO 3', 1240]].forEach(([s, y], i) =>
+          L.etiqueta(ctx, s, CX, y, seg(t, T.cidade + 1.2 + i * 0.25, T.cidade + 1.5 + i * 0.25), { cor: i === 0 ? VERM : TINTA, tam: 38 }));
+        if (t >= T.distrito) L.etiqueta(ctx, '1 DISTRITO = 1 VAGA', CX, 1340, seg(t, T.distrito, T.distrito + 0.3), { cor: VERM, tam: 46 });
       }
       if (t >= T.novo && t < T.perde) {
         L.aplicarCarimbo(ctx, seg(t, T.novo, T.novo + 0.3), CX, 1300, () => {
@@ -230,30 +206,179 @@ window.CENA = {
         }, 35);
         if (t < T.curral) L.etiqueta(ctx, 'EMPRESÁRIO: 40% → 55%', CX, 1150, seg(t, T.novo + 0.5, T.novo + 0.8), { cor: AZUL, tam: 40 });
       }
-      if (t >= T.curral + 1.0 && t < T.perde) {
-        const q = Pj([-8, 3.2, 0]);
-        L.aplicarCarimbo(ctx, seg(t, T.curral + 1.0, T.curral + 1.3), q.x, q.y, () =>
-          L.texto(ctx, 'CURRAL', q.x, q.y, { familia: FONTE.manchete, peso: 900, tam: 210, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 }), 37);
-      }
+      if (t >= T.curral + 1.0 && t < T.perde)
+        L.aplicarCarimbo(ctx, seg(t, T.curral + 1.0, T.curral + 1.3), CX, 720, () =>
+          L.texto(ctx, 'CURRAL', CX, 740, { familia: FONTE.manchete, peso: 900, tam: 230, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 7 }), 37);
       if (t >= T.perde) {
-        ['MULHERES', 'NEGROS', 'JUVENTUDE', 'MOVIMENTOS'].forEach((s, i) => {
-          const q = Pj(M.fora[i], 2.6);
-          L.etiqueta(ctx, s, q.x, q.y, seg(t, T.perde + 0.6 + i * 0.35, T.perde + 0.9 + i * 0.35), { cor: [VERM, TINTA, AMA, AZUL][i], corTexto: i === 2 ? TINTA : BEGE, tam: 30 });
-        });
-        L.aplicarCarimbo(ctx, seg(t, T.perde + 2.2, T.perde + 2.5), CX, 1330, () => {
-          ctx.fillStyle = TINTA; ctx.fillRect(X0, 1266, LARG, 124);
-          L.texto(ctx, 'SEM TERRITÓRIO, SEM VAGA', CX, 1350, { familia: FONTE.bloco, peso: 400, tam: tamMax('SEM TERRITÓRIO, SEM VAGA', FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
+        ['MULHERES', 'NEGROS', 'JUVENTUDE', 'MOVIMENTOS'].forEach((s, i) =>
+          L.etiqueta(ctx, s, FORA_X[i], 975 - (i % 2) * 60, seg(t, T.perde + 0.6 + i * 0.35, T.perde + 0.9 + i * 0.35), { cor: [VERM, TINTA, AMA, AZUL][i], corTexto: i === 2 ? TINTA : BEGE, tam: 30 }));
+        L.aplicarCarimbo(ctx, seg(t, T.perde + 2.2, T.perde + 2.5), CX, 1340, () => {
+          ctx.fillStyle = TINTA; ctx.fillRect(X0, 1280, LARG, 120);
+          L.texto(ctx, 'SEM TERRITÓRIO, SEM VAGA', CX, 1362, { familia: FONTE.bloco, peso: 400, tam: tamMax('SEM TERRITÓRIO, SEM VAGA', FONTE.bloco, 60, 400, 780), cor: BEGE, alinhar: 'center' });
         }, 39);
       }
     }
-    function votosVisiveis(i) {   // nº de cubos (cada um = 5%) já empilhados no candidato i
-      const total = [6, 6, 8][i];
-      let n = 0;
-      if (i === 0 && t >= T.maria + 1.6) n = 1;
-      if (i === 1 && t >= T.joao + 1.6) n = 1;
-      const pc = seg(t, T.chuva, T.conta);
-      n = Math.max(n, Math.floor(1e-6 + pc * total));
-      return Math.min(total, n);
+
+    // ---- o mapa da cidade (vista de cima, casinhas de cartaz), linhas dos distritos, caneta e cerca
+    function mapa() {
+      ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0 + 12, 452, LARG, 960);
+      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, 440, LARG, 960);
+      ctx.fillStyle = 'rgba(237,224,196,0.55)';                                   // ruas
+      [600, 920, 1240].forEach(y => ctx.fillRect(X0, y - 10, LARG, 20)); ctx.fillRect(CX - 12, 440, 24, 960);
+      const entra = t >= T.novo - 0.4 && t < T.distritao, pisca = t < T.novo + 0.4 && Math.floor((t - T.novo) * 8) % 2;
+      CASAS.forEach(([x, y, cor, alt]) => {
+        const naFaixa = y > 770 && y < 905;
+        casa(x, y, naFaixa && entra ? (pisca ? AMA : AZUL) : cor, alt);
+      });
+      if (t >= T.perde) { ctx.fillStyle = 'rgba(237,224,196,0.55)'; ctx.fillRect(X0, 905, LARG, 495); }
+      // linhas dos distritos: entram da esquerda para a direita; a de cima é apagada e redesenhada mais embaixo
+      const pl = ease.saida(seg(t, T.cidade + 0.3, T.cidade + 1.4)), risca = seg(t, T.risca, T.risca + 0.5), nova = seg(t, T.risca + 0.5, T.novo);
+      ctx.fillStyle = VERM;
+      ctx.fillRect(X0 + LARG * risca, 755, LARG * pl * (1 - risca), 11);
+      ctx.fillRect(X0, 1075, LARG * pl, 11);
+      if (nova > 0) ctx.fillRect(X0, 895, LARG * nova, 11);
+      if (t >= T.risca - 0.3 && t < T.novo + 0.5) {
+        const px = t < T.risca + 0.5 ? X0 + LARG * risca : X0 + LARG * nova, py = t < T.risca + 0.5 ? 760 : 900;
+        caneta(px, py - (t < T.risca ? 200 * (1 - seg(t, T.risca - 0.3, T.risca)) : 0));
+      }
+      // cerca do curral em volta do novo distrito 1 (y 440–900)
+      if (t >= T.curral) {
+        const MAD = '#7A5230', pts = [];
+        for (let x = X0; x <= X0 + LARG; x += 42) pts.push([x, 900]);
+        for (let y = 860; y >= 460; y -= 42) pts.push([X0 + LARG, y], [X0, y]);
+        pts.forEach(([x, y], k) => {
+          const q = ease.carimbo(seg(t, T.curral + k * 0.025, T.curral + k * 0.025 + 0.3)), h = 56 * q;
+          if (q <= 0) return;
+          ctx.fillStyle = TINTA; ctx.fillRect(x - 7, y - h + 3, 14, h);
+          ctx.fillStyle = MAD; ctx.fillRect(x - 6, y - h, 12, h);
+        });
+        const q = seg(t, T.curral + 0.6, T.curral + 1.0);
+        if (q > 0) {
+          ctx.fillStyle = MAD;
+          [-18, -38].forEach(dy => { ctx.fillRect(X0, 900 + dy, LARG * q, 7); ctx.fillRect(X0 - 3, 900 - 460 * q, 7, 460 * q); ctx.fillRect(X0 + LARG - 3, 900 - 460 * q, 7, 460 * q); });
+        }
+      }
+      // quem fica de fora (abaixo da cerca)
+      if (t >= T.perde) FORA_X.forEach((x, i) => {
+        const q = ease.saida(seg(t, T.perde + 0.3 + i * 0.35, T.perde + 0.8 + i * 0.35));
+        if (q > 0) pessoa(x, lerp(1420, 1190 - (i % 2) * 60, q), FORA[i], 0.95, q < 1 ? q * 6 : 0);
+      });
+    }
+    function casa(x, y, corTelhado, alt) {
+      ctx.fillStyle = TINTA; ctx.fillRect(x - 21, y - alt - 1, 42, alt + 3);
+      ctx.fillStyle = alt > 30 ? BEGE : '#F4EAD3'; ctx.fillRect(x - 18, y - alt + 2, 36, alt - 2);
+      ctx.fillStyle = TINTA; ctx.fillRect(x - 5, y - 14, 10, 14);
+      ctx.fillStyle = corTelhado; ctx.beginPath(); ctx.moveTo(x - 26, y - alt + 2); ctx.lineTo(x, y - alt - 22); ctx.lineTo(x + 26, y - alt + 2); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.stroke();
+    }
+    function caneta(x, y) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(-0.55);
+      ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(10, -250, 44, 230);
+      ctx.fillStyle = COR.begeEscuro; ctx.beginPath(); ctx.moveTo(-20, -60); ctx.lineTo(0, 0); ctx.lineTo(20, -60); ctx.fill();
+      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.moveTo(-6, -18); ctx.lineTo(0, 0); ctx.lineTo(6, -18); ctx.fill();
+      ctx.fillStyle = AMA; ctx.fillRect(-20, -300, 40, 240);
+      ctx.fillStyle = COR.vermelhoEscuro; ctx.fillRect(-20, -300, 40, 14);
+      ctx.fillStyle = VERM; ctx.fillRect(-20, -350, 40, 50);
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 4; ctx.strokeRect(-20, -350, 40, 290);
+      ctx.restore();
+    }
+
+    // ---- a praça do distrito 1: pilhas de votos, candidatos nos pedestais, urna, eleitores e a lixeira
+    function pracaD1() {
+      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(0, 1150, 1080, 290);            // chão da praça
+      ctx.fillStyle = TINTA; ctx.fillRect(X0, 762, LARG, 4);                        // base das pilhas
+      CAND.forEach((c, i) => {
+        const n = votosNum(i, t), sobe = i === 2 ? ease.carimbo(seg(t, T.vence, T.vence + 0.4)) * 50 : 0;
+        // pilha de cubos (cada um = 5%)
+        for (let k = 0; k < n.n; k++) {
+          const yAlvo = 760 - (k + 1) * 37, tEnt = n.tEnt(k);
+          let x = c.x - 17, y = yAlvo, rot = 0, s = 1, vis = true;
+          if (k === 0 && i < 2 && t < tEnt + 0.01 + 0.7 && t >= tEnt - 0.7 && n.primeiro) {   // cubo da Dona Maria / do seu João vem da urna
+            const q = seg(t, tEnt - 0.7, tEnt);
+            x = lerp(520, c.x - 17, q); y = lerp(1230, yAlvo, q) - Math.sin(q * Math.PI) * 260; rot = q * 6;
+          } else y = lerp(yAlvo - 260, yAlvo, ease.saida(seg(t, tEnt, tEnt + 0.3)));
+          if (i < 2 && t >= T.lixo) {                                               // para a lixeira
+            const t0 = T.lixo + (k + i * 6) * 0.08, q = seg(t, t0, t0 + 0.7);
+            x = lerp(c.x - 17, LIX.x - 17, q); y = lerp(yAlvo, LIX.y - 120, q) - Math.sin(q * Math.PI) * 300; rot = q * 7; vis = q < 1;
+            s = q > 0.8 ? lerp(1, 0.4, seg(q, 0.8, 1)) : 1;
+          }
+          if (!vis) continue;
+          ctx.save(); ctx.translate(x + 17, y + 17); ctx.rotate(rot); ctx.scale(s, s);
+          ctx.fillStyle = TINTA; ctx.fillRect(-17 + 4, -17 + 4, 34, 34);
+          ctx.fillStyle = c.cor; ctx.fillRect(-17, -17, 34, 34);
+          ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(-17, -17, 34, 34);
+          ctx.restore();
+        }
+        if (n.n > 0 && (t < T.lixo + 0.2 || i === 2)) {
+          const eleito = i === 2 && t >= T.vence, yE = 760 - n.n * 37 - 30;
+          if (eleito) L.aplicarCarimbo(ctx, seg(t, T.vence, T.vence + 0.3), c.x - 40, yE, () => L.etiqueta(ctx, '40% · ELEITO', c.x - 40, yE, 1, { cor: AMA, corTexto: TINTA, tam: 34 }), 31);
+          else L.etiqueta(ctx, Math.round(n.n * 5) + '%', c.x, yE, 1, { cor: BEGE, corTexto: TINTA, tam: 32 });
+        }
+        // pedestal e candidato
+        ctx.fillStyle = TINTA; ctx.fillRect(c.x - 100, 1060 - sobe, 200, 92 + sobe);
+        ctx.fillStyle = c.cor; ctx.fillRect(c.x - 90, 1080 - sobe, 180, 44);
+        L.texto(ctx, c.nome, c.x, 1111 - sobe, { familia: FONTE.grotesca, peso: 700, tam: tamMax(c.nome, FONTE.grotesca, 24, 700, 168), cor: i === 0 ? TINTA : BEGE, alinhar: 'center' });
+        const cabisbaixo = i < 2 ? 0.12 * seg(t, T.lixo + 0.8, T.lixo + 1.4) : 0;
+        pessoa(c.x, 1060 - sobe, c.p, 1.15, 0, cabisbaixo);
+      });
+      // urna eletrônica
+      ctx.fillStyle = TINTA; ctx.fillRect(470, 1236, 146, 116);
+      ctx.fillStyle = BEGE; ctx.fillRect(462, 1228, 146, 116); ctx.strokeStyle = TINTA; ctx.lineWidth = 4; ctx.strokeRect(462, 1228, 146, 116);
+      ctx.fillStyle = TINTA; ctx.fillRect(478, 1246, 64, 44);
+      for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) ctx.fillRect(552 + a * 16, 1250 + b * 16, 11, 11);
+      const conf = [T.maria + 0.4, T.joao + 0.4].some(t0 => t >= t0 && t < t0 + 0.6);
+      ctx.fillStyle = conf ? AMA : '#3A302A'; ctx.fillRect(482, 1250, 56, 36);
+      if (conf) L.texto(ctx, 'FIM', 510, 1278, { familia: FONTE.grotesca, peso: 700, tam: 22, cor: TINTA, alinhar: 'center' });
+      // eleitores: andam até a urna e votam
+      [[T.maria, 140, 400, MARIA, 'DONA MARIA', AMA], [T.joao, 960, 690, JOAO, 'SEU JOÃO', VERM]].forEach(([t0, x0, x1, p, nome, cor]) => {
+        if (t >= T.chuva + 0.4) return;
+        const a = seg(t, t0 - 1.2, t0), x = lerp(x0, x1, a);
+        pessoa(x, 1420, p, 1.0, a > 0 && a < 1 ? a * 8 : 0);
+        L.etiqueta(ctx, nome, x, 1180, seg(t, t0 - 0.4, t0) * (1 - seg(t, T.chuva, T.chuva + 0.3)), { cor, corTexto: cor === AMA ? TINTA : BEGE, tam: 30 });
+        const q = seg(t, t0, t0 + 0.4);                                          // a cédula entra na urna
+        if (q > 0 && q < 1) cedula(lerp(x + (x1 < 540 ? 50 : -50), 535, q), lerp(1260, 1225, q), 0, 0.3);
+      });
+      // o povo do distrito
+      POVO.forEach(([x, p], k) => {
+        const a = ease.saida(seg(t, T.chuva - 0.4 + k * 0.08, T.chuva + 0.2 + k * 0.08));
+        if (a > 0) pessoa(x, lerp(1560, 1440, a), p, 0.62);
+      });
+      // a lixeira entra pela direita e abre
+      if (t >= T.lixo - 0.6) {
+        const e = ease.saida(seg(t, T.lixo - 0.6, T.lixo - 0.2)), tampa = clamp(Math.sin(Math.PI * seg(t, T.lixo - 0.2, T.lixo + 2.0)) * 1.4);
+        lixeira2d(lerp(1260, LIX.x, e), LIX.y, 0.62, tampa);
+      }
+      if (t >= T.lixoTxt)
+        L.aplicarCarimbo(ctx, seg(t, T.lixoTxt, T.lixoTxt + 0.3), CX, 1330, () => {
+          ctx.fillStyle = TINTA; ctx.fillRect(X0, 1262, LARG, 132);
+          L.texto(ctx, '60% DOS VOTOS → LIXO', CX, 1352, { familia: FONTE.bloco, peso: 400, tam: tamMax('60% DOS VOTOS → LIXO', FONTE.bloco, 70, 400, 780), cor: BEGE, alinhar: 'center' });
+        }, 33);
+    }
+
+    // ---- boneco de cartaz: pernas, tronco, braços, cabeça e cabelo/acessório (pés em x, y)
+    function pessoa(x, y, p, esc = 1, passo = 0, incl = 0) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(esc, esc); ctx.rotate(incl);
+      const sw = Math.sin(passo * Math.PI) * 12, quica = Math.abs(Math.sin(passo * Math.PI)) * 6;
+      ctx.translate(0, -quica);
+      ctx.lineWidth = 4; ctx.strokeStyle = TINTA; ctx.lineJoin = 'round';
+      ctx.fillStyle = p.calca || TINTA; ctx.fillRect(-22 + sw, -72, 18, 72); ctx.fillRect(4 - sw, -72, 18, 72);
+      ctx.fillStyle = p.roupa;                                                       // tronco
+      ctx.beginPath(); ctx.moveTo(-36, -150); ctx.lineTo(36, -150); ctx.lineTo(46, -66); ctx.lineTo(-46, -66); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillRect(-56, -146, 18, 72); ctx.strokeRect(-56, -146, 18, 72); ctx.fillRect(38, -146, 18, 72); ctx.strokeRect(38, -146, 18, 72);
+      ctx.fillStyle = p.pele; ctx.beginPath(); ctx.arc(-47, -68, 9, 0, 7); ctx.arc(47, -68, 9, 0, 7); ctx.fill();
+      if (p.tipo === 'terno') {                                                     // lapelas e gravata
+        ctx.fillStyle = BEGE; ctx.beginPath(); ctx.moveTo(-14, -150); ctx.lineTo(0, -118); ctx.lineTo(14, -150); ctx.fill();
+        ctx.fillStyle = VERM; ctx.fillRect(-5, -142, 10, 50);
+      }
+      if (p.tipo === 'longo') { ctx.fillStyle = p.cabelo; ctx.fillRect(-32, -206, 64, 64); }
+      ctx.fillStyle = p.pele; ctx.beginPath(); ctx.arc(0, -184, 30, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = p.cabelo || TINTA;
+      if (p.tipo === 'coque') { ctx.beginPath(); ctx.arc(0, -190, 31, Math.PI, 0); ctx.fill(); ctx.beginPath(); ctx.arc(0, -224, 15, 0, 7); ctx.fill(); }
+      else if (p.tipo === 'bone') { ctx.fillRect(-31, -216, 62, 22); ctx.fillRect(0, -198, 46, 8); ctx.fillStyle = TINTA; ctx.fillRect(-14, -170, 28, 7); }
+      else { ctx.beginPath(); ctx.arc(0, -190, 31, Math.PI, 0); ctx.fill(); }
+      if (p.tipo === 'longo') { ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(-11, -182, 8, 0, 7); ctx.moveTo(19, -182); ctx.arc(11, -182, 8, 0, 7); ctx.stroke(); }
+      ctx.fillStyle = TINTA; if (p.tipo !== 'longo') { ctx.fillRect(-12, -186, 6, 6); ctx.fillRect(6, -186, 6, 6); }
+      ctx.restore();
     }
 
     // ------------------------------------------------ F. distritão (ARQUIVO)
@@ -319,231 +444,37 @@ window.CENA = {
 };
 
 // ======================================================================
-// Maquete 3D: montada uma vez (por página) e posicionada a cada quadro só em função de t
+// Vila Exemplo (2D): casas do mapa, candidatos, eleitores e quem fica de fora
 // ======================================================================
-let _M = null;
-function montar(L) {
-  if (_M) return _M;
-  const P = L.palco3d('vila', 1080, 1920, { nevoa: [55, 120] }), { T3, cena, malha } = P, C = L.COR;
-  const PELE = ['#C68E5E', '#8A5A3A', '#5E3B26', '#E0B48A'], MADEIRA = '#7A5230';
-  const r = L.rng(42), M = { P };
-  const B = (w, h, d) => new T3.BoxGeometry(w, h, d);
-  const add = (o, x = 0, y = 0, z = 0, pai = cena) => { o.position.set(x, y, z); pai.add(o); return o; };
-
-  // chão (papelão bege) e ruas (faixas begeEscuro)
-  add(malha(B(46, 0.4, 34), C.bege, { aresta: false }), 0, -0.2, 0);
-  for (const z of [-6, 6]) add(malha(B(46, 0.02, 1.4), C.begeEscuro, { aresta: false, sombra: false }), 0, 0.01, z);
-  for (const x of [-12, 12]) add(malha(B(1.4, 0.02, 34), C.begeEscuro, { aresta: false, sombra: false }), x, 0.012, 0);
-
-  // casas: caixa + telhado em pirâmide
-  const telhado = new T3.ConeGeometry(1.25, 0.9, 4); telhado.rotateY(Math.PI / 4);
-  M.casas = [];
-  for (let x = -20; x <= 20; x += 3.3) for (let z = -14; z <= 14; z += 3.3) {
-    if ((x > -15.5 && x < -4.5 && z > -5.5) || (z > 10 && x < 2)) continue;   // praça do distrito 1 e a frente da cerca
-    if (Math.abs(z + 6) < 1.4 || Math.abs(z - 6) < 1.4 || Math.abs(Math.abs(x) - 12) < 1.4) continue;   // ruas
-    if (r() < 0.18) continue;
-    const g = new T3.Group(), h = 0.9 + r() * 1.1, parede = r() < 0.5 ? C.bege : C.begeEscuro;
-    add(malha(B(1.6, h, 1.6), parede), 0, h / 2, 0, g);
-    const cor = x > -4 && x < 0 ? C.vermelho : [C.vermelho, C.amarelo, C.tinta, C.vermelhoEscuro][Math.floor(r() * 4)];
-    const tel = add(malha(telhado, cor), 0, h + 0.45, 0, g);
-    g.rotation.y = (r() - 0.5) * 0.3; add(g, x + (r() - 0.5) * 0.6, 0, z + (r() - 0.5) * 0.6);
-    M.casas.push({ g, x, z, tel, corOrig: cor });
+const _C = { bege: '#EDE0C4', begeE: '#D6C29A', verm: '#C8201E', vermE: '#8A1411', ama: '#EBB52A', azul: '#1F3A5F', tinta: '#1C1714' };
+const PELE = ['#C68E5E', '#8A5A3A', '#5E3B26', '#E0B48A'];
+const CASAS = (() => {
+  let s = 42; const r = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296), out = [];
+  for (let y = 520; y <= 1390; y += 64) for (let x = 160; x <= 930; x += 66) {
+    if ([600, 920, 1240].some(v => Math.abs(y - 10 - v) < 26) || Math.abs(x - 540) < 30 || r() < 0.2) continue;
+    out.push([x + (r() - 0.5) * 10, y, [_C.verm, _C.ama, _C.tinta, _C.vermE][Math.floor(r() * 4)], 26 + Math.floor(r() * 16)]);
   }
+  return out;
+})();
+const CAND = [
+  { nome: 'PROFESSORA', x: 270, cor: _C.ama, p: { roupa: _C.ama, pele: PELE[1], cabelo: _C.tinta, tipo: 'longo' } },
+  { nome: 'LÍDER COMUNITÁRIO', x: 540, cor: _C.verm, p: { roupa: _C.verm, pele: PELE[2], tipo: 'curto' } },
+  { nome: 'EMPRESÁRIO', x: 810, cor: _C.azul, p: { roupa: _C.azul, pele: PELE[3], cabelo: '#8C7A5E', tipo: 'terno', calca: _C.azul } },
+];
+const MARIA = { roupa: _C.verm, pele: PELE[0], cabelo: '#B9B2A4', tipo: 'coque', calca: _C.vermE };
+const JOAO = { roupa: _C.ama, pele: PELE[2], cabelo: _C.azul, tipo: 'bone' };
+const POVO = Array.from({ length: 13 }, (_, k) => [120 + k * 70, { roupa: [_C.verm, _C.ama, _C.azul, _C.begeE, _C.tinta][k % 5], pele: PELE[k % 4],
+  tipo: ['curto', 'coque', 'bone', 'longo'][k % 4], cabelo: k % 3 ? _C.tinta : '#B9B2A4' }]);
+const FORA_X = [250, 440, 640, 830];
+const FORA = [{ roupa: _C.verm, pele: PELE[1], tipo: 'longo', cabelo: _C.tinta }, { roupa: _C.begeE, pele: PELE[2], tipo: 'curto' },
+  { roupa: _C.ama, pele: PELE[0], tipo: 'bone', cabelo: _C.verm }, { roupa: _C.azul, pele: PELE[3], tipo: 'coque', cabelo: _C.tinta }];
+const LIX = { x: 930, y: 1330 };
 
-  // linhas vermelhas dos distritos (x = -4 e x = 4), desenhadas ao longo de z
-  const linhaD = x => { const m = add(malha(B(0.35, 0.08, 34), C.vermelho, { aresta: false, sombra: false }), x, 0.06, 0); return m; };
-  M.l1 = linhaD(-4); M.l2 = linhaD(4); M.l1novo = linhaD(1.4);
-  M.distritos = [['DISTRITO 1', -10], ['DISTRITO 2', 0], ['DISTRITO 3', 10]];
-
-  // pessoa estilizada: pernas, tronco, braços, cabeça e cabelo/acessório
-  function pessoa({ roupa, pele, cabelo = C.tinta, tipo = 'curto', calca = C.tinta }) {
-    const g = new T3.Group();
-    for (const s of [-0.16, 0.16]) add(malha(new T3.CylinderGeometry(0.11, 0.11, 0.7, 8), calca), s, 0.35, 0, g);
-    add(malha(new T3.CylinderGeometry(0.3, 0.42, 0.9, 10), roupa), 0, 1.15, 0, g);
-    for (const s of [-1, 1]) { const b = add(malha(new T3.CylinderGeometry(0.08, 0.09, 0.75, 6), roupa), s * 0.44, 1.12, 0, g); b.rotation.z = s * 0.18; }
-    add(malha(new T3.SphereGeometry(0.3, 14, 10), pele, { angulo: 80 }), 0, 1.9, 0, g);
-    if (tipo === 'coque') {
-      add(malha(new T3.SphereGeometry(0.31, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), cabelo, { angulo: 80 }), 0, 1.93, -0.02, g);
-      add(malha(new T3.SphereGeometry(0.16, 10, 8), cabelo, { angulo: 80 }), 0, 2.1, -0.24, g);
-    } else if (tipo === 'bone') {
-      add(malha(new T3.CylinderGeometry(0.31, 0.31, 0.16, 14), cabelo), 0, 2.12, 0, g);
-      add(malha(B(0.36, 0.04, 0.3), cabelo), 0, 2.06, 0.32, g);
-      add(malha(B(0.26, 0.06, 0.05), C.tinta, { aresta: false }), 0, 1.8, 0.29, g);          // bigode
-    } else if (tipo === 'longo') {
-      add(malha(new T3.SphereGeometry(0.33, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), cabelo, { angulo: 80 }), 0, 1.92, -0.03, g);
-      add(malha(B(0.6, 0.6, 0.18), cabelo), 0, 1.68, -0.2, g);
-      for (const s of [-0.12, 0.12]) add(malha(new T3.TorusGeometry(0.08, 0.02, 6, 14), C.tinta, { aresta: false }), s, 1.92, 0.29, g);   // óculos
-    } else if (tipo === 'terno') {
-      add(malha(new T3.SphereGeometry(0.31, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2.4), cabelo, { angulo: 80 }), 0, 1.95, 0, g);
-      add(malha(B(0.1, 0.55, 0.05), C.vermelho, { aresta: false }), 0, 1.25, 0.37, g);         // gravata
-    } else {
-      add(malha(new T3.SphereGeometry(0.31, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2.4), cabelo, { angulo: 80 }), 0, 1.95, 0, g);
-    }
-    cena.add(g); return g;
-  }
-
-  // praça do distrito 1: 3 pedestais com candidatos, a urna e a lixeira
-  M.cand = [
-    { nome: 'PROFESSORA', x: -12.1, cor: C.amarelo, corEtq: C.amarelo, corTexto: C.tinta, total: 6 },
-    { nome: 'LÍDER COMUNITÁRIO', x: -10, cor: C.vermelho, corEtq: C.vermelho, corTexto: C.bege, total: 6 },
-    { nome: 'EMPRESÁRIO', x: -7.9, cor: C.azul, corEtq: C.azul, corTexto: C.bege, total: 8 },
-  ];
-  const tipos = [{ roupa: C.amarelo, pele: PELE[1], cabelo: C.tinta, tipo: 'longo' }, { roupa: C.vermelho, pele: PELE[2], tipo: 'curto' },
-    { roupa: C.azul, pele: PELE[3], cabelo: '#8C7A5E', tipo: 'terno', calca: C.azul }];
-  M.cand.forEach((c, i) => {
-    c.pedestal = add(malha(B(1.5, 1, 1.5), C.tinta), c.x, 0.5, -1.5);
-    add(malha(B(1.2, 0.45, 0.05), c.cor, { aresta: false }), c.x, 0.55, -0.73);
-    c.pessoa = pessoa(tipos[i]); c.pessoa.position.set(c.x, 1, -1.5);
-    // pilha de votos: cubos de 5% atrás do candidato
-    c.cubos = [];
-    for (let k = 0; k < c.total; k++) {
-      const cubo = malha(B(0.62, 0.62, 0.62), c.cor); cubo.visible = false; cena.add(cubo); c.cubos.push(cubo);
-    }
-  });
-  M.urna = add(new T3.Group(), -10, 0, 3.6);
-  add(malha(B(1.3, 1.1, 1.0), C.bege), 0, 0.55, 0, M.urna); add(malha(B(0.7, 0.04, 0.12), C.tinta, { aresta: false }), 0, 1.11, 0, M.urna);
-  add(malha(B(1.0, 0.24, 0.02), C.tinta, { aresta: false }), 0, 0.75, 0.51, M.urna);
-  M.lixeira = add(new T3.Group(), -7.5, 0, 2.7); M.lixeira.scale.setScalar(0.72);
-  add(malha(new T3.CylinderGeometry(1.15, 0.95, 2.1, 18, 1, true), '#3A302A'), 0, 1.05, 0, M.lixeira);
-  add(malha(new T3.CylinderGeometry(0.95, 0.95, 0.06, 18), C.tinta, { aresta: false }), 0, 0.03, 0, M.lixeira);
-  M.tampa = add(new T3.Group(), -1.15, 2.1, 0, M.lixeira);
-  add(malha(new T3.CylinderGeometry(1.2, 1.2, 0.14, 18), '#3A302A'), 1.15, 0.07, 0, M.tampa);
-  // o "X" do lixo pintado na frente
-  for (const s of [-1, 1]) { const x = add(malha(B(0.14, 1.0, 0.04), C.vermelho, { aresta: false }), 0, 1.1, 1.06, M.lixeira); x.rotation.z = s * 0.7; }
-
-  // eleitores
-  M.maria = pessoa({ roupa: C.vermelho, pele: PELE[0], cabelo: '#B9B2A4', tipo: 'coque', calca: C.vermelhoEscuro });
-  M.joao = pessoa({ roupa: C.amarelo, pele: PELE[2], cabelo: C.azul, tipo: 'bone' });
-  M.cedula = add(malha(B(0.42, 0.04, 0.3), C.bege), 0, -5, 0);
-  // multidão do distrito (aparece na "chuva" de votos)
-  M.povo = [];
-  for (let k = 0; k < 14; k++) {
-    const p = pessoa({ roupa: [C.vermelho, C.amarelo, C.azul, C.begeEscuro, C.tinta][k % 5], pele: PELE[k % 4], tipo: ['curto', 'coque', 'bone', 'longo'][k % 4], cabelo: k % 3 ? C.tinta : '#B9B2A4' });
-    p.userData = { x: -15 + r() * 10, z: 6.4 + r() * 3.2 }; p.scale.setScalar(0.85); p.visible = false; M.povo.push(p);
-  }
-  // caneta gigante (redesenha a linha)
-  M.caneta = new T3.Group();
-  add(malha(new T3.CylinderGeometry(0.35, 0.35, 6, 6), C.amarelo), 0, 3.6, 0, M.caneta);
-  add(malha(new T3.ConeGeometry(0.35, 0.9, 6), C.begeEscuro), 0, 0.45, 0, M.caneta).rotation.x = Math.PI;
-  add(malha(new T3.CylinderGeometry(0.36, 0.36, 0.5, 6), C.vermelho), 0, 6.8, 0, M.caneta);
-  M.caneta.rotation.z = -0.4; M.caneta.scale.setScalar(1.8); M.caneta.visible = false; cena.add(M.caneta);
-  // cerca (curral): mourões e travessas em volta do novo distrito 1 (x -17..0, z -13..10)
-  M.cerca = [];
-  const ret = [[-17, -13], [1.4, -13], [1.4, 10.4], [-17, 10.4], [-17, -13]];
-  for (let s = 0; s < 4; s++) {
-    const [ax, az] = ret[s], [bx, bz] = ret[s + 1], len = Math.hypot(bx - ax, bz - az), n = Math.round(len / 1.4);
-    for (let k = 0; k < n; k++) {
-      const x = ax + (bx - ax) * k / n, z = az + (bz - az) * k / n;
-      const g = new T3.Group(); add(malha(B(0.28, 1.8, 0.28), MADEIRA), 0, 0.9, 0, g);
-      const dir = Math.atan2(bz - az, bx - ax), tl = len / n;
-      for (const y of [0.6, 1.3]) { const tv = add(malha(B(tl, 0.16, 0.12), MADEIRA), Math.cos(dir) * tl / 2, y, Math.sin(dir) * tl / 2, g); tv.rotation.y = -dir; }
-      g.position.set(x, -2.2, z); g.userData = { ordem: (s * 40 + k) }; cena.add(g); M.cerca.push(g);
-    }
-  }
-  // quem fica de fora da cerca
-  M.fora = [0, 1, 2, 3].map(i => {
-    const p = pessoa([{ roupa: C.vermelho, pele: PELE[1], tipo: 'longo' }, { roupa: C.begeEscuro, pele: PELE[2], tipo: 'curto' },
-      { roupa: C.amarelo, pele: PELE[0], tipo: 'bone', cabelo: C.vermelho }, { roupa: C.azul, pele: PELE[3], tipo: 'coque', cabelo: C.tinta }][i]);
-    p.position.set(-10.5 + i * 1.35, 0, 12); p.visible = false; return p;
-  });
-  return (_M = M);
-}
-
-// posiciona tudo em função de t (sem estado entre quadros)
-function atualizar(M, t) {
-  const L = window.CT, { seg, lerp, ease, clamp } = L, P = M.P;
-  const sm = p => p * p * (3 - 2 * p);
-  // câmera: [tempo, posição, alvo]
-  const K = [
-    [T.cidade, [34, 46, 4], [0, 0, 0]], [T.desce - 0.3, [30, 41, 1], [-1, 0, 0]],
-    [T.desce + 1.5, [-10, 10, 18], [-10, 1.7, -1]], [T.chuva, [-10, 10.4, 18.6], [-10, 1.7, -1]],
-    [T.vence, [-9.8, 10.8, 19.2], [-9.8, 2.2, -1.2]], [T.lixo, [-9.2, 10.2, 19.4], [-9.2, 1.8, -0.4]],
-    [T.mapa - 0.1, [-9.2, 10.4, 19.8], [-9.2, 1.8, -0.4]], [T.mapa + 1.0, [24, 36, 3], [-5, 0, 0]], [T.novo + 0.8, [22, 34, 2], [-5, 0, 0]],
-    [T.curral + 0.9, [16, 30, 6], [-7, 0, -1]], [T.perde, [15, 29, 6], [-7, 0, -1]], [T.perde + 1.0, [-8.5, 8.4, 28.5], [-8.5, 1.4, 10]], [T.distritao, [-8.5, 8.2, 27.8], [-8.5, 1.4, 10]],
-  ];
-  let i = 0; while (i < K.length - 2 && t >= K[i + 1][0]) i++;
-  const [ta, pa, aa] = K[i], [tb, pb, ab] = K[i + 1], k = sm(clamp((t - ta) / (tb - ta)));
-  P.camera(pa.map((v, j) => lerp(v, pb[j], k)), aa.map((v, j) => lerp(v, ab[j], k)));
-
-  // linhas dos distritos: crescem ao longo de z no começo; a do meio é riscada e redesenhada
-  const pl = ease.saida(seg(t, T.cidade + 0.3, T.cidade + 1.4));
-  M.l2.scale.z = Math.max(pl, 0.001);
-  const risca = seg(t, T.risca, T.risca + 0.5), nova = seg(t, T.risca + 0.5, T.novo);
-  M.l1.scale.z = Math.max(pl * (1 - risca), 0.001); M.l1.position.z = 17 * risca;
-  M.l1novo.visible = nova > 0; M.l1novo.scale.z = Math.max(nova, 0.001); M.l1novo.position.z = -17 + 17 * nova;
-  M.caneta.visible = t >= T.risca - 0.2 && t < T.novo + 0.6;
-  if (M.caneta.visible) {
-    const zc = t < T.risca + 0.5 ? lerp(-17, 17, risca) : lerp(-17, 17, nova), xc = t < T.risca + 0.5 ? -4 : 1.4;
-    M.caneta.position.set(xc + 1.6, 0.3 + (t < T.risca ? 3 * (1 - seg(t, T.risca - 0.2, T.risca)) : 0), zc);
-  }
-  // o bairro que entra no distrito 1 pisca (telhado azul = eleitores do empresário)
-  const entra = seg(t, T.novo - 0.4, T.novo);
-  M.casas.forEach(c => { if (c.x > -4 && c.x < 0) c.tel.material = P.mat(entra > 0 && t < T.distritao ? (Math.floor((t - T.novo) * 6) % 2 && t < T.novo + 0.6 ? L.COR.amarelo : L.COR.azul) : c.corOrig); });
-
-  // eleitores: Dona Maria e seu João andam até a urna, a cédula entra e vira um cubo que voa para a pilha
-  const anda = (p, t0, x0, x1) => {
-    const a = seg(t, t0 - 1.2, t0), v = seg(t, t0 + 0.6, t0 + 1.6);
-    p.position.set(lerp(x0, x1, a), Math.abs(Math.sin(a * Math.PI * 4)) * 0.08 * (a < 1), lerp(8.5, 5.1, a) + v * 1.6);
-    p.rotation.y = a < 1 ? Math.PI : (v > 0 ? 0 : Math.PI);
-    p.visible = t < T.chuva + 0.6;
-  };
-  anda(M.maria, T.maria, -12, -10.4); anda(M.joao, T.joao, -8, -9.6);
-  M.cedula.position.y = -5;
-  for (const [p, t0] of [[M.maria, T.maria], [M.joao, T.joao]]) {
-    const q = seg(t, t0, t0 + 0.4);
-    if (q > 0 && q < 1) { M.cedula.position.set(lerp(p.position.x, -10, q), lerp(1.5, 1.2, q), lerp(p.position.z - 0.3, 3.6, q)); }
-  }
-  M.povo.forEach((p, k) => {
-    const a = seg(t, T.chuva - 0.4 + k * 0.08, T.chuva + 0.4 + k * 0.08);
-    p.visible = a > 0 && t < T.mapa; p.position.set(p.userData.x, -1.9 * (1 - ease.saida(a)), p.userData.z); p.rotation.y = Math.PI;
-  });
-
-  // pilhas de votos (cubos de 5%): crescem; na hora do lixo, os da professora e do líder voam para a lixeira
-  const lix = M.lixeira.position;
-  M.cand.forEach((c, i) => {
-    const n = votosNum(i, t);
-    c.cubos.forEach((cubo, kk) => {
-      const yAlvo = 0.31 + kk * 0.64, xA = c.x, zA = -3.2;
-      cubo.visible = kk < n.n;
-      if (!cubo.visible) return;
-      // entrada: o cubo novo cai do alto
-      const tEnt = n.tEnt(kk), qe = ease.saida(seg(t, tEnt, tEnt + 0.35));
-      let x = xA, y = lerp(yAlvo + 6, yAlvo, qe), z = zA, s = 1;
-      if (i < 2 && t >= T.lixo) {
-        const t0 = T.lixo + (kk + i * 6) * 0.08, q = seg(t, t0, t0 + 0.7);
-        x = lerp(xA, lix.x, q); z = lerp(zA, lix.z, q); y = lerp(yAlvo, 0.8, q) + Math.sin(q * Math.PI) * 4.5;
-        s = q > 0.85 ? lerp(1, 0.2, seg(q, 0.85, 1)) : 1; cubo.visible = q < 1;
-        cubo.rotation.set(q * 5, q * 3, 0);
-      } else cubo.rotation.set(0, 0, 0);
-      cubo.position.set(x, y, z); cubo.scale.setScalar(s);
-    });
-    // o eleito sobe no pedestal
-    const sobe = i === 2 ? ease.carimbo(seg(t, T.vence, T.vence + 0.4)) : 0;
-    c.pedestal.scale.y = 1 + sobe * 0.8; c.pedestal.position.y = 0.5 * (1 + sobe * 0.8);
-    c.pessoa.position.y = 1 + sobe * 0.8; c.pessoa.rotation.y = 0;
-    // os perdedores abaixam a cabeça (inclinam) depois do lixo
-    c.pessoa.rotation.x = i < 2 ? 0.25 * seg(t, T.lixo + 0.8, T.lixo + 1.4) : 0;
-  });
-  // tampa da lixeira abre durante o lixo
-  M.tampa.rotation.z = 1.4 * clamp(Math.sin(Math.PI * seg(t, T.lixo - 0.3, T.lixo + 1.9)) * 1.4);
-
-  // curral: os mourões sobem em onda
-  M.cerca.forEach(g => {
-    const t0 = T.curral + g.userData.ordem * 0.006, q = ease.carimbo(seg(t, t0, t0 + 0.35));
-    g.position.y = lerp(-2.2, 0, q); g.visible = q > 0;
-  });
-  // quem fica de fora
-  M.fora.forEach((p, i) => {
-    const q = ease.saida(seg(t, T.perde + 0.3 + i * 0.35, T.perde + 0.8 + i * 0.35));
-    p.visible = q > 0; p.position.z = lerp(17, 12, q);
-    p.position.y = Math.abs(Math.sin(q * Math.PI * 3)) * 0.1 * (q < 1);
-  });
-}
 function votosNum(i, t) {
   const total = [6, 6, 8][i], primeiro = [T.maria + 1.6, T.joao + 1.6, null][i];
   const pc = window.CT.seg(t, T.chuva, T.conta);
   const nChuva = Math.floor(1e-6 + pc * total);
-  const n = Math.min(total, Math.max(primeiro !== null && t >= primeiro ? 1 : 0, nChuva));
+  const n = Math.min(total, Math.max(primeiro !== null && t >= primeiro - 0.7 ? 1 : 0, nChuva));
   const tEnt = kk => (kk === 0 && primeiro !== null) ? primeiro : T.chuva + (kk + 1) / total * (T.conta - T.chuva) - 0.02;
-  return { n, tEnt };
+  return { n, tEnt, primeiro: primeiro !== null };
 }
