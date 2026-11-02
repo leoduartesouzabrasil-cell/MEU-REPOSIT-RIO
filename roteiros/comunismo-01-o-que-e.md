@@ -78,7 +78,7 @@ NA TELA: "QUEM TRABALHA × QUEM É DONO" · padaria 2D: contador até 500, "NENH
 
 NA TELA: "ENTÃO, O QUE É O COMUNISMO?" · imagem de época: dia de pagamento numa fábrica de Manchester, c. 1892 ·
 "CAPITALISMO: poucos são donos, a maioria trabalha pra eles" (o dono no alto de uma plataforma, os trabalhadores embaixo) ·
-carimbo "SUPERAR O CAPITALISMO" · a plataforma desce e todos ficam no mesmo nível: "UMA SOCIEDADE SEM CLASSES" +
+carimbo "SUPERAR O CAPITALISMO" · a plataforma do dono desce UM POUCO e sobem plataformas para todos os outros, até todos ficarem na mesma altura ("TODO MUNDO NO MESMO NÍVEL": não é todo mundo pobre igual, é todo mundo ter igual): "UMA SOCIEDADE SEM CLASSES" +
 Manifesto, cap. II: "…uma associação em que o livre desenvolvimento de cada um é a condição para o livre desenvolvimento de todos." ·
 "MEIOS DE PRODUÇÃO → DE TODOS" × "O QUE É SEU → CONTINUA SEU" · "COMUNISTA PODE TER IPHONE, SIM." ·
 "PRÓXIMO EPISÓDIO: SOCIALISMO É A MESMA COISA?" · logo O Camarada

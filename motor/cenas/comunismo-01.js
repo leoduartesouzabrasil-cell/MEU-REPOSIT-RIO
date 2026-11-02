@@ -326,18 +326,24 @@ window.CENA = {
       }
       if (t >= T.capital) {
         // capitalismo: o dono lá em cima, numa plataforma; a maioria embaixo. Ao "superar", a plataforma desce e todos ficam no mesmo nível.
-        const ent = ease.saida(seg(t, T.capital, T.capital + 0.5)), desce = ease.saida(seg(t, T.semclasses, T.semclasses + 0.9));
+        const ent = ease.saida(seg(t, T.capital, T.capital + 0.5)), desce = ease.saida(seg(t, T.semclasses, T.semclasses + 1.2));
         ctx.save(); ctx.globalAlpha = ent;
-        const chao = 1290, alturaPlat = lerp(330, 0, desce);
+        // não é "todo mundo pobre igual": a plataforma do dono desce UM POUCO e sobem plataformas para todos os outros,
+        // até ficarem todos na mesma altura (pedido do autor)
+        const chao = 1290, NIVEL = 170, altDono = lerp(330, NIVEL, desce), altTodos = lerp(0, NIVEL, desce);
         ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, chao, LARG, 20);
-        if (alturaPlat > 2) { ctx.fillStyle = TINTA; ctx.fillRect(CX - 90, chao - alturaPlat, 180, alturaPlat); }
         const N = 9;
         for (let i = 0; i < N; i++) {
-          const xx = X0 + 50 + i * ((LARG - 100) / (N - 1));
-          if (i === 4) continue;
-          pessoa(xx, chao, { roupa: [AZUL, VERM, '#6B5A48', AZUL, VERM, '#3A302A', AZUL, VERM, '#6B5A48'][i], pele: ['#8A5A3A', '#E0B48A', '#5E3B26', '#C68E5E'][i % 4], chapeu: i % 2 ? 'bone' : null }, 0.72);
+          const xx = X0 + 50 + i * ((LARG - 100) / (N - 1)), dono = i === 4, alt = dono ? altDono : altTodos;
+          if (alt > 1) {
+            ctx.fillStyle = TINTA; ctx.fillRect(xx - (dono ? 70 : 44), chao - alt, dono ? 140 : 88, alt);
+            ctx.fillStyle = dono ? COR.vermelhoEscuro : AMA; ctx.fillRect(xx - (dono ? 70 : 44), chao - alt, dono ? 140 : 88, 8);
+          }
+          if (dono) continue;
+          pessoa(xx, chao - alt, { roupa: [AZUL, VERM, '#6B5A48', AZUL, VERM, '#3A302A', AZUL, VERM, '#6B5A48'][i], pele: ['#8A5A3A', '#E0B48A', '#5E3B26', '#C68E5E'][i % 4], chapeu: i % 2 ? 'bone' : null }, 0.72);
         }
-        pessoa(CX, chao - alturaPlat, desce > 0.6 ? { roupa: '#3A302A', pele: '#E0B48A' } : DONO, 0.72);
+        pessoa(CX, chao - altDono, desce > 0.6 ? { roupa: '#3A302A', pele: '#E0B48A' } : DONO, 0.72);
+        if (desce >= 1) L.etiqueta(ctx, 'TODO MUNDO NO MESMO NÍVEL', CX, chao + 70, seg(t, T.semclasses + 1.0, T.semclasses + 1.3), { cor: TINTA, tam: 32 });
         if (t < T.semclasses) {
           L.etiqueta(ctx, 'CAPITALISMO', CX, 600, seg(t, T.capital + 0.3, T.capital + 0.6), { cor: AZUL, tam: 48 });
           L.texto(ctx, 'poucos são donos · a maioria trabalha pra eles', CX, 690, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: TINTA, alinhar: 'center' });
