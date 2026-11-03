@@ -1,5 +1,5 @@
 // Capa do Reels "Desmistificando o Comunismo · EP. 1: O que é o comunismo?" — mesma arte da vinheta da série
-// (fundo vermelho com raios, estrela com foice e martelo, "DESMISTIFICANDO O" / "COMUNISMO" / "COM LÉO DUARTE", etiqueta do EP.)
+// (fundo vermelho com raios, logo O Camarada maior no lugar da estrela, "DESMISTIFICANDO O" / "COMUNISMO" / "COM LÉO DUARTE", etiqueta do EP.)
 // + arte do autor (Marx e Engels, capa-arte-marx-engels.png, fundo amarelo tirado com birefnet-general → capa-marx-engels-recorte.png),
 // APOIADA NA BORDA DE BAIXO (sem flutuar), com sombra chapada.
 // Render: node motor/render.js capa-comunismo-01 saida/capa-comunismo-01.png --still 1
@@ -13,10 +13,7 @@ window.CENA = {
     const { COR, FONTE } = L, W = 1080, H = 1920, CX = 540;
     L.fundo(ctx, COR.vermelho);
     L.raios(ctx, CX, 1250, 2400, 22, -0.25, 'rgba(138,20,17,0.5)');
-    L.imagem(ctx, L.img.logo, CX, 300, 210);
-    // estrela com foice e martelo (menor que na vinheta)
-    L.estrela(ctx, CX, 470, 105, 0, COR.amarelo);
-    L.foiceMartelo(ctx, CX, 476, 88, COR.vermelho);
+    L.imagem(ctx, L.img.logo, CX, 440, 340);                      // sem estrela/foice (pedido do autor): logo maior e mais baixo
     // título, igual à vinheta
     ctx.fillStyle = COR.tinta; ctx.fillRect(130, 590, 820, 96);
     const t1 = Math.min(104, L.ajustar(ctx, 'DESMISTIFICANDO O', FONTE.manchete, 780));
