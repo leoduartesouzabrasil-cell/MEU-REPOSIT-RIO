@@ -112,3 +112,6 @@ Comunista tem que ser pobre? Não! O comunismo não quer tomar a sua casa, o seu
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
 ```
+
+## Como refazer
+`bash refazer-comunismo-01.sh` (na raiz). Gera `saida/comunismo-01-FINAL.mp4`, `saida/capa-comunismo-01.png` e `saida/serie-vinheta.mp4`.

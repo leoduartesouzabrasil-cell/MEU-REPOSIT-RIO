@@ -61,6 +61,13 @@ Duração máxima: 50 a 60 s.
    ```
    Salvar em `roteiros/<nome>.md` (seção "Legenda do post") e enviar pronta para copiar.
 
+## Vídeos prontos que podem ser refeitos
+- **Desmistificando o Comunismo · EP. 1 ("O que é o comunismo?")**: `bash refazer-comunismo-01.sh` refaz do zero o vídeo final (1:37),
+  a capa e a vinheta, com tudo o que já está no repositório (cena `motor/cenas/comunismo-01.js`, vinheta `L.vinhetaComunismo`,
+  narração em `audio/comunismo-01/narracao/`, transcrição `palavras.json`, trilha `previa.py`/`montar.py`, gancho do Jones `juntar.sh`).
+  Roteiro, fontes e créditos: `roteiros/comunismo-01-o-que-e.md`, `midia/comunismo-01/`. Prévia ao vivo: `motor/player.html?cena=comunismo-01`.
+  É a base de estilo dos próximos episódios da série e da seção Duda do site do Coletivo Lufã.
+
 ## Preferências do autor (valem para todos os vídeos)
 - Legenda: tarja escura do tamanho da frase, filete vermelho, texto bege 48 px, y 1466–1542 (não usar faixa transparente).
 - Nada sobreposto: título y 330, fonte dos dados y 384, conteúdo até y ~1420; crédito de foto logo ABAIXO da foto.

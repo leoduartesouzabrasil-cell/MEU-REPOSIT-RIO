@@ -13,5 +13,7 @@ ffmpeg -loglevel error -y -t "$FIM" -i "$JONES" -i "$CENA" -filter_complex "
 [1:v][j]overlay=195:445:eof_action=pass:format=auto,format=yuv420p[v];
 [0:a]aresample=48000,aformat=channel_layouts=stereo,loudnorm=I=-14:TP=-1.5,afade=t=out:st=$(echo "$FIM - 0.15" | bc):d=0.15[ja];
 [1:a]aresample=48000,aformat=channel_layouts=stereo[ca];
-[ca][ja]amix=inputs=2:duration=first:normalize=0[a]" -map "[v]" -map "[a]" -c:v libx264 -crf 24 -tune grain -preset medium -c:a aac -b:a 192k "$SAIDA"
+[ca][ja]amix=inputs=2:duration=first:normalize=0[a]" -map "[v]" -map "[a]" -c:v libx264 -crf 24 -tune grain -preset medium -c:a aac -b:a 192k "$SAIDA.tmp.mp4"
+# volume final no padrão de Reels
+ffmpeg -loglevel error -y -i "$SAIDA.tmp.mp4" -c:v copy -af loudnorm=I=-14:TP=-1.5 -ar 48000 -c:a aac -b:a 192k "$SAIDA" && rm -f "$SAIDA.tmp.mp4"
 echo "ok → $SAIDA"
