@@ -423,12 +423,13 @@ window.CENA = {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 760, () => L.imagem(ctx, L.img.logo, CX, 760, 420), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Apresentação: Eduarda Prado', 1110],
-        ['Fotos: Paulo Pinto, Marcelo Camargo, Fernando Frazão e Lula Marques · Agência Brasil (CC BY 3.0 BR)', 1150],
-        ['Prints: Agência Brasil, 06/01/2026 (tarifa de ônibus em SP) e 13/06/2025 (metas da educação, Pnad/IBGE)', 1190],
-        ['Fontes: Constituição Federal, arts. 6º e 30, V · Lei de Acesso à Informação (Lei nº 12.527/2011)', 1240],
-        ['Plano Nacional de Educação (Lei nº 13.005/2014)', 1280],
-        ['Mapa, balança e bonecos: exemplos ilustrativos', 1330]].forEach(([s2, y]) =>
+      [['Roteiro, pesquisa e apresentação: Eduarda Prado', 1100],
+        ['Edição e direção criativa: Leonardo Duarte', 1140],
+        ['Fotos: Paulo Pinto, Marcelo Camargo, Fernando Frazão e Lula Marques · Agência Brasil (CC BY 3.0 BR)', 1190],
+        ['Prints: Agência Brasil, 06/01/2026 (tarifa de ônibus em SP) e 13/06/2025 (metas da educação, Pnad/IBGE)', 1230],
+        ['Fontes: Constituição Federal, arts. 6º e 30, V · Lei de Acesso à Informação (Lei nº 12.527/2011)', 1280],
+        ['Plano Nacional de Educação (Lei nº 13.005/2014)', 1320],
+        ['Mapa, balança e bonecos: exemplos ilustrativos', 1370]].forEach(([s2, y]) =>
         L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }
