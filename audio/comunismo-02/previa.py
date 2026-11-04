@@ -22,7 +22,11 @@ T = dict(vin=J0, nenhum=J0 + 3.7, urss=J0 + 5.8, sel=J0 + 8.2,
          origem=J0 + 10.3, franca=J0 + 12.0, utopicos=J0 + 14.0, utopico=J0 + 17.0, plano=J0 + 19.5,
          cientifico=J0 + 22.9, engels=J0 + 23.5, cient=J0 + 26.2, luta=J0 + 28.6, e88=J0 + 32.4, sel88=J0 + 37.4,
          escada=J0 + 41.9, sobe=J0 + 44.0, selo1=J0 + 45.4, selo2=J0 + 47.2, selo3=J0 + 49.2,
-         topo=J0 + 52.5, fartura=J0 + 54.0, marx=J0 + 54.8, paises=J0 + 58.2, proximo=J0 + 62.6, logo=J0 + 66.4, dur=J0 + 70.0)
+         topo=J0 + 52.5, fartura=J0 + 54.0, marx=J0 + 54.8, paises=J0 + 58.2, proximo=J0 + 62.6,
+         cta=J0 + 66.4, lufa=J0 + 68.0, formar=J0 + 70.0, participar=J0 + 72.0, vamb=J0 + 74.5, logo=J0 + 76.0, dur=J0 + 79.4)
+for _k in range(4):
+    T[f"p{_k}"] = T["paises"] + 0.4 + _k * 0.3
+T["caminho"] = T["paises"] + 1.9
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 
@@ -54,10 +58,13 @@ def trilha(T, N):
     # o último degrau: refrão aberto + tema na guitarra solo
     som.banda_secao(st, T["topo"], T["proximo"] - T["topo"], 128, ((E, 8), (C, 8), (G, 8), (D, 8)), "aberto", 0.8, seed=5)
     soma(st["solo"], som.solo([(329.6, 0.25), (392.0, 0.25), (440.0, 0.25), (493.9, 0.4), (659.3, -1.4)], 0.6), T["topo"] + 0.9)
-    som.banda_golpe(st, T["paises"] + 1.9, E, 0.95, anel=0.7)
+    som.banda_golpe(st, T["caminho"], E, 0.95, anel=0.7)
     for t0, nota in [(T["proximo"] + 0.1, E), (T["proximo"] + 0.4, G), (T["proximo"] + 0.6, A)]:
         som.banda_golpe(st, t0, nota, 0.9, anel=0.25)
-    soma(st["sinte"], som.sinte([110.0, 164.8, 220.0], T["logo"] - T["proximo"] - 0.8, 0.3, brilho=1100, ataque=0.3), T["proximo"] + 0.8)
+    soma(st["sinte"], som.sinte([110.0, 164.8, 220.0], T["cta"] - T["proximo"] - 0.8, 0.3, brilho=1100, ataque=0.3), T["proximo"] + 0.8)
+    # a chamada do Coletivo Lufã: refrão animado até o logo
+    som.banda_secao(st, T["cta"], T["logo"] - T["cta"], 128, ((G, 8), (D, 8), (E, 8), (C, 8)), "aberto", 0.7, virar=True, seed=6)
+    som.banda_golpe(st, T["lufa"], G, 0.9, anel=0.6)
     som.banda_golpe(st, T["logo"], E, 1.0, anel=2.8)
     soma(st["sinte"], som.sinte([82.41, 123.5, 164.8, 246.9], dur - T["logo"], 0.35, brilho=1100, ataque=0.4), T["logo"])
 
@@ -90,11 +97,16 @@ def trilha(T, N):
     soma(fx, som.riser(0.8), T["topo"] + 0.2, 0.4); soma(fx, som.multidao(2.0, 0.5), T["fartura"], 0.3)
     soma(fx, som.papel(0.5), T["marx"], 0.7)
     for k in range(4):
-        soma(fx, som.tique(), T["paises"] + 0.4 + k * 0.3, 0.8)
-    soma(fx, som.carimbo_sfx(), T["paises"] + 1.9, 0.9)
+        soma(fx, som.tique(), T[f"p{k}"], 0.8)
+    soma(fx, som.carimbo_sfx(), T["caminho"], 0.9)
     soma(fx, som.whoosh(), T["proximo"] - 0.35, 0.7)
     for k in range(3):
         soma(fx, som.carimbo_sfx(), T["proximo"] + 0.1 + k * 0.25, 0.8)
+    soma(fx, som.whoosh(), T["cta"] - 0.35, 0.7); soma(fx, som.carimbo_sfx(), T["lufa"], 0.9)
+    for k in range(2):
+        soma(fx, som.carimbo_sfx(), T.get("serie", T["cta"] + 0.4) + k * 0.3, 0.7)
+    for k in ("formar", "participar"):
+        soma(fx, som.carimbo_sfx(), T[k], 0.7)
     soma(fx, som.whoosh(), T["logo"] - 0.35, 0.6); soma(fx, som.carimbo_sfx(), T["logo"], 0.8)
     soma(fx, som.sino_grave(), T["logo"] - 0.1, 0.9)
 

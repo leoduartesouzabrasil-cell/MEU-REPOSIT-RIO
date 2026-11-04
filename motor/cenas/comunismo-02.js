@@ -2,7 +2,8 @@
 // Mesma base do EP. 1 (motor/cenas/comunismo-01.js): gancho do Jones Manoel numa moldura, vinheta da série, registros ARQUIVO/CARTAZ.
 // Ordem: gancho (Jones, 0–14,35 s, o vídeo entra no juntar.sh) → vinheta → #1 nenhum país chegou ao comunismo (URSS) →
 // #2 a palavra é mais velha que Marx (1827/1832, os utópicos) → #3 Marx e Engels: o socialismo científico (Engels, 1888) →
-// #4 a escada: o socialismo é o primeiro degrau → o último degrau (Marx, 1875) + URSS/Cuba/Vietnã/China → próximo (mais-valia) → logo.
+// #4 a escada: o socialismo é o primeiro degrau → o último degrau (Marx, 1875) + URSS/Cuba/Vietnã/China → próximo (mais-valia) →
+// chamada do Coletivo Lufã (3º áudio do autor) → logo.
 // PRÉVIA sem narração; com a narração, T vem de comunismo-02.tempos.js.
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
@@ -13,8 +14,12 @@ const T = Object.assign({
   origem: J0 + 10.3, franca: J0 + 12.0, utopicos: J0 + 14.0, utopico: J0 + 17.0, plano: J0 + 19.5,
   cientifico: J0 + 22.9, engels: J0 + 23.5, cient: J0 + 26.2, luta: J0 + 28.6, e88: J0 + 32.4, sel88: J0 + 37.4,
   escada: J0 + 41.9, sobe: J0 + 44.0, selo1: J0 + 45.4, selo2: J0 + 47.2, selo3: J0 + 49.2,
-  topo: J0 + 52.5, fartura: J0 + 54.0, marx: J0 + 54.8, paises: J0 + 58.2, proximo: J0 + 62.6, logo: J0 + 66.4, dur: J0 + 70.0,
+  topo: J0 + 52.5, fartura: J0 + 54.0, marx: J0 + 54.8, paises: J0 + 58.2, proximo: J0 + 62.6,
+  cta: J0 + 66.4, lufa: J0 + 68.0, formar: J0 + 70.0, participar: J0 + 72.0, vamb: J0 + 74.5, logo: J0 + 76.0, dur: J0 + 79.4,
 }, (window.TEMPOS || {}).marcas || {});
+for (let i = 0; i < 4; i++) T['p' + i] ??= T.paises + 0.4 + i * 0.3;   // os selos URSS, CUBA, VIETNÃ, CHINA, no tempo da fala
+T.caminho ??= T.paises + 1.9;
+T.serie ??= T.cta + 0.4; T.inic ??= T.lufa - 1.0;
 // janela do vídeo do Jones: recorte 720×920 do original a partir do topo (tira a legenda dele, que começa em y ~940), escalado para 690×880
 const JANELA = { x: 195, y: 445, w: 690, h: 880 };
 // legenda da fala do Jones no NOSSO padrão (transcrição com tempo por palavra)
@@ -29,6 +34,7 @@ window.CENA = {
     owen: '../midia/comunismo-02/owen-1834.jpg',                   // W. H. Brooke, 1834 · domínio público
     marx: '../midia/comunismo-01/marx-recorte.jpg',                // J. J. E. Mayall, 1875 · domínio público
     engels: '../midia/comunismo-01/engels-recorte.jpg',            // retrato de Engels · domínio público
+    lufa: '../midia/comunismo-02/coletivo-lufa.png',              // logo do Coletivo Lufã (site coletivolufa.github.io)
     logoBege: '../identidade/marca/o-camarada-bege.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
@@ -39,13 +45,13 @@ window.CENA = {
     let arquivo = true;
 
     const ordem = [[0, jones], [T.vin, vinheta], [T.nenhum, gancho], [T.origem, origem], [T.cientifico, cientifico], [T.escada, escada],
-      [T.topo, comunismo], [T.proximo, proximo], [T.logo, final]];
+      [T.topo, comunismo], [T.proximo, proximo], [T.cta, chamada], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.nenhum, T.sel, T.utopico, T.cient, T.luta, T.sobe + 1.0, T.selo3, T.topo + 0.8, T.paises + 1.9, T.proximo + 0.1, T.logo];
+    const IMP = [T.nenhum, T.sel, T.utopico, T.cient, T.luta, T.sobe + 1.0, T.selo3, T.topo + 0.8, T.caminho, T.proximo + 0.1, T.lufa, T.vamb, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.vin, VERM, 24], [T.nenhum, VERM, -24], [T.origem, BEGE, 24], [T.cientifico, BEGE, -24], [T.escada, BEGE, 24], [T.topo, BEGE, -24], [T.proximo, VERM, 24], [T.logo, BEGE, -24]]
+    [[T.vin, VERM, 24], [T.nenhum, VERM, -24], [T.origem, BEGE, 24], [T.cientifico, BEGE, -24], [T.escada, BEGE, 24], [T.topo, BEGE, -24], [T.proximo, VERM, 24], [T.cta, AMA, -24], [T.logo, BEGE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
@@ -318,10 +324,10 @@ window.CENA = {
         ctx.restore();
       }
       if (t >= T.paises) ['URSS', 'CUBA', 'VIETNÃ', 'CHINA'].forEach((s2, i) => {
-        const q = seg(t, T.paises + 0.4 + i * 0.3, T.paises + 0.7 + i * 0.3);
+        const q = seg(t, T['p' + i], T['p' + i] + 0.3);
         L.etiqueta(ctx, s2, X0 + 420, 520 + i * 84, q, { cor: VERM, tam: 42 });
       });
-      if (t >= T.paises + 1.9) L.aplicarCarimbo(ctx, seg(t, T.paises + 1.9, T.paises + 2.2), X0 + 420, 1180, () => {
+      if (t >= T.caminho) L.aplicarCarimbo(ctx, seg(t, T.caminho, T.caminho + 0.3), X0 + 420, 1180, () => {
         ctx.save(); ctx.translate(X0 + 420, 1180); ctx.rotate(-0.05);
         ctx.fillStyle = BEGE; ctx.fillRect(-125, -40, 250, 80);
         ctx.strokeStyle = TINTA; ctx.lineWidth = 6; ctx.strokeRect(-125, -40, 250, 80);
@@ -347,12 +353,36 @@ window.CENA = {
       }
     }
 
+    // ------------------------------------------------ G. a chamada do Coletivo Lufã (CARTAZ)
+    function chamada(lt) {
+      arquivo = false;
+      L.fundo(ctx, VERM);
+      L.raios(ctx, CX, 660, 2600, 20, -0.3 + L.emDois(t) * 0.05, 'rgba(237,224,196,0.13)');
+      // antes do logo: o nome da série, carimbado
+      if (t < T.lufa) {
+        carimbar('DESMISTIFICANDO O', 600, T.serie, BEGE, 96, FONTE.manchete, 75);
+        carimbar('COMUNISMO', 760, T.serie + 0.3, AMA, 190, FONTE.manchete, 76, { erro: COR.vermelhoEscuro, desloc: 7 });
+        if (t >= T.serie + 0.8) { ctx.save(); ctx.globalAlpha = seg(t, T.serie + 0.8, T.serie + 1.2);
+          L.texto(ctx, 'COM LÉO DUARTE', CX, 880, { familia: FONTE.manchete, peso: 900, tam: 44, cor: BEGE, alinhar: 'center', tracking: 3 }); ctx.restore(); }
+      }
+      if (t >= T.inic) L.texto(ctx, L.datilografar('ESTE VÍDEO É UMA INICIATIVA DO', seg(t, T.inic, T.inic + 0.7)), CX, 330, { familia: FONTE.sub, peso: 600, tam: 44, cor: BEGE, alinhar: 'center', tracking: 3 });
+      // o logo do coletivo num disco bege
+      L.aplicarCarimbo(ctx, seg(t, T.lufa, T.lufa + 0.3), CX, 660, () => {
+        ctx.fillStyle = COR.vermelhoEscuro; ctx.beginPath(); ctx.arc(CX + 12, 672, 282, 0, 7); ctx.fill();
+        ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(CX, 660, 282, 0, 7); ctx.fill();
+        L.imagem(ctx, L.img.lufa, CX, 660, 520);
+      }, 71);
+      if (t >= T.formar) faixa('SE FORMAR COMO COMUNISTA', 1020, T.formar, TINTA, BEGE, 54, 72);
+      if (t >= T.participar) faixa('PARTICIPAR COM A GENTE', 1150, T.participar, BEGE, VERM, 54, 73);
+      carimbar('VAMBORA!', 1340, T.vamb, AMA, 120, FONTE.manchete, 74, { erro: COR.vermelhoEscuro, desloc: 6 });
+    }
+
     // ------------------------------------------------ F. logo e créditos
     function final(lt) {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Vídeo de abertura: Jones Manoel', 1090],
+      [['Vídeo de abertura: Jones Manoel · uma iniciativa do Coletivo Lufã', 1090],
         ['Retratos: Saint-Simon (Ravergie, 1848) · Owen (W. H. Brooke, 1834) · Marx (Mayall) · Engels: domínio público', 1135],
         ['Fourier (Jean Gigoux; foto F. Foliot, CC BY-SA 4.0)', 1170],
         ['Fontes: Co-operative Magazine (1827) · Leroux, Le Globe (1832) · Engels, Do Socialismo Utópico ao Científico (1880)', 1215],
