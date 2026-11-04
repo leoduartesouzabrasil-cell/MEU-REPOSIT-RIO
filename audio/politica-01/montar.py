@@ -25,14 +25,14 @@ from previa import trilha  # noqa: E402
 
 ARQ = sorted((AQUI / "narracao").glob("REC_*.aac"))          # 1, 2, 3 pela ordem de gravação
 VEL = float(os.environ.get("VEL", "1.04"))      # velocidade natural (pedido: mais devagar, para entender melhor)
-PAUSA_MAX = 0.34
+PAUSA_MAX = 0.2
 VIN = 3.5                                                    # duração da vinheta
 CORTE_1 = 8.2                                                # no #1, entre "história?" e "Quais" (tempo original)
 # blocos: (áudio, início, fim no tempo original, pausa depois do bloco)
-BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.7), (2, 0.0, None, 0.7), (3, 0.0, None, 0.0)]
+BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.45), (2, 0.0, None, 0.45), (3, 0.0, None, 0.0)]
 PAUSAS_ESPECIAIS = {                                         # (instante original, duração da pausa)
-    2: [(7.9, 0.45), (19.4, 0.45)],                          # antes da escola · antes do "O ônibus precisa melhorar"
-    3: [(9.3, 0.4), (20.8, 0.5), (29.6, 0.75), (35.7, 0.55)],  # antes do participar, das perguntas, do "E no seu dia" e do próximo
+    2: [(7.9, 0.4), (19.4, 0.4)],                          # antes da escola · antes do "O ônibus precisa melhorar"
+    3: [(9.3, 0.35), (20.8, 0.4), (29.6, 0.5), (35.7, 0.4)],  # antes do participar, das perguntas, do "E no seu dia" e do próximo
 }
 CORRECOES = [(["esperando", "ônibus?"], "esperando o ônibus."), (["R", "$", "5", ",30"], "R$ 5,30"),
              (["Prefeitura"], "prefeitura"), (["Prefeitura."], "prefeitura."), (["Sua", "Cidade"], "sua cidade"),
@@ -75,7 +75,7 @@ def trechos_com_fala(x, pal, especiais=()):
         if alvo:
             pend.remove(alvo)
         if run > max(manter, 0.45) or alvo:
-            meio = max(min(manter, run) / 2, 0.17 if run > 0.34 else run / 2)
+            meio = max(min(manter, run) / 2, 0.12 if run > 0.27 else run / 2)
             segs.append((a, i * 0.01 + meio))
             if alvo and manter > run:
                 segs.append(("silencio", manter - run))
@@ -158,7 +158,7 @@ def mapear(t, segs, t0):
 
 brutas = json.loads((AQUI / "palavras.json").read_text())
 vozes = {k: ler_voz(ARQ[k - 1], k) for k in (1, 2, 3)}
-t = 0.3
+t = 0.15
 pecas, PAL, INICIO, FIM = [], [], [], []
 for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
     x = vozes[k]
@@ -180,7 +180,7 @@ for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
     for w, w0, w1 in corrigir(pal):
         PAL.append([w, round(mapear(w0 / VEL, segs, t), 3), round(mapear(w1 / VEL, segs, t), 3)])
     INICIO.append(t); FIM.append(t + len(audio) / SR)
-    t = FIM[-1] + (0.3 + VIN + 0.15 if n == 0 else pausa)
+    t = FIM[-1] + (0.2 + VIN if n == 0 else pausa)
 
 
 def frase(texto, depois=0.0, fim=False):
@@ -201,7 +201,7 @@ M = {"gancho": 0.0}
 M["atraso"] = frase("está atrasado")
 M["bolso"] = frase("a passagem pesa")
 M["onde"] = frase("mas onde") + 0.2
-M["vin"] = FIM[0] + 0.3
+M["vin"] = FIM[0] + 0.2
 M["onibus"] = M["vin"] + VIN
 M["viagens"] = frase("quantas viagens")
 M["preco"] = frase("quanto custa")
@@ -236,8 +236,8 @@ M["p3"] = max(frase("como foi"), M["p2"] + 1.0)
 M["dia"] = frase("e no seu dia") - 0.45
 M["conta"] = frase("política é da sua conta") - 0.1
 M["proximo"] = frase("no próximo") - 0.3
-M["logo"] = FIM[-1] + 0.5
-M["dur"] = round(M["logo"] + 2.95, 2)
+M["logo"] = FIM[-1] + 0.3
+M["dur"] = round(M["logo"] + 1.8, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
