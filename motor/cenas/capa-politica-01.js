@@ -6,11 +6,12 @@ window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: 2,
   imagens: {
     logo: '../midia/politica-01/logo-coletivo-vermelha.png',   // logo do coletivo (pomba + nome), PNG sem fundo
+    arte: '../midia/politica-01/arte-capa.png',                // arte da capa (1536×1024), apoiada na borda de baixo
   },
   desenhar(ctx, t, L) {
     const { COR, FONTE } = L, CX = 540;
     L.fundo(ctx, COR.amarelo);
-    L.raios(ctx, CX, 1250, 2400, 22, -0.25, 'rgba(214,157,28,1)');
+    L.raios(ctx, CX, 1250, 2400, 22, 0, 'rgba(214,157,28,1)');   // raios retos, sem inclinação
     L.imagem(ctx, L.img.logo, CX, 440, 600);
     // título: faixa escura + texto bege, com a sombra vermelha da capa de referência
     ctx.fillStyle = COR.tinta; ctx.fillRect(130, 590, 820, 96);
@@ -25,6 +26,9 @@ window.CENA = {
     L.texto(ctx, 'COM EDUARDA PRADO', 1000, 895, { tam: 40, cor: COR.tinta, alinhar: 'right', tracking: 6 });
     // etiqueta do episódio
     L.etiqueta(ctx, 'EP. 1 · VOCÊ JÁ VIVE A POLÍTICA', CX, 975, 1, { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
+    // arte apoiada na borda de baixo, em largura total (1080 px), sem flutuar
+    const A = L.img.arte, aw = 1080, ah = Math.round(A.height * aw / A.width);
+    ctx.drawImage(A, 0, 1920 - ah, aw, ah);
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.3);
   },
 };
