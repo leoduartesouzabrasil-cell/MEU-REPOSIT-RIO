@@ -27,10 +27,10 @@ window.CENA = {
     L.texto(ctx, 'COM EDUARDA PRADO', 1000, 775, { tam: 40, cor: COR.tinta, alinhar: 'right', tracking: 6 });
     // etiqueta do episódio
     L.etiqueta(ctx, 'EP. 1 · VOCÊ JÁ VIVE A POLÍTICA', CX, 845, 1, { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
-    // arte em largura total, com a base no limite do grid
-    // base da arte no limite do grid (y 1635): a arte inteira cabe no recorte quadrado da grade
-    const A = L.img.arte, aw = 1080, ah = Math.round(A.height * aw / A.width);
-    ctx.drawImage(A, 0, 1635 - ah, aw, ah);
+    // arte em destaque, base encostada na borda da capa
+    // arte maior, com a base encostada exatamente na borda de baixo da capa (sem borda visível cortando as pessoas)
+    const A = L.img.arte, aw = 1280, ah = Math.round(A.height * aw / A.width);
+    ctx.drawImage(A, (W - aw) / 2, H - ah, aw, ah);
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.3);
   },
 };
