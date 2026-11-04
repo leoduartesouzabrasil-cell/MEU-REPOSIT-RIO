@@ -1,3 +1,7 @@
 | Arquivo | Autor | Licença | Origem | Baixado em | Observação |
 |---|---|---|---|---|---|
 | lenin-1920.jpg | Pavel Zhukov (1920) | domínio público (autor morto em 1942; PD nos EUA, publicado antes de 1931) | https://commons.wikimedia.org/wiki/File:Vladimir_Lenin_in_July_1920_by_Pavel_Zhukov.jpg | 2026-11-04 | Retrato de Lênin, julho de 1920. Miniatura de 1280 px. |
+| saint-simon-1848.jpg | Hippolyte Ravergie, a partir de desenho de Adélaïde Labille-Guiard (1848) | domínio público | https://commons.wikimedia.org/wiki/File:Portrait_de_Claude-Henri_de_Rouvroy,_comte_de_Saint-Simon.jpg | 2026-11-04 | Retrato de Saint-Simon (BnF, Arsenal). |
+| owen-1834.jpg | William Henry Brooke (1834) | domínio público | https://commons.wikimedia.org/wiki/File:Robert_Owen_by_William_Henry_Brooke.jpg | 2026-11-04 | National Portrait Gallery, Londres (NPG 943). A página do Commons tem aviso de reivindicação de direitos de terceiros. Miniatura de 960 px. |
+| fourier-1835.jpg | Jean Gigoux (1835); foto de Françoise Foliot | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Portrait_painting_of_Charles_Fourier_by_Jean_Gigoux_%E2%80%94_1835_(3x4_cropped).jpg | 2026-11-04 | Crédito na tela: "Jean Gigoux / foto F. Foliot (CC BY-SA 4.0)". Miniatura de 960 px. |
+| gancho-original.mp4 | Jones Manoel (corte de podcast) | direitos do autor do vídeo | enviado pelo autor da página | 2026-11-04 | Gancho do EP. 2: trecho 0–14,4 s ("…universalizar a prosperidade no Brasil."), em moldura, sem a legenda dele. |

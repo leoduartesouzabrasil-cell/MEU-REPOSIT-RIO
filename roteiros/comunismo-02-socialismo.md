@@ -10,7 +10,13 @@ imagens de época, trilha da banda completa, legenda padrão). Duração-alvo: ~
 houve primeiro o socialismo utópico (Saint-Simon, Fourier, Owen); Marx e Engels fundaram o socialismo científico. A v1 dizia
 "Lênin explicou…" e a cena tinha o título "QUEM DEU O NOME: LÊNIN": os dois saíram.
 
-### ÁUDIO #1: O gancho (antes da vinheta; provocador)
+### ABERTURA: o vídeo do Jones Manoel (chamariz, antes da vinheta)
+Trecho de 0 a 14,35 s do vídeo do Jones Manoel (`midia/comunismo-02/gancho-original.mp4`), até "…universalizar a prosperidade no Brasil.".
+NA TELA: igual ao EP. 1: fundo bege, título "SOCIALISMO VAI TOMAR A SUA CASA?", "Jones Manoel, historiador", o vídeo numa moldura dourada
+(recorte 720×920 a partir do topo: a legenda dele fica fora), a NOSSA legenda embaixo e "Vídeo: Jones Manoel" abaixo da moldura.
+Depois do corte, o último quadro fica parado 0,4 s e entra a vinheta "EP. 2 · O QUE É O SOCIALISMO?". Montagem: `audio/comunismo-02/juntar.sh`.
+
+### ÁUDIO #1: Depois da vinheta (provocador)
 > Sabia que nenhum país do mundo chegou ao comunismo? Nem a União Soviética.
 > Tanto que o nome dela era União das Repúblicas Socialistas Soviéticas.
 
