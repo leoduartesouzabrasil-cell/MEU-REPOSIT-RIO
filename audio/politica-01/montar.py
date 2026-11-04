@@ -94,8 +94,26 @@ LIMPEZA = ("highpass=f=75,afftdn=nr=10:nf=-50,deesser=i=0.2,"          # ruído 
            "acompressor=threshold=-24dB:ratio=2.2:attack=12:release=140:makeup=3")   # compressão leve: mantém a entonação
 
 
-def ler_voz(caminho):
-    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(caminho), "-af", LIMPEZA + f",atempo={VEL}", "-ac", "1",
+# entonação: curva de altura (semitons) por áudio, no tempo original. "Quem está sendo ouvido?" (#2) soava como
+# afirmação; a voz sobe até a sílaba tônica de "ouVIdo" e fica alta no fim, como pergunta (pedido da autora).
+ENTONACAO = {2: [(30.9, 0.0), (31.5, 0.5), (31.75, 1.0), (31.89, 1.2), (31.93, 10.5), (32.1, 11.0), (32.4, 11.0), (32.6, 0.0)]}
+
+
+def curva_altura(pontos, passo=0.01):
+    """Comandos do asendcmd que mudam o pitch do rubberband aos poucos (sem degraus audíveis)."""
+    cmds, t = [], pontos[0][0]
+    while t <= pontos[-1][0] + 1e-6:
+        for (t0, s0), (t1, s1) in zip(pontos, pontos[1:]):
+            if t0 <= t <= t1:
+                st = s0 + (s1 - s0) * (t - t0) / (t1 - t0); break
+        cmds.append(f"{t:.2f} rubberband pitch {2 ** (st / 12):.4f}")
+        t += passo
+    return "asendcmd=c='" + ";".join(cmds) + "',rubberband=pitch=1:formant=preserved:pitchq=quality,"
+
+
+def ler_voz(caminho, k=None):
+    pre = curva_altura(ENTONACAO[k]) if k in ENTONACAO else ""
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(caminho), "-af", pre + LIMPEZA + f",atempo={VEL}", "-ac", "1",
                           "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
 
@@ -114,7 +132,7 @@ def mapear(t, segs, t0):
 
 
 brutas = json.loads((AQUI / "palavras.json").read_text())
-vozes = {k: ler_voz(ARQ[k - 1]) for k in (1, 2, 3)}
+vozes = {k: ler_voz(ARQ[k - 1], k) for k in (1, 2, 3)}
 t = 0.3
 pecas, PAL, INICIO, FIM = [], [], [], []
 for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
@@ -194,7 +212,7 @@ M["dia"] = frase("e no seu dia") - 0.45
 M["conta"] = frase("política é da sua conta") - 0.1
 M["proximo"] = frase("no próximo") - 0.3
 M["logo"] = FIM[-1] + 0.5
-M["dur"] = round(M["logo"] + 3.0, 2)
+M["dur"] = round(M["logo"] + 2.95, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
