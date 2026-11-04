@@ -36,8 +36,8 @@ def trilha(T, N):
     st = {k: np.zeros(N + SR * 4, np.float32) for k in ("bat", "baixo", "gE", "gD", "solo", "sinte")}
     fx = np.zeros(N + SR * 4, np.float32)
     # gancho: fundo grave e baixo, guitarra abafada entrando; golpe no "onde entra a política?"
-    soma(st["sinte"], som.sinte([82.41, 123.5, 164.8], T["vin"] - 0.2, 0.18, brilho=700, ataque=1.2), 0)
-    som.banda_secao(st, 1.2, T["vin"] - 1.6, 100, ((E, 8), (C, 8)), "palm", 0.35, seed=11)
+    soma(st["sinte"], som.sinte([82.41, 123.5, 164.8], T["gancho"] - T["vin"], 0.18, brilho=700, ataque=1.2), T["vin"])
+    som.banda_secao(st, T["gancho"], T["onde"] - T["gancho"], 100, ((E, 8), (C, 8)), "palm", 0.35, seed=11)
     som.banda_golpe(st, T["onde"], E, 0.9, anel=1.2)
     # o ônibus e suas decisões: groove didático; golpe no "quem decidiu: a prefeitura"
     som.banda_secao(st, T["onibus"], T["politica"] - T["onibus"], 120, ((E, 8), (D, 4), (A, 4)), "pulo", 0.62, virar=True, seed=12)
@@ -144,7 +144,7 @@ def trilha(T, N):
     ve, vd = vinheta()
     g = np.sqrt(np.mean(esq[int(T["onibus"] * SR):int(T["politica"] * SR)] ** 2)) / max(np.sqrt(np.mean(ve ** 2)), 1e-9) * 1.4
     # a banda some durante a vinheta (que tem música própria)
-    a, b = int((T["vin"] - 0.15) * SR), int((T["onibus"] - 0.1) * SR)
+    a, b = max(int(0.02 * SR), int((T["vin"] - 0.15) * SR)), int((T["vin"] + 3.7) * SR)
     rampa = np.ones(N, np.float32); rampa[a:b] = 0.0
     rampa[max(0, a - 2400):a] = np.linspace(1, 0, min(2400, a)); rampa[b:b + 2400] = np.linspace(0, 1, len(rampa[b:b + 2400]))
     esq *= rampa; dir_ *= rampa

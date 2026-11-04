@@ -67,7 +67,7 @@ window.CENA = {
       .map(([roupa, pele, chapeu], i) => ({ roupa, pele, chapeu, coque: i % 2 === 1 }));
     const PASSAGEIRA = { roupa: VERM, pele: '#8A5A3A', chapeu: null };
 
-    const ordem = [[0, gancho], [T.vin, vinheta], [T.onibus, onibus], [T.politica, politica], [T.escola, escola], [T.prior, prioridade],
+    const ordem = [[0, vinheta], [T.gancho, gancho], [T.onibus, onibus], [T.politica, politica], [T.escola, escola], [T.prior, prioridade],
       [T.eleicao, eleicao], [T.lai, participar], [T.perguntas, perguntas], [T.dia, seuDia], [T.proximo, proximo], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
     const IMP = [T.onde, T.prefeitura, T.decide, T.regras, T.recursos, T.metasSel, T.primeiro, T.naoAcaba, T.continuam, T.laiSel, T.dia + 0.3, T.conta, T.proximo + 0.1, T.logo];
@@ -76,7 +76,7 @@ window.CENA = {
 
     // entre duas cenas bege, a faixa do corte é bege-escura: a troca fica visível (com bege sobre bege parecia que tudo sumia)
     const BE = COR.begeEscuro;
-    [[T.vin, VERM, 24], [T.onibus, BE, -24], [T.politica, AMA, 24], [T.escola, BE, -24], [T.prior, BE, 24], [T.eleicao, BE, -24],
+    [[T.gancho, BE, 24], [T.onibus, BE, -24], [T.politica, AMA, 24], [T.escola, BE, -24], [T.prior, BE, 24], [T.eleicao, BE, -24],
       [T.lai, BE, 24], [T.perguntas, BE, -24], [T.dia, VERM, 24], [T.proximo, VERM, -24], [T.logo, BE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
@@ -86,8 +86,8 @@ window.CENA = {
 
     // ------------------------------------------------ componentes padronizados (iguais aos do comunismo-01)
     function legenda() {
-      if (t >= T.vin - 0.4 && t < T.onibus - 0.05) return;           // a vinheta (e o corte que a abre) não leva legenda
-      const l = LEG.find(l => t >= l.t0 - 0.05 && t < l.t1 && !(l.t0 < T.vin && t >= T.vin - 0.05));
+      if (t < T.gancho - 0.05) return;                               // a vinheta não leva legenda
+      const l = LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
       if (!l) return;
       const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
         L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');

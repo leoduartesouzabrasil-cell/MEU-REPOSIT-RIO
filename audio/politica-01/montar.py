@@ -29,7 +29,7 @@ PAUSA_MAX = 0.2
 VIN = 3.5                                                    # duração da vinheta
 CORTE_1 = 8.2                                                # no #1, entre "história?" e "Quais" (tempo original)
 # blocos: (áudio, início, fim no tempo original, pausa depois do bloco)
-BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.45), (2, 0.0, None, 0.45), (3, 0.0, None, 0.0)]
+BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.35), (2, 0.0, None, 0.35), (3, 0.0, None, 0.0)]
 PAUSAS_ESPECIAIS = {                                         # (instante original, duração da pausa)
     2: [(7.9, 0.4), (19.4, 0.4)],                          # antes da escola · antes do "O ônibus precisa melhorar"
     3: [(9.3, 0.35), (20.8, 0.4), (29.6, 0.5), (35.7, 0.4)],  # antes do participar, das perguntas, do "E no seu dia" e do próximo
@@ -158,7 +158,7 @@ def mapear(t, segs, t0):
 
 brutas = json.loads((AQUI / "palavras.json").read_text())
 vozes = {k: ler_voz(ARQ[k - 1], k) for k in (1, 2, 3)}
-t = 0.15
+t = 0.1 + VIN + 0.1
 pecas, PAL, INICIO, FIM = [], [], [], []
 for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
     x = vozes[k]
@@ -180,7 +180,7 @@ for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
     for w, w0, w1 in corrigir(pal):
         PAL.append([w, round(mapear(w0 / VEL, segs, t), 3), round(mapear(w1 / VEL, segs, t), 3)])
     INICIO.append(t); FIM.append(t + len(audio) / SR)
-    t = FIM[-1] + (0.2 + VIN if n == 0 else pausa)
+    t = FIM[-1] + (0.35 if n == 0 else pausa)
 
 
 def frase(texto, depois=0.0, fim=False):
@@ -197,12 +197,12 @@ def frase(texto, depois=0.0, fim=False):
     raise KeyError(texto)
 
 
-M = {"gancho": 0.0}
+M = {"gancho": 0.1 + VIN + 0.05}
 M["atraso"] = frase("está atrasado")
 M["bolso"] = frase("a passagem pesa")
 M["onde"] = frase("mas onde") + 0.2
-M["vin"] = FIM[0] + 0.2
-M["onibus"] = M["vin"] + VIN
+M["vin"] = 0.1
+M["onibus"] = INICIO[1] - 0.2
 M["viagens"] = frase("quantas viagens")
 M["preco"] = frase("quanto custa")
 M["print"] = frase("em são paulo") - 0.3
@@ -236,8 +236,8 @@ M["p3"] = max(frase("como foi"), M["p2"] + 1.0)
 M["dia"] = frase("e no seu dia") - 0.45
 M["conta"] = frase("política é da sua conta") - 0.1
 M["proximo"] = frase("no próximo") - 0.3
-M["logo"] = FIM[-1] + 0.3
-M["dur"] = round(M["logo"] + 1.8, 2)
+M["logo"] = FIM[-1] + 0.25
+M["dur"] = round(M["logo"] + 1.5, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
