@@ -24,12 +24,12 @@ from som import SR, soma  # noqa: E402
 from previa import trilha  # noqa: E402
 
 ARQ = sorted((AQUI / "narracao").glob("REC_*.aac"))          # 1, 2, 3 pela ordem de gravação
-VEL = float(os.environ.get("VEL", "1.12"))
-PAUSA_MAX = 0.22
+VEL = float(os.environ.get("VEL", "1.0"))      # velocidade natural (pedido: mais devagar, para entender melhor)
+PAUSA_MAX = 0.34
 VIN = 3.5                                                    # duração da vinheta
 CORTE_1 = 8.2                                                # no #1, entre "história?" e "Quais" (tempo original)
 # blocos: (áudio, início, fim no tempo original, pausa depois do bloco)
-BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.6), (2, 0.0, None, 0.6), (3, 0.0, None, 0.0)]
+BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.8), (2, 0.0, None, 0.8), (3, 0.0, None, 0.0)]
 PAUSAS_ESPECIAIS = {                                         # (instante original, duração da pausa)
     2: [(7.9, 0.45), (19.4, 0.45)],                          # antes da escola · antes do "O ônibus precisa melhorar"
     3: [(9.3, 0.4), (20.8, 0.5), (29.6, 0.75), (35.7, 0.55)],  # antes do participar, das perguntas, do "E no seu dia" e do próximo
@@ -87,8 +87,15 @@ def trechos_com_fala(x, especiais=()):
     return segs
 
 
+# limpeza da voz: corta graves e chiado, reduz o ruído de fundo (FFT, acompanhando o ruído), suaviza os "s",
+# dá presença na faixa da fala e comprime de leve para o volume ficar estável
+LIMPEZA = ("highpass=f=90,lowpass=f=11500,afftdn=nr=16:nf=-42:tn=1,anlmdn=s=4,deesser=i=0.35,"
+           "equalizer=f=3200:t=q:w=1.2:g=2.5,equalizer=f=250:t=q:w=1:g=-2,"
+           "acompressor=threshold=-21dB:ratio=3:attack=6:release=90:makeup=2")
+
+
 def ler_voz(caminho):
-    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(caminho), "-af", f"highpass=f=80,atempo={VEL}", "-ac", "1",
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(caminho), "-af", LIMPEZA + f",atempo={VEL}", "-ac", "1",
                           "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
 
@@ -186,8 +193,8 @@ M["p3"] = max(frase("como foi"), M["p2"] + 1.0)
 M["dia"] = frase("e no seu dia") - 0.45
 M["conta"] = frase("política é da sua conta") - 0.1
 M["proximo"] = frase("no próximo") - 0.3
-M["logo"] = FIM[-1] + 0.9
-M["dur"] = round(M["logo"] + 3.8, 2)
+M["logo"] = FIM[-1] + 0.7
+M["dur"] = round(M["logo"] + 3.4, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
@@ -229,8 +236,8 @@ fala = e > 0.3
 rms = lambda x: float(np.sqrt(np.mean(x[fala] ** 2))) or 1e-9
 REF = 0.2
 voz_mix = voz * (REF / rms(voz))
-g_mus = REF * 10 ** (-22 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
-g_sfx = REF * 10 ** (-20 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
+g_mus = REF * 10 ** (-25 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
+g_sfx = REF * 10 ** (-23 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
 leito_e, leito_d = mus_e * (1 - 0.7 * e) * g_mus, mus_d * (1 - 0.7 * e) * g_mus
 ef_e = np.clip(sfx_e * (1 - 0.75 * e) * g_sfx, -0.6, 0.6); ef_d = np.clip(sfx_d * (1 - 0.75 * e) * g_sfx, -0.6, 0.6)
 
