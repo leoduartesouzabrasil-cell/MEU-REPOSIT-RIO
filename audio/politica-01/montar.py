@@ -95,8 +95,9 @@ LIMPEZA = ("highpass=f=75,afftdn=nr=10:nf=-50,deesser=i=0.2,"          # ruído 
 
 
 # entonação: curva de altura (semitons) por áudio, no tempo original. "Quem está sendo ouvido?" (#2) soava como
-# afirmação; a voz sobe até a sílaba tônica de "ouVIdo" e fica alta no fim, como pergunta (pedido da autora).
-ENTONACAO = {2: [(30.9, 0.0), (31.5, 0.5), (31.75, 1.0), (31.89, 1.2), (31.93, 10.5), (32.1, 11.0), (32.4, 11.0), (32.6, 0.0)]}
+# afirmação; a voz sobe aos poucos até a tônica "ouVIdo" (+4,5 semitons) e desce pouco no "do": contorno de pergunta,
+# sem saltos bruscos (um salto de +10 semitons soava artificial).
+ENTONACAO = {2: [(31.0, 0.0), (31.45, 0.8), (31.7, 2.5), (31.85, 4.5), (31.95, 3.8), (32.1, 3.2), (32.35, 3.2), (32.55, 0.0)]}
 
 
 def curva_altura(pontos, passo=0.01):
@@ -111,11 +112,25 @@ def curva_altura(pontos, passo=0.01):
     return "asendcmd=c='" + ";".join(cmds) + "',rubberband=pitch=1:formant=preserved:pitchq=quality,"
 
 
-def ler_voz(caminho, k=None):
-    pre = curva_altura(ENTONACAO[k]) if k in ENTONACAO else ""
+def _ler(caminho, pre=""):
     raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(caminho), "-af", pre + LIMPEZA + f",atempo={VEL}", "-ac", "1",
                           "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
+
+
+def ler_voz(caminho, k=None):
+    """Voz limpa; se o áudio tem curva de ENTONACAO, só aquele trecho passa pelo rubberband (o resto fica intacto),
+    emendado com cruzamento de 40 ms."""
+    x = _ler(caminho)
+    if k in ENTONACAO:
+        pts = ENTONACAO[k]
+        y = _ler(caminho, curva_altura(pts))
+        a, b = int(pts[0][0] / VEL * SR), int(pts[-1][0] / VEL * SR)
+        c = int(0.04 * SR); r = np.linspace(0, 1, c, dtype=np.float32)
+        x[a:a + c] = x[a:a + c] * (1 - r) + y[a:a + c] * r
+        x[a + c:b - c] = y[a + c:b - c]
+        x[b - c:b] = y[b - c:b] * (1 - r) + x[b - c:b] * r
+    return x
 
 
 def mapear(t, segs, t0):

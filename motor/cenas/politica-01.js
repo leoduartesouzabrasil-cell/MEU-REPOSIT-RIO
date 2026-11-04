@@ -74,8 +74,10 @@ window.CENA = {
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
-    [[T.vin, VERM, 24], [T.onibus, BEGE, -24], [T.politica, AMA, 24], [T.escola, BEGE, -24], [T.prior, BEGE, 24], [T.eleicao, BEGE, -24],
-      [T.lai, BEGE, 24], [T.perguntas, BEGE, -24], [T.dia, VERM, 24], [T.proximo, VERM, -24], [T.logo, BEGE, 24]]
+    // entre duas cenas bege, a faixa do corte é bege-escura: a troca fica visível (com bege sobre bege parecia que tudo sumia)
+    const BE = COR.begeEscuro;
+    [[T.vin, VERM, 24], [T.onibus, BE, -24], [T.politica, AMA, 24], [T.escola, BE, -24], [T.prior, BE, 24], [T.eleicao, BE, -24],
+      [T.lai, BE, 24], [T.perguntas, BE, -24], [T.dia, VERM, 24], [T.proximo, VERM, -24], [T.logo, BE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
