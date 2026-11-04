@@ -97,7 +97,11 @@ LIMPEZA = ("highpass=f=75,afftdn=nr=10:nf=-50,deesser=i=0.2,"          # ruído 
 # entonação: curva de altura (semitons) por áudio, no tempo original. "Quem está sendo ouvido?" (#2) soava como
 # afirmação; a voz sobe aos poucos até a tônica "ouVIdo" (+4,5 semitons) e desce pouco no "do": contorno de pergunta,
 # sem saltos bruscos (um salto de +10 semitons soava artificial).
-ENTONACAO = {2: [(31.0, 0.0), (31.45, 0.8), (31.7, 2.5), (31.85, 4.5), (31.95, 3.8), (32.1, 3.2), (32.35, 3.2), (32.55, 0.0)]}
+# Na gravação, o fim de "ouvido" quase some ("vi" -29 dB e "do" -35 dB, contra ~-25 dB da fala): a palavra ganha volume
+# (curva em dB, tempo original), presença e compressão, para ser entendida sem esforço.
+REFORCO = {2: [(31.74, 0.0), (31.82, 3.0), (31.92, 7.0), (32.06, 8.0), (32.14, 8.0), (32.24, 0.0)]}
+REFORCO_EQ = "equalizer=f=2500:t=q:w=1.2:g=4,acompressor=threshold=-32dB:ratio=4:attack=3:release=60:makeup=3,"
+ENTONACAO = {2: [(31.0, 0.0), (31.5, 0.4), (31.75, 1.5), (31.88, 2.5), (32.05, 2.8), (32.3, 2.8), (32.55, 0.0)]}
 
 
 def curva_altura(pontos, passo=0.01):
@@ -124,12 +128,18 @@ def ler_voz(caminho, k=None):
     x = _ler(caminho)
     if k in ENTONACAO:
         pts = ENTONACAO[k]
-        y = _ler(caminho, curva_altura(pts))
+        y = _ler(caminho, curva_altura(pts) + REFORCO_EQ)
         a, b = int(pts[0][0] / VEL * SR), int(pts[-1][0] / VEL * SR)
         c = int(0.04 * SR); r = np.linspace(0, 1, c, dtype=np.float32)
         x[a:a + c] = x[a:a + c] * (1 - r) + y[a:a + c] * r
         x[a + c:b - c] = y[a + c:b - c]
         x[b - c:b] = y[b - c:b] * (1 - r) + x[b - c:b] * r
+    if k in REFORCO:
+        tt = np.arange(len(x)) / SR * VEL                       # tempo original de cada amostra
+        ts, gs = zip(*REFORCO[k])
+        g = np.where((tt >= ts[0]) & (tt <= ts[-1]), np.interp(tt, ts, gs), 0.0)
+        x = x * (10 ** (g / 20)).astype(np.float32)
+        x = np.where(np.abs(x) > 0.95, np.sign(x) * (0.95 + 0.05 * np.tanh((np.abs(x) - 0.95) / 0.05)), x).astype(np.float32)
     return x
 
 
