@@ -1,0 +1,30 @@
+// Capa do vídeo atual, "Política é da sua conta! · EP. 1: Você já vive a política", no mesmo estilo da capa do
+// "Desmistificando o Comunismo" (capa-comunismo-02.js): mesma estrutura, fontes, tamanhos, sombras, grão e vinheta.
+// Só mudam as cores (fundo amarelo, raios em amarelo escuro) e os textos. A parte de baixo fica livre para a foto.
+// Render: node motor/render.js capa-politica-01 saida/capa-politica-01.png --still 1
+window.CENA = {
+  w: 1080, h: 1920, fps: 30, dur: 2,
+  imagens: {
+    logo: '../midia/politica-01/logo-coletivo-vermelha.png',   // logo do coletivo (pomba + nome), PNG sem fundo
+  },
+  desenhar(ctx, t, L) {
+    const { COR, FONTE } = L, CX = 540;
+    L.fundo(ctx, COR.amarelo);
+    L.raios(ctx, CX, 1250, 2400, 22, -0.25, 'rgba(214,157,28,1)');
+    L.imagem(ctx, L.img.logo, CX, 440, 600);
+    // título: faixa escura + texto bege, com a sombra vermelha da capa de referência
+    ctx.fillStyle = COR.tinta; ctx.fillRect(130, 590, 820, 96);
+    const t1 = Math.min(104, L.ajustar(ctx, 'POLÍTICA É DA SUA', FONTE.manchete, 780));
+    L.texto(ctx, 'POLÍTICA É DA SUA', CX, 672, { tam: t1, cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
+    // palavra grande: vermelha com sombra escura (no lugar do amarelo com sombra vermelha, por causa do fundo amarelo)
+    const t2 = Math.min(210, L.ajustar(ctx, 'CONTA!', FONTE.bloco, 940, 400));
+    L.texto(ctx, 'CONTA!', CX, 764 + t2 * 0.36, { familia: FONTE.bloco, peso: 400, tam: t2, cor: COR.vermelho, alinhar: 'center', erro: COR.tinta, desloc: 9 });
+    // apresentadora: traço vermelho + nome, alinhado à direita
+    L.fonte(ctx, FONTE.manchete, 40, 900); ctx.letterSpacing = '6px'; const w = ctx.measureText('COM EDUARDA PRADO').width; ctx.letterSpacing = '0px';
+    ctx.fillStyle = COR.vermelho; ctx.fillRect(1000 - w - 86, 878, 60, 5);
+    L.texto(ctx, 'COM EDUARDA PRADO', 1000, 895, { tam: 40, cor: COR.tinta, alinhar: 'right', tracking: 6 });
+    // etiqueta do episódio
+    L.etiqueta(ctx, 'EP. 1 · VOCÊ JÁ VIVE A POLÍTICA', CX, 975, 1, { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
+    L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.3);
+  },
+};
