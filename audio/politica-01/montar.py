@@ -24,12 +24,12 @@ from som import SR, soma  # noqa: E402
 from previa import trilha  # noqa: E402
 
 ARQ = sorted((AQUI / "narracao").glob("REC_*.aac"))          # 1, 2, 3 pela ordem de gravação
-VEL = float(os.environ.get("VEL", "1.0"))      # velocidade natural (pedido: mais devagar, para entender melhor)
+VEL = float(os.environ.get("VEL", "1.04"))      # velocidade natural (pedido: mais devagar, para entender melhor)
 PAUSA_MAX = 0.34
 VIN = 3.5                                                    # duração da vinheta
 CORTE_1 = 8.2                                                # no #1, entre "história?" e "Quais" (tempo original)
 # blocos: (áudio, início, fim no tempo original, pausa depois do bloco)
-BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.8), (2, 0.0, None, 0.8), (3, 0.0, None, 0.0)]
+BLOCOS = [(1, 0.0, CORTE_1, None), (1, CORTE_1, None, 0.7), (2, 0.0, None, 0.7), (3, 0.0, None, 0.0)]
 PAUSAS_ESPECIAIS = {                                         # (instante original, duração da pausa)
     2: [(7.9, 0.45), (19.4, 0.45)],                          # antes da escola · antes do "O ônibus precisa melhorar"
     3: [(9.3, 0.4), (20.8, 0.5), (29.6, 0.75), (35.7, 0.55)],  # antes do participar, das perguntas, do "E no seu dia" e do próximo
@@ -53,35 +53,35 @@ def corrigir(pal):
     return out
 
 
-def trechos_com_fala(x, especiais=()):
-    """Segmentos [a, b) a manter: corta silêncio do começo/fim e encurta pausas longas; especiais fixam a duração de uma pausa."""
+def trechos_com_fala(x, pal, especiais=()):
+    """Segmentos [a, b) a manter. Corta só SILÊNCIO DE VERDADE (abaixo de -40 dB do pico, com pelo menos 0,45 s),
+    deixando 0,17 s de folga de cada lado do som: finais de palavra e consoantes fracas ficam inteiros.
+    especiais: [(instante, duração)] fixa a duração de uma pausa."""
     q = int(0.01 * SR)
     en = np.array([np.sqrt(np.mean(x[i:i + q] ** 2)) for i in range(0, len(x) - q, q)])
-    voz = en > np.max(en) * 10 ** (-32 / 20)
-    idx = np.where(voz)[0]
-    ini, fim = idx[0], idx[-1]
-    segs, a, i, pend = [], max(0, ini - 10), ini, list(especiais)
-    while i <= fim:
-        if not voz[i]:
-            j = i
-            while j <= fim and not voz[j]:
-                j += 1
-            esp = next((e for e in pend if i * 0.01 - 0.3 <= e[0] <= j * 0.01 + 0.3), None)
-            if esp is not None and (j - i) * 0.01 > 0.12:
-                pend.remove(esp)
-                meio = int(min(esp[1], (j - i) * 0.01) / 2 / 0.01)
-                segs.append((a * 0.01, (i + meio) * 0.01))
-                if esp[1] - (j - i) * 0.01 > 0:
-                    segs.append(("silencio", esp[1] - (j - i) * 0.01))
-                a = j - meio
-            elif (j - i) * 0.01 > PAUSA_MAX:
-                meio = int(PAUSA_MAX / 2 / 0.01)
-                segs.append((a * 0.01, (i + meio) * 0.01))
-                a = j - meio
-            i = j
-        else:
-            i += 1
-    segs.append((a * 0.01, min(len(x) / SR, (fim + 15) * 0.01)))
+    som_ = en > np.max(en) * 10 ** (-40 / 20)
+    idx = np.where(som_)[0]
+    ini, fim = max(0, idx[0] - 15), min(len(en), idx[-1] + 25)
+    segs, a, i, pend = [], ini * 0.01, ini, list(especiais)
+    while i < fim:
+        if som_[i]:
+            i += 1; continue
+        j = i
+        while j < fim and not som_[j]:
+            j += 1
+        run = (j - i) * 0.01
+        alvo = next((e for e in pend if i * 0.01 - 0.3 <= e[0] <= j * 0.01 + 0.3), None) if run > 0.12 else None
+        manter = alvo[1] if alvo else PAUSA_MAX
+        if alvo:
+            pend.remove(alvo)
+        if run > max(manter, 0.45) or alvo:
+            meio = max(min(manter, run) / 2, 0.17 if run > 0.34 else run / 2)
+            segs.append((a, i * 0.01 + meio))
+            if alvo and manter > run:
+                segs.append(("silencio", manter - run))
+            a = j * 0.01 - meio
+        i = j
+    segs.append((a, fim * 0.01))
     if pend:
         print("aviso: pausas especiais não encontradas:", pend)
     return segs
@@ -89,9 +89,9 @@ def trechos_com_fala(x, especiais=()):
 
 # limpeza da voz: corta graves e chiado, reduz o ruído de fundo (FFT, acompanhando o ruído), suaviza os "s",
 # dá presença na faixa da fala e comprime de leve para o volume ficar estável
-LIMPEZA = ("highpass=f=90,lowpass=f=11500,afftdn=nr=16:nf=-42:tn=1,anlmdn=s=4,deesser=i=0.35,"
-           "equalizer=f=3200:t=q:w=1.2:g=2.5,equalizer=f=250:t=q:w=1:g=-2,"
-           "acompressor=threshold=-21dB:ratio=3:attack=6:release=90:makeup=2")
+LIMPEZA = ("highpass=f=75,afftdn=nr=10:nf=-50,deesser=i=0.2,"          # ruído reduzido sem "picotar" a voz
+           "equalizer=f=170:t=q:w=1:g=1.5,equalizer=f=3000:t=q:w=1.4:g=3,"   # corpo + presença (fala mais clara)
+           "acompressor=threshold=-24dB:ratio=2.2:attack=12:release=140:makeup=3")   # compressão leve: mantém a entonação
 
 
 def ler_voz(caminho):
@@ -123,13 +123,13 @@ for n, (k, o0, o1, pausa) in enumerate(BLOCOS):
     x = x[a0:a1]
     pal = [[w, w0 - o0, w1 - o0] for w, w0, w1 in brutas[str(k)] if w0 >= o0 and (o1 is None or w0 < o1)]
     esp = [((s - o0) / VEL, d) for s, d in PAUSAS_ESPECIAIS.get(k, ()) if s >= o0 and (o1 is None or s < o1)]
-    segs = trechos_com_fala(x, esp)
+    segs = trechos_com_fala(x, [[w, w0 / VEL, w1 / VEL] for w, w0, w1 in pal], esp)
     partes = []
     for a, b in segs:
         if a == "silencio":
             partes.append(np.zeros(int(b * SR), np.float32)); continue
         p = x[int(a * SR):int(b * SR)].copy()
-        f = min(int(0.008 * SR), len(p) // 2)
+        f = min(int(0.02 * SR), len(p) // 2)          # emenda suave (20 ms), sem estalo
         p[:f] *= np.linspace(0, 1, f); p[-f:] *= np.linspace(1, 0, f)
         partes.append(p)
     audio = np.concatenate(partes)
@@ -193,8 +193,8 @@ M["p3"] = max(frase("como foi"), M["p2"] + 1.0)
 M["dia"] = frase("e no seu dia") - 0.45
 M["conta"] = frase("política é da sua conta") - 0.1
 M["proximo"] = frase("no próximo") - 0.3
-M["logo"] = FIM[-1] + 0.7
-M["dur"] = round(M["logo"] + 3.4, 2)
+M["logo"] = FIM[-1] + 0.5
+M["dur"] = round(M["logo"] + 3.0, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
@@ -236,8 +236,8 @@ fala = e > 0.3
 rms = lambda x: float(np.sqrt(np.mean(x[fala] ** 2))) or 1e-9
 REF = 0.2
 voz_mix = voz * (REF / rms(voz))
-g_mus = REF * 10 ** (-25 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
-g_sfx = REF * 10 ** (-23 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
+g_mus = REF * 10 ** (-27 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
+g_sfx = REF * 10 ** (-25 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
 leito_e, leito_d = mus_e * (1 - 0.7 * e) * g_mus, mus_d * (1 - 0.7 * e) * g_mus
 ef_e = np.clip(sfx_e * (1 - 0.75 * e) * g_sfx, -0.6, 0.6); ef_d = np.clip(sfx_d * (1 - 0.75 * e) * g_sfx, -0.6, 0.6)
 

@@ -84,7 +84,8 @@ window.CENA = {
 
     // ------------------------------------------------ componentes padronizados (iguais aos do comunismo-01)
     function legenda() {
-      const l = LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
+      if (t >= T.vin - 0.4 && t < T.onibus - 0.05) return;           // a vinheta (e o corte que a abre) não leva legenda
+      const l = LEG.find(l => t >= l.t0 - 0.05 && t < l.t1 && !(l.t0 < T.vin && t >= T.vin - 0.05));
       if (!l) return;
       const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]), largura = tam => {
         L.fonte(ctx, FONTE.serifa, tam, 400, 'italic');
@@ -241,8 +242,8 @@ window.CENA = {
       if (r) {
         // "passa agora a custar R$ 5,30" fica na linha do lide (~y 1090 do print original de 1545 px)
         L.selecao(ctx, r.x + 22, r.y + 1130 * r.s, 290, 44, seg(t, T.sel, T.sel + 0.5), VERM);
-        if (t >= T.prefeitura) L.aplicarCarimbo(ctx, seg(t, T.prefeitura, T.prefeitura + 0.3), CX, 1290, () =>
-          L.etiqueta(ctx, 'QUEM DECIDIU: A PREFEITURA', CX, 1290, 1, { cor: VERM, tam: 42 }), 21);
+        if (t >= T.prefeitura) L.aplicarCarimbo(ctx, seg(t, T.prefeitura, T.prefeitura + 0.3), CX, 1385, () =>   // abaixo do print, sem cobrir o texto
+          L.etiqueta(ctx, 'QUEM DECIDIU: A PREFEITURA', CX, 1385, 1, { cor: VERM, tam: 42 }), 21);
       }
     }
 
@@ -255,8 +256,8 @@ window.CENA = {
       carimbar('DECIDIR JUNTO:', 640, T.politica + 0.3, TINTA, 90, FONTE.manchete, 31);
       [['QUEM DECIDE?', T.decide, 860, VERM], ['QUAIS REGRAS?', T.regras, 1040, TINTA], ['QUAIS RECURSOS?', T.recursos, 1220, VERM]].forEach(([s, t0, y, c], i) =>
         L.aplicarCarimbo(ctx, seg(t, t0, t0 + 0.3), CX, y, () => {
-          ctx.save(); ctx.translate(lerp(-40, 40, i / 2), 0);
-          ctx.fillStyle = c; ctx.fillRect(X0 + 20, y - 72, LARG - 40, 144);
+          ctx.save(); ctx.translate(lerp(-30, 30, i / 2), 0);         // escada dentro da margem segura (x 90–960)
+          ctx.fillStyle = c; ctx.fillRect(X0 + 40, y - 72, LARG - 80, 144);
           L.texto(ctx, s, CX, y + 30, { familia: FONTE.bloco, peso: 400, tam: tamMax(s, FONTE.bloco, 84, 400, 740), cor: c === TINTA ? AMA : BEGE, alinhar: 'center' });
           ctx.restore();
         }, 32 + i));
@@ -373,14 +374,15 @@ window.CENA = {
       L.fundo(ctx, BEGE);
       titulo('GUARDE TRÊS PERGUNTAS', seg(lt, 0.1, 0.6));
       cred('para acompanhar qualquer decisão', seg(lt, 0.3, 0.9));
-      [['1', 'QUEM É RESPONSÁVEL?', T.p1, 560], ['2', 'ONDE CONFERIR?', T.p2, 840], ['3', 'COMO FOI DECIDIDO?', T.p3, 1120]].forEach(([n, s, t0, y]) => {
-        const e = ease.saida(seg(t, t0, t0 + 0.4));
+      [['1', 'QUEM É RESPONSÁVEL?', T.p1, 560], ['2', 'ONDE CONFERIR?', T.p2, 840], ['3', 'COMO FOI DECIDIDO?', T.p3, 1120]].forEach(([n, s, t0, y], i) => {
+        const c0 = Math.min(t0 - 0.4, T.perguntas + 0.5 + i * 0.25);          // o cartão entra antes; o texto, na fala
+        const e = ease.saida(seg(t, c0, c0 + 0.4));
         if (e <= 0) return;
         ctx.save(); ctx.globalAlpha = clamp(e * 2); ctx.translate((1 - e) * -120, 0);
         ctx.fillStyle = 'rgba(28,23,20,0.25)'; ctx.fillRect(X0 + 12, y - 98, LARG, 200);
         ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, y - 110, LARG, 200);
         L.texto(ctx, n, X0 + 90, y + 58, { familia: FONTE.manchete, peso: 900, tam: 200, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 5 });
-        L.texto(ctx, L.datilografar(s, seg(t, t0 + 0.2, t0 + 0.8)), X0 + 200, y + 18, { familia: FONTE.grotesca, peso: 700, tam: tamMax(s, FONTE.grotesca, 52, 700, 600), cor: TINTA });
+        L.texto(ctx, L.datilografar(s, seg(t, t0, t0 + 0.6)), X0 + 200, y + 18, { familia: FONTE.grotesca, peso: 700, tam: tamMax(s, FONTE.grotesca, 52, 700, 600), cor: TINTA });
         ctx.restore();
       });
       L.selecao(ctx, X0 + 196, 840 - 30, 420, 66, seg(t, T.p2 + 0.9, T.p2 + 1.3), VERM);
