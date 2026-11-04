@@ -13,23 +13,24 @@ window.CENA = {
     L.fundo(ctx, COR.amarelo);
     L.raios(ctx, CX, 1250, 2400, 22, 0, 'rgba(214,157,28,1)');
     // logo do coletivo: mesmo tamanho e posição da logo da capa do comunismo (340 px de largura)
-    L.imagem(ctx, L.img.logo, CX, 440, 340);
+    L.imagem(ctx, L.img.logo, CX, 370, 340);
     // título: faixa escura + texto bege, com sombra vermelha
-    ctx.fillStyle = COR.tinta; ctx.fillRect(130, 590, 820, 96);
+    ctx.fillStyle = COR.tinta; ctx.fillRect(130, 470, 820, 96);
     const t1 = Math.min(104, L.ajustar(ctx, 'POLÍTICA É DA SUA', FONTE.manchete, 780));
-    L.texto(ctx, 'POLÍTICA É DA SUA', CX, 672, { tam: t1, cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
+    L.texto(ctx, 'POLÍTICA É DA SUA', CX, 552, { tam: t1, cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
     // palavra grande em vermelho com sombra escura
     const t2 = Math.min(210, L.ajustar(ctx, 'CONTA!', FONTE.bloco, 940, 400));
-    L.texto(ctx, 'CONTA!', CX, 764 + t2 * 0.36, { familia: FONTE.bloco, peso: 400, tam: t2, cor: COR.vermelho, alinhar: 'center', erro: COR.tinta, desloc: 9 });
+    L.texto(ctx, 'CONTA!', CX, 644 + t2 * 0.36, { familia: FONTE.bloco, peso: 400, tam: t2, cor: COR.vermelho, alinhar: 'center', erro: COR.tinta, desloc: 9 });
     // apresentadora: traço vermelho + nome, alinhado à direita
     L.fonte(ctx, FONTE.manchete, 40, 900); ctx.letterSpacing = '6px'; const w = ctx.measureText('COM EDUARDA PRADO').width; ctx.letterSpacing = '0px';
-    ctx.fillStyle = COR.vermelho; ctx.fillRect(1000 - w - 86, 878, 60, 5);
-    L.texto(ctx, 'COM EDUARDA PRADO', 1000, 895, { tam: 40, cor: COR.tinta, alinhar: 'right', tracking: 6 });
+    ctx.fillStyle = COR.vermelho; ctx.fillRect(1000 - w - 86, 758, 60, 5);
+    L.texto(ctx, 'COM EDUARDA PRADO', 1000, 775, { tam: 40, cor: COR.tinta, alinhar: 'right', tracking: 6 });
     // etiqueta do episódio
-    L.etiqueta(ctx, 'EP. 1 · VOCÊ JÁ VIVE A POLÍTICA', CX, 975, 1, { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
-    // arte grande, centralizada e apoiada na borda de baixo
-    const A = L.img.arte, aw = 1280, ah = Math.round(A.height * aw / A.width);
-    ctx.drawImage(A, (W - aw) / 2, H - ah, aw, ah);
+    L.etiqueta(ctx, 'EP. 1 · VOCÊ JÁ VIVE A POLÍTICA', CX, 845, 1, { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
+    // arte em largura total, com a base no limite do grid
+    // base da arte no limite do grid (y 1635): a arte inteira cabe no recorte quadrado da grade
+    const A = L.img.arte, aw = 1080, ah = Math.round(A.height * aw / A.width);
+    ctx.drawImage(A, 0, 1635 - ah, aw, ah);
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.3);
   },
 };
