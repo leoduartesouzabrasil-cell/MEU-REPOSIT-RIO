@@ -279,8 +279,8 @@ fala = e > 0.3
 rms = lambda x: float(np.sqrt(np.mean(x[fala] ** 2))) or 1e-9
 REF = 0.2
 voz_mix = voz * (REF / rms(voz))
-g_mus = REF * 10 ** (-27 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
-g_sfx = REF * 10 ** (-25 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
+g_mus = REF * 10 ** (-24 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
+g_sfx = REF * 10 ** (-22 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
 leito_e, leito_d = mus_e * (1 - 0.7 * e) * g_mus, mus_d * (1 - 0.7 * e) * g_mus
 ef_e = np.clip(sfx_e * (1 - 0.75 * e) * g_sfx, -0.6, 0.6); ef_d = np.clip(sfx_d * (1 - 0.75 * e) * g_sfx, -0.6, 0.6)
 
