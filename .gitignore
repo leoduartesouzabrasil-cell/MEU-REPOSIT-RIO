@@ -1,1 +1,5 @@
 __pycache__/
+saida/
+node_modules/
+audio/*/mix.wav
+audio/*/mix*.wav
