@@ -387,7 +387,10 @@ window.CENA = {
         L.texto(ctx, L.datilografar(s, seg(t, t0, t0 + 0.6)), X0 + 200, y + 18, { familia: FONTE.grotesca, peso: 700, tam: tamMax(s, FONTE.grotesca, 52, 700, 600), cor: TINTA });
         ctx.restore();
       });
-      L.selecao(ctx, X0 + 196, 840 - 30, 420, 66, seg(t, T.p2 + 0.9, T.p2 + 1.3), VERM);
+      // grifo de "ONDE CONFERIR?" com a largura medida do texto (antes era fixa e parava no meio de "CONFERIR")
+      { const s2 = 'ONDE CONFERIR?', tam = tamMax(s2, FONTE.grotesca, 52, 700, 600);
+        L.fonte(ctx, FONTE.grotesca, tam, 700); const w2 = ctx.measureText(s2).width;
+        L.selecao(ctx, X0 + 192, 840 - 30, w2 + 16, 66, seg(t, T.p2 + 0.9, T.p2 + 1.3), VERM); }
     }
 
     // ------------------------------------------------ I. e no seu dia? (CARTAZ final)
