@@ -111,3 +111,11 @@ de Gotha, 1875) · selos "URSS", "CUBA", "VIETNÃ" no degrau do SOCIALISMO · "P
   Vietnã, nome oficial). Falar de URSS no passado e de Cuba/Vietnã no presente ("foram e são").
 - A padaria continua sendo exemplo ilustrativo (rodapé "exemplo").
 - Duração estimada: ~150 palavras de narração (VEL 1.20) + vinheta 3,5 s + logo ≈ 60–65 s.
+
+## Legenda do post
+```
+Nenhum país do mundo chegou ao comunismo! 🚩 Nem a União Soviética, que se chamava União das Repúblicas SOCIALISTAS Soviéticas. No EP. 2 de Desmistificando o Comunismo, a gente explica o que é o socialismo: de onde vem a palavra (mais velha que Marx!), a diferença entre o socialismo utópico e o científico e por que ele é o primeiro degrau depois do capitalismo. URSS, Cuba, Vietnã e China: o caminho, não a chegada. Uma iniciativa do Coletivo Lufã. Compartilha com aquele amigo que acha que socialismo vai tomar a casa dele! 🔥
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```
