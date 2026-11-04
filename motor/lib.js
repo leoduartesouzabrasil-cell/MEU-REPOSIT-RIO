@@ -758,7 +758,40 @@ function vinhetaComunismo(ctx, t, o) {
   if (t > 1.9) etiqueta(ctx, o.ep, CX, 1400, seg(t, 1.9, 2.15), { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
 }
 
-window.CT = { vinhetaComunismo, palco3d, COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
+
+// vinheta da série "POLÍTICA É DA SUA CONTA!" (mesmos tempos da vinhetaComunismo, para casar com a fanfarra de
+// audio/serie-comunismo/vinheta.py): a logo do Coletivo Lufã carimba no lugar da estrela, "POLÍTICA É DA SUA" em faixa de
+// tinta, "CONTA!" gigante em Russo One amarelo, assinatura "COM EDUARDA PRADO" e a etiqueta do episódio.
+function vinhetaPolitica(ctx, t, o) {
+  const CX = 540;
+  fundo(ctx, COR.vermelho);
+  raios(ctx, CX, 1180, 2400, 22, -0.25 + emDois(t) * 0.04, 'rgba(138,20,17,0.5)');
+  aplicarCarimbo(ctx, seg(t, 0.0, 0.25), CX, 640, () => {
+    ctx.fillStyle = 'rgba(28,23,20,0.85)'; ctx.beginPath(); ctx.arc(CX + 12, 652, 222, 0, 7); ctx.fill();
+    ctx.fillStyle = COR.amarelo; ctx.beginPath(); ctx.arc(CX, 640, 222, 0, 7); ctx.fill();
+    imagem(ctx, o.logo, CX, 640, 400);
+  }, 3);
+  aplicarCarimbo(ctx, seg(t, 0.35, 0.6), CX, 985, () => {
+    ctx.fillStyle = COR.tinta; ctx.fillRect(130, 935, 820, 100);
+    const tam = Math.min(108, ajustar(ctx, 'POLÍTICA É DA SUA', FONTE.manchete, 780));
+    texto(ctx, 'POLÍTICA É DA SUA', CX, 1020, { tam, cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
+  }, 5);
+  aplicarCarimbo(ctx, seg(t, 0.55, 0.85), CX, 1118, () => {
+    const tam = Math.min(220, ajustar(ctx, 'CONTA!', FONTE.bloco, 940, 400));
+    texto(ctx, 'CONTA!', CX, 1118 + tam * 0.36, { familia: FONTE.bloco, peso: 400, tam, cor: COR.amarelo, alinhar: 'center', erro: COR.tinta, desloc: 9 });
+  }, 6);
+  if (t > 0.85) {
+    const q = ease.saida(seg(t, 0.85, 1.15)), txt = 'COM EDUARDA PRADO', tam = 40;
+    ctx.save(); ctx.globalAlpha = q;
+    fonte(ctx, FONTE.manchete, tam, 900); ctx.letterSpacing = '6px'; const w = ctx.measureText(txt).width; ctx.letterSpacing = '0px';
+    ctx.fillStyle = COR.amarelo; ctx.fillRect(1000 - w - 26 - 60 * q, 1236, 60 * q, 5);
+    texto(ctx, txt, 1000, 1253, { tam, cor: COR.bege, alinhar: 'right', tracking: 6 });
+    ctx.restore();
+  }
+  if (t > 1.9) etiqueta(ctx, o.ep, CX, 1400, seg(t, 1.9, 2.15), { cor: COR.tinta, corTexto: COR.bege, tam: 40 });
+}
+
+window.CT = { vinhetaComunismo, vinhetaPolitica, palco3d, COR, FONTE, clamp, seg, lerp, ease, emDois, rng, fundo, papel, vinheta, reticula,
   raios, estrela, bandeira, mastro, corteDiagonal, fonte, ajustar, texto, carimbo, aplicarCarimbo, datilografar,
   varredura, camera, palavras, revelarLetras, selecao, etiqueta, ondas, sinal, planta, foto, moldura,
   legenda, credito, gota, urna, ondaSonora, estrada, escorrer, respingo, flash, tremor, imagem,
