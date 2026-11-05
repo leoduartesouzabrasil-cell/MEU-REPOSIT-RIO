@@ -11,5 +11,6 @@
 | 07 | Renan Santos: ele não é seu amigo (continuação da esquerda cirandeira; 1:21) | `07-renan-santos.mp4` | `07-renan-santos-capa.jpg` | `motor/cenas/renan-santos.js` · `audio/renan-santos/` |
 | 08 | Na calada da noite: seu voto no lixo (voto distrital; 1:25) | `08-voto-distrital.mp4` | `08-voto-distrital-capa.jpg` | `motor/cenas/voto-distrital.js` · `audio/voto-distrital/` |
 | 09 | Desmistificando o Comunismo · EP. 1: O que é o comunismo? (1:37; abre com trecho do Jones Manoel) | `09-comunismo-01-o-que-e.mp4` | `09-comunismo-01-o-que-e-capa.jpg` | `motor/cenas/comunismo-01.js` · `audio/comunismo-01/` (+ `juntar.sh`) |
+| 10 | Política é da sua conta! · EP. 1: Você já vive a política (abre com trecho da Erika Hilton; 1:53) | `10-politica-01-ep01.mp4` | `10-politica-01-ep01-capa.jpg` | `motor/cenas/politica-01.js` · `audio/politica-01/` · capa: `motor/cenas/capa-politica-01.js` |
 
 Roteiros em `roteiros/`, fontes e créditos em `midia/<tema>/`. Para refazer um vídeo: ver `CLAUDE.md` (fluxo) e `ferramentas/LEIA-ME.md`.
