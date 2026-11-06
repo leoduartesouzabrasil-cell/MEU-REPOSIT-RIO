@@ -1,31 +1,31 @@
 // "QUEM DISSE ISSO? A BÍBLIA OU O COMUNISMO?" — jogo de adivinhação. Roteiro: roteiros/comunismo-biblia.md (v3)
-// Sete frases que muita gente chamaria de "coisa de comunista": cinco estão na Bíblia; Che e Marx entram para confundir;
-// a última está nos dois (2 Tessalonicenses 3:10 e Lênin, 1917). Fecho com Engels (cristianismo primitivo = movimento dos oprimidos).
+// Seis frases que muita gente chamaria de "coisa de comunista": quatro estão na Bíblia; Che e Marx entram para confundir;
+// a última está nos dois (2 Tessalonicenses 3:10 e Lênin, 1917). Resposta bíblica = Jesus com brilho divino e a Bíblia flutuando;
+// resposta comunista = foto grande em moldura. Versão de até 1:20.
 // Cada rodada (ARQUIVO): ficha datilografada SEM autor → "BÍBLIA OU COMUNISTA?" com contagem 3-2-1 → resposta carimbada com a fonte.
 // Os tempos vêm de comunismo-biblia.tempos.js (audio/comunismo-biblia/montar.py).
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
 const T = Object.assign({
-  desafio: 2.3, vamos: 11.7,
-  r1: 12.7, q1: 14.4, f1: 19.5, a1: 23.2, ref1: 23.7, r2: 26.3, q2: 27.6, f2: 34.3, a2: 38.0, ref2: 38.4,
-  r3: 41.0, q3: 42.8, f3: 46.9, a3: 49.7, ref3: 51.2, r4: 52.2, q4: 53.2, f4: 61.6, a4: 64.5, ref4: 65.9,
-  r5: 69.2, q5: 71.0, f5: 76.6, a5: 80.1, ref5: 81.3, r6: 82.3, q6: 84.8, f6: 91.4, a6: 93.9, ref6: 94.8,
-  r7: 98.4, com7: 100.1, q7: 104.6, f7: 106.6, a7: 110.1, ref7: 112.2, lenin7: 115.2,
-  placar: 119.4, engels: 123.1, oprimidos: 127.3, proxima: 129.7, lembra: 134.3, acertou: 139.1, logo: 143.0, dur: 146.6,
+  desafio: 1.4, vamos: 4.7,
+  r1: 5.9, q1: 7.4, f1: 11.7, a1: 14.3, ref1: 14.6, r2: 16.6, q2: 18.2, f2: 21.5, a2: 22.6, ref2: 22.7,
+  r3: 23.4, q3: 24.3, f3: 31.2, a3: 33.1, ref3: 33.5, r4: 36.1, q4: 37.7, f4: 42.3, a4: 43.4, ref4: 43.6,
+  r5: 44.3, q5: 44.6, f5: 50.1, a5: 51.2, ref5: 52.5, r6: 55.0, q6: 56.5, f6: 58.1, a6: 59.4, ref6: 60.4, lenin6: 62.9,
+  placar: 66.5, proxima: 68.9, lembra: 70.5, acertou: 74.4, logo: 77.2, dur: 80.0,
 }, (window.TEMPOS || {}).marcas || {});
 
 // as rodadas: texto da ficha (o texto da fonte; "[…]" onde a fala encurtou), quem disse e a referência
+// (versão de até 1:20: a rodada de Isaías 5:8 e o fecho do Engels saíram; ver roteiros/comunismo-biblia.md)
 const RODADAS = [
   { txt: '“O salário dos trabalhadores […] que vocês retiveram com fraude está clamando contra vocês.”', tipo: 'B', ref: 'TIAGO 5:4' },
-  { txt: '“Ai de vocês que adquirem casas e mais casas, propriedades e mais propriedades, até não haver mais lugar para ninguém […]”', tipo: 'B', ref: 'ISAÍAS 5:8' },
-  { txt: '“O revolucionário verdadeiro é guiado por grandes sentimentos de amor.”', tipo: 'C', nome: 'CHE GUEVARA', obra: ['O socialismo e o homem', 'em Cuba, 1965'],
-    foto: 'che', credFoto: 'foto: Alberto Korda, 1960 · domínio público', zoom: 1.05, dy: 10 },
+  { txt: '“O revolucionário verdadeiro é guiado por grandes sentimentos de amor.”', tipo: 'C', nome: 'CHE GUEVARA', obra: ['O socialismo e o homem em Cuba,', '1965'],
+    foto: 'che', credFoto: 'foto: Alberto Korda, 1960 · domínio público', zoom: 1.0, dy: 30 },
   { txt: '“Derrubou governantes dos seus tronos, mas exaltou os humildes. Encheu de coisas boas os famintos, mas despediu de mãos vazias os ricos.”', tipo: 'B', ref: 'LUCAS 1:52-53' },
-  { txt: '“De cada um segundo as suas capacidades, a cada um segundo as suas necessidades!”', tipo: 'C', nome: 'KARL MARX', obra: ['Crítica do Programa', 'de Gotha, 1875'],
+  { txt: '“De cada um segundo as suas capacidades, a cada um segundo as suas necessidades!”', tipo: 'C', nome: 'KARL MARX', obra: ['Crítica do Programa de Gotha,', '1875'],
     foto: 'marx', credFoto: 'foto: J. J. E. Mayall · domínio público', zoom: 1.0, dy: 0 },
   { txt: '“[…] tinham tudo em comum. Vendiam suas propriedades e bens e os distribuíam conforme a necessidade de cada um.”', tipo: 'B', ref: 'ATOS 2:44-45' },
-  { txt: '“Quem não trabalha não deve comer.”', tipo: 'AS DUAS', ref: '2 TESSALONICENSES 3:10', nome: 'LÊNIN', obra: ['O Estado e a', 'Revolução, 1917'],
-    foto: 'lenin', credFoto: 'Pavel Zhukov, 1920 · dom. público', zoom: 1.15, dy: 40 },
+  { txt: '“Quem não trabalha não deve comer.”', tipo: 'AS DUAS', ref: '2 TESSALONICENSES 3:10', nome: 'LÊNIN', obra: ['O Estado e a Revolução,', '1917'],
+    foto: 'lenin', credFoto: 'foto: Pavel Zhukov, 1920 · dom. público', zoom: 1.15, dy: 40 },
 ];
 
 window.CENA = {
@@ -33,7 +33,7 @@ window.CENA = {
   imagens: {
     che: '../midia/comunismo-biblia/che-korda-1960.jpg',        // Alberto Korda, 1960 · domínio público (PD-Cuba)
     marx: '../midia/comunismo-01/marx-recorte.jpg',              // J. J. E. Mayall, 1875 · domínio público
-    engels: '../midia/comunismo-01/engels-recorte.jpg',          // domínio público
+    jesus: '../midia/comunismo-biblia/jesus-hofmann-recorte.png', // Heinrich Hofmann, 1889 (detalhe de "Cristo e o jovem rico"), domínio público; fundo tirado
     lenin: '../midia/comunismo-02/lenin-1920.jpg',               // Pavel Zhukov, 1920 · domínio público
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
@@ -42,16 +42,17 @@ window.CENA = {
     const { COR, FONTE, seg, lerp, ease, clamp } = L;
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, AZUL = COR.azul;
     let arquivo = true;
+    const PAINEL = { x: X0, y: 455, w: LARG, h: 535 };   // área da resposta (onde estava a ficha)
 
     const ordem = [[0, abertura], ...RODADAS.map((_, i) => [T['r' + (i + 1)], lt => rodada(i, lt)]),
-      [T.placar, placar], [T.engels, engels], [T.proxima, recado], [T.acertou, acertou], [T.logo, final]];
+      [T.placar, placar], [T.proxima, recado], [T.acertou, acertou], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [0.4, 0.75, ...RODADAS.map((_, i) => T['a' + (i + 1)]), T.placar + 0.4, T.lembra + 0.6, T.acertou + 0.2, T.logo];
+    const IMP = [0.4, 0.75, ...RODADAS.map((_, i) => T['a' + (i + 1)]), T.lenin6, T.placar + 0.4, T.lembra + 0.6, T.acertou + 0.2, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
     [[T.r1, BEGE, -24], ...RODADAS.slice(1).map((_, i) => [T['r' + (i + 2)], BEGE, i % 2 ? -24 : 24]),
-      [T.placar, VERM, 24], [T.engels, BEGE, -24], [T.proxima, VERM, 24], [T.acertou, AMA, -24], [T.logo, BEGE, 24]]
+      [T.placar, VERM, 24], [T.proxima, VERM, -24], [T.acertou, AMA, -24], [T.logo, BEGE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
@@ -143,7 +144,7 @@ window.CENA = {
     // placar: 7 quadradinhos (amarelo = Bíblia, vermelho = comunista, metade/metade = as duas)
     function pontos(y, atual, tam = 34, gap = 50) {
       RODADAS.forEach((r, i) => {
-        const x = CX + (i - 3) * gap, revelado = t >= T['a' + (i + 1)];
+        const x = CX + (i - (RODADAS.length - 1) / 2) * gap, revelado = t >= T['a' + (i + 1)];
         ctx.save(); ctx.translate(x, y);
         if (revelado) {
           if (r.tipo === 'AS DUAS') {
@@ -173,31 +174,35 @@ window.CENA = {
       }
     }
 
-    // ------------------------------------------------ 1–7. uma rodada do jogo (ARQUIVO)
+    // ------------------------------------------------ 1–6. uma rodada do jogo (ARQUIVO)
+    // PAINEL de resposta (onde estava a ficha): Bíblia = Jesus com brilho divino e a Bíblia flutuando; comunista = foto grande em moldura
     function rodada(i, lt) {
-      const r = RODADAS[i], k = i + 1, q = T['q' + k], f = T['f' + k], a = T['a' + k], ref = T['ref' + k];
+      const r = RODADAS[i], k = i + 1, q = T['q' + k], f = T['f' + k], a = T['a' + k], ref = T['ref' + k], ultima = k === RODADAS.length;
       L.fundo(ctx, BEGE);
-      titulo(k === 7 ? 'A ÚLTIMA: BÍBLIA OU COMUNISTA?' : 'BÍBLIA OU COMUNISTA?', seg(lt, 0.05, 0.6));
-      cred(`rodada ${k} de 7`, seg(lt, 0.2, 0.7));
-      pontos(440, i);
-      // a ficha com a frase, sem autor
-      const fy = 500, fh = 440, e = ease.saida(seg(lt, 0, 0.4));
-      ctx.save(); ctx.translate(0, (1 - e) * 900);
-      ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 14, fy + 14, LARG, fh);
-      ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, fy, LARG, fh); ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(X0, fy, LARG, fh);
-      ctx.fillStyle = VERM; ctx.fillRect(X0, fy, LARG, 12);
-      const tamF = k === 7 ? 64 : r.txt.length > 120 ? 40 : 46;
-      const linhas = quebrar(r.txt, FONTE.maquina, tamF, LARG - 90);
-      const passo = tamF * 1.4, y0 = fy + fh / 2 - (linhas.length - 1) * passo / 2 + tamF * 0.35;
-      if (k === 7 && t < q) {   // "comenta aqui embaixo": antes da frase, o convite
-        L.texto(ctx, L.datilografar('COMENTA AÍ:', seg(t, T.com7, T.com7 + 0.5)), CX, fy + 190, { familia: FONTE.sub, peso: 600, tam: 56, cor: VERM, alinhar: 'center', tracking: 4 });
-        L.texto(ctx, L.datilografar('BÍBLIA OU COMUNISTA?', seg(t, T.com7 + 0.4, T.com7 + 1.1)), CX, fy + 280, { familia: FONTE.sub, peso: 600, tam: 56, cor: TINTA, alinhar: 'center', tracking: 4 });
-      } else if (t < q) {
-        L.texto(ctx, '?', CX, fy + fh / 2 + 70, { familia: FONTE.manchete, peso: 900, tam: 220, cor: 'rgba(28,23,20,0.18)', alinhar: 'center' });
+      titulo(ultima ? 'A ÚLTIMA: BÍBLIA OU COMUNISTA?' : 'BÍBLIA OU COMUNISTA?', seg(lt, 0.05, 0.6));
+      cred(`rodada ${k} de ${RODADAS.length}`, seg(lt, 0.2, 0.7));
+      pontos(425, i);
+      // a ficha com a frase, sem autor (some quando vem a resposta)
+      const fy = 500, fh = 440, e = ease.saida(seg(lt, 0, 0.4)), some = seg(t, a, a + 0.35);
+      if (some < 1) {
+        ctx.save(); ctx.translate(0, (1 - e) * 900 - some * 60); ctx.globalAlpha = 1 - some;
+        ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 14, fy + 14, LARG, fh);
+        ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, fy, LARG, fh); ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(X0, fy, LARG, fh);
+        ctx.fillStyle = VERM; ctx.fillRect(X0, fy, LARG, 12);
+        const tamF = ultima ? 64 : r.txt.length > 120 ? 40 : 46;
+        const linhas = quebrar(r.txt, FONTE.maquina, tamF, LARG - 90);
+        const passo = tamF * 1.4, y0 = fy + fh / 2 - (linhas.length - 1) * passo / 2 + tamF * 0.35;
+        if (t < q) L.texto(ctx, '?', CX, fy + fh / 2 + 70, { familia: FONTE.manchete, peso: 900, tam: 220, cor: 'rgba(28,23,20,0.18)', alinhar: 'center' });
+        datilografarLinhas(linhas, seg(t, q, f), ultima ? CX : X0 + 45, y0, passo,
+          { familia: FONTE.maquina, peso: 400, tam: tamF, cor: TINTA, alinhar: ultima ? 'center' : 'left' });
+        ctx.restore();
       }
-      datilografarLinhas(linhas, seg(t, q, f), k === 7 ? CX : X0 + 45, y0, passo,
-        { familia: FONTE.maquina, peso: 400, tam: tamF, cor: TINTA, alinhar: k === 7 ? 'center' : 'left' });
-      ctx.restore();
+      // a resposta no painel
+      if (t >= a) {
+        if (r.tipo === 'B') divino(CX, a, 1);
+        if (r.tipo === 'C') fotoGrande(r, CX, a, 1);
+        if (r.tipo === 'AS DUAS') { divino(330, a, 0.72); if (t >= T.lenin6) fotoGrande(r, 750, T.lenin6, 0.68); }
+      }
       // os botões + contagem 3-2-1 (entre o fim da frase e a resposta)
       const yb = 1060;
       if (t >= q - 0.2) {
@@ -206,42 +211,123 @@ window.CENA = {
         ctx.restore();
         contagem(CX, yb, f, a);
       }
-      if (k === 7 && t >= a) {
-        carimbar('AS DUAS!', CX, 915, a, AMA, 110, FONTE.manchete, 77, { erro: TINTA, desloc: 7, larg: 520 });
-      }
-      // a resposta: referência bíblica ou o comunista (foto + obra)
+      // a referência embaixo dos botões
       const yr = 1200;
       if (r.tipo === 'B' && t >= ref) {
-        carimbar(r.ref, CX, yr + 110, ref, TINTA, 120, FONTE.bloco, 30 + k, { larg: 780 });
+        carimbar(r.ref, CX, yr + 100, ref, TINTA, 120, FONTE.bloco, 30 + k, { larg: 780 });
         if (t >= ref + 0.3) {
           ctx.save(); ctx.globalAlpha = seg(t, ref + 0.3, ref + 0.6);
-          L.texto(ctx, 'BÍBLIA · tradução NVI', CX, yr + 175, { familia: FONTE.maquina, peso: 400, tam: 28, cor: TINTA, alinhar: 'center' });
+          L.texto(ctx, 'BÍBLIA · tradução NVI', CX, yr + 170, { familia: FONTE.maquina, peso: 400, tam: 28, cor: TINTA, alinhar: 'center' });
           ctx.restore();
         }
       }
-      if (r.tipo === 'C' && t >= a) comunista(r, X0 + 70, yr - 10, a, 1);
-      if (r.tipo === 'AS DUAS' && t >= ref) {
-        // à esquerda a Bíblia, à direita Lênin
-        carimbar('2 TESSALONICENSES', X0 + 200, yr + 50, ref, TINTA, 40, FONTE.bloco, 71, { larg: 380 });
-        carimbar('3:10', X0 + 200, yr + 140, ref + 0.15, TINTA, 90, FONTE.bloco, 72, { larg: 380 });
-        if (t >= ref + 0.3) {
-          ctx.save(); ctx.globalAlpha = seg(t, ref + 0.3, ref + 0.6);
-          L.texto(ctx, 'BÍBLIA · NVI', X0 + 200, yr + 190, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
+      if (r.tipo === 'C' && t >= a + 0.2) {
+        carimbar(r.nome, CX, yr + 90, a + 0.2, VERM, 110, FONTE.bloco, 40 + k, { larg: 780 });
+        if (t >= a + 0.5) {
+          ctx.save(); ctx.globalAlpha = seg(t, a + 0.5, a + 0.8);
+          L.texto(ctx, r.obra.join(' '), CX, yr + 160, { familia: FONTE.maquina, peso: 400, tam: tamMax(r.obra.join(' '), FONTE.maquina, 30, 400, 800), cor: TINTA, alinhar: 'center' });
           ctx.restore();
         }
-        if (t >= T.lenin7) comunista(r, CX + 30, yr - 10, T.lenin7, 0.8);
+      }
+      if (r.tipo === 'AS DUAS') {
+        if (t >= a) carimbar('AS DUAS!', CX, yr + 20, a, AMA, 100, FONTE.manchete, 77, { erro: TINTA, desloc: 6, larg: 520 });
+        if (t >= ref) {
+          carimbar('2 TESSALONICENSES', 330, yr + 110, ref, TINTA, 40, FONTE.bloco, 71, { larg: 400 });
+          carimbar('3:10', 330, yr + 185, ref + 0.15, TINTA, 70, FONTE.bloco, 72, { larg: 400 });
+        }
+        if (t >= T.lenin6) {
+          carimbar('LÊNIN', 750, yr + 120, T.lenin6, VERM, 74, FONTE.bloco, 73, { larg: 400 });
+          ctx.save(); ctx.globalAlpha = seg(t, T.lenin6 + 0.3, T.lenin6 + 0.6);
+          L.texto(ctx, 'O Estado e a Revolução, 1917', 750, yr + 175, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
+          ctx.restore();
+        }
       }
     }
-    // foto do comunista em moldura + nome + obra, crédito logo abaixo da foto
-    function comunista(r, x, y, t0, esc) {
-      const e = ease.saida(seg(t, t0, t0 + 0.4)), w = 150 * esc / 0.8 * 0.8, h = 180 * esc / 0.8 * 0.8;
-      ctx.save(); ctx.globalAlpha = clamp(e * 2); ctx.translate(0, (1 - e) * 80);
-      L.moldura(ctx, x, y, w, h, 14);
-      L.foto(ctx, L.img[r.foto], x, y, w, h, { zoom: r.zoom, dy: r.dy * esc, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 6 });
-      L.texto(ctx, r.credFoto, x + w / 2, y + h + 34, { familia: FONTE.maquina, peso: 400, tam: tamMax(r.credFoto, FONTE.maquina, 16, 400, w + 90), cor: TINTA, alinhar: 'center' });
-      const xt = x + w + 40;
-      L.texto(ctx, r.nome, xt, y + 62, { familia: FONTE.bloco, peso: 400, tam: tamMax(r.nome, FONTE.bloco, 64 * esc, 400, 960 - xt), cor: VERM });
-      r.obra.forEach((s, j) => L.texto(ctx, s, xt, y + 110 + j * 38 * esc, { familia: FONTE.maquina, peso: 400, tam: tamMax(s, FONTE.maquina, 30 * esc, 400, 960 - xt), cor: TINTA }));
+
+    // Jesus (pintura de Hofmann, recortada) com brilho divino, auréola, raios de luz, faíscas e a Bíblia flutuando ao lado
+    function divino(cx, t0, esc) {
+      const e = ease.saida(seg(t, t0, t0 + 0.6)), P = PAINEL, cy = P.y + P.h * 0.42;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(P.x, P.y, P.w, P.h); ctx.clip();
+      ctx.globalAlpha = e;
+      // luz de fundo dourada e raios girando devagar
+      const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, 520 * esc);
+      g.addColorStop(0, 'rgba(255,246,214,1)'); g.addColorStop(0.35, 'rgba(250,214,120,0.85)'); g.addColorStop(1, 'rgba(235,181,42,0)');
+      ctx.fillStyle = g; ctx.fillRect(P.x, P.y, P.w, P.h);
+      L.raios(ctx, cx, cy - 40 * esc, 900, 28, t * 0.12, 'rgba(255,250,225,0.35)');
+      // Jesus, com a base esfumada
+      const img = jesusEsfumado(), w = 400 * esc, h = w * img.height / img.width, x = cx - w / 2 - 10 * esc, y = P.y + P.h - h + 20 + (1 - e) * 40;
+      const cabeca = { x: x + w * 0.52, y: y + h * 0.27 };
+      // auréola
+      const ha = ctx.createRadialGradient(cabeca.x, cabeca.y, 40 * esc, cabeca.x, cabeca.y, 190 * esc);
+      ha.addColorStop(0, 'rgba(255,255,240,0.95)'); ha.addColorStop(0.6, 'rgba(255,232,150,0.55)'); ha.addColorStop(1, 'rgba(255,232,150,0)');
+      ctx.fillStyle = ha; ctx.beginPath(); ctx.arc(cabeca.x, cabeca.y, 190 * esc, 0, 7); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,226,120,0.9)'; ctx.lineWidth = 6 * esc; ctx.beginPath(); ctx.arc(cabeca.x, cabeca.y - 6 * esc, 150 * esc, 0, 7); ctx.stroke();
+      ctx.save(); ctx.shadowColor = 'rgba(255,236,170,0.95)'; ctx.shadowBlur = 40 * esc;
+      ctx.drawImage(img, x, y, w, h);
+      ctx.restore();
+      // brilho por cima (luz divina)
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = e * (0.25 + 0.08 * Math.sin(t * 3));
+      const br = ctx.createRadialGradient(cabeca.x, cabeca.y, 0, cabeca.x, cabeca.y, 260 * esc);
+      br.addColorStop(0, 'rgba(255,240,200,0.9)'); br.addColorStop(1, 'rgba(255,240,200,0)');
+      ctx.fillStyle = br; ctx.fillRect(P.x, P.y, P.w, P.h);
+      ctx.restore();
+      // a Bíblia flutuando ao lado
+      const bx = cx + 240 * esc, by = P.y + P.h * 0.55 + Math.sin(t * 2.2) * 14 * esc - (1 - e) * 60;
+      biblia(bx, by, 0.95 * esc, -0.14 + Math.sin(t * 1.3) * 0.05, e);
+      // faíscas subindo
+      for (let n = 0; n < 16; n++) {
+        const rr = L.rng(n * 7 + 3), fase = (t * (0.18 + rr() * 0.2) + rr()) % 1;
+        const sx = cx + (rr() - 0.5) * 520 * esc, sy = P.y + P.h - fase * P.h;
+        estrelinha(sx, sy, (5 + rr() * 9) * esc, Math.sin(fase * Math.PI) * (0.5 + 0.5 * Math.sin(t * 6 + n)));
+      }
+      ctx.restore();
+    }
+    function jesusEsfumado() {
+      if (window._jesusEsf) return window._jesusEsf;
+      const img = L.img.jesus, c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      g.globalCompositeOperation = 'destination-in';
+      const m = g.createLinearGradient(0, img.height * 0.68, 0, img.height); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = m; g.fillRect(0, 0, img.width, img.height);
+      const ml = g.createLinearGradient(0, 0, img.width, 0);
+      ml.addColorStop(0, 'rgba(0,0,0,0)'); ml.addColorStop(0.12, 'rgba(0,0,0,1)'); ml.addColorStop(0.88, 'rgba(0,0,0,1)'); ml.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = ml; g.fillRect(0, 0, img.width, img.height);
+      return (window._jesusEsf = c);
+    }
+    function biblia(x, y, s, rot, alfa) {
+      ctx.save(); ctx.globalAlpha = alfa; ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+      const aura = ctx.createRadialGradient(0, 0, 20, 0, 0, 190);
+      aura.addColorStop(0, 'rgba(255,248,215,0.9)'); aura.addColorStop(1, 'rgba(255,230,140,0)');
+      ctx.fillStyle = aura; ctx.beginPath(); ctx.arc(0, 0, 190, 0, 7); ctx.fill();
+      ctx.shadowColor = 'rgba(255,230,140,0.9)'; ctx.shadowBlur = 30;
+      ctx.fillStyle = '#E9D9A8'; ctx.fillRect(-82, -112, 172, 236);          // páginas (lombada de folhas)
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#C9A24A'; for (let i = 0; i < 6; i++) ctx.fillRect(84, -104 + i * 38, 4, 30);
+      ctx.fillStyle = '#4A1A12'; ctx.fillRect(-92, -120, 172, 236);         // capa de couro
+      ctx.fillStyle = '#2E0F0A'; ctx.fillRect(-92, -120, 18, 236);           // lombada
+      ctx.strokeStyle = '#D9B24C'; ctx.lineWidth = 4; ctx.strokeRect(-66, -100, 128, 196);
+      ctx.fillStyle = '#E8C45C'; ctx.fillRect(-9, -76, 18, 108); ctx.fillRect(-38, -52, 76, 16);   // a cruz dourada
+      L.texto(ctx, 'BÍBLIA', -2, 82, { familia: FONTE.sub, peso: 600, tam: 26, cor: '#E8C45C', alinhar: 'center', tracking: 4 });
+      ctx.restore();
+    }
+    function estrelinha(x, y, r, a) {
+      if (a <= 0) return;
+      ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = '#FFF6D6'; ctx.translate(x, y);
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) { const rr = i % 2 ? r * 0.28 : r, ang = i * Math.PI / 4; ctx.lineTo(Math.cos(ang) * rr, Math.sin(ang) * rr); }
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    // o comunista: foto grande em moldura, com raios de cartaz atrás; crédito logo abaixo da foto
+    function fotoGrande(r, cx, t0, esc) {
+      const e = ease.saida(seg(t, t0, t0 + 0.45)), P = PAINEL;
+      ctx.save(); ctx.beginPath(); ctx.rect(P.x, P.y, P.w, P.h); ctx.clip();
+      ctx.globalAlpha = clamp(e * 1.5);
+      if (esc === 1) { ctx.fillStyle = VERM; ctx.fillRect(P.x, P.y, P.w, P.h); L.raios(ctx, cx, P.y + P.h * 0.45, 900, 20, t * 0.08, 'rgba(237,224,196,0.14)'); }
+      const w = 380 * esc, h = 420 * esc, x = cx - w / 2, y = P.y + 30 + (1 - e) * 80;
+      L.moldura(ctx, x, y, w, h, 22 * esc);
+      L.foto(ctx, L.img[r.foto], x, y, w, h, { zoom: r.zoom, dy: r.dy * esc, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 8 });
+      L.texto(ctx, r.credFoto, cx, y + h + 22 * esc + 30, { familia: FONTE.maquina, peso: 400, tam: tamMax(r.credFoto, FONTE.maquina, 20, 400, w + 120), cor: esc === 1 ? BEGE : TINTA, alinhar: 'center' });
       ctx.restore();
     }
 
@@ -249,7 +335,7 @@ window.CENA = {
     function placar(lt) {
       cartazFundo();
       carimbar('PLACAR', CX, 520, T.placar + 0.05, BEGE, 130, FONTE.manchete, 81, { erro: COR.vermelhoEscuro, desloc: 6 });
-      const n = Math.round(lerp(0, 5, ease.saida(seg(t, T.placar + 0.4, T.placar + 1.4))));
+      const n = Math.round(lerp(0, 4, ease.saida(seg(t, T.placar + 0.4, T.placar + 1.4))));
       const m = Math.round(lerp(0, 2, ease.saida(seg(t, T.placar + 0.4, T.placar + 1.4))));
       L.texto(ctx, String(n), 330, 870, { familia: FONTE.manchete, peso: 900, tam: 320, cor: AMA, alinhar: 'center', erro: TINTA, desloc: 8 });
       L.texto(ctx, '×', CX, 800, { familia: FONTE.manchete, peso: 900, tam: 120, cor: BEGE, alinhar: 'center' });
@@ -257,38 +343,12 @@ window.CENA = {
       L.texto(ctx, 'NA BÍBLIA', 330, 960, { familia: FONTE.bloco, peso: 400, tam: 46, cor: AMA, alinhar: 'center' });
       L.texto(ctx, 'SÓ DE COMUNISTA', 750, 960, { familia: FONTE.bloco, peso: 400, tam: 40, cor: BEGE, alinhar: 'center' });
       ctx.save(); ctx.translate(0, 0);
-      ctx.fillStyle = BEGE; ctx.fillRect(CX - 220, 1040, 440, 90);
+      ctx.fillStyle = BEGE; ctx.fillRect(CX - 190, 1040, 380, 90);
       pontos(1085, -1, 40, 58);
       ctx.restore();
       if (t >= T.placar + 1.6) {
         ctx.save(); ctx.globalAlpha = seg(t, T.placar + 1.6, T.placar + 2.0);
-        L.texto(ctx, 'de 7 frases · a última está nos dois', CX, 1200, { familia: FONTE.maquina, peso: 400, tam: 30, cor: BEGE, alinhar: 'center' });
-        ctx.restore();
-      }
-    }
-
-    // ------------------------------------------------ 9. Engels (ARQUIVO)
-    function engels(lt) {
-      L.fundo(ctx, BEGE);
-      titulo('ATÉ O ENGELS NOTOU', seg(lt, 0.1, 0.6));
-      cred('Contribuição para a História do Cristianismo Primitivo (1894–95)', seg(lt, 0.3, 0.9));
-      const x = 370, y = 450, w = 340, h = 410, e = ease.saida(seg(lt, 0.1, 0.6));
-      ctx.save(); ctx.globalAlpha = clamp(e * 2); ctx.translate(0, (1 - e) * 120);
-      L.moldura(ctx, x, y, w, h, 24);
-      L.foto(ctx, L.img.engels, x, y, w, h, { desfoque: (1 - seg(lt, 0.1, 0.7)) * 8 });
-      L.texto(ctx, 'Friedrich Engels · domínio público', CX, y + h + 60, { familia: FONTE.maquina, peso: 400, tam: 22, cor: TINTA, alinhar: 'center' });
-      ctx.restore();
-      if (lt > 0.6) {
-        const q = ease.saida(seg(lt, 0.6, 1.0));
-        ctx.save(); ctx.translate(0, (1 - q) * 500);
-        ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(X0 + 12, 1032, LARG, 380);
-        ctx.fillStyle = COR.begeEscuro; ctx.fillRect(X0, 1020, LARG, 380);
-        const L1 = '“O cristianismo era, na origem,', L2 = 'o movimento dos oprimidos.”';
-        L.texto(ctx, L.datilografar(L1, seg(lt, 1.0, 1.8)), X0 + 40, 1120, { familia: FONTE.maquina, peso: 400, tam: 46, cor: TINTA });
-        L.fonte(ctx, FONTE.maquina, 46, 400); const wSel = ctx.measureText('o movimento dos oprimidos.”').width;
-        L.selecao(ctx, X0 + 36, 1150, wSel + 8, 66, seg(t, T.oprimidos, T.oprimidos + 0.5), VERM);
-        L.texto(ctx, L.datilografar(L2, seg(lt, 1.8, 2.6)), X0 + 40, 1200, { familia: FONTE.maquina, peso: 400, tam: 46, cor: TINTA });
-        ['dos escravos', 'dos pobres', 'dos sem direito'].forEach((s2, i) => L.etiqueta(ctx, s2.toUpperCase(), X0 + 150 + i * 270, 1310, seg(t, T.oprimidos + 0.6 + i * 0.25, T.oprimidos + 0.9 + i * 0.25), { cor: VERM, tam: 28 }));
+        L.texto(ctx, 'de 6 frases · a última está nos dois', CX, 1200, { familia: FONTE.maquina, peso: 400, tam: 30, cor: BEGE, alinhar: 'center' });
         ctx.restore();
       }
     }
@@ -323,10 +383,11 @@ window.CENA = {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 760, () => L.imagem(ctx, L.img.logo, CX, 760, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Bíblia: Nova Versão Internacional (NVI) · Tiago 5:4 · Isaías 5:8 · Lucas 1:52-53 · Atos 2:44-45 · 2 Ts 3:10', 1060],
+      [['Bíblia: Nova Versão Internacional (NVI) · Tiago 5:4 · Lucas 1:52-53 · Atos 2:44-45 · 2 Tessalonicenses 3:10', 1060],
         ['Che Guevara, O socialismo e o homem em Cuba (1965) · Marx, Crítica do Programa de Gotha (1875)', 1100],
-        ['Lênin, O Estado e a Revolução (1917) · Engels, Contribuição para a História do Cristianismo Primitivo (1894–95)', 1140],
-        ['Fotos (domínio público): Che, Alberto Korda (1960) · Marx, J. J. E. Mayall · Lênin, Pavel Zhukov (1920) · Engels', 1190]]
+        ['Lênin, O Estado e a Revolução (1917)', 1140],
+        ['Imagens (domínio público): Jesus, Heinrich Hofmann (1889) · Che, Alberto Korda (1960)', 1190],
+        ['Marx, J. J. E. Mayall · Lênin, Pavel Zhukov (1920)', 1225]]
         .forEach(([s2, y]) => L.texto(ctx, s2, CX, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 24, 400), cor: TINTA, alinhar: 'center' }));
       ctx.restore();
     }

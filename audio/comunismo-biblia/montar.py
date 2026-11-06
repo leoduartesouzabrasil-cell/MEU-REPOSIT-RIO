@@ -21,15 +21,16 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 from previa import trilha  # noqa: E402
 
-ENTRADA = 0.4                                 # a voz entra logo no começo (cartaz "QUEM DISSE ISSO?")
+ENTRADA = 0.3                                 # a voz entra logo no começo (cartaz "QUEM DISSE ISSO?")
 PAUSAS = {1: 0.5}
-VEL = float(os.environ.get("VEL", "1.20"))
+VEL = float(os.environ.get("VEL", "1.45"))   # o autor pediu a voz mais ágil e o vídeo com no máximo 1:20
 PAUSA_MAX = 0.20
-CONTAGEM = 1.8                                # pausa depois de cada frase do jogo (a tela conta 3-2-1)
+CONTAGEM = 0.85                               # pausa depois de cada frase do jogo (a tela conta 3-2-1)
 PAUSAS_ESPECIAIS = {1: [(16.4, 0.6)]          # "…vamos começar?" (entra a rodada 1)
                     + [(x, CONTAGEM) for x in (27.0, 44.9, 62.2, 81.8, 100.7, 119.2, 137.7)]   # fim de cada frase do jogo
-                    + [(x, 0.6) for x in (33.8, 52.8, 68.3, 89.7, 106.0, 125.9)]               # fim de cada resposta (troca de rodada)
-                    + [(152.0, 0.8)]}                                                          # antes do placar
+                    + [(x, 0.35) for x in (33.8, 89.7, 125.9)]                                   # fim de cada resposta bíblica (troca de rodada)
+                    + [(x, 1.3) for x in (68.3, 106.0)]                                         # depois do Che e do Marx: tempo para ver a foto
+                    + [(152.0, 0.5)]}                                                          # antes do placar
 CORRECOES = [(["há", "aí"], "Ai"), (["já", "tiveram"], "retiveram"), (["Tchê"], "Che"), (["Luccas"], "Lucas"),
              (["Calmarx,"], "Karl Marx."), (["tesalonescenses"], "Tessalonicenses,"), (["uma", "em,"], ["uma", "hein!"]),
              (["com", "o", "movimento"], ["como o", "movimento"]), (["bíblia"], "Bíblia"), (["bíblia,"], "Bíblia,"),
@@ -41,18 +42,41 @@ CORRECOES = [(["há", "aí"], "Ai"), (["já", "tiveram"], "retiveram"), (["Tchê
              (["hein!", "tinham"], ["hein!", "“Tinham"]), (["um,", "olha"], ["um.”", "Olha,"]), (["45,"], "45."),
              (["comunista,", "quem"], ["comunista:", "“Quem"]), (["comer,"], "comer.”"), (["pegadinha,"], "pegadinha:"),
              (["dois,"], "dois!"), (["1917,"], "1917."), (["placar"], "Placar:"), (["então"], "Então,"), (["lembra"], "lembra:"),
-             (["acertou,"], "acertou?"), (["aqui", "embaixo"], "aqui embaixo")]
+             (["quantas", "acertou,"], ["Quantas", "acertou?"]), (["aqui", "embaixo"], "aqui embaixo")]
 # segunda passada (depende das trocas da primeira): maiúsculas no começo das frases e aspas
 CORRECOES += [(["segunda", "frase,"], ["Segunda", "frase:"]), (["frase:", "Ai"], ["frase:", "“Ai"]), (["8.", "lá"], ["8.", "Lá"]),
               (["Karl Marx.", "lá"], ["Karl Marx.", "Lá"]), (["Bíblia,", "Até"], ["Bíblia.", "Até"]), (["pobres,"], "pobres."), (["de", "Marx,"], ["de", "Marx."]), (["e", "aí", "você"], "E aí, você"), (["53.", "mais"], ["53.", "Mais"]), (["ricos.”", "essa"], ["ricos.”", "Essa"]),
               (["tinham", "tudo"], ["“Tinham", "tudo"]), (["45.", "agora"], ["45.", "Agora"]), (["última,", "não"], ["última!", "Não"]),
               (["comer.”", "olha"], ["comer.”", "Olha"]), (["pegadinha:", "essa"], ["pegadinha:", "Essa"]), (["dois!", "essa"], ["dois!", "Essa"]),
-              (["Bíblia", "Tiago"], ["Bíblia:", "Tiago"]), (["Bíblia", "Isaías"], ["Bíblia:", "Isaías"]), (["frases", "5"], ["frases,", "cinco"]),
+              (["Bíblia", "Tiago"], ["Bíblia:", "Tiago"]), (["Bíblia", "Isaías"], ["Bíblia:", "Isaías"]), (["Bíblia", "Lucas"], ["Bíblia:", "Lucas"]), (["4.", "lá"], ["4.", "Lá"]), (["cada", "um,"], ["cada", "um.”"]), (["comer.”", "essa"], ["comer.”", "Essa"]), (["comenta", "aqui embaixo"], ["Comenta", "aqui embaixo!"]), (["dois!", "na"], ["dois!", "Na"]), (["essa", "está", "na", "Bíblia", "em", "Atos"], "Essa está na Bíblia, em Atos"), (["frases", "5"], ["frases,", "cinco"]), (["eu", "vou", "ler"], ["Eu vou", "ler"]),
+              (["amor.”", "é"], ["amor.”", "É"]), (["necessidades,", "essa"], ["necessidades.”", "Essa"]), (["última,", "quem"], ["última:", "“Quem"]),
               (["até", "Engels"], ["Até", "Engels,"]), (["Marx", "escreveu"], ["Marx,", "escreveu"]), (["Ah,", "mas"], ["Ah,", "mas"]),
               (["comunista:", "“Quem"], ["comunista:", "“Quem"]), (["frase:", "“O"], ["frase:", "“O"])]
 
 
-CORTES = json.loads(os.environ.get("CORTES", "{}"))   # {"2": [[t0, t1], ...]} trechos falados removidos (tempo original)
+# versão de até 1:20 (pedido do autor): trechos falados removidos (tempo original do áudio)
+CORTES = json.loads(os.environ.get("CORTES", "null")) or {"1": [
+    [0.00, 5.30],      # "Olá, camaradas! hoje eu tenho um desafio pra vocês,"
+    [13.75, 17.40],    # "vamos começar?"
+    [34.35, 54.75],    # a rodada de Isaías 5:8 inteira
+    [62.75, 65.55],    # "ah, mas essa é comunista mesmo,"
+    [84.36, 85.50],    # "também, está lá em" (fica "Essa é da Bíblia: Lucas…")
+    [100.95, 103.98],  # "bom, essa sim,"
+    [106.90, 110.55],  # "lá vai mais uma, hein!" (a rodada de Atos começa direto na frase)
+    [119.90, 120.25],  # "olha"
+    [127.92, 134.62],  # "não erra, comenta aqui embaixo se você acha que é da bíblia ou se é de um comunista"
+    [138.30, 140.00],  # "olha essa pegadinha,"
+    [141.75, 142.90],  # "essa está na bíblia," (fica "…é dos dois! Na segunda carta…")
+    [152.95, 165.90],  # "placar: de sete frases 5 estão na bíblia, até Engels … dos pobres," (o placar fica na tela)
+    [178.00, 178.88],  # "e aí você"
+]}
+
+
+def mover(t, cs):
+    """Tempo no áudio original → tempo depois dos cortes (None se cai dentro de um corte)."""
+    if any(c0 <= t < c1 for c0, c1 in cs):
+        return None
+    return t - sum(min(c1, t) - c0 for c0, c1 in cs if t > c0)
 
 
 def cortar(x, pal, k):
@@ -156,7 +180,9 @@ pecas, PAL, INICIO, FIM = [], [], {}, {}
 for k in range(1, 2):
     x = ler_voz(next((AQUI / "narracao").glob(f"{k}.*")))
     x, brutas_k = cortar(x, brutas[str(k)], k)
-    segs = trechos_com_fala(x, [(a / VEL, d) for a, d in PAUSAS_ESPECIAIS.get(k, ())], brutas_k)
+    cs = sorted(CORTES.get(str(k), []))
+    esp = [(mover(a, cs), d) for a, d in PAUSAS_ESPECIAIS.get(k, ())]
+    segs = trechos_com_fala(x, [(a / VEL, d) for a, d in esp if a is not None], brutas_k)
     partes = []
     for a, b in segs:
         if a == "silencio":
@@ -197,16 +223,14 @@ def talvez(texto, ajuste=0.0):
         return 0.0
 
 M = {}
-M["desafio"] = frase("hoje eu tenho")
-M["vamos"] = frase("vamos começar")
+M["desafio"] = frase("eu vou ler") + 1.0
 RODADAS = [  # (início da rodada, 1ª palavra da frase, fim da frase, resposta, referência)
     ("primeira frase", "o salário", "contra vocês", "da bíblia tiago", "tiago capítulo"),
-    ("segunda frase", "ai de vocês", "para ninguém", "da bíblia isaías", "isaías capítulo"),
-    ("lá vai mais uma", "o revolucionário", "sentimentos de amor", "essa é comunista", "do che guevara"),
-    ("próxima", "derrubou", "os ricos", "da bíblia também", "lucas capítulo"),
-    ("mais uma", "de cada um segundo", "suas necessidades", "essa sim", "karl marx"),
-    ("lá vai mais uma hein", "tinham tudo", "de cada um", "na bíblia em atos", "atos capítulo"),
-    ("agora a última", "quem não trabalha", "não deve comer", "olha essa pegadinha", "na segunda carta"),
+    ("lá vai mais uma", "o revolucionário", "sentimentos de amor", "é do che guevara", "do che guevara"),
+    ("próxima", "derrubou", "os ricos", "da bíblia lucas", "lucas capítulo"),
+    ("mais uma", "de cada um segundo", "suas necessidades", "essa é do karl marx", "karl marx"),
+    ("tinham tudo", "tinham tudo", "de cada um", "essa está na bíblia em atos", "capítulo 2 versículo"),
+    ("agora a última", "quem não trabalha", "não deve comer", "essa é dos dois", "na segunda carta"),
 ]
 depois = 0.0
 for k, (ini, q0, q1, resp, ref) in enumerate(RODADAS, 1):
@@ -216,17 +240,15 @@ for k, (ini, q0, q1, resp, ref) in enumerate(RODADAS, 1):
     M[f"a{k}"] = frase(resp, M[f"f{k}"])
     M[f"ref{k}"] = frase(ref, M[f"f{k}"])
     depois = M[f"ref{k}"]
-M["a7"] = frase("é dos dois", M["f7"])
-M["com7"] = frase("não erra", M["r7"])
-M["lenin7"] = frase("e o lênin", M["a7"])
-M["placar"] = frase("placar") - 0.3
-M["engels"] = frase("até engels") - 0.3
-M["oprimidos"] = frase("dos oprimidos", M["engels"])
-M["proxima"] = frase("então da próxima") - 0.3
+M["vamos"] = M["r1"] - 1.2
+M["a6"] = frase("é dos dois", M["f6"])
+M["lenin6"] = frase("e o lênin", M["a6"])
+M["placar"] = frase("então da próxima") - 0.3
+M["proxima"] = frase("por defender", M["placar"]) - 0.3
 M["lembra"] = frase("lembra", M["proxima"])
-M["acertou"] = frase("e aí você") - 0.3
+M["acertou"] = frase("quantas acertou") - 0.3
 M["logo"] = FIM[1] + 0.6
-M["dur"] = round(M["logo"] + 3.6, 2)
+M["dur"] = round(M["logo"] + 2.2, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 

@@ -4,6 +4,12 @@ Formato: 1080×1920, ~60–70 s, legendado. Jogo de adivinhação: a frase apare
 "BÍBLIA OU COMUNISMO?" (dois botões + contagem 3-2-1), e depois vem a resposta carimbada com a fonte exata.
 Objetivo: fazer pensar, sem atacar a fé de ninguém. Registro ARQUIVO nas frases (ficha datilografada, papel); CARTAZ nas respostas.
 
+## Versão gravada e montada (até 1:20, pedido do autor)
+O autor gravou tudo num áudio só (`audio/comunismo-biblia/narracao/1.m4a`, 3 min). Para caber em 1:20: voz acelerada (VEL 1.45), contagem 3-2-1 de 0,85 s e cortes
+(lista em `CORTES` no `montar.py`): saíram a saudação, a rodada de Isaías 5:8, "ah, mas essa é comunista mesmo", "bom, essa sim", o convite "comenta aqui embaixo"
+antes da última frase, o placar falado e o fecho do Engels (o placar 4 × 2 fica só na tela). Ficaram 6 rodadas: Tiago 5:4 · Che · Lucas 1:52-53 · Marx · Atos 2:44-45 · 2 Ts 3:10 + Lênin.
+Na tela: resposta bíblica = Jesus (Heinrich Hofmann, 1889, domínio público) com brilho dourado, auréola, raios e a Bíblia flutuando; resposta comunista = foto grande em moldura.
+
 ## ROTEIRO v3 (4 áudios) — a brincadeira: a maioria das frases "de comunista" é da BÍBLIA; no meio, duas frases de líderes comunistas para confundir
 Ideia (do autor): mostrar que muita frase que as pessoas achariam que é de comunista está, na verdade, na Bíblia. É uma brincadeira para conscientizar.
 Placar final: 7 frases · 5 estão na Bíblia (uma delas também foi dita por Lênin) · 2 são só de comunistas (Che e Marx).
