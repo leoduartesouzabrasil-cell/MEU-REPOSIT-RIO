@@ -4,7 +4,55 @@ Formato: 1080×1920, ~60–70 s, legendado. Jogo de adivinhação: a frase apare
 "BÍBLIA OU COMUNISMO?" (dois botões + contagem 3-2-1), e depois vem a resposta carimbada com a fonte exata.
 Objetivo: fazer pensar, sem atacar a fé de ninguém. Registro ARQUIVO nas frases (ficha datilografada, papel); CARTAZ nas respostas.
 
-## ROTEIRO v2 (4 áudios) — todas as citações conferidas no texto original (ver midia/comunismo-biblia/FONTES.md)
+## ROTEIRO v3 (4 áudios) — a brincadeira: a maioria das frases "de comunista" é da BÍBLIA; no meio, duas frases de líderes comunistas para confundir
+Ideia (do autor): mostrar que muita frase que as pessoas achariam que é de comunista está, na verdade, na Bíblia. É uma brincadeira para conscientizar.
+Placar final: 7 frases · 5 estão na Bíblia (uma delas também foi dita por Lênin) · 2 são só de comunistas (Che e Marx).
+Todas as frases bíblicas na NVI (linguagem de hoje), conferidas palavra por palavra. "[pausa]" = respiro de 1 a 2 s (a tela pergunta "BÍBLIA OU COMUNISTA?").
+
+### ÁUDIO #1: o jogo + rodadas 1 e 2
+> Vou ler umas frases e você me diz: tá na Bíblia ou foi um comunista que disse?
+> Primeira: "O salário dos trabalhadores, que vocês retiveram com fraude, está clamando contra vocês." [pausa]
+> Bíblia. Carta de Tiago.
+> Segunda: "Ai de vocês que adquirem casas e mais casas, propriedades e mais propriedades, até não haver mais lugar para ninguém." [pausa]
+> Bíblia. Profeta Isaías.
+
+### ÁUDIO #2: rodadas 3, 4 e 5
+> Terceira: "O revolucionário verdadeiro é guiado por grandes sentimentos de amor." [pausa]
+> Essa é comunista: Che Guevara.
+> Quarta: "Derrubou governantes dos seus tronos e exaltou os humildes. Encheu de coisas boas os famintos e despediu de mãos vazias os ricos." [pausa]
+> Bíblia. Evangelho de Lucas.
+> Quinta: "De cada um segundo as suas capacidades, a cada um segundo as suas necessidades." [pausa]
+> Essa é do Karl Marx.
+
+### ÁUDIO #3: rodadas 6 e 7
+> Sexta: "Tinham tudo em comum. Vendiam suas propriedades e bens e os distribuíam conforme a necessidade de cada um." [pausa]
+> Bíblia. Atos dos Apóstolos, os primeiros cristãos.
+> Última: "Quem não trabalha não deve comer." [pausa]
+> As duas! Tá na Bíblia, e Lênin repetiu a frase em 1917.
+
+### ÁUDIO #4: o placar + a reflexão
+> Placar: de sete frases, cinco estão na Bíblia.
+> Até o Engels, parceiro do Marx, escreveu que o cristianismo começou como o movimento dos oprimidos: dos escravos e dos pobres.
+> Então, da próxima vez que chamarem alguém de comunista por defender o trabalhador, lembra: muita gente já dizia isso muito antes do Marx.
+> Quantas você acertou? Comenta aí.
+
+NA TELA (todas as rodadas): ficha datilografada com a frase, SEM autor · "BÍBLIA OU COMUNISTA?" com dois botões (BÍBLIA amarelo, COMUNISTA vermelho) e 3-2-1 ·
+resposta carimbada: "BÍBLIA" + livro e versículo (Tiago 5:4 · Isaías 5:8 · Lucas 1:52-53 · Atos 2:44-45) ou "COMUNISTA" + nome, obra e ano com foto de época em moldura
+(Che, *O socialismo e o homem em Cuba*, 1965 · Marx, *Crítica do Programa de Gotha*, 1875) · rodada 7: os dois botões acendem, carimbo "AS DUAS!" com
+"2 Tessalonicenses 3:10" e "Lênin, *O Estado e a Revolução*, 1917" · placar contando 1 a 7 (BÍBLIA 5 × SÓ COMUNISTA 2) · foto de Engels + ficha:
+"A história do cristianismo primitivo oferece curiosos pontos de contato com o movimento operário moderno." (1894–95) · carimbo "QUANTAS VOCÊ ACERTOU?" · logo
+
+Versão curta (se passar de 60 s): tirar a rodada 2 (Isaías) e a frase do Engels; o placar vira "de seis, quatro".
+
+## Notas de precisão (v3)
+- Frases bíblicas na NVI: Tiago 5:4 ("Vejam, o salário dos trabalhadores que ceifaram os seus campos e que vocês retiveram com fraude está clamando contra vocês"; a fala corta "que ceifaram os seus campos" e na tela entra "…"),
+  Isaías 5:8 (a fala termina antes de "e vocês se tornarem os senhores absolutos da terra!"), Lucas 1:52-53 ("mas exaltou" e "mas despediu" ficam "e exaltou" / "e despediu" na fala; na tela, o texto exato),
+  Atos 2:44-45 (começa em "tinham tudo em comum", com "…" na tela), 2 Tessalonicenses 3:10 ("Se alguém não quiser trabalhar, também não coma").
+- Rodada 7: a frase lida é a de Lênin (trad. Avante!: «Quem não trabalha não deve comer»); a da Bíblia aparece ao lado. Lênin a cita como princípio socialista; não dizer que ele a inventou.
+- "Muita gente já dizia isso muito antes do Marx": é a ideia de defender o trabalhador e repartir, não a teoria de Marx. Não dizer que a Bíblia "é comunista".
+
+## ROTEIRO v2 (substituído pelo v3)
+ (4 áudios) — todas as citações conferidas no texto original (ver midia/comunismo-biblia/FONTES.md)
 Na gravação, "[pausa]" = um respiro de 1 a 2 segundos (é quando a tela pergunta "BÍBLIA OU COMUNISMO?"; a montagem ajusta o tempo).
 
 ### ÁUDIO #1: o jogo + rodadas 1 e 2
@@ -62,7 +110,7 @@ Tirar a rodada 2 (Che) ou a 3 (Atos). O fecho do Engels fica: é ele que respond
 - Tom: respeitoso com quem tem fé. Ninguém está sendo enganado: toda resposta mostra a fonte.
 
 ## Legenda do post (rascunho)
-Bíblia ou comunismo? 🤔 Fizemos um teste: frases da Bíblia, de Marx, de Lênin e do Che, sem dizer quem disse. Você acertaria? Até o Engels notou que o cristianismo começou como o movimento dos oprimidos. Assiste até o fim e conta nos comentários quantas você acertou! 🚩
+Bíblia ou comunista? 🤔 Sete frases que muita gente chamaria de "coisa de comunista"… e cinco delas estão na Bíblia! No meio, escondemos Che Guevara e Karl Marx pra confundir. Defender quem trabalha e repartir com quem precisa é muito mais antigo do que o Marx. Conta nos comentários quantas você acertou! 🚩
 
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
