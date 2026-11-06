@@ -49,6 +49,7 @@ window.CENA = {
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, AZUL = COR.azul;
     let arquivo = true;
     const PAINEL = { x: X0, y: 455, w: LARG, h: 535 };   // área da resposta (onde estava a ficha)
+    const RING = { topo: 1150, frente: 1335, xt0: 110, xt1: 970, xf0: 30, xf1: 1050 };   // o ringue da abertura
     const MOLD = { w: 300, h: 380, borda: 22 };          // tamanho ÚNICO de todas as molduras de foto/quadro
 
     const ordem = [[0, abertura], ...RODADAS.map((_, i) => [T['r' + (i + 1)], lt => rodada(i, lt)]),
@@ -177,34 +178,70 @@ window.CENA = {
     // Dois bonecos de cartaz (Jesus de túnica e manto; Marx de terno) com o ROSTO recortado das imagens (cabeção, estilo caricatura),
     // em guarda, trocando soquinhos (SOCOS: [instante do impacto, quem bate]) com "POW!" a cada pancada; um X no meio.
     function abertura(lt) {
-      cartazFundo();
-      carimbar('QUEM DISSE', CX, 420, 0.4, BEGE, 130, FONTE.manchete, 1, { erro: COR.vermelhoEscuro, desloc: 6 });
-      carimbar('ISSO?', CX, 575, 0.75, AMA, 180, FONTE.manchete, 2, { erro: TINTA, desloc: 8 });
-      const chao = 1320, entra = ease.saida(seg(t, 1.0, 1.6));
-      carimbar('X', CX, 1080, 1.65, AMA, 280, FONTE.manchete, 3, { erro: TINTA, desloc: 10, larg: 300 });
-      // sombra no chão
-      ctx.fillStyle = 'rgba(28,23,20,0.25)';
-      [300, 780].forEach(x => { ctx.beginPath(); ctx.ellipse(x, chao + 6, 120, 18, 0, 0, 7); ctx.fill(); });
+      // fundo amarelo (cartaz) com raios vermelhos bem suaves; título em preto e vermelho
+      arquivo = false;
+      L.fundo(ctx, AMA);
+      L.raios(ctx, CX, 1100, 2600, 22, -0.3 + L.emDois(t) * 0.05, 'rgba(200,32,30,0.10)');
+      carimbar('QUEM DISSE', CX, 420, 0.4, TINTA, 130, FONTE.manchete, 1, { erro: VERM, desloc: 5 });
+      carimbar('ISSO?', CX, 575, 0.75, VERM, 180, FONTE.manchete, 2, { erro: TINTA, desloc: 8 });
+      const chao = 1300, entra = ease.saida(seg(t, 1.0, 1.6));
+      ringueFundo();
+      carimbar('X', CX, 860, 1.65, VERM, 230, FONTE.manchete, 3, { erro: TINTA, desloc: 9, larg: 300 });
       const soco = quem => SOCOS.reduce((m, [ti, q]) => (q === quem || q === '2') ? Math.max(m, pulsoSoco(ti)) : m, 0);
       const levou = quem => SOCOS.reduce((m, [ti, q]) => (q !== quem && q !== '2') ? Math.max(m, pulsoLevou(ti)) : m, 0);
+      ctx.fillStyle = 'rgba(28,23,20,0.22)';
+      [300, 780].forEach(x => { ctx.beginPath(); ctx.ellipse(x, chao + 4, 110, 16, 0, 0, 7); ctx.fill(); });
       boneco({ x: 300 - (1 - entra) * 700, y: chao, lado: +1, roupa: 'tunica', rosto: L.img.rostoJesus, soco: soco('J'), levou: levou('J'), fase: 0 });
       boneco({ x: 780 + (1 - entra) * 700, y: chao, lado: -1, roupa: 'terno', rosto: L.img.rostoMarx, soco: soco('M'), levou: levou('M'), fase: 1.7 });
+      ringueFrente();
       SOCOS.forEach(([ti, q], n) => {
         const p = seg(t, ti, ti + 0.45);
         if (p <= 0 || p >= 1) return;
         const x = q === '2' ? CX : q === 'M' ? 350 : 730, y = q === '2' ? 900 : 820;
         pow(x, y, ['POW!', 'PÁ!', 'TUM!', 'PLAFT!', 'BUM!'][n % 5], p, n);
       });
+      // as plaquinhas na saia do ringue: BÍBLIA × COMUNISMO
       if (t >= 1.8) {
-        ctx.save(); ctx.translate(0, (1 - ease.saida(seg(t, 1.8, 2.2))) * 400);
-        [[300, 'BÍBLIA', AMA, TINTA], [780, 'COMUNISMO', VERM, BEGE]].forEach(([x, txt, cor, corT]) => {
-          ctx.fillStyle = TINTA; ctx.fillRect(x - 150 + 8, 1352 + 8, 300, 84);
-          ctx.fillStyle = cor; ctx.fillRect(x - 150, 1352, 300, 84);
-          ctx.strokeStyle = cor === VERM ? BEGE : TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 150, 1352, 300, 84);
-          L.texto(ctx, txt, x, 1411, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 48, 400, 270), cor: corT, alinhar: 'center' });
+        ctx.save(); ctx.globalAlpha = seg(t, 1.8, 2.1);
+        [[300, 'BÍBLIA', AMA, TINTA], [780, 'COMUNISMO', BEGE, VERM]].forEach(([x, txt, cor, corT]) => {
+          ctx.fillStyle = cor; ctx.fillRect(x - 140, 1355, 280, 72);
+          ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 140, 1355, 280, 72);
+          L.texto(ctx, txt, x, 1406, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 44, 400, 250), cor: corT, alinhar: 'center' });
         });
         ctx.restore();
       }
+    }
+    // o ringue: lona, postes, cantos azul × vermelho e cordas (as de trás aqui; as da frente em ringueFrente, por cima dos bonecos)
+    function cordas(x0, x1, ys, y0, y1) {
+      ys.forEach((dy, i) => {
+        const ya = y0 + dy, yb = y1 + dy;
+        ctx.strokeStyle = TINTA; ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(x0, ya); ctx.lineTo(x1, yb); ctx.stroke();
+        ctx.strokeStyle = i === 1 ? VERM : BEGE; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x0, ya); ctx.lineTo(x1, yb); ctx.stroke();
+      });
+    }
+    function poste(x, y0, y1, corCanto, w = 22) {
+      ctx.fillStyle = '#B8B2A6'; ctx.fillRect(x - w / 2, y0, w, y1 - y0); ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - w / 2, y0, w, y1 - y0);
+      ctx.fillStyle = corCanto; ctx.fillRect(x - w, y0 + 10, w * 2, (y1 - y0) * 0.55); ctx.strokeRect(x - w, y0 + 10, w * 2, (y1 - y0) * 0.55);
+    }
+    function ringueFundo() {
+      const R = RING;
+      // lona (trapézio em perspectiva) e saia do ringue
+      ctx.lineWidth = 6; ctx.strokeStyle = TINTA;
+      ctx.fillStyle = '#F2E8D0';
+      ctx.beginPath(); ctx.moveTo(R.xt0, R.topo); ctx.lineTo(R.xt1, R.topo); ctx.lineTo(R.xf1, R.frente); ctx.lineTo(R.xf0, R.frente); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(28,23,20,0.06)'; for (let i = 1; i < 6; i++) { const y = lerp(R.topo, R.frente, i / 6); ctx.fillRect(lerp(R.xt0, R.xf0, i / 6), y, lerp(R.xt1, R.xf1, i / 6) - lerp(R.xt0, R.xf0, i / 6), 2); }
+      ctx.fillStyle = VERM; ctx.fillRect(R.xf0, R.frente, R.xf1 - R.xf0, 110); ctx.strokeRect(R.xf0, R.frente, R.xf1 - R.xf0, 110);
+      ctx.fillStyle = COR.vermelhoEscuro; ctx.fillRect(R.xf0, R.frente + 96, R.xf1 - R.xf0, 14);
+      // postes de trás (canto azul à esquerda, vermelho à direita) e cordas de trás
+      poste(R.xt0, R.topo - 270, R.topo, AZUL, 18); poste(R.xt1, R.topo - 270, R.topo, VERM, 18);
+      cordas(R.xt0, R.xt1, [-230, -160, -90], R.topo, R.topo);
+      cordas(R.xt0, R.xf0, [-230, -160, -90], R.topo, R.frente);       // laterais
+      cordas(R.xt1, R.xf1, [-230, -160, -90], R.topo, R.frente);
+    }
+    function ringueFrente() {
+      const R = RING;
+      cordas(R.xf0, R.xf1, [-300, -215, -130], R.frente, R.frente);
+      poste(R.xf0, R.frente - 330, R.frente, AZUL); poste(R.xf1, R.frente - 330, R.frente, VERM);
     }
     function pulsoSoco(ti) {   // 0 → 1 (soco esticado no impacto) → 0
       if (t < ti - 0.2 || t > ti + 0.3) return 0;
@@ -281,7 +318,7 @@ window.CENA = {
       ctx.save(); ctx.globalAlpha = alfa; ctx.translate(x, y); ctx.rotate((rr() - 0.5) * 0.5); ctx.scale(esc, esc);
       ctx.beginPath();
       for (let i = 0; i < 24; i++) { const ang = i * Math.PI / 12, r = i % 2 ? 70 + rr() * 10 : 120 + rr() * 25; ctx.lineTo(Math.cos(ang) * r * 1.25, Math.sin(ang) * r); }
-      ctx.closePath(); ctx.fillStyle = AMA; ctx.fill(); ctx.lineWidth = 7; ctx.strokeStyle = TINTA; ctx.stroke();
+      ctx.closePath(); ctx.fillStyle = BEGE; ctx.fill(); ctx.lineWidth = 7; ctx.strokeStyle = TINTA; ctx.stroke();
       L.texto(ctx, txt, 0, 26, { familia: FONTE.manchete, peso: 900, tam: tamMax(txt, FONTE.manchete, 84, 900, 230), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 4 });
       ctx.restore();
     }
