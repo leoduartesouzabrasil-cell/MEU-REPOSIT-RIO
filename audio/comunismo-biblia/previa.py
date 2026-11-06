@@ -15,6 +15,7 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
+SOCOS = [(2.6, "M"), (3.8, "J"), (5.0, "M"), (6.2, "J"), (7.4, "2")]   # abertura: impactos da luta
 BIBLIA = {1, 3, 5}          # Tiago, Lucas, Atos (a 6ª está nos dois; 2 = Che, 4 = Marx)
 N_RODADAS = 6
 
@@ -53,6 +54,13 @@ def trilha(T, N):
     soma(st["sinte"], som.sinte([82.41, 123.5, 164.8, 246.9], dur - T["logo"], 0.35, brilho=1100, ataque=0.4), T["logo"])
 
     # efeitos
+    # a luta da abertura (Jesus × Marx): o mesmo SOCOS da cena (motor/cenas/comunismo-biblia.js)
+    for ti, quem in SOCOS:
+        soma(fx, som.whoosh(0.18), ti - 0.2, 0.5)
+        soma(fx, som.estaca(1.0), ti, 0.9); soma(fx, som.boom(), ti, 0.35)
+        if quem == "2":
+            soma(fx, som.carimbo_sfx(), ti + 0.02, 0.7)
+    soma(fx, som.carimbo_sfx(), 1.65, 0.8); soma(fx, som.whoosh(0.5), 1.0, 0.6)
     for k in range(2):
         soma(fx, som.carimbo_sfx(), 0.4 + k * 0.35, 0.8)
     soma(fx, som.carimbo_sfx(), T["desafio"] + 0.2, 0.6)

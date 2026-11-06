@@ -14,6 +14,9 @@ const T = Object.assign({
   placar: 66.5, proxima: 68.9, lembra: 70.5, acertou: 74.4, logo: 77.2, dur: 80.0,
 }, (window.TEMPOS || {}).marcas || {});
 
+// abertura: os soquinhos da luta Jesus × Marx ([instante do impacto, quem bate: 'M' Marx, 'J' Jesus, '2' os dois]); iguais em audio/comunismo-biblia/previa.py
+const SOCOS = [[2.6, 'M'], [3.8, 'J'], [5.0, 'M'], [6.2, 'J'], [7.4, '2']];
+
 // as rodadas: texto da ficha (o texto da fonte; "[…]" onde a fala encurtou), quem disse e a referência
 // (versão de até 1:20: a rodada de Isaías 5:8 e o fecho do Engels saíram; ver roteiros/comunismo-biblia.md)
 const RODADAS = [
@@ -36,6 +39,8 @@ window.CENA = {
     jesusQuadro: '../midia/comunismo-biblia/jesus-hofmann-1889.jpg', // Heinrich Hofmann, 1889 (detalhe de "Cristo e o jovem rico"), domínio público
     lenin: '../midia/comunismo-02/lenin-1920.jpg',               // Pavel Zhukov, 1920 · domínio público
     logo: '../identidade/marca/o-camarada-vermelho.png',
+    jesusRecorte: '../midia/comunismo-biblia/jesus-hofmann-recorte.png', // Hofmann, 1889, fundo tirado (abertura)
+    marxBusto: '../midia/comunismo-biblia/marx-busto.png',               // Mayall, 1875, fundo tirado (abertura)
     lufa: '../midia/comunismo-02/coletivo-lufa.png',              // logo do Coletivo Lufã (o vídeo também é do coletivo)
   },
 
@@ -49,7 +54,7 @@ window.CENA = {
     const ordem = [[0, abertura], ...RODADAS.map((_, i) => [T['r' + (i + 1)], lt => rodada(i, lt)]),
       [T.placar, placar], [T.proxima, recado], [T.acertou, acertou], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [0.4, 0.75, ...RODADAS.map((_, i) => T['a' + (i + 1)]), T.lenin6, T.placar + 0.4, T.lembra + 0.6, T.acertou + 0.2, T.logo];
+    const IMP = [0.4, 0.75, 1.65, ...SOCOS.map(([ti]) => ti), ...RODADAS.map((_, i) => T['a' + (i + 1)]), T.lenin6, T.placar + 0.4, T.lembra + 0.6, T.acertou + 0.2, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
@@ -168,21 +173,97 @@ window.CENA = {
       });
     }
 
-    // ------------------------------------------------ 0. abertura (CARTAZ): QUEM DISSE ISSO?
+    // ------------------------------------------------ 0. abertura (CARTAZ): QUEM DISSE ISSO? + a "luta" Jesus × Marx (brincadeira)
+    // Jesus (pintura de Hofmann, recortada) à esquerda, Karl Marx (foto de Mayall, recortada) à direita, um X no meio;
+    // os dois com luvas de boxe trocam soquinhos (SOCOS: [instante do impacto, quem bate]) com "POW!" a cada pancada.
     function abertura(lt) {
       cartazFundo();
-      carimbar('QUEM DISSE', CX, 600, 0.4, BEGE, 170, FONTE.manchete, 1, { erro: COR.vermelhoEscuro, desloc: 6 });
-      carimbar('ISSO?', CX, 800, 0.75, AMA, 230, FONTE.manchete, 2, { erro: TINTA, desloc: 8 });
-      if (t >= T.desafio) {
-        ctx.save(); ctx.globalAlpha = seg(t, T.desafio, T.desafio + 0.4);
-        L.texto(ctx, L.datilografar('UM DESAFIO PRA VOCÊ', seg(t, T.desafio, T.desafio + 0.8)), CX, 930, { familia: FONTE.sub, peso: 600, tam: 46, cor: BEGE, alinhar: 'center', tracking: 4 });
+      carimbar('QUEM DISSE', CX, 420, 0.4, BEGE, 130, FONTE.manchete, 1, { erro: COR.vermelhoEscuro, desloc: 6 });
+      carimbar('ISSO?', CX, 575, 0.75, AMA, 180, FONTE.manchete, 2, { erro: TINTA, desloc: 8 });
+      const base = 1300, alt = 600, entra = ease.saida(seg(t, 1.0, 1.6));
+      // o X no meio (atrás dos dois)
+      carimbar('X', CX, 1080, 1.65, AMA, 300, FONTE.manchete, 3, { erro: TINTA, desloc: 10, larg: 300 });
+      // quem bate e quem apanha agora
+      const soco = quem => SOCOS.reduce((m, [ti, q]) => (q === quem || q === '2') ? Math.max(m, pulsoSoco(ti)) : m, 0);
+      const levou = quem => SOCOS.reduce((m, [ti, q]) => (q !== quem && q !== '2') ? Math.max(m, pulsoLevou(ti)) : m, 0);
+      lutador(L.img.jesusRecorte, 'jesus', 290 - (1 - entra) * 700, base, alt, +1, soco('J'), levou('J'), 0);
+      lutador(L.img.marxBusto, 'marx', 790 + (1 - entra) * 700, base, alt, -1, soco('M'), levou('M'), 1.7);
+      // POW! no rosto de quem levou (ou no meio, quando os dois batem juntos)
+      SOCOS.forEach(([ti, q], n) => {
+        const p = seg(t, ti, ti + 0.45);
+        if (p <= 0 || p >= 1) return;
+        const x = q === '2' ? CX : q === 'M' ? 330 : 750, y = q === '2' ? 900 : 880;
+        pow(x, y, ['POW!', 'PÁ!', 'TUM!', 'PLAFT!', 'BUM!'][n % 5], p, n);
+      });
+      // as plaquinhas: BÍBLIA × COMUNISMO
+      if (t >= 1.8) {
+        ctx.save(); ctx.translate(0, (1 - ease.saida(seg(t, 1.8, 2.2))) * 400);
+        [[290, 'BÍBLIA', AMA, TINTA], [790, 'COMUNISMO', VERM, BEGE]].forEach(([x, txt, cor, corT]) => {
+          ctx.fillStyle = TINTA; ctx.fillRect(x - 160 + 8, 1330 + 8, 320, 96);
+          ctx.fillStyle = cor; ctx.fillRect(x - 160, 1330, 320, 96);
+          ctx.strokeStyle = cor === VERM ? BEGE : TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 160, 1330, 320, 96);
+          L.texto(ctx, txt, x, 1396, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 52, 400, 290), cor: corT, alinhar: 'center' });
+        });
         ctx.restore();
       }
-      if (t >= T.vamos - 2.5) {
-        ctx.save(); ctx.translate(0, (1 - ease.saida(seg(t, T.vamos - 2.5, T.vamos - 2.0))) * 600);
-        botoes(1110, {});
-        ctx.restore();
+    }
+    function pulsoSoco(ti) {   // 0 → 1 (soco esticado no impacto) → 0
+      if (t < ti - 0.18 || t > ti + 0.3) return 0;
+      return t < ti ? ease.saida((t - (ti - 0.18)) / 0.18) : 1 - (t - ti) / 0.3;
+    }
+    function pulsoLevou(ti) { return t < ti || t > ti + 0.45 ? 0 : 1 - (t - ti) / 0.45; }
+    // um lutador: busto recortado (base esfumada), balançando em guarda; lado = +1 olha para a direita, -1 para a esquerda
+    function lutador(img, chave, xc, base, alt, lado, soco, levou, fase) {
+      const fig = esfumado(img, chave), w = alt * fig.width / fig.height;
+      const bob = Math.sin(t * 7 + fase) * 8, avanco = soco * 40 * lado, recuo = -levou * 55 * lado;
+      const ang = (soco * 0.06 - levou * 0.16) * lado + Math.sin(t * 3.5 + fase) * 0.02;
+      ctx.save();
+      ctx.translate(xc + avanco + recuo + (levou > 0 ? Math.sin(t * 90) * 6 * levou : 0), base + bob);
+      ctx.rotate(ang);
+      ctx.drawImage(fig, -w / 2, -alt, w, alt);
+      ctx.restore();
+      // as luvas: a de trás fica em guarda; a da frente vai até o rosto do outro
+      const gx = xc + avanco + recuo + lado * alt * 0.2, gy = base + bob - alt * 0.38;
+      luva(gx - lado * 70, gy + 30, lado, 0.9, 0);                       // guarda
+      const alvoX = xc + lado * (500 - 150), alvoY = base - alt * 0.74;     // rosto do adversário
+      const sx = lerp(gx, alvoX, soco), sy = lerp(gy, alvoY, soco);
+      if (soco > 0) {   // o braço (manga) até a luva
+        ctx.save(); ctx.strokeStyle = chave === 'jesus' ? '#7A1E14' : '#1E1B1A'; ctx.lineCap = 'round'; ctx.lineWidth = 46;
+        ctx.beginPath(); ctx.moveTo(gx - lado * 20, gy + 20); ctx.lineTo(sx - lado * 40, sy + 6); ctx.stroke(); ctx.restore();
       }
+      luva(sx, sy, lado, 1.05 + soco * 0.15, soco);
+    }
+    // luva de boxe vermelha (cartaz): punho arredondado, polegar e punho branco
+    function luva(x, y, lado, s, soco) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(lado * s, s); ctx.rotate(-0.15 + soco * 0.15);
+      ctx.lineWidth = 5; ctx.strokeStyle = TINTA;
+      ctx.fillStyle = BEGE; ctx.fillRect(-78, -26, 34, 52); ctx.strokeRect(-78, -26, 34, 52);   // punho
+      ctx.fillStyle = VERM; ctx.beginPath(); ctx.ellipse(0, 0, 54, 46, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(-10, 34, 26, 16, -0.3, 0, 7); ctx.fill(); ctx.stroke();       // polegar
+      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.ellipse(12, -18, 20, 10, -0.4, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+    // balão de onomatopeia (estrela amarela com contorno)
+    function pow(x, y, txt, p, seed) {
+      const esc = p < 0.25 ? ease.saida(p / 0.25) * 1.15 : 1.15 - 0.15 * Math.min(1, (p - 0.25) / 0.2), alfa = p > 0.75 ? 1 - (p - 0.75) / 0.25 : 1;
+      const rr = L.rng(seed * 11 + 5);
+      ctx.save(); ctx.globalAlpha = alfa; ctx.translate(x, y); ctx.rotate((rr() - 0.5) * 0.5); ctx.scale(esc, esc);
+      ctx.beginPath();
+      for (let i = 0; i < 24; i++) { const ang = i * Math.PI / 12, r = i % 2 ? 70 + rr() * 10 : 120 + rr() * 25; ctx.lineTo(Math.cos(ang) * r * 1.25, Math.sin(ang) * r); }
+      ctx.closePath(); ctx.fillStyle = AMA; ctx.fill(); ctx.lineWidth = 7; ctx.strokeStyle = TINTA; ctx.stroke();
+      L.texto(ctx, txt, 0, 26, { familia: FONTE.manchete, peso: 900, tam: tamMax(txt, FONTE.manchete, 84, 900, 230), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 4 });
+      ctx.restore();
+    }
+    // recorte com a base (e as laterais) esfumadas, guardado em cache
+    function esfumado(img, chave) {
+      window._esf = window._esf || {};
+      if (window._esf[chave]) return window._esf[chave];
+      const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      g.globalCompositeOperation = 'destination-in';
+      const m = g.createLinearGradient(0, img.height * 0.7, 0, img.height); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = m; g.fillRect(0, 0, img.width, img.height);
+      return (window._esf[chave] = c);
     }
 
     // ------------------------------------------------ 1–6. uma rodada do jogo (ARQUIVO)
