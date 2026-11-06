@@ -251,25 +251,24 @@ window.CENA = {
       L.fundo(ctx, AMA);
       L.raios(ctx, CX, 1250, 2600, 22, -0.3, 'rgba(200,32,30,0.10)');
       // os dois logos no alto, lado a lado e centralizados (dentro do recorte 3:4 do grid: y 240–1680)
-      const yl = 330, wOC = 400, dLufa = 150, gap = 46;
-      const total = wOC + gap * 2 + 4 + dLufa, x0 = CX - total / 2;
+      // (mesmo padrão das outras capas: logo pequeno, centralizado em y 300; aqui os dois lado a lado, sem traço)
+      const yl = 300, wOC = 220, dLufa = 82, gap = 30;
+      const total = wOC + gap + dLufa, x0 = CX - total / 2;
       L.imagem(ctx, L.img.logo, x0 + wOC / 2, yl, wOC);
-      ctx.fillStyle = TINTA; ctx.fillRect(x0 + wOC + gap, yl - 62, 4, 124);
-      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(x0 + total - dLufa / 2, yl, dLufa / 2 + 5, 0, 7); ctx.fill();
+      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(x0 + total - dLufa / 2, yl, dLufa / 2 + 3, 0, 7); ctx.fill();
       L.imagem(ctx, L.img.lufa, x0 + total - dLufa / 2, yl, dLufa);
       // o título
-      L.texto(ctx, 'QUEM DISSE', CX, 540, { familia: FONTE.manchete, peso: 900, tam: tamMax('QUEM DISSE', FONTE.manchete, 150, 900, 900), cor: TINTA, alinhar: 'center', erro: VERM, desloc: 6 });
-      L.texto(ctx, 'ISSO?', CX, 700, { familia: FONTE.manchete, peso: 900, tam: 190, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
-      // o ringue, igual ao da abertura do vídeo, mais para baixo; o Marx acertando o Jesus (POW!)
+      L.texto(ctx, 'QUEM DISSE', CX, 520, { familia: FONTE.manchete, peso: 900, tam: tamMax('QUEM DISSE', FONTE.manchete, 165, 900, 900), cor: TINTA, alinhar: 'center', erro: VERM, desloc: 6 });
+      L.texto(ctx, 'ISSO?', CX, 715, { familia: FONTE.manchete, peso: 900, tam: 215, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
+      // o ringue, igual ao da abertura do vídeo, mais para baixo; os dois parados em guarda, com o X no meio
       ctx.save(); ctx.translate(0, 190);
       ringueFundo();
-      L.texto(ctx, 'X', CX, 940, { familia: FONTE.manchete, peso: 900, tam: 230, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
+      L.texto(ctx, 'X', CX, 900, { familia: FONTE.manchete, peso: 900, tam: 240, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
       ctx.fillStyle = 'rgba(28,23,20,0.22)';
       [300, 780].forEach(x => { ctx.beginPath(); ctx.ellipse(x, 1304, 110, 16, 0, 0, 7); ctx.fill(); });
-      boneco({ x: 300, y: 1300, lado: +1, roupa: 'tunica', rosto: L.img.rostoJesus, soco: 0, levou: 0.35, fase: 0 });
-      boneco({ x: 780, y: 1300, lado: -1, roupa: 'terno', rosto: L.img.rostoMarx, soco: 1, levou: 0, fase: 1.7 });
+      boneco({ x: 300, y: 1300, lado: +1, roupa: 'tunica', rosto: L.img.rostoJesus, soco: 0, levou: 0, fase: 0 });
+      boneco({ x: 780, y: 1300, lado: -1, roupa: 'terno', rosto: L.img.rostoMarx, soco: 0, levou: 0, fase: 0 });
       ringueFrente();
-      pow(520, 600, 'POW!', 0.1, 0);
       [[300, 'BÍBLIA', AMA, TINTA], [780, 'COMUNISMO', BEGE, VERM]].forEach(([x, txt, cor, corT]) => {
         ctx.fillStyle = cor; ctx.fillRect(x - 140, 1355, 280, 72);
         ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 140, 1355, 280, 72);
