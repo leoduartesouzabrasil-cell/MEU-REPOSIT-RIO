@@ -52,6 +52,9 @@ window.CENA = {
     const RING = { topo: 1150, frente: 1335, xt0: 110, xt1: 970, xf0: 30, xf1: 1050 };   // o ringue da abertura
     const MOLD = { w: 300, h: 380, borda: 22 };          // tamanho ÚNICO de todas as molduras de foto/quadro
 
+    // modo CAPA (motor/cenas/capa-comunismo-biblia.js): o ringue do vídeo, parado no soco, com os dois logos no alto
+    if (window.CAPA_BIBLIA) { capa(); return; }
+
     const ordem = [[0, abertura], ...RODADAS.map((_, i) => [T['r' + (i + 1)], lt => rodada(i, lt)]),
       [T.placar, placar], [T.proxima, recado], [T.acertou, acertou], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
@@ -242,6 +245,38 @@ window.CENA = {
       const R = RING;
       cordas(R.xf0, R.xf1, [-300, -215, -130], R.frente, R.frente);
       poste(R.xf0, R.frente - 330, R.frente, AZUL); poste(R.xf1, R.frente - 330, R.frente, VERM);
+    }
+    function capa() {
+      arquivo = false;
+      L.fundo(ctx, AMA);
+      L.raios(ctx, CX, 1250, 2600, 22, -0.3, 'rgba(200,32,30,0.10)');
+      // os dois logos no alto, lado a lado e centralizados (dentro do recorte 3:4 do grid: y 240–1680)
+      const yl = 330, wOC = 400, dLufa = 150, gap = 46;
+      const total = wOC + gap * 2 + 4 + dLufa, x0 = CX - total / 2;
+      L.imagem(ctx, L.img.logo, x0 + wOC / 2, yl, wOC);
+      ctx.fillStyle = TINTA; ctx.fillRect(x0 + wOC + gap, yl - 62, 4, 124);
+      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(x0 + total - dLufa / 2, yl, dLufa / 2 + 5, 0, 7); ctx.fill();
+      L.imagem(ctx, L.img.lufa, x0 + total - dLufa / 2, yl, dLufa);
+      // o título
+      L.texto(ctx, 'QUEM DISSE', CX, 540, { familia: FONTE.manchete, peso: 900, tam: tamMax('QUEM DISSE', FONTE.manchete, 150, 900, 900), cor: TINTA, alinhar: 'center', erro: VERM, desloc: 6 });
+      L.texto(ctx, 'ISSO?', CX, 700, { familia: FONTE.manchete, peso: 900, tam: 190, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
+      // o ringue, igual ao da abertura do vídeo, mais para baixo; o Marx acertando o Jesus (POW!)
+      ctx.save(); ctx.translate(0, 190);
+      ringueFundo();
+      L.texto(ctx, 'X', CX, 940, { familia: FONTE.manchete, peso: 900, tam: 230, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
+      ctx.fillStyle = 'rgba(28,23,20,0.22)';
+      [300, 780].forEach(x => { ctx.beginPath(); ctx.ellipse(x, 1304, 110, 16, 0, 0, 7); ctx.fill(); });
+      boneco({ x: 300, y: 1300, lado: +1, roupa: 'tunica', rosto: L.img.rostoJesus, soco: 0, levou: 0.35, fase: 0 });
+      boneco({ x: 780, y: 1300, lado: -1, roupa: 'terno', rosto: L.img.rostoMarx, soco: 1, levou: 0, fase: 1.7 });
+      ringueFrente();
+      pow(520, 600, 'POW!', 0.1, 0);
+      [[300, 'BÍBLIA', AMA, TINTA], [780, 'COMUNISMO', BEGE, VERM]].forEach(([x, txt, cor, corT]) => {
+        ctx.fillStyle = cor; ctx.fillRect(x - 140, 1355, 280, 72);
+        ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 140, 1355, 280, 72);
+        L.texto(ctx, txt, x, 1406, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 44, 400, 250), cor: corT, alinhar: 'center' });
+      });
+      ctx.restore();
+      L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.3);
     }
     function pulsoSoco(ti) {   // 0 → 1 (soco esticado no impacto) → 0
       if (t < ti - 0.2 || t > ti + 0.3) return 0;
