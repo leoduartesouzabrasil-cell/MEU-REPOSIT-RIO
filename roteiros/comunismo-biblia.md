@@ -12,23 +12,23 @@ Todas as frases bíblicas na NVI (linguagem de hoje), conferidas palavra por pal
 ### ÁUDIO #1: o jogo + rodadas 1 e 2
 > Vou ler umas frases e você me diz: tá na Bíblia ou foi um comunista que disse?
 > Primeira: "O salário dos trabalhadores, que vocês retiveram com fraude, está clamando contra vocês." [pausa]
-> Bíblia. Carta de Tiago.
+> Bíblia. Tiago, capítulo 5, versículo 4.
 > Segunda: "Ai de vocês que adquirem casas e mais casas, propriedades e mais propriedades, até não haver mais lugar para ninguém." [pausa]
-> Bíblia. Profeta Isaías.
+> Bíblia. Isaías, capítulo 5, versículo 8.
 
 ### ÁUDIO #2: rodadas 3, 4 e 5
 > Terceira: "O revolucionário verdadeiro é guiado por grandes sentimentos de amor." [pausa]
 > Essa é comunista: Che Guevara.
 > Quarta: "Derrubou governantes dos seus tronos e exaltou os humildes. Encheu de coisas boas os famintos e despediu de mãos vazias os ricos." [pausa]
-> Bíblia. Evangelho de Lucas.
+> Bíblia. Lucas, capítulo 1, versículos 52 e 53.
 > Quinta: "De cada um segundo as suas capacidades, a cada um segundo as suas necessidades." [pausa]
 > Essa é do Karl Marx.
 
 ### ÁUDIO #3: rodadas 6 e 7
 > Sexta: "Tinham tudo em comum. Vendiam suas propriedades e bens e os distribuíam conforme a necessidade de cada um." [pausa]
-> Bíblia. Atos dos Apóstolos, os primeiros cristãos.
+> Bíblia. Atos, capítulo 2, versículos 44 e 45.
 > Última: "Quem não trabalha não deve comer." [pausa]
-> As duas! Tá na Bíblia, e Lênin repetiu a frase em 1917.
+> As duas! Tá na Bíblia, segunda carta aos Tessalonicenses, capítulo 3, versículo 10. E Lênin repetiu a frase em 1917.
 
 ### ÁUDIO #4: o placar + a reflexão
 > Placar: de sete frases, cinco estão na Bíblia.
