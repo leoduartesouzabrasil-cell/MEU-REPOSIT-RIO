@@ -36,6 +36,7 @@ window.CENA = {
     jesusQuadro: '../midia/comunismo-biblia/jesus-hofmann-1889.jpg', // Heinrich Hofmann, 1889 (detalhe de "Cristo e o jovem rico"), domínio público
     lenin: '../midia/comunismo-02/lenin-1920.jpg',               // Pavel Zhukov, 1920 · domínio público
     logo: '../identidade/marca/o-camarada-vermelho.png',
+    lufa: '../midia/comunismo-02/coletivo-lufa.png',              // logo do Coletivo Lufã (o vídeo também é do coletivo)
   },
 
   desenhar(ctx, t, L) {
@@ -57,10 +58,19 @@ window.CENA = {
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
+    seloLufa();
     L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.35);
     legenda();
 
     // ------------------------------------------------ componentes padronizados
+    // selo discreto do Coletivo Lufã no alto, acima do título (o vídeo também é do coletivo)
+    function seloLufa() {
+      const y = 228, d = 104;
+      ctx.save(); ctx.globalAlpha = 0.92 * seg(t, 0.2, 0.8);
+      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(CX, y, d / 2 + 4, 0, 7); ctx.fill();
+      L.imagem(ctx, L.img.lufa, CX, y, d);
+      ctx.restore();
+    }
     function legenda() {
       const LEG = (window.TEMPOS || {}).legendas;
       const l = LEG && LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);

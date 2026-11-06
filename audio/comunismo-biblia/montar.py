@@ -23,9 +23,9 @@ from previa import trilha  # noqa: E402
 
 ENTRADA = 0.3                                 # a voz entra logo no começo (cartaz "QUEM DISSE ISSO?")
 PAUSAS = {1: 0.5}
-VEL = float(os.environ.get("VEL", "1.45"))   # o autor pediu a voz mais ágil e o vídeo com no máximo 1:20
+VEL = float(os.environ.get("VEL", "1.20"))   # o autor pediu a voz mais ágil e o vídeo com no máximo 1:20
 PAUSA_MAX = 0.20
-CONTAGEM = 0.85                               # pausa depois de cada frase do jogo (a tela conta 3-2-1)
+CONTAGEM = 1.0                                # pausa depois de cada frase do jogo (a tela conta 3-2-1)
 PAUSAS_ESPECIAIS = {1: [(16.4, 0.6)]          # "…vamos começar?" (entra a rodada 1)
                     + [(x, CONTAGEM) for x in (27.0, 44.9, 62.2, 81.8, 100.7, 119.2, 137.7)]   # fim de cada frase do jogo
                     + [(x, 0.35) for x in (33.8, 89.7, 125.9)]                                   # fim de cada resposta bíblica (troca de rodada)
@@ -56,7 +56,7 @@ CORRECOES += [(["segunda", "frase,"], ["Segunda", "frase:"]), (["frase:", "Ai"],
 
 # versão de até 1:20 (pedido do autor): trechos falados removidos (tempo original do áudio)
 CORTES = json.loads(os.environ.get("CORTES", "null")) or {"1": [
-    [0.00, 5.30],      # "Olá, camaradas! hoje eu tenho um desafio pra vocês,"
+    [2.40, 5.30],      # "hoje eu tenho um desafio pra vocês," (o "Olá, camaradas!" fica: pedido do autor)
     [13.75, 17.40],    # "vamos começar?"
     [34.35, 54.75],    # a rodada de Isaías 5:8 inteira
     [62.75, 65.55],    # "ah, mas essa é comunista mesmo,"
@@ -291,9 +291,9 @@ fala = e > 0.3
 rms = lambda x: float(np.sqrt(np.mean(x[fala] ** 2))) or 1e-9
 REF = 0.2
 voz_mix = voz * (REF / rms(voz))
-g_mus = REF * 10 ** (-22 / 20)   # trilha 4 dB mais baixa (pedido do autor: "a trilha está muito alta")
+g_mus = REF * 10 ** (-25 / 20)   # trilha 3 dB mais baixa que no EP. 2 (pedido do autor: "abaixa só um pouquinho")
 g_mus = g_mus / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
-g_sfx = REF * 10 ** (-20 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
+g_sfx = REF * 10 ** (-22 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
 leito_e, leito_d = mus_e * (1 - 0.7 * e) * g_mus, mus_d * (1 - 0.7 * e) * g_mus
 ef_e = np.clip(sfx_e * (1 - 0.75 * e) * g_sfx, -0.6, 0.6); ef_d = np.clip(sfx_d * (1 - 0.75 * e) * g_sfx, -0.6, 0.6)
 

@@ -5,8 +5,8 @@ Formato: 1080×1920, ~60–70 s, legendado. Jogo de adivinhação: a frase apare
 Objetivo: fazer pensar, sem atacar a fé de ninguém. Registro ARQUIVO nas frases (ficha datilografada, papel); CARTAZ nas respostas.
 
 ## Versão gravada e montada (até 1:20, pedido do autor)
-O autor gravou tudo num áudio só (`audio/comunismo-biblia/narracao/1.m4a`, 3 min). Para caber em 1:20: voz acelerada (VEL 1.45), contagem 3-2-1 de 0,85 s e cortes
-(lista em `CORTES` no `montar.py`): saíram a saudação, a rodada de Isaías 5:8, "ah, mas essa é comunista mesmo", "bom, essa sim", o convite "comenta aqui embaixo"
+O autor gravou tudo num áudio só (`audio/comunismo-biblia/narracao/1.m4a`, 3 min). Versão final (~1:36, pedido do autor: voz menos acelerada, até 1:40): VEL 1.20, contagem 3-2-1 de 1 s, trilha 3 dB mais baixa, selo do Coletivo Lufã no alto e cortes
+(lista em `CORTES` no `montar.py`): saíram "hoje eu tenho um desafio pra vocês" (o "Olá, camaradas!" ficou), a rodada de Isaías 5:8, "ah, mas essa é comunista mesmo", "bom, essa sim", o convite "comenta aqui embaixo"
 antes da última frase, o placar falado e o fecho do Engels (o placar 4 × 2 fica só na tela). Ficaram 6 rodadas: Tiago 5:4 · Che · Lucas 1:52-53 · Marx · Atos 2:44-45 · 2 Ts 3:10 + Lênin.
 Na tela: resposta bíblica = Jesus (Heinrich Hofmann, 1889, domínio público) com brilho dourado, auréola, raios e a Bíblia flutuando; resposta comunista = foto grande em moldura.
 
