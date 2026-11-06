@@ -43,6 +43,7 @@ window.CENA = {
     const CX = 540, LARG = 840, X0 = 120, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, AZUL = COR.azul;
     let arquivo = true;
     const PAINEL = { x: X0, y: 455, w: LARG, h: 535 };   // área da resposta (onde estava a ficha)
+    const MOLD = { w: 300, h: 380, borda: 22 };          // tamanho ÚNICO de todas as molduras de foto/quadro
 
     const ordem = [[0, abertura], ...RODADAS.map((_, i) => [T['r' + (i + 1)], lt => rodada(i, lt)]),
       [T.placar, placar], [T.proxima, recado], [T.acertou, acertou], [T.logo, final]];
@@ -199,9 +200,10 @@ window.CENA = {
       }
       // a resposta no painel
       if (t >= a) {
-        if (r.tipo === 'B') divino(CX, a, 1);
-        if (r.tipo === 'C') fotoGrande(r, CX, a, 1);
-        if (r.tipo === 'AS DUAS') { divino(355, a, 0.72); if (t >= T.lenin6) fotoGrande(r, 750, T.lenin6, 0.68); }
+        // TODAS as molduras com o mesmo tamanho (MOLD): Jesus, Che, Marx e Lênin
+        if (r.tipo === 'B') divino(235, a, false);
+        if (r.tipo === 'C') fotoGrande(r, CX - MOLD.w / 2, a, true);
+        if (r.tipo === 'AS DUAS') { divino(150, a, true); if (t >= T.lenin6) fotoGrande(r, 960 - 22 - 8 - MOLD.w, T.lenin6, false); }
       }
       // os botões + contagem 3-2-1 (entre o fim da frase e a resposta)
       const yb = 1060;
@@ -246,41 +248,40 @@ window.CENA = {
 
     // Jesus (pintura de Hofmann, recortada) com brilho divino, auréola, raios de luz, faíscas e a Bíblia flutuando ao lado
     // Jesus num QUADRO de moldura dourada (pintura de Heinrich Hofmann, 1889, em cores), com luz dourada atrás e a Bíblia flutuando ao lado
-    function divino(cx, t0, esc) {
-      const e = ease.saida(seg(t, t0, t0 + 0.5)), P = PAINEL, cy = P.y + P.h * 0.45;
+    // x = canto esquerdo do quadro; compacto = última rodada (Jesus + Bíblia + Lênin lado a lado)
+    function divino(x, t0, compacto) {
+      const e = ease.saida(seg(t, t0, t0 + 0.5)), P = PAINEL, { w, h, borda } = MOLD, y = P.y + 32 + (1 - e) * 80;
+      const bx = compacto ? x + w + borda + 62 : x + w + borda + 150, cx = compacto ? x + w / 2 + 120 : (x + bx) / 2 + w / 4, cy = P.y + P.h * 0.45;
       ctx.save();
       ctx.beginPath(); ctx.rect(P.x, P.y, P.w, P.h); ctx.clip();
       ctx.globalAlpha = clamp(e * 1.5);
       // fundo: luz dourada e raios girando devagar
       ctx.fillStyle = '#F3E3B4'; ctx.fillRect(P.x, P.y, P.w, P.h);
-      const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, 560 * esc);
+      const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, 560);
       g.addColorStop(0, 'rgba(255,250,230,1)'); g.addColorStop(0.4, 'rgba(250,214,120,0.75)'); g.addColorStop(1, 'rgba(235,181,42,0.15)');
       ctx.fillStyle = g; ctx.fillRect(P.x, P.y, P.w, P.h);
       L.raios(ctx, cx, cy, 900, 28, t * 0.12, 'rgba(255,255,240,0.45)');
-      // o quadro (sem a Bíblia na frente: ela fica do lado direito)
-      const w = 340 * esc, h = 420 * esc, x = cx - w / 2 - 70 * esc, y = P.y + 32 + (1 - e) * 80;
-      ctx.save(); ctx.shadowColor = 'rgba(255,240,180,0.95)'; ctx.shadowBlur = 50 * esc;
-      ctx.fillStyle = 'rgba(255,240,180,0.9)'; ctx.fillRect(x - 22 * esc, y - 22 * esc, w + 44 * esc, h + 44 * esc);
+      // o quadro, com halo de luz em volta
+      ctx.save(); ctx.shadowColor = 'rgba(255,240,180,0.95)'; ctx.shadowBlur = 50;
+      ctx.fillStyle = 'rgba(255,240,180,0.9)'; ctx.fillRect(x - borda, y - borda, w + 2 * borda, h + 2 * borda);
       ctx.restore();
-      L.moldura(ctx, x, y, w, h, 22 * esc);
-      fotoCheia(L.img.jesusQuadro, x, y, w, h, { pb: false, zoom: 1.12, dy: 70 * esc, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 8 });
-      // brilho suave por cima do quadro
+      L.moldura(ctx, x, y, w, h, borda);
+      fotoCheia(L.img.jesusQuadro, x, y, w, h, { pb: false, zoom: 1.12, dy: 60, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 8 });
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = clamp(e * 1.5) * (0.16 + 0.06 * Math.sin(t * 3));
-      const br = ctx.createRadialGradient(x + w * 0.5, y + h * 0.3, 0, x + w * 0.5, y + h * 0.3, 240 * esc);
+      const br = ctx.createRadialGradient(x + w * 0.5, y + h * 0.3, 0, x + w * 0.5, y + h * 0.3, 240);
       br.addColorStop(0, 'rgba(255,240,200,0.9)'); br.addColorStop(1, 'rgba(255,240,200,0)');
       ctx.fillStyle = br; ctx.fillRect(x, y, w, h);
       ctx.restore();
-      const credJ = esc < 1 ? 'Jesus · H. Hofmann, 1889 · dom. público' : 'Jesus · pintura de Heinrich Hofmann, 1889 · domínio público';
-      L.texto(ctx, credJ, x + w / 2, y + h + 22 * esc + 28,
-        { familia: FONTE.maquina, peso: 400, tam: tamMax(credJ, FONTE.maquina, 18, 400, w + 70), cor: TINTA, alinhar: 'center' });
+      const credJ = 'Jesus · H. Hofmann, 1889 · domínio público';
+      L.texto(ctx, credJ, x + w / 2, y + h + borda + 28, { familia: FONTE.maquina, peso: 400, tam: tamMax(credJ, FONTE.maquina, 18, 400, w + 40), cor: TINTA, alinhar: 'center' });
       // a Bíblia flutuando ao lado do quadro
-      const bx = x + w + 22 * esc + 120 * esc, by = y + h * 0.5 + Math.sin(t * 2.2) * 14 * esc - (1 - e) * 60;
-      biblia(bx, by, 0.85 * esc, -0.12 + Math.sin(t * 1.3) * 0.05, clamp(e * 1.5));
+      const by = y + h * 0.5 + Math.sin(t * 2.2) * 14 - (1 - e) * 60;
+      biblia(bx, by, compacto ? 0.55 : 0.85, -0.12 + Math.sin(t * 1.3) * 0.05, clamp(e * 1.5));
       // faíscas subindo
       for (let n = 0; n < 16; n++) {
         const rr = L.rng(n * 7 + 3), fase = (t * (0.18 + rr() * 0.2) + rr()) % 1;
-        const sx = cx + (rr() - 0.5) * 640 * esc, sy = P.y + P.h - fase * P.h;
-        estrelinha(sx, sy, (5 + rr() * 9) * esc, Math.sin(fase * Math.PI) * (0.5 + 0.5 * Math.sin(t * 6 + n)));
+        const sx = P.x + rr() * P.w, sy = P.y + P.h - fase * P.h;
+        estrelinha(sx, sy, 5 + rr() * 9, Math.sin(fase * Math.PI) * (0.5 + 0.5 * Math.sin(t * 6 + n)));
       }
       ctx.restore();
     }
@@ -314,15 +315,14 @@ window.CENA = {
       ctx.closePath(); ctx.fill(); ctx.restore();
     }
     // o comunista: foto grande em moldura, com raios de cartaz atrás; crédito logo abaixo da foto
-    function fotoGrande(r, cx, t0, esc) {
-      const e = ease.saida(seg(t, t0, t0 + 0.45)), P = PAINEL;
+    function fotoGrande(r, x, t0, fundoVermelho) {
+      const e = ease.saida(seg(t, t0, t0 + 0.45)), P = PAINEL, { w, h, borda } = MOLD, y = P.y + 32 + (1 - e) * 80;
       ctx.save(); ctx.beginPath(); ctx.rect(P.x, P.y, P.w, P.h); ctx.clip();
       ctx.globalAlpha = clamp(e * 1.5);
-      if (esc === 1) { ctx.fillStyle = VERM; ctx.fillRect(P.x, P.y, P.w, P.h); L.raios(ctx, cx, P.y + P.h * 0.45, 900, 20, t * 0.08, 'rgba(237,224,196,0.14)'); }
-      const w = 380 * esc, h = 420 * esc, x = cx - w / 2, y = P.y + 30 + (1 - e) * 80;
-      L.moldura(ctx, x, y, w, h, 22 * esc);
-      fotoCheia(L.img[r.foto], x, y, w, h, { zoom: r.zoom, dy: r.dy * esc, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 8 });
-      L.texto(ctx, r.credFoto, cx, y + h + 22 * esc + 30, { familia: FONTE.maquina, peso: 400, tam: tamMax(r.credFoto, FONTE.maquina, 20, 400, w + 120), cor: esc === 1 ? BEGE : TINTA, alinhar: 'center' });
+      if (fundoVermelho) { ctx.fillStyle = VERM; ctx.fillRect(P.x, P.y, P.w, P.h); L.raios(ctx, x + w / 2, P.y + P.h * 0.45, 900, 20, t * 0.08, 'rgba(237,224,196,0.14)'); }
+      L.moldura(ctx, x, y, w, h, borda);
+      fotoCheia(L.img[r.foto], x, y, w, h, { zoom: r.zoom, dy: r.dy, desfoque: (1 - seg(t, t0, t0 + 0.5)) * 8 });
+      L.texto(ctx, r.credFoto, x + w / 2, y + h + borda + 28, { familia: FONTE.maquina, peso: 400, tam: tamMax(r.credFoto, FONTE.maquina, 18, 400, w + 40), cor: fundoVermelho ? BEGE : TINTA, alinhar: 'center' });
       ctx.restore();
     }
 
