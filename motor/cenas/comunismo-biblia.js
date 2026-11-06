@@ -39,8 +39,8 @@ window.CENA = {
     jesusQuadro: '../midia/comunismo-biblia/jesus-hofmann-1889.jpg', // Heinrich Hofmann, 1889 (detalhe de "Cristo e o jovem rico"), domínio público
     lenin: '../midia/comunismo-02/lenin-1920.jpg',               // Pavel Zhukov, 1920 · domínio público
     logo: '../identidade/marca/o-camarada-vermelho.png',
-    jesusRecorte: '../midia/comunismo-biblia/jesus-hofmann-recorte.png', // Hofmann, 1889, fundo tirado (abertura)
-    marxBusto: '../midia/comunismo-biblia/marx-busto.png',               // Mayall, 1875, fundo tirado (abertura)
+    rostoJesus: '../midia/comunismo-biblia/rosto-jesus.png',   // rosto recortado da pintura de Hofmann, 1889 (abertura)
+    rostoMarx: '../midia/comunismo-biblia/rosto-marx.png',     // rosto recortado da foto de Mayall, 1875 (abertura)
     lufa: '../midia/comunismo-02/coletivo-lufa.png',              // logo do Coletivo Lufã (o vídeo também é do coletivo)
   },
 
@@ -174,73 +174,104 @@ window.CENA = {
     }
 
     // ------------------------------------------------ 0. abertura (CARTAZ): QUEM DISSE ISSO? + a "luta" Jesus × Marx (brincadeira)
-    // Jesus (pintura de Hofmann, recortada) à esquerda, Karl Marx (foto de Mayall, recortada) à direita, um X no meio;
-    // os dois com luvas de boxe trocam soquinhos (SOCOS: [instante do impacto, quem bate]) com "POW!" a cada pancada.
+    // Dois bonecos de cartaz (Jesus de túnica e manto; Marx de terno) com o ROSTO recortado das imagens (cabeção, estilo caricatura),
+    // em guarda, trocando soquinhos (SOCOS: [instante do impacto, quem bate]) com "POW!" a cada pancada; um X no meio.
     function abertura(lt) {
       cartazFundo();
       carimbar('QUEM DISSE', CX, 420, 0.4, BEGE, 130, FONTE.manchete, 1, { erro: COR.vermelhoEscuro, desloc: 6 });
       carimbar('ISSO?', CX, 575, 0.75, AMA, 180, FONTE.manchete, 2, { erro: TINTA, desloc: 8 });
-      const base = 1300, alt = 600, entra = ease.saida(seg(t, 1.0, 1.6));
-      // o X no meio (atrás dos dois)
-      carimbar('X', CX, 1080, 1.65, AMA, 300, FONTE.manchete, 3, { erro: TINTA, desloc: 10, larg: 300 });
-      // quem bate e quem apanha agora
+      const chao = 1320, entra = ease.saida(seg(t, 1.0, 1.6));
+      carimbar('X', CX, 1080, 1.65, AMA, 280, FONTE.manchete, 3, { erro: TINTA, desloc: 10, larg: 300 });
+      // sombra no chão
+      ctx.fillStyle = 'rgba(28,23,20,0.25)';
+      [300, 780].forEach(x => { ctx.beginPath(); ctx.ellipse(x, chao + 6, 120, 18, 0, 0, 7); ctx.fill(); });
       const soco = quem => SOCOS.reduce((m, [ti, q]) => (q === quem || q === '2') ? Math.max(m, pulsoSoco(ti)) : m, 0);
       const levou = quem => SOCOS.reduce((m, [ti, q]) => (q !== quem && q !== '2') ? Math.max(m, pulsoLevou(ti)) : m, 0);
-      lutador(L.img.jesusRecorte, 'jesus', 290 - (1 - entra) * 700, base, alt, +1, soco('J'), levou('J'), 0);
-      lutador(L.img.marxBusto, 'marx', 790 + (1 - entra) * 700, base, alt, -1, soco('M'), levou('M'), 1.7);
-      // POW! no rosto de quem levou (ou no meio, quando os dois batem juntos)
+      boneco({ x: 300 - (1 - entra) * 700, y: chao, lado: +1, roupa: 'tunica', rosto: L.img.rostoJesus, soco: soco('J'), levou: levou('J'), fase: 0 });
+      boneco({ x: 780 + (1 - entra) * 700, y: chao, lado: -1, roupa: 'terno', rosto: L.img.rostoMarx, soco: soco('M'), levou: levou('M'), fase: 1.7 });
       SOCOS.forEach(([ti, q], n) => {
         const p = seg(t, ti, ti + 0.45);
         if (p <= 0 || p >= 1) return;
-        const x = q === '2' ? CX : q === 'M' ? 330 : 750, y = q === '2' ? 900 : 880;
+        const x = q === '2' ? CX : q === 'M' ? 350 : 730, y = q === '2' ? 900 : 820;
         pow(x, y, ['POW!', 'PÁ!', 'TUM!', 'PLAFT!', 'BUM!'][n % 5], p, n);
       });
-      // as plaquinhas: BÍBLIA × COMUNISMO
       if (t >= 1.8) {
         ctx.save(); ctx.translate(0, (1 - ease.saida(seg(t, 1.8, 2.2))) * 400);
-        [[290, 'BÍBLIA', AMA, TINTA], [790, 'COMUNISMO', VERM, BEGE]].forEach(([x, txt, cor, corT]) => {
-          ctx.fillStyle = TINTA; ctx.fillRect(x - 160 + 8, 1330 + 8, 320, 96);
-          ctx.fillStyle = cor; ctx.fillRect(x - 160, 1330, 320, 96);
-          ctx.strokeStyle = cor === VERM ? BEGE : TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 160, 1330, 320, 96);
-          L.texto(ctx, txt, x, 1396, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 52, 400, 290), cor: corT, alinhar: 'center' });
+        [[300, 'BÍBLIA', AMA, TINTA], [780, 'COMUNISMO', VERM, BEGE]].forEach(([x, txt, cor, corT]) => {
+          ctx.fillStyle = TINTA; ctx.fillRect(x - 150 + 8, 1352 + 8, 300, 84);
+          ctx.fillStyle = cor; ctx.fillRect(x - 150, 1352, 300, 84);
+          ctx.strokeStyle = cor === VERM ? BEGE : TINTA; ctx.lineWidth = 5; ctx.strokeRect(x - 150, 1352, 300, 84);
+          L.texto(ctx, txt, x, 1411, { familia: FONTE.bloco, peso: 400, tam: tamMax(txt, FONTE.bloco, 48, 400, 270), cor: corT, alinhar: 'center' });
         });
         ctx.restore();
       }
     }
     function pulsoSoco(ti) {   // 0 → 1 (soco esticado no impacto) → 0
-      if (t < ti - 0.18 || t > ti + 0.3) return 0;
-      return t < ti ? ease.saida((t - (ti - 0.18)) / 0.18) : 1 - (t - ti) / 0.3;
+      if (t < ti - 0.2 || t > ti + 0.3) return 0;
+      return t < ti ? ease.saida((t - (ti - 0.2)) / 0.2) : 1 - (t - ti) / 0.3;
     }
-    function pulsoLevou(ti) { return t < ti || t > ti + 0.45 ? 0 : 1 - (t - ti) / 0.45; }
-    // um lutador: busto recortado (base esfumada), balançando em guarda; lado = +1 olha para a direita, -1 para a esquerda
-    function lutador(img, chave, xc, base, alt, lado, soco, levou, fase) {
-      const fig = esfumado(img, chave), w = alt * fig.width / fig.height;
-      const bob = Math.sin(t * 7 + fase) * 8, avanco = soco * 40 * lado, recuo = -levou * 55 * lado;
-      const ang = (soco * 0.06 - levou * 0.16) * lado + Math.sin(t * 3.5 + fase) * 0.02;
+    function pulsoLevou(ti) { return t < ti || t > ti + 0.5 ? 0 : 1 - (t - ti) / 0.5; }
+    // boneco de cartaz com cabeção de foto. o = {x, y (chão), lado (+1 olha p/ direita), roupa: 'tunica'|'terno', rosto, soco, levou, fase}
+    function boneco(o) {
+      const { lado } = o, pula = Math.abs(Math.sin(t * 7 + o.fase)) * 14;
+      const passo = o.soco * 70 * lado - o.levou * 60 * lado;                 // avança no soco, recua quando apanha
+      const inclina = (o.soco * 0.08 - o.levou * 0.2) * lado;
+      const tunica = o.roupa === 'tunica', PELE = '#D9A57A';
       ctx.save();
-      ctx.translate(xc + avanco + recuo + (levou > 0 ? Math.sin(t * 90) * 6 * levou : 0), base + bob);
-      ctx.rotate(ang);
-      ctx.drawImage(fig, -w / 2, -alt, w, alt);
-      ctx.restore();
-      // as luvas: a de trás fica em guarda; a da frente vai até o rosto do outro
-      const gx = xc + avanco + recuo + lado * alt * 0.2, gy = base + bob - alt * 0.38;
-      luva(gx - lado * 70, gy + 30, lado, 0.9, 0);                       // guarda
-      const alvoX = xc + lado * (500 - 150), alvoY = base - alt * 0.74;     // rosto do adversário
-      const sx = lerp(gx, alvoX, soco), sy = lerp(gy, alvoY, soco);
-      if (soco > 0) {   // o braço (manga) até a luva
-        ctx.save(); ctx.strokeStyle = chave === 'jesus' ? '#7A1E14' : '#1E1B1A'; ctx.lineCap = 'round'; ctx.lineWidth = 46;
-        ctx.beginPath(); ctx.moveTo(gx - lado * 20, gy + 20); ctx.lineTo(sx - lado * 40, sy + 6); ctx.stroke(); ctx.restore();
+      ctx.translate(o.x + passo, o.y - pula);
+      ctx.rotate(inclina);
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = TINTA; ctx.lineWidth = 6;
+      // pernas (base aberta, em guarda)
+      if (tunica) {
+        ctx.fillStyle = '#8A5A2E';                                           // sandálias
+        ctx.fillRect(-58, -16, 46, 16); ctx.strokeRect(-58, -16, 46, 16); ctx.fillRect(14, -16, 46, 16); ctx.strokeRect(14, -16, 46, 16);
+        ctx.fillStyle = PELE; ctx.fillRect(-48, -40, 26, 26); ctx.fillRect(22, -40, 26, 26);
+      } else {
+        ctx.fillStyle = '#1E1B1A';
+        ctx.beginPath(); ctx.moveTo(-40, -200); ctx.lineTo(-62, -14); ctx.lineTo(-24, -14); ctx.lineTo(-6, -200); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(40, -200); ctx.lineTo(62, -14); ctx.lineTo(24, -14); ctx.lineTo(6, -200); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = TINTA; ctx.beginPath(); ctx.ellipse(-48, -8, 32, 12, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(48, -8, 32, 12, 0, 0, 7); ctx.fill();
       }
-      luva(sx, sy, lado, 1.05 + soco * 0.15, soco);
+      // braço de trás (guarda, perto do queixo)
+      braco(-lado * 46, -350, lado * 30, -420, tunica, 0.85);
+      // corpo
+      if (tunica) {
+        ctx.fillStyle = '#EFE6D2';                                           // túnica clara até os pés
+        ctx.beginPath(); ctx.moveTo(-62, -385); ctx.lineTo(62, -385); ctx.lineTo(96, -36); ctx.lineTo(-96, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#A3271E';                                           // manto vermelho atravessado
+        ctx.beginPath(); ctx.moveTo(-lado * 64, -385); ctx.lineTo(-lado * 20, -385); ctx.lineTo(lado * 94, -60); ctx.lineTo(lado * 40, -36); ctx.lineTo(-lado * 70, -250); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#C9A24A'; ctx.fillRect(-58, -215, 116, 14);          // cordão na cintura
+      } else {
+        ctx.fillStyle = '#1E1B1A';                                           // paletó
+        ctx.beginPath(); ctx.moveTo(-66, -385); ctx.lineTo(66, -385); ctx.lineTo(74, -175); ctx.lineTo(-74, -175); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = BEGE;                                                // camisa
+        ctx.beginPath(); ctx.moveTo(-24, -385); ctx.lineTo(24, -385); ctx.lineTo(0, -270); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = TINTA; ctx.beginPath(); ctx.moveTo(-18, -372); ctx.lineTo(0, -362); ctx.lineTo(18, -372); ctx.lineTo(18, -352); ctx.lineTo(0, -362); ctx.lineTo(-18, -352); ctx.fill();   // gravata-borboleta
+        ctx.strokeStyle = '#4A4440'; ctx.lineWidth = 4;                       // lapelas
+        ctx.beginPath(); ctx.moveTo(-26, -385); ctx.lineTo(-6, -262); ctx.moveTo(26, -385); ctx.lineTo(6, -262); ctx.stroke();
+        ctx.fillStyle = '#C9A24A'; ctx.beginPath(); ctx.arc(0, -238, 6, 0, 7); ctx.arc(0, -205, 6, 0, 7); ctx.fill();   // botões
+        ctx.strokeStyle = TINTA; ctx.lineWidth = 6;
+      }
+      // pescoço + cabeção (o rosto recortado), balançando quando apanha
+      ctx.fillStyle = PELE; ctx.fillRect(-20, -410, 40, 30);
+      const img = o.rosto, hw = 250, hh = hw * img.height / img.width;
+      ctx.save(); ctx.translate(0, -400); ctx.rotate(-o.levou * 0.35 * lado + Math.sin(t * 9 + o.fase) * 0.03);
+      ctx.drawImage(img, -hw / 2, -hh + 30, hw, hh);
+      ctx.restore();
+      // braço da frente: guarda → soco esticado até o rosto do outro
+      const alcance = lerp(0, 330, o.soco);
+      braco(lado * 46, -350, lado * (100 + alcance), lerp(-320, -470, o.soco), tunica, 1);
+      ctx.restore();
     }
-    // luva de boxe vermelha (cartaz): punho arredondado, polegar e punho branco
-    function luva(x, y, lado, s, soco) {
-      ctx.save(); ctx.translate(x, y); ctx.scale(lado * s, s); ctx.rotate(-0.15 + soco * 0.15);
-      ctx.lineWidth = 5; ctx.strokeStyle = TINTA;
-      ctx.fillStyle = BEGE; ctx.fillRect(-78, -26, 34, 52); ctx.strokeRect(-78, -26, 34, 52);   // punho
-      ctx.fillStyle = VERM; ctx.beginPath(); ctx.ellipse(0, 0, 54, 46, 0, 0, 7); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(-10, 34, 26, 16, -0.3, 0, 7); ctx.fill(); ctx.stroke();       // polegar
-      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.ellipse(12, -18, 20, 10, -0.4, 0, 7); ctx.fill();
+    // braço (manga) do ombro até o punho, com uma luvinha vermelha
+    function braco(x0, y0, x1, y1, tunica, s) {
+      ctx.save();
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 46 * s; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.strokeStyle = tunica ? '#EFE6D2' : '#1E1B1A'; ctx.lineWidth = 36 * s; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.lineWidth = 5; ctx.strokeStyle = TINTA; ctx.fillStyle = VERM;
+      ctx.beginPath(); ctx.arc(x1, y1, 34 * s, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(x1 - Math.sign(x1 - x0 || 1) * 26 * s, y1 + 8, 12 * s, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.ellipse(x1 + 6, y1 - 12 * s, 12 * s, 7 * s, -0.4, 0, 7); ctx.fill();
       ctx.restore();
     }
     // balão de onomatopeia (estrela amarela com contorno)
@@ -254,18 +285,6 @@ window.CENA = {
       L.texto(ctx, txt, 0, 26, { familia: FONTE.manchete, peso: 900, tam: tamMax(txt, FONTE.manchete, 84, 900, 230), cor: VERM, alinhar: 'center', erro: TINTA, desloc: 4 });
       ctx.restore();
     }
-    // recorte com a base (e as laterais) esfumadas, guardado em cache
-    function esfumado(img, chave) {
-      window._esf = window._esf || {};
-      if (window._esf[chave]) return window._esf[chave];
-      const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
-      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
-      g.globalCompositeOperation = 'destination-in';
-      const m = g.createLinearGradient(0, img.height * 0.7, 0, img.height); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
-      g.fillStyle = m; g.fillRect(0, 0, img.width, img.height);
-      return (window._esf[chave] = c);
-    }
-
     // ------------------------------------------------ 1–6. uma rodada do jogo (ARQUIVO)
     // PAINEL de resposta (onde estava a ficha): Bíblia = Jesus com brilho divino e a Bíblia flutuando; comunista = foto grande em moldura
     function rodada(i, lt) {

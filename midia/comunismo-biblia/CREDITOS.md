@@ -10,3 +10,4 @@
 | jesus-hofmann-recorte.png | o mesmo, com o fundo tirado (ferramentas/recortar.py, birefnet-portrait) | — | — | derivado de jesus-hofmann-1889.jpg |
 | jesus-pantocrator-sinai.jpg | Cristo Pantocrator, Mosteiro de Santa Catarina, Sinai (séc. VI) — alternativa, não usada | desconhecido | Domínio público (PD-Art) | https://commons.wikimedia.org/wiki/File:Spas_vsederzhitel_sinay.jpg |
 | marx-busto.png | Karl Marx, 1875, busto com o fundo tirado (abertura) | J. J. E. Mayall | Domínio público | derivado de midia/comunismo-01/marx-1875.jpg |
+| rosto-jesus.png · rosto-marx.png | rostos recortados (abertura: bonecos de cartaz brigando) | Hofmann (1889) · Mayall (1875) | Domínio público | derivados de jesus-hofmann-recorte.png e marx-busto.png |
