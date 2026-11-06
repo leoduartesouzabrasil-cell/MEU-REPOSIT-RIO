@@ -252,14 +252,14 @@ window.CENA = {
       L.raios(ctx, CX, 1250, 2600, 22, -0.3, 'rgba(200,32,30,0.10)');
       // os dois logos no alto, lado a lado e centralizados (dentro do recorte 3:4 do grid: y 240–1680)
       // (mesmo padrão das outras capas: logo pequeno, centralizado em y 300; aqui os dois lado a lado, sem traço)
-      const yl = 300, wOC = 220, dLufa = 82, gap = 30;
+      const yl = 322, wOC = 290, dLufa = 106, gap = 70;
       const total = wOC + gap + dLufa, x0 = CX - total / 2;
       L.imagem(ctx, L.img.logo, x0 + wOC / 2, yl, wOC);
       ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(x0 + total - dLufa / 2, yl, dLufa / 2 + 3, 0, 7); ctx.fill();
       L.imagem(ctx, L.img.lufa, x0 + total - dLufa / 2, yl, dLufa);
       // o título
-      L.texto(ctx, 'QUEM DISSE', CX, 520, { familia: FONTE.manchete, peso: 900, tam: tamMax('QUEM DISSE', FONTE.manchete, 165, 900, 900), cor: TINTA, alinhar: 'center', erro: VERM, desloc: 6 });
-      L.texto(ctx, 'ISSO?', CX, 715, { familia: FONTE.manchete, peso: 900, tam: 215, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
+      L.texto(ctx, 'QUEM DISSE', CX, 538, { familia: FONTE.manchete, peso: 900, tam: tamMax('QUEM DISSE', FONTE.manchete, 165, 900, 900), cor: TINTA, alinhar: 'center', erro: VERM, desloc: 6 });
+      L.texto(ctx, 'ISSO?', CX, 732, { familia: FONTE.manchete, peso: 900, tam: 215, cor: VERM, alinhar: 'center', erro: TINTA, desloc: 9 });
       // o ringue, igual ao da abertura do vídeo, mais para baixo; os dois parados em guarda, com o X no meio
       ctx.save(); ctx.translate(0, 190);
       ringueFundo();
