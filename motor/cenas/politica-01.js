@@ -56,7 +56,7 @@ window.CENA = {
     metas: '../midia/politica-01/print-educacao-2025.jpg',       // print da matéria da Agência Brasil, 13/06/2025
     urnas: '../midia/politica-01/urnas-2026.jpg',                // Fernando Frazão / Agência Brasil
     camara: '../midia/politica-01/sessao-camara-2025.jpg',       // Lula Marques / Agência Brasil
-    logo: '../identidade/marca/coletivo-lufa.png',               // logo do Coletivo Lufã (só a logo, sem o nome escrito)
+    logo: '../midia/politica-01/logo-nova-vertical.png',           // logo nova do Coletivo Lufã (PNG sem fundo)
   },
 
   desenhar(ctx, t, L) {
