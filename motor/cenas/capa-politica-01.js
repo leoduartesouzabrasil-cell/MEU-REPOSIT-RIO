@@ -5,7 +5,7 @@
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: 2,
   imagens: {
-    logo: '../midia/politica-01/logo-coletivo-vermelha.png',   // logo do coletivo (pomba + nome), PNG sem fundo
+    logo: '../midia/politica-01/logo-nova-horizontal.png',   // logo nova do coletivo (PNG sem fundo)
     arte: '../midia/politica-01/arte-grupo-recorte.png',       // arte de grupo sem fundo (1536×1024)
   },
   desenhar(ctx, t, L) {
@@ -13,7 +13,7 @@ window.CENA = {
     L.fundo(ctx, COR.amarelo);
     L.raios(ctx, CX, 1250, 2400, 22, 0, 'rgba(214,157,28,1)');
     // logo do coletivo: mesmo tamanho e posição da logo da capa do comunismo (340 px de largura)
-    L.imagem(ctx, L.img.logo, CX, 370, 340);
+    L.imagem(ctx, L.img.logo, CX, 350, 480);
     // título: faixa escura + texto bege, com sombra vermelha
     ctx.fillStyle = COR.tinta; ctx.fillRect(130, 470, 820, 96);
     const t1 = Math.min(104, L.ajustar(ctx, 'POLÍTICA É DA SUA', FONTE.manchete, 780));
