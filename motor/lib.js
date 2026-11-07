@@ -767,9 +767,7 @@ function vinhetaPolitica(ctx, t, o) {
   fundo(ctx, COR.vermelho);
   raios(ctx, CX, 1180, 2400, 22, -0.25 + emDois(t) * 0.04, 'rgba(138,20,17,0.5)');
   aplicarCarimbo(ctx, seg(t, 0.0, 0.25), CX, 640, () => {
-    ctx.fillStyle = 'rgba(28,23,20,0.85)'; ctx.beginPath(); ctx.arc(CX + 12, 652, 222, 0, 7); ctx.fill();
-    ctx.fillStyle = COR.amarelo; ctx.beginPath(); ctx.arc(CX, 640, 222, 0, 7); ctx.fill();
-    imagem(ctx, o.logo, CX, 640, 400);
+    imagem(ctx, o.logo, CX, 640, 400);   // logo nova direto sobre o fundo, sem disco
   }, 3);
   aplicarCarimbo(ctx, seg(t, 0.35, 0.6), CX, 985, () => {
     ctx.fillStyle = COR.tinta; ctx.fillRect(130, 935, 820, 100);
