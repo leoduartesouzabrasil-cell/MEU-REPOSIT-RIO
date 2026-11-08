@@ -5,7 +5,7 @@ direto com quem assiste. Duração: **60 a 90 s**. Base de pesquisa enviada pelo
 ("Das 8 horas que você trabalha, quantas são pra você?"). Os números foram refeitos e conferidos (ver "Notas de precisão" e
 `midia/comunismo-03/FONTES.md`).
 Base visual: EP. 1 e EP. 2 (`motor/cenas/comunismo-01.js`, vinheta `L.vinhetaComunismo` com "EP. 3 · O QUE É MAIS-VALIA?",
-padaria 2D do EP. 1, trilha da banda completa, legenda padrão, logo O Camarada no fim). O EP. 2 terminou com o gancho
+bonecos 2D do EP. 1, trilha da banda completa, legenda padrão, logo O Camarada no fim). O EP. 2 terminou com o gancho
 "E de onde vem o lucro do patrão? Isso é mais-valia, no próximo vídeo."
 
 ## ROTEIRO (4 áudios)
@@ -18,15 +18,16 @@ padaria 2D do EP. 1, trilha da banda completa, legenda padrão, logo O Camarada 
 NA TELA: CARTAZ: relógio de 8 horas (régua de 8 blocos) que vai ficando vermelho bloco a bloco; sobra 1 bloco e meio amarelo
 "PRA VOCÊ" · carimbo "TRABALHO NÃO PAGO" · vinheta "DESMISTIFICANDO O COMUNISMO · EP. 3 · O QUE É MAIS-VALIA?"
 
-### ÁUDIO #2: O exemplo da padaria (calmo, didático)
-> Imagina que você trabalha numa padaria.
-> Num dia de oito horas, você faz pães que valem trezentos reais. Seu salário do dia: cem.
+### ÁUDIO #2: O exemplo da hamburgueria (calmo, didático)
+> Imagina que você trabalha numa rede de hambúrguer.
+> Num dia de oito horas, os lanches que você monta deixam trezentos reais pra loja. Seu salário do dia: cem.
 > Em menos de três horas, você já produziu o valor do seu salário.
 > E as outras cinco horas? Você continua trabalhando, mas esse valor não fica com você.
 > É isso que Marx chamou de mais-valia: o trabalho não pago.
 
-NA TELA: ARQUIVO: a padaria 2D do EP. 1, o boneco trabalhador assando pães; contador "R$ 0 → R$ 300" ao longo das 8 horas ·
-etiqueta "SALÁRIO: R$ 100" na régua; aos 2h40 a régua marca "SEU SALÁRIO JÁ ESTÁ PAGO" · os pães das 5 horas seguintes vão
+NA TELA: ARQUIVO: balcão de hamburgueria em 2D (estilo cartaz), o boneco trabalhador de boné e avental montando lanches; a tela de pedidos
+apitando ("PEDIDO #148", "#149"…); contador "R$ 0 → R$ 300" ao longo das 8 horas ·
+etiqueta "SALÁRIO: R$ 100" na régua; aos 2h40 a régua marca "SEU SALÁRIO JÁ ESTÁ PAGO" · os lanches das 5 horas seguintes vão
 para uma pilha com a etiqueta "NÃO É SEU" · CARTAZ: carimbo "MAIS-VALIA" com flash amarelo
 
 ### ÁUDIO #3: Por que isso acontece (firme)
@@ -37,7 +38,7 @@ para uma pilha com a etiqueta "NÃO É SEU" · CARTAZ: carimbo "MAIS-VALIA" com 
 > O lucro não vem da esperteza de ninguém. Vem do seu trabalho.
 
 NA TELA: ficha datilografada "O PATRÃO COMPRA: a sua FORÇA DE TRABALHO" com "força de trabalho" selecionado em vermelho ·
-balança 2D: de um lado "O QUE VOCÊ CUSTA" (prato, casa, ônibus), do outro "O QUE VOCÊ PRODUZ" (pilha de pães bem maior) ·
+balança 2D: de um lado "O QUE VOCÊ CUSTA" (prato, casa, ônibus), do outro "O QUE VOCÊ PRODUZ" (pilha de lanches bem maior) ·
 a diferença se divide em setas: "LUCRO", "JUROS" · Marx em moldura (foto do EP. 1) · faixa "O LUCRO VEM DO SEU TRABALHO"
 
 ### ÁUDIO #4: Os números do Brasil + Marx em 1849 + pergunta final (sério, depois próximo)
@@ -63,7 +64,9 @@ NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das h
 - **Limites da conta (falar "a gente fez a conta", nunca "o IBGE diz"):** o VAB inclui a depreciação das máquinas e a renda de
   quem trabalha por conta própria, e mistura setores com muita máquina (petróleo, mineração) e pouca (serviços). O salário não conta
   13º, férias e encargos. É uma ordem de grandeza para mostrar a ideia, não a taxa de mais-valia exata de cada trabalhador.
-- **O exemplo da padaria** é inventado e redondo (R$ 300 produzidos, R$ 100 de salário): 2h40 pagam o salário, 5h20 não são pagas.
+- **O exemplo da hamburgueria** é inventado e redondo: "deixam trezentos reais pra loja" é o valor que o trabalho acrescenta, já
+  descontado o custo do pão, da carne e da embalagem (por isso não se fala no preço dos lanches). Salário de R$ 100 por dia ≈ R$ 2.200
+  por mês. 2h40 pagam o salário, 5h20 não são pagas. Trocado a pedido do autor (antes era uma padaria), para ficar mais atual.
 - **Mais-valia (Marx, O Capital, Livro I, 1867):** o capitalista compra a força de trabalho pelo seu valor (o necessário para o
   trabalhador se manter); a jornada se divide em trabalho necessário (repõe o salário) e trabalho excedente (a mais-valia). A
   mais-valia se reparte em lucro, juros e renda da terra/aluguel (Livro III). O post-base cita também "imposto (do governo)": ficou
