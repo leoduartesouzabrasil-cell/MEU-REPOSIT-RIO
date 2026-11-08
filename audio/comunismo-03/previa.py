@@ -16,7 +16,7 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 from vinheta import vinheta  # noqa: E402
 
-GANCHO = 12.0   # duração do vídeo de abertura (o autor ainda vai mandar): ajustar aqui e na cena (comunismo-03.js)
+GANCHO = 21.46   # trecho do vídeo do Jones (0–5,22 s + 21,98–38,22 s): igual na cena (comunismo-03.js) e no juntar.sh
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 

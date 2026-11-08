@@ -6,16 +6,18 @@
 // T vem de comunismo-03.tempos.js (gerado por audio/comunismo-03/montar.py).
 //
 // DIAGRAMAÇÃO PADRÃO: título y 330 · fonte dos dados y 384 · conteúdo x 120–960, y 420–1420 · legenda (tarja) y 1466–1542
-const GANCHO = 12.0;  // duração do vídeo de abertura (igual a audio/comunismo-03/previa.py)
-const GANCHO_TITULO = 'DAS 8 HORAS, QUANTAS SÃO SUAS?';   // trocar quando o vídeo chegar
-const GANCHO_CRED = '';                                     // ex.: 'Fulano, professor' (fonte do vídeo)
-const GANCHO_LEG = [];                                      // legenda da fala do vídeo no nosso padrão (preencher com a transcrição)
+const GANCHO = 21.46;  // duração do vídeo de abertura (igual a audio/comunismo-03/previa.py)
+const GANCHO_TITULO = 'COMO O JONES DESCOBRIU A MAIS-VALIA';
+const GANCHO_CRED = 'Jones Manoel, historiador';
+// trecho do vídeo: 0–5,22 s + 21,98–38,22 s do original (midia/comunismo-03/gancho-original.mp4); legenda no nosso padrão
+const GANCHO_LEG = [{"t0": 0, "t1": 1.42, "p": [["Aí,", 0], ["um", 0.22], ["belo", 0.32], ["dia,", 0.44], ["o", 0.54], ["meu", 0.66], ["amigo", 0.7], ["de", 0.86], ["infância,", 1.04]]}, {"t0": 1.42, "t1": 2.46, "p": [["Júlio", 1.42], ["César", 1.56], ["chegou", 1.78], ["pra", 1.92], ["mim", 2.06], ["e", 2.16], ["falou", 2.16], ["assim:", 2.3]]}, {"t0": 2.46, "t1": 5.22, "p": [["“Jones,", 2.46], ["eu", 3.6], ["descobri", 3.86], ["por que", 4.26], ["tu", 4.6], ["é", 4.74], ["f*dido.”", 4.86]]}, {"t0": 5.32, "t1": 6.62, "p": [["E", 5.32], ["a", 5.52], ["explicação", 5.62], ["dele", 5.84], ["foi", 5.96], ["basicamente", 6.08], ["assim:", 6.4]]}, {"t0": 6.62, "t1": 7.78, "p": [["“Ó,", 6.62], ["quanto", 6.9], ["é", 7.04], ["a", 7.14], ["mensalidade", 7.22]]}, {"t0": 7.78, "t1": 8.8, "p": [["de", 7.78], ["cada", 8.0], ["estudante", 8.14], ["da", 8.42], ["escola?”", 8.56]]}, {"t0": 8.86, "t1": 9.56, "p": [["Eu", 8.86], ["falei:", 8.92], ["“Um", 9.12], ["salário", 9.18], ["mínimo.”", 9.38]]}, {"t0": 9.56, "t1": 10.26, "p": [["“E", 9.56], ["tu", 9.94], ["ganha", 9.98], ["quanto?”", 10.1]]}, {"t0": 10.36, "t1": 11.54, "p": [["“Um", 10.36], ["salário", 10.44], ["mínimo.”", 10.64], ["Pronto.", 11.0]]}, {"t0": 11.68, "t1": 13.44, "p": [["Com", 11.68], ["a", 12.0], ["mensalidade", 12.14], ["de", 12.52], ["uma", 12.64], ["turma,", 12.76]]}, {"t0": 13.52, "t1": 14.84, "p": [["eles", 13.52], ["pagam", 13.62], ["todos", 13.86], ["os", 14.04], ["funcionários.", 14.18]]}, {"t0": 14.94, "t1": 16.48, "p": [["E", 14.94], ["o", 15.16], ["que", 15.22], ["sobra", 15.38], ["é", 15.7], ["lucro", 15.84], ["pra", 16.06], ["eles.", 16.32]]}, {"t0": 16.48, "t1": 17.68, "p": [["Porque", 16.48], ["quem", 16.68], ["faz", 16.82], ["a", 16.92], ["escola", 17.02], ["funcionar", 17.2]]}, {"t0": 17.68, "t1": 18.36, "p": [["são", 17.68], ["os", 17.78], ["trabalhadores,", 17.96]]}, {"t0": 18.36, "t1": 19.5, "p": [["porque", 18.36], ["o", 18.54], ["patrão", 18.68], ["não", 18.82], ["trabalha.", 19.0]]}, {"t0": 19.5, "t1": 20.58, "p": [["Então,", 19.5], ["isso", 19.8], ["que", 19.98], ["é", 20.06], ["mais-valia.", 20.1]]}, {"t0": 20.58, "t1": 21.5, "p": [["Quem", 20.58], ["falou", 20.74], ["isso", 20.9], ["foi", 21.02], ["o", 21.12], ["Karl", 21.2], ["Marx.", 21.28]]}];
 const T = Object.assign({ vin: GANCHO + 0.4, dur: GANCHO + 20 }, (window.TEMPOS || {}).marcas || {});
 const JANELA = { x: 195, y: 445, w: 690, h: 880 };
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
   imagens: {
+    ganchoFim: '../midia/comunismo-03/gancho-ultimo-quadro.jpg',   // último quadro do trecho, já recortado 690×880
     marx: '../midia/comunismo-01/marx-recorte.jpg',   // J. J. E. Mayall, 1875 · domínio público
     logoBege: '../identidade/marca/o-camarada-bege.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
@@ -148,6 +150,7 @@ window.CENA = {
       L.moldura(ctx, x, y, w, h, 30);
       ctx.fillStyle = TINTA; ctx.fillRect(x, y, w, h);                 // aqui entra o vídeo (juntar.sh)
       if (L.img.ganchoFim && t >= GANCHO - 0.1) ctx.drawImage(L.img.ganchoFim, x, y, w, h);
+      L.texto(ctx, 'Vídeo: Jones Manoel', CX, y + h + 72, { familia: FONTE.maquina, peso: 400, tam: 26, cor: TINTA, alinhar: 'center' });
     }
 
     // ------------------------------------------------ A. vinheta da série (3,5 s, música própria)
@@ -377,7 +380,7 @@ window.CENA = {
       L.fundo(ctx, BEGE); arquivo = false;
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
-      [['Retrato de Marx: J. J. E. Mayall, 1875 · domínio público · uma iniciativa do Coletivo Lufã', 1090],
+      [['Vídeo de abertura: Jones Manoel · Retrato de Marx: J. J. E. Mayall, 1875 · domínio público', 1090],
         ['Dados: IBGE (Contas Nacionais 2025; PNAD Contínua 2º tri/2026) · Decreto 12.797/2025', 1135],
         ['4intelligence (microdados da PNAD) · conta inspirada no post de @vermelhobrasa_ e Coletivo Lufã', 1170],
         ['Estimativa não oficial, com caráter formativo · a hamburgueria é um exemplo com números ilustrativos', 1215],
