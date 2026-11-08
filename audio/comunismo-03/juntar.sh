@@ -7,7 +7,7 @@ set -euo pipefail
 CENA="$1"; SAIDA="$2"
 FIM=40.85
 RAIZ="$(cd "$(dirname "$0")/../.." && pwd)"
-J="$RAIZ/midia/comunismo-03/gancho-original.mp4"
+J="$RAIZ/midia/comunismo-03/gancho-trecho.mp4"   # 0–41,5 s do original (o original de 41 MB fica fora do git)
 ffmpeg -loglevel error -y -i "$J" -i "$CENA" -filter_complex "
 [0:v]trim=0:$FIM,setpts=PTS-STARTPTS[jv];
 [0:a]atrim=0:$FIM,asetpts=PTS-STARTPTS,afade=t=out:st=$(echo "$FIM - 0.12" | bc):d=0.12[ja0];

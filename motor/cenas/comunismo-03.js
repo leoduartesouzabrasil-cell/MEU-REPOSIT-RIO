@@ -21,6 +21,8 @@ window.CENA = {
     marx: '../midia/comunismo-01/marx-recorte.jpg',   // J. J. E. Mayall, 1875 · domínio público
     logoBege: '../identidade/marca/o-camarada-bege.png',
     logo: '../identidade/marca/o-camarada-vermelho.png',
+    ocV: '../identidade/marca/variantes/o-camarada-v-vermelha.png',   // logos novas (versões verticais, quase do mesmo formato)
+    lufaV: '../identidade/marca/variantes/lufa-v-colorida.png',
   },
 
   desenhar(ctx, t, L) {
@@ -141,9 +143,20 @@ window.CENA = {
       ctx.restore();
     }
 
+    // as duas logos lado a lado, com a mesma altura (O Camarada e Coletivo Lufã)
+    function duasLogos(cy, h, gap, p = 1) {
+      if (p <= 0) return;
+      const wa = h * L.img.ocV.width / L.img.ocV.height, wb = h * L.img.lufaV.width / L.img.lufaV.height, x0 = CX - (wa + gap + wb) / 2;
+      ctx.save(); ctx.globalAlpha = clamp(p);
+      ctx.drawImage(L.img.ocV, x0, cy - h / 2, wa, h);
+      ctx.drawImage(L.img.lufaV, x0 + wa + gap, cy - h / 2, wb, h);
+      ctx.restore();
+    }
+
     // ------------------------------------------------ 0. o gancho: o vídeo de abertura numa moldura (o vídeo é sobreposto no juntar.sh)
     function gancho(lt) {
       L.fundo(ctx, BEGE);
+      duasLogos(214, 120, 56, seg(lt, 0, 0.4));
       titulo(GANCHO_TITULO, seg(lt, 0.0, 0.6));
       if (GANCHO_CRED) cred(GANCHO_CRED, seg(lt, 0.2, 0.8));
       const { x, y, w, h } = JANELA;
@@ -378,7 +391,7 @@ window.CENA = {
     // ------------------------------------------------ F. logo e créditos
     function final(lt) {
       L.fundo(ctx, BEGE); arquivo = false;
-      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 780, () => L.imagem(ctx, L.img.logo, CX, 780, 780), 97);
+      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 760, () => duasLogos(760, 380, 90), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.2);
       [['Vídeo de abertura: Jones Manoel no Podpah · Retrato de Marx: J. J. E. Mayall, 1875 · domínio público', 1090],
         ['Dados: IBGE (Contas Nacionais 2025; PNAD Contínua 2º tri/2026) · Decreto 12.797/2025', 1135],
