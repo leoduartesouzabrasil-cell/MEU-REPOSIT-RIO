@@ -32,24 +32,23 @@ para uma pilha com a etiqueta "NÃO É SEU" · CARTAZ: carimbo "MAIS-VALIA" com 
 ### ÁUDIO #3: Por que isso acontece (firme)
 > E por que o patrão pode fazer isso? Porque ele não paga pelo que você produz.
 > Ele paga pelo seu tempo, a sua força de trabalho, pelo preço que custa você se manter: comida, aluguel, transporte.
-> Só que você produz muito mais do que isso.
-> Essa diferença vira o lucro do patrão, os juros do banco, o aluguel do dono do imóvel.
+> Só que você produz muito mais.
+> Essa diferença vira o lucro do patrão e os juros do banco.
 > O lucro não vem da esperteza de ninguém. Vem do seu trabalho.
 
 NA TELA: ficha datilografada "O PATRÃO COMPRA: a sua FORÇA DE TRABALHO" com "força de trabalho" selecionado em vermelho ·
 balança 2D: de um lado "O QUE VOCÊ CUSTA" (prato, casa, ônibus), do outro "O QUE VOCÊ PRODUZ" (pilha de pães bem maior) ·
-a diferença se divide em três setas: "LUCRO", "JUROS", "ALUGUEL" · Marx em moldura (foto do EP. 1) · faixa "O LUCRO VEM DO SEU TRABALHO"
+a diferença se divide em setas: "LUCRO", "JUROS" · Marx em moldura (foto do EP. 1) · faixa "O LUCRO VEM DO SEU TRABALHO"
 
 ### ÁUDIO #4: Os números do Brasil + Marx em 1849 + pergunta final (sério, depois próximo)
-> E no Brasil de hoje? A gente fez a conta com dados do IBGE.
+> E no Brasil? A gente fez a conta com dados do IBGE.
 > Quem ganha a média do país, três mil setecentos e trinta e oito reais, trabalha mais de quatro horas e meia por dia sem receber.
-> Quem ganha até dois mínimos, que são sete em cada dez trabalhadores, mais de cinco horas.
 > Quem ganha o mínimo, mais de seis horas e meia.
 > Em 1849, Marx já escrevia: o trabalhador trabalha pra viver, e a vida dele só começa quando o trabalho termina.
 > Agora me diz: quantas horas do seu dia são suas?
 
 NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das horas não pagas:
-"MÉDIA · R$ 3.738 → 4h38 NÃO PAGAS" · "ATÉ 2 MÍNIMOS · R$ 3.242 → 5h04" · "MÍNIMO · R$ 1.621 → 6h32" · fonte em y 384:
+"MÉDIA · R$ 3.738 → 4h38 NÃO PAGAS" · "ATÉ 2 MÍNIMOS (7 EM CADA 10) · R$ 3.242 → 5h04" (só na tela) · "MÍNIMO · R$ 1.621 → 6h32" · fonte em y 384:
 "Estimativa não oficial · IBGE (Contas Nacionais 2025; PNAD Contínua 2º tri/2026)" · ficha datilografada com a frase de Marx
 (Trabalho Assalariado e Capital, 1849): "Para ele, quando termina essa actividade é que começa a sua vida, à mesa, na taberna, na cama."
 · CARTAZ final: "QUANTAS HORAS DO SEU DIA SÃO SUAS?" · logo O Camarada + créditos
@@ -75,5 +74,5 @@ NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das h
   cama." Na fala, o trecho é parafraseado.
 - **"7 em cada 10":** 69,1% dos ocupados ganham até 2 mínimos no 2º tri de 2026 (4intelligence, microdados da PNAD; NSC Total e
   Brasil de Fato). Não é número oficial do IBGE: dizer "sete em cada dez".
-- **Duração estimada:** ~245 palavras com VEL 1.15 ≈ 72 s de voz + vinheta 3,5 s + logo ≈ 80 s. Se passar de 90 s, o corte
-  de apoio é a frase "Quem ganha até dois mínimos…" (áudio #4) e "o aluguel do dono do imóvel" (áudio #3).
+- **Duração estimada:** ~240 palavras com VEL 1.15 ≈ 80 s de voz + vinheta 3,5 s + logo ≈ 87 s. A faixa "até 2 mínimos" aparece só
+  na tela (sai da fala para caber em 90 s). Se ainda passar, o corte de apoio é "Em menos de três horas…" virar só a régua na tela.
