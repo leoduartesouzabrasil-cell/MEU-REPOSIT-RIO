@@ -3,3 +3,4 @@ saida/
 node_modules/
 audio/*/mix.wav
 audio/*/mix*.wav
+audio/*/voz.wav
