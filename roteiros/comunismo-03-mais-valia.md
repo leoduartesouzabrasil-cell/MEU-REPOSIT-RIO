@@ -13,40 +13,54 @@ bonecos 2D do EP. 1, trilha da banda completa, legenda padrão, logo O Camarada 
 ### ÁUDIO #1: O gancho (antes da vinheta; direto, olhando pra pessoa)
 > Das oito horas que você trabalha por dia, quantas são pra você?
 > Se você ganha um salário mínimo, a resposta assusta: menos de uma hora e meia.
-> O resto do dia é trabalho que você faz e não recebe.
 
 NA TELA: CARTAZ: relógio de 8 horas (régua de 8 blocos) que vai ficando vermelho bloco a bloco; sobra 1 bloco e meio amarelo
 "PRA VOCÊ" · carimbo "TRABALHO NÃO PAGO" · vinheta "DESMISTIFICANDO O COMUNISMO · EP. 3 · O QUE É MAIS-VALIA?"
 
-### ÁUDIO #2: O exemplo da hamburgueria (calmo, didático)
-> Imagina que você trabalha numa rede de hambúrguer.
-> Num dia de oito horas, os lanches que você monta deixam trezentos reais pra loja. Seu salário do dia: cem.
-> Em menos de três horas, você já produziu o valor do seu salário.
-> E as outras cinco horas? Você continua trabalhando, mas esse valor não fica com você.
-> É isso que Marx chamou de mais-valia: o trabalho não pago.
+### ÁUDIO #2: O exemplo da hamburgueria, com a conta inteira (calmo, didático)
+> Imagina que você trabalha numa rede de hambúrguer. Cada lanche sai por vinte e cinco reais.
+> Num dia, você monta quarenta lanches: mil reais.
+> Tira o pão, a carne, a embalagem, a luz e o gás: sobram seiscentos.
+> Esse valor novo quem criou foi o seu trabalho. E o seu salário do dia? Cem reais.
+> Ou seja: em uma hora e vinte, você já pagou o seu salário.
+> As outras seis horas e quarenta, o que você produz fica com a empresa:
+> paga o aluguel, os impostos, os juros, a marca, e o resto é lucro do dono.
+> Isso é o que Marx chamou de mais-valia: o trabalho não pago.
 
-NA TELA: ARQUIVO: balcão de hamburgueria em 2D (estilo cartaz), o boneco trabalhador de boné e avental montando lanches; a tela de pedidos
-apitando ("PEDIDO #148", "#149"…); contador "R$ 0 → R$ 300" ao longo das 8 horas ·
-etiqueta "SALÁRIO: R$ 100" na régua; aos 2h40 a régua marca "SEU SALÁRIO JÁ ESTÁ PAGO" · os lanches das 5 horas seguintes vão
-para uma pilha com a etiqueta "NÃO É SEU" · CARTAZ: carimbo "MAIS-VALIA" com flash amarelo
+NA TELA: ARQUIVO: balcão de hamburgueria em 2D (estilo cartaz), o boneco trabalhador de boné e avental montando lanches; a tela de
+pedidos apitando ("PEDIDO #148", "#149"…); etiqueta "R$ 25" no lanche; contador "40 LANCHES = R$ 1.000".
+Depois, um CUPOM FISCAL datilografado (Special Elite) que vai se imprimindo linha a linha:
+```
+VENDAS DO SEU DIA (40 x R$ 25) ........ R$ 1.000
+(-) pão, carne, queijo, embalagem ..... R$   360
+(-) luz, gás, desgaste da chapa ....... R$    40
+= VALOR NOVO (o SEU trabalho) ......... R$   600
+  SEU SALÁRIO ......................... R$   100
+  MAIS-VALIA (não pago) ............... R$   500
+     aluguel da loja .... R$  80
+     impostos ........... R$ 120
+     juros do banco ..... R$  40
+     marca (franquia) ... R$  60
+     LUCRO DO DONO ...... R$ 200
+```
+"VALOR NOVO" e "MAIS-VALIA" selecionados em vermelho · régua de 8 horas: 1h20 amarela "SEU SALÁRIO", 6h40 vermelhas "NÃO PAGO" ·
+CARTAZ: carimbo "MAIS-VALIA" com flash amarelo
 
 ### ÁUDIO #3: Por que isso acontece (firme)
 > E por que o patrão pode fazer isso? Porque ele não paga pelo que você produz.
-> Ele paga pelo seu tempo, a sua força de trabalho, pelo preço que custa você se manter: comida, aluguel, transporte.
-> Só que você produz muito mais.
-> Essa diferença vira o lucro do patrão e os juros do banco.
-> O lucro não vem da esperteza de ninguém. Vem do seu trabalho.
+> Ele paga pela sua força de trabalho, pelo preço que custa você se manter: comida, aluguel, transporte.
+> E o lucro não vem da esperteza de ninguém. Vem do seu trabalho.
 
 NA TELA: ficha datilografada "O PATRÃO COMPRA: a sua FORÇA DE TRABALHO" com "força de trabalho" selecionado em vermelho ·
-balança 2D: de um lado "O QUE VOCÊ CUSTA" (prato, casa, ônibus), do outro "O QUE VOCÊ PRODUZ" (pilha de lanches bem maior) ·
-a diferença se divide em setas: "LUCRO", "JUROS" · Marx em moldura (foto do EP. 1) · faixa "O LUCRO VEM DO SEU TRABALHO"
+balança 2D: de um lado "O QUE VOCÊ CUSTA: R$ 100" (prato, casa, ônibus), do outro "O QUE VOCÊ CRIA: R$ 600" (pilha de lanches) ·
+Marx em moldura (foto do EP. 1) · faixa "O LUCRO VEM DO SEU TRABALHO"
 
 ### ÁUDIO #4: Os números do Brasil + Marx em 1849 + pergunta final (sério, depois próximo)
 > E no Brasil? A gente fez a conta com dados do IBGE.
-> Quem ganha a média do país, três mil setecentos e trinta e oito reais, trabalha mais de quatro horas e meia por dia sem receber.
+> Quem ganha a média, três mil setecentos e trinta e oito reais, trabalha mais de quatro horas e meia por dia sem receber.
 > Quem ganha o mínimo, mais de seis horas e meia.
 > Em 1849, Marx já escrevia: o trabalhador trabalha pra viver, e a vida dele só começa quando o trabalho termina.
-> Agora me diz: quantas horas do seu dia são suas?
+> E aí: quantas horas do seu dia são suas?
 
 NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das horas não pagas:
 "MÉDIA · R$ 3.738 → 4h38 NÃO PAGAS" · "ATÉ 2 MÍNIMOS (7 EM CADA 10) · R$ 3.242 → 5h04" (só na tela) · "MÍNIMO · R$ 1.621 → 6h32" · fonte em y 384:
@@ -64,9 +78,16 @@ NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das h
 - **Limites da conta (falar "a gente fez a conta", nunca "o IBGE diz"):** o VAB inclui a depreciação das máquinas e a renda de
   quem trabalha por conta própria, e mistura setores com muita máquina (petróleo, mineração) e pouca (serviços). O salário não conta
   13º, férias e encargos. É uma ordem de grandeza para mostrar a ideia, não a taxa de mais-valia exata de cada trabalhador.
-- **O exemplo da hamburgueria** é inventado e redondo: "deixam trezentos reais pra loja" é o valor que o trabalho acrescenta, já
-  descontado o custo do pão, da carne e da embalagem (por isso não se fala no preço dos lanches). Salário de R$ 100 por dia ≈ R$ 2.200
-  por mês. 2h40 pagam o salário, 5h20 não são pagas. Trocado a pedido do autor (antes era uma padaria), para ficar mais atual.
+- **O exemplo da hamburgueria** é inventado, com números redondos e plausíveis (não é a conta de nenhuma rede real):
+  lanche a R$ 25; 40 lanches por dia por funcionário (é a parte das vendas da loja que cabe a cada um, contando caixa, chapa e
+  montagem); pão, carne, queijo e embalagem a R$ 9 por lanche (36% do preço); luz, gás e desgaste da chapa R$ 40; salário de
+  R$ 100 por dia (≈ R$ 2.200 por mês, 22 dias). Valor novo R$ 600 → o salário é pago em 100/600 × 8 h = **1h20**; **6h40** não
+  são pagas (83%), perto da estimativa nacional para quem ganha o mínimo (6h32).
+- **Por que ingredientes e luz "saem" e aluguel e impostos "ficam":** em Marx, matéria-prima, energia e desgaste das máquinas só
+  repassam o valor que já tinham (capital constante); o valor novo é todo do trabalho. Aluguel, impostos, juros, royalties da marca e
+  lucro são **pedaços da mais-valia** repartidos entre o dono do imóvel, o Estado, o banco, a franqueadora e o patrão (O Capital,
+  Livro III). Por isso, no cupom, eles aparecem dentro da mais-valia. A divisão dos R$ 500 é ilustrativa.
+- Trocado a pedido do autor (antes era uma padaria), e depois detalhado com preço, custos e lucro para ficar verossímil.
 - **Mais-valia (Marx, O Capital, Livro I, 1867):** o capitalista compra a força de trabalho pelo seu valor (o necessário para o
   trabalhador se manter); a jornada se divide em trabalho necessário (repõe o salário) e trabalho excedente (a mais-valia). A
   mais-valia se reparte em lucro, juros e renda da terra/aluguel (Livro III). O post-base cita também "imposto (do governo)": ficou
@@ -77,5 +98,6 @@ NA TELA: três réguas de 8 horas, uma embaixo da outra (2D), com contador das h
   cama." Na fala, o trecho é parafraseado.
 - **"7 em cada 10":** 69,1% dos ocupados ganham até 2 mínimos no 2º tri de 2026 (4intelligence, microdados da PNAD; NSC Total e
   Brasil de Fato). Não é número oficial do IBGE: dizer "sete em cada dez".
-- **Duração estimada:** ~240 palavras com VEL 1.15 ≈ 80 s de voz + vinheta 3,5 s + logo ≈ 87 s. A faixa "até 2 mínimos" aparece só
-  na tela (sai da fala para caber em 90 s). Se ainda passar, o corte de apoio é "Em menos de três horas…" virar só a régua na tela.
+- **Duração estimada:** ~260 palavras com VEL 1.15–1.20 ≈ 85 s de voz + vinheta 3,5 s + logo ≈ 90 s. A faixa "até 2 mínimos" aparece só
+  na tela. Se passar de 90 s, cortes de apoio (sem regravar): a lista "paga o aluguel, os impostos…" (o cupom mostra) e "Quem ganha o
+  mínimo…" (a régua mostra).
