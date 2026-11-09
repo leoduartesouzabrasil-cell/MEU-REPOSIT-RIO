@@ -269,9 +269,13 @@ voz_mix = voz * (REF / rms(voz))
 g_mus = REF * 10 ** (-22 / 20) / rms((mus_e + mus_d) / 2 * (1 - 0.7 * e))
 g_sfx = REF * 10 ** (-20 / 20) / max(rms((sfx_e + sfx_d) / 2 * (1 - 0.75 * e)), 1e-9)
 leito_e, leito_d = mus_e * (1 - 0.7 * e) * g_mus, mus_d * (1 - 0.7 * e) * g_mus
-# sob o vídeo do Jones a trilha fica bem mais baixa: -30% e depois mais -30% (pedidos do autor) e volta ao normal até a vinheta
+# sob o vídeo do Jones: só um fundo bem baixo, ~24 dB abaixo da voz de referência (pedido do autor: "a trilha está alta na cena do Jones").
+# Atenção: o volume final é ajustado com ganho FIXO (juntar.sh), sem loudnorm dinâmico, que antes "puxava" este fundo para cima.
 tt = np.arange(N) / SR
-sob_jones = np.interp(tt, [0, GANCHO, VIN], [0.49, 0.49, 1.0]).astype(np.float32)
+ig = slice(int(0.5 * SR), int((GANCHO - 0.5) * SR))
+r_hook = float(np.sqrt(np.mean(((leito_e + leito_d) / 2)[ig] ** 2))) or 1e-9
+alvo = REF * 10 ** (-24 / 20)
+sob_jones = np.interp(tt, [0, GANCHO, VIN], [alvo / r_hook, alvo / r_hook, 1.0]).astype(np.float32)
 leito_e, leito_d = leito_e * sob_jones, leito_d * sob_jones
 ef_e = np.clip(sfx_e * (1 - 0.75 * e) * g_sfx, -0.6, 0.6); ef_d = np.clip(sfx_d * (1 - 0.75 * e) * g_sfx, -0.6, 0.6)
 
