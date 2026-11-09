@@ -33,14 +33,14 @@ window.CENA = {
     const suave = p => p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;   // entra e sai devagar (régua)
 
     const ordem = [[0, gancho], [T.vin, vinheta], [T.oito, oito], [T.lanche, lanchonete], [T.cupom, cupom], [T.mv, maisValia],
-      [T.porque, porque], [T.brasil, brasil], [T.m1849, marx1849], [T.final, pergunta], [T.logo, final]];
+      [T.porque, porque], [T.brasil, brasil], [T.m1849, marx1849], [T.final, pergunta], [T.almoco, almoco], [T.logo, final]];
     const [b0, fn] = ordem.filter(([a]) => t >= a).pop();
-    const IMP = [T.oito + 0.1, T.menos, T.mil + 0.2, T.novo + 0.6, T.lucro + 0.3, T.mvc, T.mvc + 0.5, T.npago, T.seutrab, T.quantas, T.logo];
+    const IMP = [T.oito + 0.1, T.menos, T.mil + 0.2, T.novo + 0.6, T.lucro + 0.3, T.mvc, T.mvc + 0.5, T.npago, T.seutrab, T.quantas, T.almoco2, T.conta2, T.logo];
     const { dx, dy } = L.tremor(t, IMP, 10);
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
     [[T.vin, VERM, 24], [T.oito, VERM, -24], [T.lanche, BEGE, 24], [T.cupom, BEGE, -24], [T.mv, VERM, 24], [T.porque, BEGE, -24],
-      [T.brasil, BEGE, 24], [T.m1849, BEGE, -24], [T.final, VERM, 24], [T.logo, BEGE, -24]]
+      [T.brasil, BEGE, 24], [T.m1849, BEGE, -24], [T.final, VERM, 24], [T.almoco, AMA, -24], [T.logo, BEGE, 24]]
       .forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.22));
@@ -386,6 +386,27 @@ window.CENA = {
         carimbar('SÃO SUAS?', 1050, T.quantas + 0.6, AMA, 190, FONTE.manchete, 64, { erro: TINTA, desloc: 8 });
       }
       if (t >= T.conte) L.etiqueta(ctx, 'CONTA AQUI NOS COMENTÁRIOS ↓', CX, 1300, seg(t, T.conte, T.conte + 0.3), { cor: TINTA, tam: 40 });
+    }
+
+    // ------------------------------------------------ 9. o gancho final: e o horário de almoço nessa conta? (CARTAZ amarelo)
+    function almoco(lt) {
+      arquivo = false;
+      L.fundo(ctx, AMA);
+      L.raios(ctx, CX, 1560, 2600, 20, -0.3 + L.emDois(t) * 0.05, 'rgba(200,32,30,0.12)');
+      carimbar('E O HORÁRIO', 540, T.almoco + 0.2, TINTA, 120, FONTE.manchete, 81);
+      carimbar('DE ALMOÇO?', 710, T.almoco2, VERM, 190, FONTE.manchete, 82, { erro: TINTA, desloc: 7 });
+      // a régua do dia de quem ganha o mínimo, com o almoço no meio: onde ele entra?
+      regua(X0, 860, LARG, 120, 8 - 6.53, 8 * seg(lt, 0.3, 1.0));
+      if (t >= T.almoco2 + 0.3) {
+        const q = ease.saida(seg(t, T.almoco2 + 0.3, T.almoco2 + 0.6)), bx = X0 + 4 * LARG / 8 - 50;
+        ctx.save(); ctx.globalAlpha = q;
+        ctx.fillStyle = BEGE; ctx.fillRect(bx, 840, 100, 160);
+        ctx.setLineDash([12, 8]); ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(bx, 840, 100, 160); ctx.setLineDash([]);
+        L.texto(ctx, '?', bx + 50, 950, { familia: FONTE.manchete, peso: 900, tam: 110, cor: VERM, alinhar: 'center' });
+        ctx.restore();
+        L.etiqueta(ctx, 'ALMOÇO', bx + 50, 1060, seg(t, T.almoco2 + 0.5, T.almoco2 + 0.8), { cor: TINTA, tam: 36 });
+      }
+      if (t >= T.conta2) carimbar('NESSA CONTA?', 1260, T.conta2, TINTA, 130, FONTE.manchete, 83);
     }
 
     // ------------------------------------------------ F. logo e créditos

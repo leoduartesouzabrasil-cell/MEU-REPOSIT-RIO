@@ -50,9 +50,12 @@ def trilha(T, N):
     soma(st["sinte"], som.sinte([110.0, 164.8, 220.0], T["final"] - T["m1849"], 0.25, brilho=800, ataque=0.8), T["m1849"])
     som.banda_secao(st, T["m1849"], T["final"] - T["m1849"], 100, ((A, 8), (G, 4), (E, 4)), "palm", 0.4, seed=5)
     # a pergunta final: refrão aberto + tema na guitarra solo
-    som.banda_secao(st, T["final"], T["logo"] - T["final"], 128, ((E, 8), (C, 8), (G, 8), (D, 8)), "aberto", 0.75, seed=6)
+    som.banda_secao(st, T["final"], T["almoco"] - T["final"], 128, ((E, 8), (C, 8), (G, 8), (D, 8)), "aberto", 0.75, seed=6)
     soma(st["solo"], som.solo([(329.6, 0.25), (392.0, 0.25), (440.0, 0.25), (493.9, 0.4), (659.3, -1.4)], 0.6), T["final"] + 0.6)
     som.banda_golpe(st, T["quantas"], E, 0.95, anel=0.7)
+    # o gancho final (horário de almoço): a banda corta e fica só a pergunta, com golpes
+    for k, nota in enumerate([G, A]):
+        som.banda_golpe(st, T["almoco2"] + k * 0.3, nota, 0.9, anel=0.3 if k == 0 else 0.9)
     som.banda_golpe(st, T["logo"], E, 1.0, anel=2.8)
     soma(st["sinte"], som.sinte([82.41, 123.5, 164.8, 246.9], dur - T["logo"], 0.35, brilho=1100, ataque=0.4), T["logo"])
 
@@ -95,6 +98,9 @@ def trilha(T, N):
     for k in range(3):
         soma(fx, som.carimbo_sfx(), T["quantas"] + k * 0.3, 0.8)
     soma(fx, som.riser(0.8), T["final"] + 0.1, 0.4)
+    soma(fx, som.whoosh(), T["almoco"] - 0.3, 0.6); soma(fx, som.relogio(1.6, 120), T["almoco"], 0.5)
+    soma(fx, som.carimbo_sfx(), T["almoco2"], 0.85); soma(fx, som.carimbo_sfx(), T["conta2"], 0.85)
+    soma(st["sinte"], som.sinte([110.0, 164.8, 220.0], T["logo"] - T["almoco"], 0.3, brilho=900, ataque=0.2), T["almoco"])
     soma(fx, som.whoosh(), T["logo"] - 0.35, 0.6); soma(fx, som.carimbo_sfx(), T["logo"], 0.8)
     soma(fx, som.sino_grave(), T["logo"] - 0.1, 0.9)
 

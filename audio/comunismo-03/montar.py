@@ -162,6 +162,16 @@ for i in range(len(pal) - 1):                     # depois do corte, "…por dia
 PAL = [[w, round(mapear(w0 / VEL, segs, ENTRADA), 3), round(mapear(w1 / VEL, segs, ENTRADA), 3)] for w, w0, w1 in pal]
 INICIO, FIM = ENTRADA, ENTRADA + len(fala_audio) / SR
 
+# gancho final (gravação 33, limpa com o mesmo limpar.py): "E onde será que fica o horário de almoço nessa conta?"
+gw = [[p["w"], p["s"], p["e"]] for p in json.loads((AQUI / "palavras-gancho.json").read_text())]
+gx = ler_voz(AQUI / "narracao" / "gancho-final.wav")
+g0, g1 = max(0, gw[0][1] / VEL - 0.06), min(len(gx) / SR, gw[-1][2] / VEL + 0.15)
+gancho_audio = gx[int(g0 * SR):int(g1 * SR)].copy()
+f = int(0.01 * SR); gancho_audio[:f] *= np.linspace(0, 1, f); gancho_audio[-f:] *= np.linspace(1, 0, f)
+INI_G = FIM + 0.7                                  # respiro depois de "…são realmente suas, camaradas?"
+PAL += [[w, round(INI_G + w0 / VEL - g0, 3), round(INI_G + w1 / VEL - g0, 3)] for w, w0, w1 in gw]
+FIM_G = INI_G + len(gancho_audio) / SR
+
 
 def frase(texto, depois=0.0, fim=False):
     limpa = lambda w: w.lower().strip(".,?!:")
@@ -223,13 +233,17 @@ M["vida"] = frase("e a vida dele")
 M["final"] = frase("mas e aí") - 0.3
 M["conte"] = frase("me conta")
 M["quantas"] = frase("quantas horas", M["final"])
-M["logo"] = FIM + 0.9
+M["almoco"] = INI_G - 0.25
+M["almoco2"] = frase("horário de almoço")
+M["conta2"] = frase("nessa conta")
+M["logo"] = FIM_G + 1.0
 M["dur"] = round(M["logo"] + 3.6, 2)
 M = {k: round(v, 3) for k, v in M.items()}
 DUR = M["dur"]
 
 voz = np.zeros(int(DUR * SR) + SR, np.float32)
 soma(voz, fala_audio, INICIO)
+soma(voz, gancho_audio, INI_G)
 voz = voz[:int(DUR * SR)]
 N = len(voz)
 
