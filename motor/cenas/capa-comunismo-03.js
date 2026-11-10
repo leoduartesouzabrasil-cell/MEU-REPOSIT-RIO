@@ -16,7 +16,7 @@ window.CENA = {
     L.fundo(ctx, COR.vermelho);
     L.raios(ctx, CX, 1250, 2400, 22, -0.25, 'rgba(138,20,17,0.5)');
     // as duas logos lado a lado, mesma altura, no lugar do logo único (dentro do recorte 3:4 do grid, y 240–1680)
-    const LH = 250, wa = LH * L.img.oc.width / L.img.oc.height, wb = LH * L.img.lufa.width / L.img.lufa.height, gap = 70, x0 = CX - (wa + gap + wb) / 2;
+    const LH = 210, wa = LH * L.img.oc.width / L.img.oc.height, wb = LH * L.img.lufa.width / L.img.lufa.height, gap = 70, x0 = CX - (wa + gap + wb) / 2;
     ctx.drawImage(L.img.oc, x0, 425 - LH / 2, wa, LH); ctx.drawImage(L.img.lufa, x0 + wa + gap, 425 - LH / 2, wb, LH);
     // título, igual à vinheta
     ctx.fillStyle = COR.tinta; ctx.fillRect(130, 590, 820, 96);
