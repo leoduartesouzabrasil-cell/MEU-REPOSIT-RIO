@@ -2,7 +2,9 @@
 // O vídeo dele (com cortes nas pausas e zoom alternado) vem do audio/ajuste-fiscal/editar.sh; esta cena desenha só as artes:
 // manchete na abertura, foto do Jaques Wagner na primeira citação, etiquetas/carimbos, legenda e o cartão final com as logos.
 // Render: node motor/render.js ajuste-fiscal saida/ajuste-fiscal-camada.mov --alfa
-// ÁREAS: o rosto fica entre y ~210 e ~1000 (nada por cima); artes em y 1050–1430 e na faixa de cima (y 0–190); legenda y 1466–1542.
+// ÁREAS: o rosto fica entre y ~210 e ~1000 (nada por cima); artes desenhadas em y 1050–1430 e deslocadas DESCE px para baixo
+// (pedido do autor: legenda e pop-ups mais baixos); faixa de cima (y 0–190); legenda y 1680–1756 (LEG_Y), sem encostar nos pop-ups.
+const DESCE = 200, LEG_Y = 1680;
 const T = Object.assign({ dur: 10, logo: 7 }, (window.TEMPOS || {}).marcas || {});
 
 window.CENA = {
@@ -19,7 +21,7 @@ window.CENA = {
     const CX = 540, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
     ctx.clearRect(0, 0, 1080, 1920);
     const { dx, dy } = L.tremor(t, [T.bi60, T.costas, T.fortunas, T.herancas, T.dividendos, T.redes], 8);
-    ctx.save(); ctx.translate(dx, dy);
+    ctx.save(); ctx.translate(dx, dy + DESCE);
 
     // ------------------------------------------------ utilidades
     const tam = (txt, fam, max, larg, peso = 400) => Math.min(max, L.ajustar(ctx, txt, fam, larg, peso));
@@ -35,9 +37,9 @@ window.CENA = {
       L.aplicarCarimbo(ctx, seg(t, t0, t0 + 0.3), o.x || CX, y, () =>
         L.texto(ctx, txt, o.x || CX, y, { familia: fam, peso, tam: tam(txt, fam, max, o.larg || 900, peso), cor, alinhar: 'center', ...o }), seed);
     }
-    function faixaTopo(txt, p, cor = VERM, corT = BEGE) {   // faixa no alto, acima da cabeça
+    function faixaTopo(txt, p, cor = VERM, corT = BEGE) {   // faixa no alto, acima da cabeça (não desce)
       if (p <= 0) return;
-      ctx.save(); ctx.globalAlpha = clamp(p * 2);
+      ctx.save(); ctx.translate(0, -DESCE); ctx.globalAlpha = clamp(p * 2);
       ctx.fillStyle = cor; ctx.fillRect(0, 40 - (1 - ease.saida(p)) * 160, 1080, 130);
       L.texto(ctx, txt, CX, 128 - (1 - ease.saida(p)) * 160, { familia: FONTE.manchete, peso: 900, tam: tam(txt, FONTE.manchete, 74, 980, 900), cor: corT, alinhar: 'center' });
       ctx.restore();
@@ -178,8 +180,8 @@ window.CENA = {
       if (t >= T.logo) {
         L.fundo(ctx, BEGE);
         L.aplicarCarimbo(ctx, seg(t, T.logo, T.logo + 0.3), CX, 800, () => {
-          const h = 380, wa = h * L.img.ocV.width / L.img.ocV.height, wb = h * L.img.lufaV.width / L.img.lufaV.height, x0 = CX - (wa + 90 + wb) / 2;
-          ctx.drawImage(L.img.ocV, x0, 800 - h / 2, wa, h); ctx.drawImage(L.img.lufaV, x0 + wa + 90, 800 - h / 2, wb, h);
+          const h = 470, w = h * L.img.lufaV.width / L.img.lufaV.height;   // só a logo do Coletivo Lufã, centralizada (pedido do autor)
+          ctx.drawImage(L.img.lufaV, CX - w / 2, 800 - h / 2, w, h);
         }, 97);
         ctx.save(); ctx.globalAlpha = seg(t, T.logo + 0.5, T.logo + 1.1);
         ['Foto de Jaques Wagner: Senado Federal (2019) · CC BY 2.0, via Wikimedia Commons',
@@ -201,9 +203,9 @@ window.CENA = {
       };
       const tm = Math.min(48, 48 * 760 / largura(48)), w = largura(tm);
       ctx.save(); ctx.globalAlpha = clamp((l.t1 - t) / 0.15) * clamp((t - l.t0 + 0.05) / 0.12);
-      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 26, 1466, w + 52, 76);
-      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 26, 1466, 7, 76);
-      L.palavras(ctx, pal, t, CX, 1517, { tam: tm, cor: BEGE, espaco: 0.28, rgb: 0 });
+      ctx.fillStyle = 'rgba(15,12,11,0.86)'; ctx.fillRect(CX - w / 2 - 26, LEG_Y, w + 52, 76);
+      ctx.fillStyle = VERM; ctx.fillRect(CX - w / 2 - 26, LEG_Y, 7, 76);
+      L.palavras(ctx, pal, t, CX, LEG_Y + 51, { tam: tm, cor: BEGE, espaco: 0.28, rgb: 0 });
       ctx.restore();
     }
   },
