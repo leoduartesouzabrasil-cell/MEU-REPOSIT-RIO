@@ -11,6 +11,7 @@ window.CENA = {
     wagner: '../midia/jaques-wagner/jaques-wagner-2019.jpg',            // Senado Federal, 2019 · CC BY 2.0 (Wikimedia Commons)
     ocV: '../identidade/marca/variantes/o-camarada-v-vermelha.png',
     lufaV: '../identidade/marca/variantes/lufa-v-colorida.png',
+    lufaH: '../identidade/marca/variantes/lufa-h-colorida.png',
   },
 
   desenhar(ctx, t, L) {
@@ -164,6 +165,11 @@ window.CENA = {
     }
 
     ctx.restore();
+    // logo do Coletivo Lufã fixa no alto à esquerda, longe da borda (não corta no Reels nem no grid), sobre a parede ao lado da cabeça
+    if (t < T.logo) {
+      const lw = 230, lh = lw * L.img.lufaH.height / L.img.lufaH.width;
+      ctx.save(); ctx.globalAlpha = 0.95 * clamp(t / 0.4); ctx.drawImage(L.img.lufaH, 90, 220, lw, lh); ctx.restore();
+    }
     legenda();
 
     // ------------------------------------------------ fim: cartão com as duas logos (cobre o vídeo) e créditos
