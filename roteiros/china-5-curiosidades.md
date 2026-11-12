@@ -81,3 +81,13 @@ NA TELA:
 - Igreja chinesa (Xujiahui, Xangai, ou Catedral do Sul, Pequim).
 - Trem-bala CRH/Fuxing.
 - Foto de época de 1949 (proclamação da República Popular, domínio público).
+
+## Narração recebida (gravações 46 e 48)
+- `narracao/original/gravacao-46.m4a` = áudio #1 (gancho); `gravacao-48.m4a` = áudios #2 a #4 numa gravação só. md5 conferido: não repetem áudios antigos.
+- As gravações tinham um zumbido grave forte (~97 Hz, motor/ventilador), só 14–15 dB abaixo da voz. Limpas com `audio/china-5-curiosidades/limpar.py`
+  (perfil do ruído tirado das pausas 5,5–6,75 s e 57,5–60,2 s): a voz ficou 62–66 dB acima do ruído. As limpas são `narracao/1.mp3` e `2.mp3`.
+- Diferenças da fala para o roteiro: "Pegadinha do malandro, mentira" (ok); "a China comunista"; "quando a Revolução Comunista venceu"; "E por último, mas não menos importante".
+  **Atenção:** a fala diz "quase 200 milhões de pessoas com *outras* religiões", mas os ~200 milhões do Livro Branco já incluem os cristãos.
+  A diferença é pequena, mas na tela vale escrever "≈200 MILHÕES DE RELIGIOSOS" (sem "outras").
+- Montagem: `python3 audio/china-5-curiosidades/montar.py` (VEL 1,15, pausas compactadas) → 87 s. A trilha fica 22 dB e os efeitos 20 dB abaixo da voz durante a fala, com ducking.
+  Disco arranhado (`som.arranhao`) no corte do "mentira". Prévia do som: `saida/china-5-curiosidades-audio.mp3` (-14 LUFS).

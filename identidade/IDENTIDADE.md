@@ -129,12 +129,19 @@ glissando e vibrato, para melodia-tema e "trombone triste"), `sinte` (fundo) e `
 Estilos de seção: `palm` (verso abafado, deixa espaço para a voz: ARQUIVO), `aberto` (refrão com crash e solo: CARTAZ final),
 `pulo` (didático, guitarra no contratempo: explicações e maquetes), `tensao` (semicolcheias e tons) e `meio` (meio-tempo pesado).
 Cada carimbo importante leva um `banda_golpe` (a banda inteira bate junto). Efeitos novos: `relogio`, `bloco_madeira`, `metal`,
-`passos`, `papel`, `rabisco`, `estaca`, `fanfarra_ironica`. Modelo: `audio/voto-distrital/previa.py`.
+`passos`, `papel`, `rabisco`, `estaca`, `fanfarra_ironica`, `arranhao` (disco arranhado + parada de disco: o corte seco
+que desmente um gancho, como o "MENTIRA" do vídeo da China). Modelo: `audio/voto-distrital/previa.py`.
 
 ## 6b. Mixagem (regra fixa)
 
 A **voz do narrador sempre manda**: durante a fala, trilha + efeitos ficam ~16–18 dB abaixo da voz (medido em RMS),
 e ~8 dB abaixo nas pausas. Estrondos e carimbos passam por limitador e nunca abaixam a voz. Volume final -14 LUFS.
+
+**Narração gravada com ruído** (zumbido de motor/ventilador, rua): limpar ANTES do `montar.py` com
+`python3 audio/china-5-curiosidades/limpar.py <entrada> <saida.wav> <início> <fim>`, onde início/fim é uma pausa só com ruído.
+Ele usa o perfil desse ruído (noisereduce) + notch no zumbido + RNN leve, EQ de voz, de-esser, um expansor que fecha nas pausas
+e -16 LUFS, e imprime a distância voz × ruído antes e depois (China: 14–15 dB → 62–66 dB). **Não confiar no "Noise floor" do
+astats**: medir o RMS de uma pausa de verdade. Compressor antes da limpeza sobe o ruído das pausas.
 
 ## 7. Não fazer
 

@@ -355,6 +355,25 @@ def negacao():
     return out
 
 
+def arranhao(dur=0.7):
+    """Disco arranhado + parada de disco (o corte seco do "mentira"): ruído com a afinação indo e voltando, e um tom
+    caindo como um toca-discos freando."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    # duas puxadas de scratch (vai e volta) na primeira metade
+    fc = 900 + 700 * np.sin(2 * np.pi * 5.5 * t) * (t < dur * 0.45)
+    r = ruido(dur)
+    ras = np.zeros(n, np.float32)
+    for f0 in (500, 1200, 2600):
+        ras += banda(r, f0 * 0.7, f0 * 1.4) * (0.5 + 0.5 * np.sin(2 * np.pi * np.cumsum(fc) / SR * 0.01))
+    ras *= (t < dur * 0.45) * np.abs(np.sin(2 * np.pi * 5.5 * t))
+    # a parada: tom grave descendo de 260 a 30 Hz
+    f = 260 * (1 - np.clip((t - dur * 0.35) / (dur * 0.65), 0, 1)) ** 2 + 30
+    freio = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * (t > dur * 0.35) * np.exp(-(t - dur * 0.35) / 0.25)
+    x = ras * 0.6 + banda(freio.astype(np.float32), 40, 3000) * 0.5
+    return norm(x * env(n, 0.002, dur, 1.0, 0.05), 0.8)
+
+
 # ---------------------------------------------------------------- multidão e vitória
 def multidao(dur=3.0, intensidade=1.0):
     """Multidão/gritaria distante: ruído vocal filtrado com ondas de entusiasmo."""
