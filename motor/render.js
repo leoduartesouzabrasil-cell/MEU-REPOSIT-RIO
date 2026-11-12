@@ -1,5 +1,6 @@
 // Renderiza uma cena em MP4 (H.264) frame a frame, em paralelo.
 // Uso: node motor/render.js <cena> [saida.mp4] [--audio trilha.wav] [--tempos nome] [--still 3.2] [--partes 4] [--de 10 --ate 20]
+// --alfa: camada TRANSPARENTE (PNG em .mov) para pôr por cima de um vídeo gravado (a cena deve limpar o fundo com clearRect)
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -10,7 +11,7 @@ const args = process.argv.slice(2);
 const cena = args[0] || 'demo';
 const opt = n => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const saida = (args[1] && !args[1].startsWith('--')) ? args[1] : `saida/${cena}.mp4`;
-const audio = opt('--audio'), still = opt('--still'), tempos = opt('--tempos');
+const audio = opt('--audio'), still = opt('--still'), tempos = opt('--tempos'), alfa = args.includes('--alfa');
 const partes = parseInt(opt('--partes') || Math.min(4, os.cpus().length), 10);
 
 async function abrir(browser) {
@@ -24,10 +25,10 @@ async function abrir(browser) {
 // renderiza os frames [f0, f1) num arquivo de vídeo sem áudio (JPEG em pipe → H.264)
 async function parte(browser, f0, f1, arquivo, progresso) {
   const { page, fps } = await abrir(browser);
-  const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-framerate', String(fps), '-i', '-',
-    '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', arquivo], { stdio: ['pipe', 'ignore', 'inherit'] });
+  const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', alfa ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
+    ...(alfa ? ['-c:v', 'png', '-pix_fmt', 'rgba'] : ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium']), arquivo], { stdio: ['pipe', 'ignore', 'inherit'] });
   for (let f = f0; f < f1; f++) {
-    const jpg = await page.evaluate(t => frameData(t, 'image/jpeg', 0.93), f / fps);
+    const jpg = await page.evaluate(([t, a]) => a ? frameData(t, 'image/png') : frameData(t, 'image/jpeg', 0.93), [f / fps, alfa]);
     if (!ff.stdin.write(Buffer.from(jpg.split(',')[1], 'base64')))
       await new Promise(r => ff.stdin.once('drain', r));
     progresso();
@@ -64,7 +65,7 @@ async function parte(browser, f0, f1, arquivo, progresso) {
   const arquivos = [];
   await Promise.all(Array.from({ length: partes }, (_, k) => {
     const a = fIni + k * tam, b = Math.min(fFim, a + tam);
-    const arq = path.join(tmp, `p${k}.mp4`); arquivos.push(arq);
+    const arq = path.join(tmp, `p${k}.${alfa ? 'mov' : 'mp4'}`); arquivos.push(arq);
     return a < b ? parte(browser, a, b, arq, progresso) : Promise.resolve();
   }));
   await browser.close();
