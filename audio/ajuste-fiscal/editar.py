@@ -8,6 +8,8 @@ import json, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 AQUI = Path(__file__).resolve().parent; RAIZ = AQUI.parent.parent
 C = json.loads((AQUI / "cortes.json").read_text())
+# sem o cartão final das logos (pedido do autor): o vídeo termina logo depois da última fala, antes do corte diagonal
+FIM = round(C["logo"] - 0.45, 2)
 SAIDA = sys.argv[1] if len(sys.argv) > 1 else str(RAIZ / "saida" / "ajuste-fiscal-FINAL.mp4")
 BRUTO, CAMADA, MIX = RAIZ / "midia/jaques-wagner/bruto.mp4", RAIZ / "saida/ajuste-fiscal-camada.mov", AQUI / "mix.wav"
 tmp = Path(tempfile.mkdtemp(dir=RAIZ / "saida", prefix=".af-"))
@@ -26,9 +28,9 @@ subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i
 saida = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(MIX), "-af", "ebur128", "-f", "null", "-"], capture_output=True, text=True).stderr
 I = float(re.findall(r"I:\s+(-?[\d.]+) LUFS", saida)[-1]); G = -14 - I     # volume final fixo (-14 LUFS), sem loudnorm dinâmico
 f = (f"[0:v]tpad=stop_mode=clone:stop_duration={C['dur']},trim=0:{C['dur']},setpts=PTS-STARTPTS,noise=alls=6:allf=t,format=yuv420p[b];"
-     f"[1:v]format=rgba[cam];[b][cam]overlay=0:0:format=auto,format=yuv420p[v];[2:a]volume={G:.2f}dB,alimiter=limit=0.89:level=false[a]")
+     f"[1:v]format=rgba[cam];[b][cam]overlay=0:0:format=auto,format=yuv420p[v];[2:a]volume={G:.2f}dB,alimiter=limit=0.89:level=false,afade=t=out:st={FIM - 0.35}:d=0.35[a]")
 subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(base), "-i", str(CAMADA), "-i", str(MIX), "-filter_complex", f,
-                "-map", "[v]", "-map", "[a]", "-t", str(C["dur"]), "-c:v", "libx264", "-crf", "21", "-preset", "medium",
+                "-map", "[v]", "-map", "[a]", "-t", str(FIM), "-c:v", "libx264", "-crf", "21", "-preset", "medium",
                 "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", SAIDA], check=True)
 shutil.rmtree(tmp)
 print("ok →", SAIDA)
