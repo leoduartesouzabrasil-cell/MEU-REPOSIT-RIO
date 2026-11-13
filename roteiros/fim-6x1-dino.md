@@ -51,3 +51,41 @@ NA TELA: CARTAZ: sol nascente + "DUAS FOLGAS POR SEMANA" carimbado + "16 DE DEZE
 - Folgas: "Tais limites podem ser modulados por acordo ou convenção coletiva de trabalho, desde que preservada a integralidade do direito aos 2 (dois) repousos
   semanais remunerados, admitindo-se o diferimento de sua fruição" (decisão, via Agência Brasil). O número de folgas não muda; o que muda é QUANDO elas são dadas.
 - "O STF julga até segunda": sessão virtual de 13/11 (11h) a 16/11 (11h). Se o vídeo sair depois de segunda, trocar a frase pelo resultado.
+
+## VERSÃO GRAVADA (vídeo do Léo, 13/11) — o que foi ao ar
+O autor gravou o próprio texto em vídeo (talking head, 84 s; bruto no Drive: https://drive.google.com/file/d/1zyIrLlC8bOYOrcSVM1qloMwReZGhLGUh/view).
+Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.js` + cena `motor/cenas/fim-6x1-dino.js`): **42,9 s**.
+1. **0–5,3 s · gancho em tela dividida:** Rick Azevedo em cima ("Isso é nojento. Isso não existe. Que decisão é essa, Flávio Dino?", do vídeo dele, 3:21),
+   recortado sem a manchete e a legenda gravadas no vídeo; print do Léo embaixo (zoom lento). Faixa logo abaixo da emenda: "DINO ABRIU BRECHA NA SUA FOLGA"; legenda no peito do Rick.
+   Sem crédito nem fontes na tela (pedido do autor, v2).
+2. **5,3–41 s · Léo**, com 30 cortes secos (jump cuts) e zoom alternado 1,0/1,12. Cortados: a saudação ("Salve, salve... Léo aqui do O Camarada"),
+   "pressão dos comerciários" (corrigido na hora para "empresários"), "especialmente antes do setor do comércio, que tratam-se de funcionários...",
+   "pelo fim das classes por um", "precisa de dois dias de descansar", "debaixo de nossa nariz" (2x), a 1ª tentativa de "é por isso que nós não podemos
+   desmobilizar" (ficou a regravação), "curte, comenta" e as repetições do "manda para todo mundo". Voz limpa (ruído do quarto -20 → -57 dB) e 8% mais rápida.
+3. **Cards de fato** — v2: NADA sobre o rosto (rosto em y 480–1500): cards e carimbos no alto, sobre a cortina, à direita da logo; legenda logo abaixo do queixo (y 1580): CNC + CNI foram ao STF · ficha "LIMINAR DE DINO · 12/11: 42 h em 5 dias de 8h24, 24 min SEM HORA EXTRA" ·
+   "ACORDO COLETIVO DECIDE QUANDO É SUA FOLGA" · calendário com as folgas saindo da semana + "FOLGA EMPURRADA" · "ESCÁRNIO!" · "2 FOLGAS POR SEMANA: A LUTA DE QUEM TRABALHA" ·
+   "RADICALIZAR!" · CTA "MANDA PRA QUEM TRABALHA NA 6x1" + "STF julga até segunda (16/11)".
+4. **Marca:** só a logo LÉO DUARTE, toda vermelha (silhueta, sem contorno), no canto superior esquerdo (x 95, y 250: dentro do recorte do grid, longe da borda).
+5. **Som (v2):** voz em cadeia de locução (sem ruído → -3 dB em 320 Hz, corpo em 140 Hz, presença em 3,5 kHz, ar em 10 kHz, de-esser, compressor 3,5:1, limitador);
+   trilha 22 dB abaixo da voz (+10%), efeitos 20 dB abaixo, -14 LUFS.
+
+### Por que assim (o que o algoritmo do Reels/TikTok premia, 2025–2026)
+- **Tempo de exibição e taxa de quem assiste até o fim** são o sinal nº 1 → vídeo curto (43 s), sem saudação, cortes secos a cada 1–2 s, zoom alternado e flash a cada corte (quebra de padrão).
+- **Envios por DM ("sends per reach")** pesam mais que curtidas (Adam Mosseri, jan/2025) → o CTA pede para MANDAR a quem trabalha na 6x1 (não "curte e comenta").
+- **Os 3 primeiros segundos** decidem se a pessoa fica → abre no pico de indignação (Rick) + manchete de 4 palavras + tela dividida (rosto conhecido + reação).
+- **Assistir sem som** (maioria no feed) → legenda palavra a palavra com as palavras-chave em amarelo; cada fato vira card (fora do rosto: rosto limpo segura mais a atenção).
+- **Zona segura**: nada importante sob a barra de cima, os botões da direita ou a legenda do post embaixo.
+- **Original** (Instagram rebaixa repost puro): o trecho do Rick tem 5 s, com crédito, e o resto é conteúdo próprio.
+
+### Notas de precisão da fala
+- "Dino acatou a pressão dos empresários": opinião, apoiada em "Dino buscou atender aos anseios das confederações" (Agência Brasil).
+- "Retira a obrigatoriedade de que as duas folgas sejam na mesma semana": correto **por acordo coletivo** (a fala diz antes "deixando em aberto para decisões coletivas");
+  o direito às duas folgas remuneradas continua (por isso o card diz "quando é sua folga", não "acabou a folga").
+
+## Legenda do post
+```
+🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```

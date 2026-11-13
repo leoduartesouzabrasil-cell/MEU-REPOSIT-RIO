@@ -3,3 +3,6 @@ saida/
 node_modules/
 audio/*/mix.wav
 audio/*/mix*.wav
+# vídeos brutos do celular (grandes demais para o GitHub; ficam no Drive, link no roteiro)
+midia/fim-6x1-dino/leo-bruto.mov
+midia/fim-6x1-dino/leo-audio.wav
