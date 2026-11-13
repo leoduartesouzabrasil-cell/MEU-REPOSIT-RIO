@@ -1,14 +1,14 @@
 // Capa do Reels "5 curiosidades da China" com a arte do autor RECORTADA (arte-capa-recorte.png: bandeira + moldura com o Mao).
 // Mesmas proporções das outras capas (videos/*-capa.jpg): logos no topo, título no alto, arte centralizada dentro do grid 3:4 (y 240–1680).
 // Título: "5 COISAS QUE VOCÊ NÃO SABE SOBRE A" pequeno; "CHINA" grande com o bloco "COMUNISTA!" ao lado.
-// Logos: O Camarada nova (mascote, horizontal) + Léo Duarte. Render: node motor/render.js capa-china-5-curiosidades saida/china-capa.png --still 1
+// Logos: só O Camarada e Léo Duarte, as duas em SILHUETA vermelha (pedido do autor), direto no fundo. Render: node motor/render.js capa-china-5-curiosidades saida/china-capa.png --still 1
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: 2,
   imagensOpcionais: true,
   imagens: {
     arte: '../midia/china-5-curiosidades/arte-capa-recorte.png',
-    camarada: '../identidade/marca/o-camarada-mascote-horizontal.png',
-    leo: '../identidade/marca/leo-duarte.png',
+    camarada: '../identidade/marca/o-camarada-h-silhueta-vermelha.png',
+    leo: '../identidade/marca/leo-duarte-silhueta-vermelha.png',
   },
   desenhar(ctx, t, L) {
     const { COR, FONTE } = L, W = 1080, H = 1920, CX = 540, a = L.img.arte;
@@ -22,15 +22,13 @@ window.CENA = {
     const temLeo = tem('leo'), hl = 92, hLeo = 150, hTag = temLeo ? hLeo : hl;
     const wc = hl * L.img.camarada.width / L.img.camarada.height, wl = temLeo ? hLeo * L.img.leo.width / L.img.leo.height : 0;
     const gapL = temLeo ? 70 : 0, total = wc + gapL + wl, xl = CX - total / 2;
-    ctx.save(); ctx.translate(CX, yl); ctx.rotate(-0.02);
-    ctx.fillStyle = COR.tinta; ctx.fillRect(-total / 2 - 44 + 8, -hTag / 2 - 22 + 8, total + 88, hTag + 44);
-    ctx.fillStyle = COR.bege; ctx.fillRect(-total / 2 - 44, -hTag / 2 - 22, total + 88, hTag + 44);
-    ctx.restore();
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 22;   // silhuetas vermelhas: sombra escura para destacar do fundo
     L.imagem(ctx, L.img.camarada, xl + wc / 2, yl, wc);
     if (temLeo) {
-      ctx.fillStyle = COR.tinta; ctx.fillRect(xl + wc + gapL / 2 - 2, yl - hTag / 2 + 10, 4, hTag - 20);
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(xl + wc + gapL / 2 - 2, yl - hTag / 2 + 10, 4, hTag - 20);
       L.imagem(ctx, L.img.leo, xl + wc + gapL + wl / 2, yl, wl);
     }
+    ctx.restore();
 
     // título
     const sub = '5 COISAS QUE VOCÊ NÃO SABE SOBRE A';
