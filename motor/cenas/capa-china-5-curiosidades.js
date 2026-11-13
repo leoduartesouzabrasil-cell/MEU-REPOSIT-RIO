@@ -1,34 +1,33 @@
-// Capa do Reels "5 curiosidades da China": cartaz com o gancho do vídeo (sem figura: a única foto livre de 1949 é pequena demais
-// para a ilustração). Miolo do grid 3:4 em y 240–1680. Render: node motor/render.js capa-china-5-curiosidades saida/china-capa.png --still 1
+// Capa do Reels "5 curiosidades da China" sobre a arte do autor (1536×1024, fundo amarelo, Mao na moldura com a bandeira).
+// O amarelo da arte é estendido para cima; título em escada inclinada (tinta + vermelho). Miolo do grid 3:4: y 240–1680.
+// Render: node motor/render.js capa-china-5-curiosidades saida/china-capa.png --still 1
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: 2,
-  imagens: { logo: '../identidade/marca/o-camarada-bege.png' },
+  imagens: {
+    arte: '../midia/china-5-curiosidades/arte-capa.png',
+    logo: '../identidade/marca/o-camarada-vermelho.png',
+  },
   desenhar(ctx, t, L) {
-    const { COR, FONTE } = L, CX = 540;
-    L.fundo(ctx, COR.vermelho);
-    L.raios(ctx, CX, 1500, 2600, 22, -0.25, 'rgba(138,20,17,0.55)');
-    L.imagem(ctx, L.img.logo, CX, 330, 300);
-    const linha = (s, y, fam, tam, cor, rot = -0.05) => {
-      ctx.save(); ctx.translate(CX, y); ctx.rotate(rot);
+    const { COR, FONTE } = L, W = 1080, H = 1920, CX = 540, a = L.img.arte;
+    const AMARELO = '#FDC501';
+    L.fundo(ctx, AMARELO);
+    // a arte: bandeira + moldura (x 270–1370 na arte) ocupando a largura, encostada embaixo
+    const fx0 = 270, fx1 = 1370, esc = (W + 20) / (fx1 - fx0);
+    const aw = a.width * esc, ah = a.height * esc, ax = CX - ((fx0 + fx1) / 2) * esc, ay = H - ah + 40;
+    ctx.drawImage(a, ax, ay, aw, ah);
+    // raios de sol discretos no amarelo, atrás do título
+    ctx.save(); ctx.globalAlpha = 0.18; L.raios(ctx, CX, ay + 200, 1600, 20, -0.2, COR.vermelho); ctx.restore();
+    ctx.drawImage(a, ax, ay, aw, ah);   // a arte por cima dos raios
+    L.imagem(ctx, L.img.logo, CX, 300, 300);
+    const linha = (s, y, fam, tam, cor, sombra = COR.tinta) => {
+      ctx.save(); ctx.translate(CX, y); ctx.rotate(-0.07);
       const peso = fam === FONTE.bloco ? 400 : 900;
-      L.texto(ctx, s, 0, 0, { familia: fam, peso, tam: Math.min(tam, L.ajustar(ctx, s, fam, 920, peso)), cor, alinhar: 'center', erro: COR.tinta, desloc: 8 });
+      L.texto(ctx, s, 0, 0, { familia: fam, peso, tam: Math.min(tam, L.ajustar(ctx, s, fam, 960, peso)), cor, alinhar: 'center', erro: sombra, desloc: 7 });
       ctx.restore();
     };
-    linha('NA CHINA, SER', 600, FONTE.manchete, 150, COR.bege);
-    linha('CRISTÃO É', 790, FONTE.bloco, 190, COR.amarelo);
-    linha('PROIBIDO?', 980, FONTE.manchete, 220, COR.bege);
-    // carimbo MENTIRA
-    ctx.save(); ctx.translate(CX, 1210); ctx.rotate(-0.14);
-    ctx.strokeStyle = COR.amarelo; ctx.lineWidth = 16; ctx.strokeRect(-400, -125, 800, 230);
-    ctx.fillStyle = COR.tinta; ctx.fillRect(-386, -111, 772, 202);
-    L.texto(ctx, 'MENTIRA!', 0, 50, { familia: FONTE.bloco, peso: 400, tam: 138, cor: COR.amarelo, alinhar: 'center' });
-    ctx.restore();
-    // selo 5 curiosidades
-    ctx.save(); ctx.translate(CX, 1500);
-    ctx.fillStyle = COR.tinta; ctx.fillRect(-380, -70, 760, 140);
-    L.estrela(ctx, -300, 0, 52, 0, COR.amarelo);
-    L.texto(ctx, '5 CURIOSIDADES DA CHINA', 40, 22, { familia: FONTE.sub, peso: 600, tam: 54, cor: COR.bege, alinhar: 'center' });
-    ctx.restore();
-    L.papel(ctx, 1, 0.14); L.vinheta(ctx, 0.45);
+    linha('5 COISAS QUE VOCÊ', 500, FONTE.manchete, 140, COR.tinta, COR.vermelho);
+    linha('NÃO SABE SOBRE A', 640, FONTE.manchete, 140, COR.tinta, COR.vermelho);
+    linha('CHINA COMUNISTA!', 810, FONTE.bloco, 150, COR.vermelho, COR.tinta);
+    L.papel(ctx, 1, 0.1); L.vinheta(ctx, 0.3);
   },
 };
