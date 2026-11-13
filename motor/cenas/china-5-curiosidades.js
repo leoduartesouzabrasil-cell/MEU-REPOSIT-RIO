@@ -17,6 +17,7 @@ window.CENA = {
     igreja: '../midia/china-5-curiosidades/igreja.jpg',
     trem: '../midia/china-5-curiosidades/trem.jpg',
     r1949: '../midia/china-5-curiosidades/1949.jpg',
+    malandro: '../midia/china-5-curiosidades/malandro.png',   // foto enviada pelo autor (divulgação), recortada do fundo branco
     logo: '../identidade/marca/o-camarada-vermelho.png',
   },
 
@@ -157,6 +158,8 @@ window.CENA = {
         for (let i = 0; i < 7; i++) { const y = (L.rng(Math.floor(t * 20) + i)() * 1920) | 0; ctx.fillRect(0, y, 1080, 6 + i % 3 * 5); }
         ctx.restore();
         L.texto(ctx, '❚❚', 960, 200, { familia: FONTE.grotesca, peso: 700, tam: 60, cor: BEGE, alinhar: 'center' });
+        // "Pegadinha do malandro": o Sérgio Mallandro pula na tela, treme e corre pro canto quando cai o MENTIRA
+        if (temImg('malandro') && t >= T.mentira) malandro();
         // MENTIRA carimbado torto
         L.aplicarCarimbo(ctx, seg(t, T.carimbo, T.carimbo + 0.3), CX, 860, () => {
           ctx.save(); ctx.translate(CX, 860); ctx.rotate(-0.16);
@@ -165,6 +168,40 @@ window.CENA = {
           L.texto(ctx, 'MENTIRA', 0, 60, { familia: FONTE.bloco, peso: 400, tam: 190, cor: AMA, alinhar: 'center', erro: TINTA, desloc: 8 });
           ctx.restore();
         }, 7);
+      }
+    }
+
+    function malandro() {
+      const im = L.img.malandro, entra = seg(t, T.mentira, T.mentira + 0.35), sai = ease.saida(seg(t, T.carimbo - 0.2, T.carimbo + 0.15));
+      const pop = entra < 1 ? lerp(0.2, 1, ease.carimbo(entra)) : 1 + 0.03 * Math.sin((t - T.mentira) * 22);
+      const W0 = 800, esc = lerp(1, 0.42, sai) * pop;
+      const cx = lerp(CX, 860, sai), base = 1400;
+      const rot = Math.sin((t - T.mentira) * 16) * lerp(0.06, 0.12, sai);
+      const w = W0 * esc, h = w * im.height / im.width;
+      // escurece o cartaz congelado e abre um sol amarelo atrás dele
+      ctx.save(); ctx.globalAlpha = 0.45 * (1 - sai) * clamp(entra * 3); ctx.fillStyle = TINTA; ctx.fillRect(0, 0, 1080, 1920); ctx.restore();
+      ctx.save(); ctx.globalAlpha = clamp(entra * 3);
+      L.raios(ctx, cx, base - h * 0.55, w * 0.95, 16, (t - T.mentira) * 1.2, 'rgba(235,181,42,0.85)');
+      ctx.translate(cx, base); ctx.rotate(rot);
+      ctx.drawImage(im, -w / 2, -h, w, h);
+      ctx.restore();
+      if (sai < 0.5) {
+        ctx.save(); ctx.globalAlpha = clamp(entra * 3) * (1 - sai * 2);
+        const k = ease.carimbo(seg(t, T.mentira + 0.15, T.mentira + 0.45));
+        ctx.translate(CX, 560); ctx.rotate(-0.07 + Math.sin((t - T.mentira) * 9) * 0.02); ctx.scale(k, k);
+        L.texto(ctx, 'PEGADINHA DO', 0, -40, { familia: FONTE.manchete, peso: 900, tam: 110, cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 7 });
+        L.texto(ctx, 'MALANDRO!', 0, 90, { familia: FONTE.bloco, peso: 400, tam: 150, cor: AMA, alinhar: 'center', erro: TINTA, desloc: 8 });
+        ctx.restore();
+        // balão "IÉ IÉ!"
+        const kb = ease.carimbo(seg(t, T.mentira + 0.5, T.mentira + 0.75));
+        if (kb > 0) {
+          ctx.save(); ctx.globalAlpha = 1 - sai * 2; ctx.translate(840, 860); ctx.rotate(0.12); ctx.scale(kb, kb);
+          ctx.fillStyle = BEGE; ctx.strokeStyle = TINTA; ctx.lineWidth = 6;
+          ctx.beginPath(); for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2, r = i % 2 ? 120 : 150; ctx.lineTo(Math.cos(a) * r * 1.2, Math.sin(a) * r * 0.8); } ctx.closePath(); ctx.fill(); ctx.stroke();
+          L.texto(ctx, 'IÉ IÉ!', 0, 22, { familia: FONTE.bloco, peso: 400, tam: 66, cor: VERM, alinhar: 'center' });
+          ctx.restore();
+        }
+        L.texto(ctx, 'Sérgio Mallandro · foto: divulgação', CX, 1436, { familia: FONTE.maquina, peso: 400, tam: 22, cor: BEGE, alinhar: 'center' });
       }
     }
 

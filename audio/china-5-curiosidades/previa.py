@@ -15,7 +15,7 @@ from som import SR, soma  # noqa: E402
 
 # marcas de exemplo (a montagem usa as do tempo da fala)
 T = dict(gancho=0.3, proibido=3.6, corte=4.4, mentira=5.4, cinco=21.0, n1=23.2, n2=37.0, n3=45.0, n4=55.0, ultimo=66.0, n5=67.5,
-         alemanha=73.0, comenta=75.5, logo=81.0, dur=84.4)
+         carimbo=6.8, alemanha=73.0, comenta=75.5, logo=81.0, dur=84.4)
 E, G, A, C, D, B = 82.41, 98.0, 110.0, 65.41, 73.42, 61.74
 
 
@@ -53,7 +53,9 @@ def trilha(T, N):
     soma(fx, som.riser(1.2), T["proibido"] - 1.2, 0.35)
     soma(fx, som.carimbo_sfx(), T["proibido"], 0.8); soma(fx, som.boom(), T["proibido"], 0.4)
     soma(fx, som.arranhao(0.7), T["corte"], 1.0)                                  # o disco arranha: corte seco
-    soma(fx, som.carimbo_sfx(), T["mentira"] + 0.9, 1.0); soma(fx, som.negacao(), T["mentira"] + 0.95, 0.35)   # carimbo "MENTIRA"
+    soma(fx, som.boing(), T["mentira"], 0.9)                                      # o Sérgio Mallandro pula na tela
+    soma(fx, som.whoosh(0.3), T["carimbo"] - 0.2, 0.5)                            # e sai correndo pro canto
+    soma(fx, som.carimbo_sfx(), T["carimbo"], 1.0); soma(fx, som.negacao(), T["carimbo"] + 0.05, 0.35)   # carimbo "MENTIRA"
     soma(fx, som.contador(1.2, 16), T["mentira"] + 3.2, 0.35)                     # 40.000.000+
     soma(fx, som.maquina(40, 0.035), T["mentira"] + 8.0, 0.4)                     # a ficha datilografada das religiões
     soma(fx, som.riser(0.9), T["cinco"] - 0.9, 0.35); soma(fx, som.carimbo_sfx(), T["cinco"], 1.0); soma(fx, som.boom(), T["cinco"], 0.5)

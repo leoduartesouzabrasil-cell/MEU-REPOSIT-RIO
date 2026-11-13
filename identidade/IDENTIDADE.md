@@ -206,3 +206,8 @@ o título em bege e a palavra de ordem em amarelo.
 - Créditos de foto: logo ABAIXO da foto correspondente, no vão entre a foto e o próximo elemento, sem encostar na foto. Fonte dos dados (TSE etc.) fica sob o título.
 - Corrigir na legenda o que a transcrição erra (números, nomes próprios, pontuação) pela lista CORRECOES do `montar.py`.
 
+
+## Meme / participação cômica (vídeo da China)
+Foto de pessoa com fundo branco liso: recortar só o branco ligado às bordas (mantém detalhes finos que o `rembg` perde, como a hélice do boné do
+Sérgio Mallandro). Entrada cômica: pula com `ease.carimbo`, treme em rotação, sol amarelo girando atrás, texto em Big Shoulders + Russo One,
+balão estrelado, efeito `som.boing()`, e sai correndo pro canto (`whoosh`) quando vem o impacto seguinte. Modelo: `malandro()` em `china-5-curiosidades.js`.

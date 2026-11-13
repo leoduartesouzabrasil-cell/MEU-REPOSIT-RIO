@@ -374,6 +374,15 @@ def arranhao(dur=0.7):
     return norm(x * env(n, 0.002, dur, 1.0, 0.05), 0.8)
 
 
+def boing(dur=0.6):
+    """Mola de desenho animado (a entrada cômica do "Pegadinha do malandro"): tom que sobe com vibrato largo e decai."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    f = 180 + 260 * (1 - np.exp(-t / 0.05)) + 70 * np.sin(2 * np.pi * 14 * t) * np.exp(-t / 0.35)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.3 * np.sin(4 * np.pi * np.cumsum(f) / SR)
+    return norm((x * np.exp(-t / 0.22) * env(n, 0.003, dur, 1.0, 0.05)).astype(np.float32), 0.8)
+
+
 # ---------------------------------------------------------------- multidão e vitória
 def multidao(dur=3.0, intensidade=1.0):
     """Multidão/gritaria distante: ruído vocal filtrado com ondas de entusiasmo."""
