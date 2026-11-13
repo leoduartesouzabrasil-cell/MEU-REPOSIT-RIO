@@ -18,30 +18,30 @@ window.CENA = {
     L.brasa(ctx, 0, H * 0.55, W, H * 0.45, 9);
 
     // logos no topo: O Camarada | Léo Duarte
-    const yl = 300;
-    const temLeo = tem('leo'), hl = 92;
-    const wc = hl * L.img.camarada.width / L.img.camarada.height, wl = temLeo ? hl * L.img.leo.width / L.img.leo.height : 0;
+    const yl = 345;
+    const temLeo = tem('leo'), hl = 92, hLeo = 150, hTag = temLeo ? hLeo : hl;
+    const wc = hl * L.img.camarada.width / L.img.camarada.height, wl = temLeo ? hLeo * L.img.leo.width / L.img.leo.height : 0;
     const gapL = temLeo ? 70 : 0, total = wc + gapL + wl, xl = CX - total / 2;
     ctx.save(); ctx.translate(CX, yl); ctx.rotate(-0.02);
-    ctx.fillStyle = COR.tinta; ctx.fillRect(-total / 2 - 44 + 8, -hl / 2 - 26 + 8, total + 88, hl + 52);
-    ctx.fillStyle = COR.bege; ctx.fillRect(-total / 2 - 44, -hl / 2 - 26, total + 88, hl + 52);
+    ctx.fillStyle = COR.tinta; ctx.fillRect(-total / 2 - 44 + 8, -hTag / 2 - 22 + 8, total + 88, hTag + 44);
+    ctx.fillStyle = COR.bege; ctx.fillRect(-total / 2 - 44, -hTag / 2 - 22, total + 88, hTag + 44);
     ctx.restore();
     L.imagem(ctx, L.img.camarada, xl + wc / 2, yl, wc);
     if (temLeo) {
-      ctx.fillStyle = COR.tinta; ctx.fillRect(xl + wc + gapL / 2 - 2, yl - hl / 2, 4, hl);
+      ctx.fillStyle = COR.tinta; ctx.fillRect(xl + wc + gapL / 2 - 2, yl - hTag / 2 + 10, 4, hTag - 20);
       L.imagem(ctx, L.img.leo, xl + wc + gapL + wl / 2, yl, wl);
     }
 
     // título
     const sub = '5 COISAS QUE VOCÊ NÃO SABE SOBRE A';
-    L.texto(ctx, sub, CX, 455, { familia: FONTE.sub, peso: 600, tam: Math.min(62, L.ajustar(ctx, sub, FONTE.sub, 900, 600)), cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
+    L.texto(ctx, sub, CX, 535, { familia: FONTE.sub, peso: 600, tam: Math.min(62, L.ajustar(ctx, sub, FONTE.sub, 900, 600)), cor: COR.bege, alinhar: 'center', erro: COR.vermelho, desloc: 4 });
     // CHINA grande + bloco COMUNISTA!
     const medir = (txt, tam) => { L.fonte(ctx, FONTE.bloco, tam, 400); return ctx.measureText(txt).width; };
     const bloco = 'COMUNISTA!';
     const larguraTotal = k => medir('CHINA', 250 * k) + 26 * k + medir(bloco, 56 * k) + 50 * k;
     const k = Math.min(1, 940 / larguraTotal(1));
     const tC = 250 * k, tB = 56 * k, wC = medir('CHINA', tC), wB = medir(bloco, tB) + 50 * k, hB = 96 * k, gap = 26 * k;
-    const tot = wC + gap + wB, xC = CX - tot / 2, yC = 690;
+    const tot = wC + gap + wB, xC = CX - tot / 2, yC = 765;
     L.texto(ctx, 'CHINA', xC, yC, { familia: FONTE.bloco, peso: 400, tam: tC, cor: COR.amarelo, erro: COR.vermelho, desloc: 9 });
     ctx.save(); ctx.translate(xC + wC + gap + wB / 2, yC - 95 * k); ctx.rotate(-0.06);
     ctx.fillStyle = COR.tinta; ctx.fillRect(-wB / 2 + 7, -hB / 2 + 7, wB, hB);
