@@ -91,3 +91,17 @@ NA TELA:
   A diferença é pequena, mas na tela vale escrever "≈200 MILHÕES DE RELIGIOSOS" (sem "outras").
 - Montagem: `python3 audio/china-5-curiosidades/montar.py` (VEL 1,15, pausas compactadas) → 87 s. A trilha fica 22 dB e os efeitos 20 dB abaixo da voz durante a fala, com ducking.
   Disco arranhado (`som.arranhao`) no corte do "mentira". Prévia do som: `saida/china-5-curiosidades-audio.mp3` (-14 LUFS).
+
+## Vídeo (v1)
+- Cena: `motor/cenas/china-5-curiosidades.js` (marcas e legendas em `china-5-curiosidades.tempos.js`). Fotos com crédito na tela:
+  Catedral de Xujiahui (Onedesign23, CC BY-SA 4.0), trem Fuxing CR400AF (MNXANL, CC BY-SA 4.0), proclamação de 1949 (domínio público, sem a marca d'água).
+  Créditos em `midia/china-5-curiosidades/CREDITOS.md`.
+- Render: `node motor/render.js china-5-curiosidades saida/china-5-curiosidades.mp4 --audio audio/china-5-curiosidades/mix.wav` → `-crf 24 -tune grain` → `saida/china-5-curiosidades-FINAL.mp4` (87 s).
+
+## Legenda do post
+```
+Te contaram que na China é proibido ser cristão? 🚨 Mentira! Só nas igrejas registradas são mais de 40 milhões de cristãos, e quase 200 milhões de pessoas com religião. E tem muito mais que a mídia não te conta: quase 800 milhões de pessoas fora da pobreza extrema em 40 anos (Banco Mundial), mais de 50 mil km de trem-bala, a expectativa de vida que saltou de 35 para 79 anos desde 1949, florestas que passaram de 8,6% para 25% do território e um Partido Comunista com mais de 100 milhões de membros. Qual dessas você não sabia? Comenta aqui! 🔥
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```

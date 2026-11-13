@@ -41,7 +41,7 @@
       // imagens da cena: CENA.imagens = { nome: 'caminho relativo a motor/' } → L.img.nome
       await Promise.all(Object.entries(cena.imagens || {}).map(([nome, src]) => new Promise((ok2, erro) => {
         const im = new Image(); im.onload = () => { CT.img[nome] = im; ok2(); };
-        im.onerror = () => erro(new Error('imagem não carregou: ' + src)); im.src = src;
+        im.onerror = () => { if (cena.imagensOpcionais) { console.warn('imagem não carregou: ' + src); ok2(); } else erro(new Error('imagem não carregou: ' + src)); }; im.src = src;
       })));
       window.renderAt = t => { cena.desenhar(ctx, t, CT); };
       window.frameData = (t, tipo = 'image/png', q = 0.92) => { renderAt(t); return tela.toDataURL(tipo, q); };
