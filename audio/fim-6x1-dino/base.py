@@ -16,6 +16,8 @@ subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(e["rick"][0]), 
 lista = [TMP / "p000.mp4"]
 for k, c in enumerate(e["cortes"], 1):
     z = c["zoom"]
+    if k == len(e["cortes"]):          # o último trecho continua rodando (sem congelar) até o fim do vídeo
+        c = dict(c, fim=c["fim"] + e.get("rabo", 0) * e["vel"], dur=c["dur"] + e.get("rabo", 0))
     vf = (f"scale=1080:1920,crop=iw/{z}:ih/{z}:(iw-iw/{z})/2:(ih-ih/{z})*0.42,scale=1080:1920,setsar=1,"
           f"setpts=PTS/{e['vel']},fps=30")
     out = TMP / f"p{k:03d}.mp4"

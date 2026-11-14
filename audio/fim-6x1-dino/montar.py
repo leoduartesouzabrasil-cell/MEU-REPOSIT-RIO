@@ -21,23 +21,12 @@ PAUSA = 0.28                    # pausa maior que isso dentro de um trecho vira 
 # trechos escolhidos (tempo de início da 1ª e da última palavra, no vídeo bruto do Léo). Fora ficam: a saudação, "comerciários",
 # "antes", "que tratam-se de funcionários...", "pelo fim das classes por um", "dois dias de descansar", "debaixo de nossa nariz",
 # as pausas longas e as repetições do "manda pra todo mundo".
-TRECHOS = [(7.54, 8.84), (10.72, 12.4), (14.36, 15.32), (17.34, 18.38), (24.8, 31.18),
-           (33.44, 39.64), (40.44, 41.78), (43.74, 48.7), (63.80, 67.52), (68.44, 69.24), (70.54, 71.6), (76.34, 80.38)]
+TRECHOS = [(10.72, 12.4), (14.36, 15.32), (17.34, 18.38), (24.8, 31.18),
+           (33.44, 39.64), (40.44, 41.78), (43.74, 48.7), (63.80, 67.52), (68.44, 69.24), (70.54, 71.6), (76.34, 80.38, 76.15)]
 CORRECOES = {"Ricky": "Rick", "como": "Como", "descansar,": "descansar.", "picaretagem": "picaretagem!", "Azevedo": "Azevedo,", "paz,": "paz.", "acontecendo": "acontecendo,"}
 
 pal = json.loads((AQUI / "palavras.json").read_text())["1"]
 idx = lambda t: min(range(len(pal)), key=lambda i: abs(pal[i][1] - t))
-pedacos = []                    # (ini, fim) no bruto, cada um vira um corte
-palavras_usadas = []
-for a, b in TRECHOS:
-    i0, i1 = idx(a), idx(b)
-    grupo = [i0]
-    for i in range(i0 + 1, i1 + 1):
-        if pal[i][1] - pal[i - 1][2] > PAUSA:
-            pedacos.append((grupo[0], grupo[-1])); grupo = [i]
-        else:
-            grupo.append(i)
-    pedacos.append((grupo[0], grupo[-1]))
 # energia da voz limpa (10 ms) para achar os silêncios dentro de cada trecho
 def ler(f, ss=None, t=None, af=None):
     cmd = ["ffmpeg", "-loglevel", "error"] + (["-ss", str(ss)] if ss is not None else []) + (["-t", str(t)] if t else []) + ["-i", str(f)]
@@ -54,7 +43,7 @@ voz_pro = ler(AQUI / "voz-limpa.flac", af=VOZ_PRO)        # o que vai para a mix
 q = int(0.01 * SR)
 en = np.array([np.sqrt(np.mean(limpa[i:i + q] ** 2)) for i in range(0, len(limpa) - q, q)])
 LIMIAR = np.percentile(en, 95) * 10 ** (-30 / 20)
-SIL_MIN, SIL_RESTO = 0.16, 0.07          # silêncio maior que 0,16 s é cortado, sobrando 0,07 s (respiro)
+SIL_MIN, SIL_RESTO = 0.70, 0.35          # v2 (fluido): só pausa MUITO longa (> 0,7 s) é encurtada, e fica 0,35 s de respiro natural
 
 def sem_silencios(ini, fim):
     """Divide [ini, fim) nos silêncios internos longos; devolve os pedaços com fala."""
@@ -73,18 +62,48 @@ def sem_silencios(ini, fim):
     out.append((i0 * 0.01, fim))
     return [(x, y) for x, y in out if y - x > 0.12]
 
+def vale(a, b):
+    """Instante de menor energia (janela de 30 ms) entre a e b: o silêncio entre duas palavras."""
+    i, j = int(a * 100), int(b * 100)
+    sua = np.convolve(en, np.ones(3) / 3, 'same')
+    return (i + int(np.argmin(sua[i:j]))) * 0.01
+
+def fim_da_fala(ws, maximo=1.4):
+    """Da palavra que começa em ws, anda até a voz parar de verdade (0,15 s seguidos de silêncio) e corta ali."""
+    i = int(ws * 100) + 15
+    while i < int((ws + maximo) * 100) and not np.all(en[i:i + 25] < LIMIAR * 0.6): i += 1
+    return i * 0.01 + 0.08
+
+def borda_silencio(tt, direcao, maximo=0.30):
+    """Leva o ponto de corte até o silêncio mais próximo (para trás no início, para frente no fim), sem passar de `maximo` s."""
+    i = int(tt * 100)
+    for d in range(int(maximo * 100)):
+        j = i + d * direcao
+        if 0 <= j < len(en) and en[j] < LIMIAR * 0.7:
+            return j * 0.01 + (0.03 if direcao < 0 else 0.0) * 0 + (-0.02 if direcao < 0 else 0.04)
+    return tt
+
 edl, t, PAL = [], ABERT, []
 k = 0
-for a, b in TRECHOS:
+for n_trecho, tr in enumerate(TRECHOS):
+    a, b = tr[0], tr[1]
     i0, i1 = idx(a), idx(b)
     ini = pal[i0][1] - 0.07
     prox = pal[i1 + 1][1] if i1 + 1 < len(pal) else pal[i1][2] + 0.3
     fim = min(pal[i1][2] + (0.18 if pal[i1][0].endswith(('.', ',', '?')) else 0.10), prox - 0.03)
+    # corte no VALE de energia entre duas palavras (os tempos da transcrição atrasam/adiantam ~0,1 s)
+    ini = vale(pal[i0][1] - 0.12, pal[i0][1] + 0.03)
+    if i1 + 1 < len(pal) and pal[i1 + 1][1] - pal[i1][1] < 1.0:
+        fim = vale(pal[i1 + 1][1] - 0.12, pal[i1 + 1][1] + 0.08)
+    else:
+        fim = fim_da_fala(pal[i1][1])
+    if len(tr) > 2: ini = tr[2]                                   # início conferido à mão no vale de energia
+    if edl and ini < edl[-1]["fim"] and ini > edl[-1]["ini"]: ini = edl[-1]["fim"]
     pedacos = sem_silencios(ini, fim)
     t_ped = []
     for x, y in pedacos:
         dur = (y - x) / VEL
-        edl.append({"ini": round(x, 3), "fim": round(y, 3), "t": round(t, 3), "dur": round(dur, 3), "zoom": 1.0 if k % 2 == 0 else 1.12})
+        edl.append({"ini": round(x, 3), "fim": round(y, 3), "t": round(t, 3), "dur": round(dur, 3), "zoom": 1.0 if n_trecho % 2 == 0 else 1.12})
         t_ped.append((x, y, t)); t += dur; k += 1
     # cada palavra vai para o pedaço em que começa (ou para o seguinte, se começou num silêncio cortado)
     for i in range(i0, i1 + 1):
@@ -95,7 +114,7 @@ for a, b in TRECHOS:
         w = "6x1," if w == "SES" else CORRECOES.get(w, w)
         PAL.append([w, round(tt + max(0, wa - x) / VEL, 3), round(tt + (min(wb, y) - x) / VEL, 3)])
 DUR_LEO = t
-FIM_CTA = 1.8                    # o card final ("manda pra quem trabalha 6x1") segura um pouco depois da última palavra
+FIM_CTA = 0.5                    # o card final ("manda pra quem trabalha 6x1") segura um pouco depois da última palavra
 DUR = round(t + FIM_CTA, 2)
 
 # palavras do Rick na abertura
@@ -123,11 +142,11 @@ def quando(texto, depois=0.0):
     raise KeyError(texto)
 
 M = {"abert": ABERT, "empresarios": quando("acatou a pressão"), "regras": quando("para alterar"), "coletivas": quando("decisões coletivas"),
-     "brechas": quando("e agora com essas"), "folgas": quando("duas folgas"), "escarnio": quando("escárnio"), "rick": quando("do rick", 25),
+     "brechas": quando("e agora com essas"), "folgas": quando("duas folgas"), "escarnio": quando("escárnio"), "rick": quando("do rick"),
      "classe": quando("mas principalmente"), "desmob": quando("desmobilizar"), "radical": quando("radicalizar"), "cta": quando("então compartilhe"),
      "picaretagem": quando("picaretagem"), "fimfala": DUR_LEO, "dur": DUR}
 M = {k: round(v, 3) for k, v in M.items()}
-(AQUI / "edl.json").write_text(json.dumps({"abert": ABERT, "rick": RICK, "vel": VEL, "dur": DUR, "cortes": edl}, indent=1))
+(AQUI / "edl.json").write_text(json.dumps({"abert": ABERT, "rick": RICK, "vel": VEL, "dur": DUR, "rabo": FIM_CTA, "cortes": edl}, indent=1))
 (RAIZ / "motor" / "cenas" / "fim-6x1-dino.tempos.js").write_text(
     "// GERADO por audio/fim-6x1-dino/montar.py — não editar à mão\n"
     f"window.TEMPOS = {json.dumps({'dur': DUR, 'marcas': M, 'cortes': [c['t'] for c in edl], 'legendas': legendas(PAL_RICK) + legendas(PAL)}, ensure_ascii=False)};\n")

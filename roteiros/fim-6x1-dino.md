@@ -82,6 +82,13 @@ Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.
 - "Retira a obrigatoriedade de que as duas folgas sejam na mesma semana": correto **por acordo coletivo** (a fala diz antes "deixando em aberto para decisões coletivas");
   o direito às duas folgas remuneradas continua (por isso o card diz "quando é sua folga", não "acabou a folga").
 
+### v3 (fluida, a pedido do autor: "muitos cortes, não dá pra entender")
+- Só 11 cortes, apenas onde havia erro/repetição; as pausas naturais ficam (só pausa > 0,7 s é encurtada, mantendo 0,35 s).
+- Cada corte cai no VALE de energia entre duas palavras (nenhuma palavra cortada; conferido transcrevendo os trechos colados).
+  Correções de tempo: "coletivas" vem depois de uma pausa (31,75–33,0 s); "para que todo mundo" começa em 76,15 s.
+- Zoom muda só nos cortes de verdade. Sem "como vocês viram no vídeo do Rick Azevedo" (repetia a abertura; tempo).
+- Fim: o último trecho segue rodando 0,5 s com o som em fade (sem congelar a imagem). Duração: 44,0 s.
+
 ## Legenda do post
 ```
 🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥
