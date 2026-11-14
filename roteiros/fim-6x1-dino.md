@@ -89,6 +89,12 @@ Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.
 - Zoom muda só nos cortes de verdade. Sem "como vocês viram no vídeo do Rick Azevedo" (repetia a abertura; tempo).
 - Fim: o último trecho segue rodando 0,5 s com o som em fade (sem congelar a imagem). Duração: 44,0 s.
 
+### v4 (áudio sem som metalizado)
+- O som "metalizado" era ruído musical da redução de ruído agressiva (noisereduce 92% + arnndn + afftdn). Agora `tratar_voz.py`:
+  uma passada de noisereduce estacionária a 80%, com máscara suavizada (600 Hz / 120 ms), EQ e compressão leves e expansor só nas pausas.
+  Ruído nas pausas: -37,5 → -49,8 dB (voz em -12,5); o espectro da fala fica liso, sem "buracos". `voz-deteccao.flac` só serve para achar pausas/vales.
+- Para a próxima narração com ruído: preferir esta receita (leve e suavizada) à de `audio/china-5-curiosidades/limpar.py` quando a voz for gravada no celular em quarto.
+
 ## Legenda do post
 ```
 🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥

@@ -38,8 +38,8 @@ VOZ_PRO = ("highpass=f=85:poles=2,equalizer=f=140:t=q:w=1:g=1.5,equalizer=f=320:
            "equalizer=f=3500:t=q:w=1.2:g=2.5,equalizer=f=10000:t=h:w=0.7:g=2,deesser=i=0.45:m=0.5:f=0.5,"
            "acompressor=threshold=-22dB:ratio=3.5:attack=6:release=90:makeup=3,"
            "agate=threshold=0.015:ratio=2:range=0.25:attack=4:release=150,alimiter=limit=0.9,loudnorm=I=-16:TP=-1.5:LRA=6")
-limpa = ler(AQUI / "voz-limpa.flac")                       # para achar as pausas (sem compressão)
-voz_pro = ler(AQUI / "voz-limpa.flac", af=VOZ_PRO)        # o que vai para a mixagem
+limpa = ler(AQUI / "voz-deteccao.flac")                    # só para achar pausas e vales (mesmos tempos da v2)
+voz_pro = ler(AQUI / "voz-tratada.flac")                   # v3: redução de ruído leve, sem som metalizado (tratar_voz.py)
 q = int(0.01 * SR)
 en = np.array([np.sqrt(np.mean(limpa[i:i + q] ** 2)) for i in range(0, len(limpa) - q, q)])
 LIMIAR = np.percentile(en, 95) * 10 ** (-30 / 20)
