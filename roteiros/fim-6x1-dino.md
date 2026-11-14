@@ -95,6 +95,14 @@ Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.
   Ruído nas pausas: -37,5 → -49,8 dB (voz em -12,5); o espectro da fala fica liso, sem "buracos". `voz-deteccao.flac` só serve para achar pausas/vales.
 - Para a próxima narração com ruído: preferir esta receita (leve e suavizada) à de `audio/china-5-curiosidades/limpar.py` quando a voz for gravada no celular em quarto.
 
+### v5 (mensagem completa, a pedido do autor: "não corte minhas falas"; pode ir a 1 min) — 66,6 s
+- A fala corre inteira, de "Eu gostaria de estar aparecendo aqui..." até "...debaixo do nosso nariz!". Só 7 cortes, todos em erro/repetição dele:
+  a saudação; "acatou a pressão dos comerciários" (ele se corrige); a 1ª tentativa de "para decisões" (repete: "para decisões coletivas");
+  "pelo fim das classes por um"; a 1ª tentativa de "mas é o que está acontecendo debaixo de nossa..." (repete certo: "do nosso nariz");
+  a 1ª tentativa de "é por isso que nós não podemos desmobilizar"; a repetição "manda pra todo mundo que você puder".
+- Bordas conferidas à mão no vale de energia e checadas transcrevendo os trechos colados (nenhuma palavra comida ou duplicada).
+- Pausas naturais mantidas (só > 0,9 s vira 0,4 s); voz 5% mais rápida. Graves mais presentes (+3 dB em 120 Hz, passa-alta em 55 Hz).
+
 ## Legenda do post
 ```
 🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥

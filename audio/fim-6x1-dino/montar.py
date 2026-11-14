@@ -14,16 +14,31 @@ sys.path.insert(0, str(RAIZ / "motor"))
 import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
-VEL = 1.08                      # o Léo um pouco mais rápido (ritmo de Reels, sem soar acelerado)
+VEL = 1.05                      # o Léo um pouco mais rápido (ritmo de Reels, sem soar acelerado)
 RICK = (200.95, 6.25 + 200.0)   # trecho do Rick (s no vídeo dele)
 ABERT = RICK[1] - RICK[0]
 PAUSA = 0.28                    # pausa maior que isso dentro de um trecho vira corte seco
 # trechos escolhidos (tempo de início da 1ª e da última palavra, no vídeo bruto do Léo). Fora ficam: a saudação, "comerciários",
 # "antes", "que tratam-se de funcionários...", "pelo fim das classes por um", "dois dias de descansar", "debaixo de nossa nariz",
 # as pausas longas e as repetições do "manda pra todo mundo".
-TRECHOS = [(10.72, 12.4), (14.36, 15.32), (17.34, 18.38), (24.8, 31.18),
-           (33.44, 39.64), (40.44, 41.78), (43.74, 48.7), (63.80, 67.52), (68.44, 69.24), (70.54, 71.6), (76.34, 80.38, 76.15)]
-CORRECOES = {"Ricky": "Rick", "como": "Como", "descansar,": "descansar.", "picaretagem": "picaretagem!", "Azevedo": "Azevedo,", "paz,": "paz.", "acontecendo": "acontecendo,"}
+# v5 (pedido do autor: "não corte minhas falas"; pode passar de 45 s): a fala corre INTEIRA, só saem os erros de verdade.
+# (início, fim) aproximados no bruto; cada borda é ajustada ao vale de energia mais próximo (±0,12 s).
+SEGMENTOS = [
+    (5.02, 15.50),   # "Eu gostaria de estar aparecendo aqui por qualquer outro motivo, mas como vocês viram no vídeo do Rick Azevedo, aqui antes, ... não tem um momento de paz. E agora, o Flávio Dino"
+                     #  [sai: "acatou a pressão dos comerciários," — ele se corrige logo depois]
+    (17.28, 30.40),  # "acatou a pressão dos empresários, especialmente ... regras da 6x1, deixando em aberto"
+                     #  [sai: a 1ª tentativa de "para decisões" — ele repete]
+    (31.72, 41.94),  # "para decisões coletivas. E agora com essas brechas ... Isso é um escárnio com toda a luta"
+                     #  [sai: "pelo fim das classes por um"]
+    (43.79, 54.72),  # "do Rick Azevedo, da Erika Hilton ... dois dias de descansar, no mínimo. Então isso não pode acontecer,"
+                     #  [sai: a 1ª tentativa de "mas é o que está acontecendo debaixo de nossa..." — ele repete certo]
+    (57.30, 59.86),  # "mas é o que está acontecendo debaixo do nosso nariz."
+                     #  [sai: a 1ª tentativa de "é por isso que nós não podemos desmobilizar" (59,9–62,3)]
+    (63.72, 73.75),  # "É por isso ... radicalizar urgente. Então compartilhe esse vídeo, curte, comenta, manda ... que precisa saber,"
+                     #  [sai: a repetição "manda pra todo mundo que você puder,"]
+    (76.32, 83.10),  # "pra que todo mundo saiba o que tá acontecendo, da covardia, da picaretagem que tá acontecendo debaixo do nosso nariz."
+]
+CORRECOES = {"Ricky": "Rick", "Azevedo": "Azevedo,", "acontecendo": "acontecendo", "nariz.": "nariz!"}
 
 pal = json.loads((AQUI / "palavras.json").read_text())["1"]
 idx = lambda t: min(range(len(pal)), key=lambda i: abs(pal[i][1] - t))
@@ -43,7 +58,7 @@ voz_pro = ler(AQUI / "voz-tratada.flac")                   # v3: redução de ru
 q = int(0.01 * SR)
 en = np.array([np.sqrt(np.mean(limpa[i:i + q] ** 2)) for i in range(0, len(limpa) - q, q)])
 LIMIAR = np.percentile(en, 95) * 10 ** (-30 / 20)
-SIL_MIN, SIL_RESTO = 0.70, 0.35          # v2 (fluido): só pausa MUITO longa (> 0,7 s) é encurtada, e fica 0,35 s de respiro natural
+SIL_MIN, SIL_RESTO = 0.90, 0.40          # v2 (fluido): só pausa MUITO longa (> 0,7 s) é encurtada, e fica 0,35 s de respiro natural
 
 def sem_silencios(ini, fim):
     """Divide [ini, fim) nos silêncios internos longos; devolve os pedaços com fala."""
@@ -85,33 +100,22 @@ def borda_silencio(tt, direcao, maximo=0.30):
 
 edl, t, PAL = [], ABERT, []
 k = 0
-for n_trecho, tr in enumerate(TRECHOS):
-    a, b = tr[0], tr[1]
-    i0, i1 = idx(a), idx(b)
-    ini = pal[i0][1] - 0.07
-    prox = pal[i1 + 1][1] if i1 + 1 < len(pal) else pal[i1][2] + 0.3
-    fim = min(pal[i1][2] + (0.18 if pal[i1][0].endswith(('.', ',', '?')) else 0.10), prox - 0.03)
-    # corte no VALE de energia entre duas palavras (os tempos da transcrição atrasam/adiantam ~0,1 s)
-    ini = vale(pal[i0][1] - 0.12, pal[i0][1] + 0.03)
-    if i1 + 1 < len(pal) and pal[i1 + 1][1] - pal[i1][1] < 1.0:
-        fim = vale(pal[i1 + 1][1] - 0.12, pal[i1 + 1][1] + 0.08)
-    else:
-        fim = fim_da_fala(pal[i1][1])
-    if len(tr) > 2: ini = tr[2]                                   # início conferido à mão no vale de energia
-    if edl and ini < edl[-1]["fim"] and ini > edl[-1]["ini"]: ini = edl[-1]["fim"]
+for n_trecho, (a0, b0) in enumerate(SEGMENTOS):
+    ini = vale(a0 - 0.04, a0 + 0.04)                                  # bordas já conferidas à mão no vale de energia
+    fim = fim_da_fala(b0 - 0.6) if n_trecho == len(SEGMENTOS) - 1 else vale(b0 - 0.04, b0 + 0.04)
     pedacos = sem_silencios(ini, fim)
     t_ped = []
     for x, y in pedacos:
         dur = (y - x) / VEL
         edl.append({"ini": round(x, 3), "fim": round(y, 3), "t": round(t, 3), "dur": round(dur, 3), "zoom": 1.0 if n_trecho % 2 == 0 else 1.12})
         t_ped.append((x, y, t)); t += dur; k += 1
-    # cada palavra vai para o pedaço em que começa (ou para o seguinte, se começou num silêncio cortado)
-    for i in range(i0, i1 + 1):
-        w, wa, wb = pal[i]
+    for w, wa, wb in pal:
+        if not (ini - 0.15 <= wa < fim): continue
         if w in ("por", "um,") and 28 < wa < 30: continue          # "6 por 1" vira "6x1"
-        alvo = next(((x, y, tt) for x, y, tt in t_ped if wa < y), t_ped[-1])
-        x, y, tt = alvo
+        x, y, tt = next(((x, y, tt) for x, y, tt in t_ped if wa < y), t_ped[-1])
         w = "6x1," if w == "SES" else CORRECOES.get(w, w)
+        if w.startswith("-") and PAL:                              # "tratam -se" → "tratam-se"
+            PAL[-1][0] += w; continue
         PAL.append([w, round(tt + max(0, wa - x) / VEL, 3), round(tt + (min(wb, y) - x) / VEL, 3)])
 DUR_LEO = t
 FIM_CTA = 0.5                    # o card final ("manda pra quem trabalha 6x1") segura um pouco depois da última palavra
@@ -142,7 +146,7 @@ def quando(texto, depois=0.0):
     raise KeyError(texto)
 
 M = {"abert": ABERT, "empresarios": quando("acatou a pressão"), "regras": quando("para alterar"), "coletivas": quando("decisões coletivas"),
-     "brechas": quando("e agora com essas"), "folgas": quando("duas folgas"), "escarnio": quando("escárnio"), "rick": quando("do rick"),
+     "brechas": quando("e agora com essas"), "folgas": quando("duas folgas"), "escarnio": quando("escárnio"), "rick": quando("da erika"),
      "classe": quando("mas principalmente"), "desmob": quando("desmobilizar"), "radical": quando("radicalizar"), "cta": quando("então compartilhe"),
      "picaretagem": quando("picaretagem"), "fimfala": DUR_LEO, "dur": DUR}
 M = {k: round(v, 3) for k, v in M.items()}
