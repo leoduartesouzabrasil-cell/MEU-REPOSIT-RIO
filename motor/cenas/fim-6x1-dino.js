@@ -20,11 +20,13 @@ window.CENA = {
     ctx.save(); ctx.translate(dx, dy);
 
     // ------------------------------------------------ abertura: manchete-gancho na emenda das duas metades
-    if (t < T.abert + 0.2) {
-      const sai = clamp((T.abert + 0.2 - t) / 0.2);
+    if (t < T.abert - 1 / 60) {                                       // corte seco: tudo da abertura some junto com o vídeo do Rick
+      const sai = 1;
       ctx.save(); ctx.globalAlpha = sai;
-      L.aplicarCarimbo(ctx, seg(t, 0.0, 0.3), CX, 1040, () => {
-        ctx.save(); ctx.translate(CX, 1040); ctx.rotate(-0.02);
+      ctx.fillStyle = VERM; ctx.fillRect(0, 952, 1080, 16);               // linha vermelha entre o vídeo do Rick e o do Léo
+      ctx.fillStyle = 'rgba(28,23,20,0.5)'; ctx.fillRect(0, 968, 1080, 4);
+      L.aplicarCarimbo(ctx, seg(t, 0.0, 0.3), CX, 1085, () => {
+        ctx.save(); ctx.translate(CX, 1085); ctx.rotate(-0.02);
         ctx.fillStyle = TINTA; ctx.fillRect(-520 + 10, -70 + 10, 1040, 140);
         ctx.fillStyle = VERM; ctx.fillRect(-520, -70, 1040, 140);
         ctx.strokeStyle = AMA; ctx.lineWidth = 5; ctx.strokeRect(-508, -58, 1016, 116);

@@ -11,7 +11,7 @@ enc = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv4
 a = e["abert"]
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(e["rick"][0]), "-t", str(a), "-i", str(M / "rick-azevedo.mp4"),
     "-loop", "1", "-t", str(a), "-i", str(M / "leo-print.jpg"), "-filter_complex",
-    "[0:v]crop=608:540:56:408,scale=1080:960,setsar=1,fps=30[r];"
+    "[0:v]crop=600:533:60:420,scale=1080:960,setsar=1,fps=30[r];"
     f"[1:v]scale=1080:-2,crop=1080:960:0:527,scale=2160:1920,zoompan=z='1+0.05*on/({a}*30)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x960:fps=30,setsar=1[l];"
     "[r][l]vstack=inputs=2[v]", "-map", "[v]", *enc, "-t", str(a), str(TMP / "p000.mp4")], check=True)
 lista = [TMP / "p000.mp4"]

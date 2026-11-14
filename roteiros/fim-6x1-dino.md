@@ -111,6 +111,12 @@ Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.
 - "Flávio Dino" (1ª vez) inteiro: "Dino" e "acatou" saem colados, então o corte ficou depois do 1º "acatou" (15,8 s), emendando no "a pressão dos
   empresários" da correção (17,6 s). Conferido por transcrição: "E agora, o Flávio Dino acatou a pressão dos empresários".
 
+### v7
+- Sem a faixa branca no topo: o recorte do Rick começa na linha 420 do vídeo dele (a manchete gravada vai até a 415).
+- Linha vermelha (16 px) entre o vídeo do Rick e o do Léo; a faixa "ESCALA 6x1, NUNCA MAIS!" desceu um pouco para a linha aparecer sozinha.
+- Corte seco na saída da abertura: faixa, linha e fotinha do Dino somem no mesmo quadro em que o vídeo muda.
+- Ruído do quarto mais baixo (noisereduce 97%, máscara 1000 Hz/200 ms, expansor -26 dB): pausas -63 → -75 dB, sem som metalizado.
+
 ## Legenda do post
 ```
 🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥
