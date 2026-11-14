@@ -103,10 +103,20 @@ Montagem (`audio/fim-6x1-dino/montar.py` → `base.py` → `ferramentas/overlay.
 - Bordas conferidas à mão no vale de energia e checadas transcrevendo os trechos colados (nenhuma palavra comida ou duplicada).
 - Pausas naturais mantidas (só > 0,9 s vira 0,4 s); voz 5% mais rápida. Graves mais presentes (+3 dB em 120 Hz, passa-alta em 55 Hz).
 
+### v6
+- Mais redução de ruído (noisereduce 90%, máscara 800 Hz/160 ms, expansor -20 dB nas pausas): pausas -50 → -63 dB, sem som metalizado.
+- Faixa da abertura: "ESCALA 6x1, NUNCA MAIS!". Rick em tela cheia na metade de cima (recorte sem a legenda gravada dele) e, no canto de baixo
+  ao lado dele, uma fotinha do Flávio Dino (CanalGov, CC BY 3.0) em moldura: entra normal e, em 1,7 s ("Isso não existe."), vira PALHAÇO
+  (peruca colorida, nariz vermelho, bochechas) com uma buzina de palhaço (`som.buzina_palhaco`). Sátira política de figura pública.
+- "Flávio Dino" (1ª vez) inteiro: "Dino" e "acatou" saem colados, então o corte ficou depois do 1º "acatou" (15,8 s), emendando no "a pressão dos
+  empresários" da correção (17,6 s). Conferido por transcrição: "E agora, o Flávio Dino acatou a pressão dos empresários".
+
 ## Legenda do post
 ```
 🚨 O ministro Flávio Dino abriu brecha na sua folga! Na liminar sobre o fim da 6x1, ele manteve o 16 de dezembro, mas liberou jornada de 8h24 sem hora extra até 2027 e deixou acordo coletivo empurrar suas duas folgas pra fora da semana. Até a Câmara pediu pro STF derrubar esses pontos, e o julgamento vai até segunda (16/11). Não dá pra desmobilizar: manda esse vídeo pra quem trabalha na 6x1! 🔥
 
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
+
+Foto do Flávio Dino: CanalGov (CC BY 3.0) · Trecho: Rick Azevedo
 ```

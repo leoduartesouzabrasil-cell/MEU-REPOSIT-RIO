@@ -10,3 +10,10 @@
 | Câmara pede ao STF que derrube 6 pontos (folgas, 8h24, 180 dias...) | CNN, 13/11 |
 | Julgamento virtual 13/11 11h → 16/11 11h; 4 x 0 pela liminar | O Globo, 13/11 · CNN (2 x 0 na manhã) |
 | Rick Azevedo: "erro grotesco", "malabarismo", "falcatrua" | vídeo dele (midia/fim-6x1-dino/rick-azevedo.mp4, 53 s e 5:20) |
+
+## Imagens do vídeo
+| Arquivo | Imagem | Autor | Licença | Origem |
+|---|---|---|---|---|
+| dino.png | Flávio Dino, ministro do STF (22/02/2024) | CanalGov (Brasil em Dia) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Fl%C3%A1vio_Dino,_ministro_do_STF.png |
+| rick-azevedo.mp4 (5 s, 3:21) | trecho do vídeo do Rick Azevedo | Rick Azevedo | enviado pelo autor | — |
+O autor pediu o vídeo SEM créditos na tela: o crédito da foto do Dino (CC BY exige atribuição) vai na legenda do post.

@@ -383,6 +383,17 @@ def boing(dur=0.6):
     return norm((x * np.exp(-t / 0.22) * env(n, 0.003, dur, 1.0, 0.05)).astype(np.float32), 0.8)
 
 
+def buzina_palhaco():
+    """Buzina de palhaço (fon-fon): dois toques de borracha, quadrada filtrada, com a afinação caindo um pouco."""
+    out = segundos(0.75)
+    for k, (f0, d) in enumerate([(420, 0.16), (370, 0.28)]):
+        n = int(d * SR); tt = np.arange(n) / SR
+        f = f0 * (1 - 0.06 * tt / d)
+        x = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.6 + np.sin(4 * np.pi * np.cumsum(f) / SR) * 0.3
+        x = banda(x.astype(np.float32), 250, 3500) * env(n, 0.004, d, 0.9, 0.05)
+        soma(out, x, k * 0.2)
+    return norm(out, 0.8)
+
 # ---------------------------------------------------------------- multidão e vitória
 def multidao(dur=3.0, intensidade=1.0):
     """Multidão/gritaria distante: ruído vocal filtrado com ondas de entusiasmo."""

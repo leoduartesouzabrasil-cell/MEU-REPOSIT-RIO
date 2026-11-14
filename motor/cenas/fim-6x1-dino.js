@@ -9,7 +9,7 @@ const T = Object.assign({ abert: 5.3, empresarios: 10.2, regras: 11.9, coletivas
 
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur, transparente: true,
-  imagens: { leo: '../identidade/marca/leo-duarte-silhueta-vermelha.png' },
+  imagens: { leo: '../identidade/marca/leo-duarte-silhueta-vermelha.png', dino: '../midia/fim-6x1-dino/dino.png' },   // Dino: CanalGov, CC BY 3.0 (Commons)
 
   desenhar(ctx, t, L) {
     const { COR, FONTE, seg, lerp, ease, clamp } = L, CX = 540, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
@@ -28,9 +28,10 @@ window.CENA = {
         ctx.fillStyle = TINTA; ctx.fillRect(-520 + 10, -70 + 10, 1040, 140);
         ctx.fillStyle = VERM; ctx.fillRect(-520, -70, 1040, 140);
         ctx.strokeStyle = AMA; ctx.lineWidth = 5; ctx.strokeRect(-508, -58, 1016, 116);
-        L.texto(ctx, 'DINO ABRIU BRECHA NA SUA FOLGA', 0, 24, { familia: FONTE.bloco, peso: 400, tam: tm('DINO ABRIU BRECHA NA SUA FOLGA', FONTE.bloco, 70, 960), cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 4 });
+        L.texto(ctx, 'ESCALA 6x1, NUNCA MAIS!', 0, 28, { familia: FONTE.bloco, peso: 400, tam: tm('ESCALA 6x1, NUNCA MAIS!', FONTE.bloco, 84, 960), cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 4 });
         ctx.restore();
       }, 3);
+      dinoPalhaco(T.palhaco || 1.7);
       ctx.restore();
     }
 
@@ -162,6 +163,40 @@ window.CENA = {
         x += (larg[i] + esp) * k;
       });
       ctx.restore();
+    }
+    // a fotinha do Flávio Dino no canto de baixo, ao lado do Rick: entra normal e, em tp, vira PALHAÇO
+    // (nariz vermelho, bochechas, peruca colorida; coordenadas do rosto na foto: nariz 238,230 · cabeça x 155–375, topo y 15)
+    function dinoPalhaco(tp) {
+      const im = L.img.dino; if (!im) return;
+      const sx = 95, sy = 0, sw = 300, sh = 370;                    // recorte da foto (rosto)
+      const dw = 210, dh = dw * sh / sw, dx = 830, dy = 930 - dh - 18;
+      const e = ease.carimbo(seg(t, 0.2, 0.55)), k = dw / sw;
+      ctx.save(); ctx.translate(dx + dw / 2, dy + dh / 2); ctx.scale(e, e); ctx.rotate(0.04 + (t > tp ? Math.sin((t - tp) * 14) * 0.03 * clamp(1 - (t - tp) / 1.5) : 0));
+      ctx.translate(-dw / 2, -dh / 2);
+      L.moldura(ctx, 0, 0, dw, dh, 12);
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, dw, dh); ctx.clip();
+      ctx.drawImage(im, sx, sy, sw, sh, 0, 0, dw, dh);
+      const p = ease.carimbo(seg(t, tp, tp + 0.3));
+      if (p > 0) {
+        const P = (x, y) => [(x - sx) * k, (y - sy) * k];
+        // peruca: tufos coloridos dos dois lados da cabeça e no topo
+        const tufos = [[150, 120, '#FF6A00'], [135, 175, '#2E7DF2'], [150, 230, '#22B04B'], [380, 120, '#FF2D95'], [395, 175, '#FFD400'], [380, 230, '#FF6A00'],
+          [200, 40, '#2E7DF2'], [265, 25, '#FF2D95'], [330, 45, '#22B04B']];
+        tufos.forEach(([x, y, c], i) => {
+          const [X, Y] = P(x, y), r = 34 * k * p;
+          ctx.fillStyle = c;
+          for (let j = 0; j < 5; j++) { ctx.beginPath(); ctx.arc(X + Math.cos(j * 1.3 + i) * r * 0.6, Y + Math.sin(j * 1.3 + i) * r * 0.6, r * 0.75, 0, 7); ctx.fill(); }
+        });
+        // bochechas
+        ctx.save(); ctx.globalAlpha = 0.55 * p; ctx.fillStyle = '#FF3B6B';
+        [[192, 252], [292, 252]].forEach(([x, y]) => { const [X, Y] = P(x, y); ctx.beginPath(); ctx.arc(X, Y, 22 * k, 0, 7); ctx.fill(); });
+        ctx.restore();
+        // nariz vermelho com brilho
+        const [nx, ny] = P(238, 232), rn = 30 * k * p;
+        ctx.fillStyle = '#E3141B'; ctx.beginPath(); ctx.arc(nx, ny, rn, 0, 7); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.beginPath(); ctx.arc(nx - rn * 0.35, ny - rn * 0.35, rn * 0.28, 0, 7); ctx.fill();
+      }
+      ctx.restore(); ctx.restore();
     }
     // a logo Léo Duarte (única marca no vídeo): canto superior esquerdo, dentro da zona segura
     function logo() {

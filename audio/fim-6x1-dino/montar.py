@@ -24,9 +24,10 @@ PAUSA = 0.28                    # pausa maior que isso dentro de um trecho vira 
 # v5 (pedido do autor: "não corte minhas falas"; pode passar de 45 s): a fala corre INTEIRA, só saem os erros de verdade.
 # (início, fim) aproximados no bruto; cada borda é ajustada ao vale de energia mais próximo (±0,12 s).
 SEGMENTOS = [
-    (5.02, 15.50),   # "Eu gostaria de estar aparecendo aqui por qualquer outro motivo, mas como vocês viram no vídeo do Rick Azevedo, aqui antes, ... não tem um momento de paz. E agora, o Flávio Dino"
-                     #  [sai: "acatou a pressão dos comerciários," — ele se corrige logo depois]
-    (17.28, 30.40),  # "acatou a pressão dos empresários, especialmente ... regras da 6x1, deixando em aberto"
+    (5.02, 15.80),   # "Eu gostaria de estar aparecendo aqui ... não tem um momento de paz. E agora, o Flávio Dino acatou"
+                     #  ("Dino" e "acatou" saem colados: o corte fica DEPOIS do 1º "acatou", que emenda no "a pressão dos empresários")
+                     #  [sai: "a pressão dos comerciários, acatou" — ele se corrige logo depois]
+    (17.60, 30.40),  # "acatou a pressão dos empresários, especialmente ... regras da 6x1, deixando em aberto"
                      #  [sai: a 1ª tentativa de "para decisões" — ele repete]
     (31.72, 41.94),  # "para decisões coletivas. E agora com essas brechas ... Isso é um escárnio com toda a luta"
                      #  [sai: "pelo fim das classes por um"]
@@ -185,6 +186,7 @@ som.banda_golpe(st, DUR - 1.2, E, 1.0, anel=1.2)
 fx = np.zeros(N + SR * 4, np.float32)
 soma(fx, som.carimbo_sfx(), 0.05, 0.8); soma(fx, som.boom(), 0.05, 0.5)
 soma(fx, som.whoosh(), ABERT - 0.3, 0.8)
+soma(fx, som.buzina_palhaco(), 1.7, 1.0)                    # o Dino vira palhaço (fotinha no canto)
 for k in ("empresarios", "regras", "coletivas", "rick"):
     soma(fx, som.tique(), M[k] + 0.2, 0.8); soma(fx, som.papel(0.3), M[k] + 0.2, 0.5)
 soma(fx, som.whoosh(0.5), M["folgas"] + 0.4, 0.6); soma(fx, som.carimbo_sfx(), M["folgas"] + 1.4, 0.8)
