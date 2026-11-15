@@ -15,7 +15,8 @@ lista = []
 for k, c in enumerate(e["cortes"]):
     y0, y1 = FAIXA[c["quem"]]; ch = y1 - y0
     fw = round(JW * PH / ch / 2) * 2                     # largura do vídeo no painel (altura cheia), ~816
-    fc = (f"[0:v]crop={JW}:{ch}:{JX}:{y0},split[a][b];"
+    espelho = ",hflip" if c["quem"] == "leo" else ""          # o vídeo do Leonardo vai espelhado (pedido do autor)
+    fc = (f"[0:v]crop={JW}:{ch}:{JX}:{y0}{espelho},split[a][b];"
           f"[a]scale={PW}:{PH}:force_original_aspect_ratio=increase,crop={PW}:{PH},boxblur=30:2,eq=brightness=-0.12:saturation=0.8[fundo];"
           f"[b]scale={fw}:{PH}:flags=lanczos,eq=contrast=1.05:saturation=1.08,unsharp=5:5:0.5[frente];"
           f"[fundo][frente]overlay=({PW}-{fw})/2:0,pad=1080:1920:0:0:black,setsar=1,fps=30[v]")
@@ -23,9 +24,15 @@ for k, c in enumerate(e["cortes"]):
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(c["ini"]), "-t", str(c["fim"] - c["ini"]), "-i", str(FONTE), "-filter_complex", fc,
                     "-map", "[v]", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", str(out)], check=True)
     lista.append(out)
-(TMP / "lista.txt").write_text("".join(f"file '{p}'\n" for p in lista))
+# junta os pedaços com fusão (xfade) de XF segundos, no mesmo tempo da montagem do som
+xf = e.get("xf", 0.0)
+ins, fc, prev = [], [], "[0:v]"
+for p in lista: ins += ["-i", str(p)]
+for k in range(1, len(lista)):
+    off = e["cortes"][k]["t"]
+    fc.append(f"{prev}[{k}:v]xfade=transition=fade:duration={xf}:offset={off:.3f}[x{k}]"); prev = f"[x{k}]"
 fim = e["dur"] - (e["cortes"][-1]["t"] + e["cortes"][-1]["dur"])
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(TMP / "lista.txt"),
-                "-vf", f"tpad=stop_mode=clone:stop_duration={fim + 0.1}", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p",
-                "-t", str(e["dur"]), str(RAIZ / "saida/corte-01-terreiro-base.mp4")], check=True)
+fc.append(f"{prev}tpad=stop_mode=clone:stop_duration={fim + 0.1}[v]")
+subprocess.run(["ffmpeg", "-y", "-loglevel", "error", *ins, "-filter_complex", ";".join(fc), "-map", "[v]", "-c:v", "libx264", "-preset", "veryfast",
+                "-crf", "17", "-pix_fmt", "yuv420p", "-t", str(e["dur"]), str(RAIZ / "saida/corte-01-terreiro-base.mp4")], check=True)
 print("ok", e["dur"])

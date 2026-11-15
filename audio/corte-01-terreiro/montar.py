@@ -13,21 +13,21 @@ FONTE = RAIZ / "midia/cortes/fonte.mp4"
 # (início, fim, quem, card) em segundos da live; as bordas vão para o vale de energia mais próximo
 # v2 (pedido do autor): 50–60 s, começa no Dia Nacional da Umbanda, só o que tem mais força; cortes SEMPRE no silêncio entre frases.
 # (início aprox., fim aprox., quem, card): a borda vai para o ponto de menor energia numa janela pequena antes/depois.
+# v4 (pedido do autor): frases completas e com sentido, menos picotado, transição suave entre os trechos;
+# Luiz na ordem: nome + "ogã de candomblé" → a importância (organizar, violência) → o mapeamento das casas.
 SEGMENTOS = [
-    (2482.76, 2487.12, "leo", "dia"),          # "Hoje, pra quem não sabe, é o Dia Nacional da Umbanda, né, dia 15 de novembro."
-    (2518.92, 2527.05, "leo", "nucleo"),       # "Sobre a criação do Núcleo dos Povos de Terreiro, que vai ser comandado pelo Luiz ... acolhimento pra essa galera."
+    (2509.90, 2527.05, "leo", "nucleo"),       # "Então hoje, no Dia Nacional ... da Umbanda, pra gente poder falar sobre a criação ... do Núcleo dos Povos de Terreiro ... acolhimento pra essa galera."
     (2546.66, 2565.55, "leo", "direita"),      # "Porque muitas vezes ... extrema direita, ao bolsonarismo. Isso não pode acontecer, porque hoje Oxalá é preto ... periféricas."
-    (2622.28, 2623.66, "luiz", "luiz"),        # "Meu nome é Luiz Gustavo"            (só o nome e o "ogã de candomblé", pedido do autor)
+    (2622.28, 2623.66, "luiz", "luiz"),        # "Meu nome é Luiz Gustavo"
     (2634.77, 2635.75, "luiz", "luiz"),        # "sou ogã de candomblé"
-    (2668.56, 2674.53, "luiz", "2018"),        # "(em 2018) todo mundo virou bolsonarista, então eu tive que fazer um trabalho de formiguinha dentro do meu terreiro."
-    (2685.10, 2691.40, "luiz", "2026"),        # "Graças a Oxalá, essa eleição todos votaram no PT."
-    (2694.55, 2699.60, "luiz", "organizar"),   # "Mas é importante a gente, enquanto marxista, se organizar junto com essa galera."
-    (2759.51, 2765.75, "luiz", "mapa"),        # "Mapeamento das casas de candomblé do Rio de Janeiro e a galera que for dos outros estados ajudar a gente nesse trabalho."
+    (2694.55, 2710.10, "luiz", "importancia"), # "Mas é importante a gente, enquanto marxista, se organizar junto com essa galera ... violência bolsonarista tá atacando muito essa galera, né."
+    (2754.92, 2772.06, "luiz", "mapa"),        # "Eu acho que a ideia é fazer a iniciativa mesmo, né, a gente fazer esse mapeamento ... militando essas casas também."
 ]
-CORRECOES = [(["Luz"], "Luiz"), (["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "Oxalá"),
+CORRECOES = [(["lutativa"], "iniciativa"), (["Luz"], "Luiz"), (["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "Oxalá"),
              (["gante"], "ogã de"), (["ao", "xalá"], "a Oxalá,"), (["canoblé"], "candomblé"), (["quanto", "marxista"], "enquanto marxista,"),
              (["nacional"], "Nacional"), (["dia", "15"], "dia 15")]
-PAUSA_MAX, PAUSA_FICA = 0.7, 0.35
+PAUSA_MAX, PAUSA_FICA = 1.0, 0.45
+XF = 0.20                                   # transição suave (som e imagem) entre um trecho e outro
 
 pal_live = json.load(open(RAIZ / "midia/cortes/transcricao.json"))
 # áudio da janela 41:00–46:30, tratado: menos chiado da chamada, as duas vozes no mesmo volume
@@ -72,6 +72,7 @@ for n, (a, b, quem, card) in enumerate(SEGMENTOS):
     t_bloco = t
     peds = pausas(ini, fim); tp = []
     for p0, p1 in peds:
+        if edl: t -= XF                                      # o trecho novo entra por cima do fim do anterior (fusão de 0,2 s)
         edl.append({"ini": round(p0, 3), "fim": round(p1, 3), "t": round(t, 3), "dur": round(p1 - p0, 3), "quem": quem}); tp.append((p0, p1, t)); t += p1 - p0
     ws = corrigir([w for w in pal_live if ini - 0.03 <= w[1] < fim - 0.08])
     if ws:
@@ -96,16 +97,23 @@ def legendas(ps, max_car=26):
         if p[0][-1] in ".,?!" or prox is None or len(txt) + 1 + len(prox[0]) > max_car or prox[1] - p[2] > 0.6:
             linhas.append({"t0": at[0][1], "t1": prox[1] if prox else p[2] + 0.6, "p": [[w, a] for w, a, _ in at]}); at = []
     return linhas
+def quando(txt, depois=0.0):
+    alvo = txt.lower().split(); ws = [w.lower().strip(".,?!") for w, _, _ in PAL]
+    for i in range(len(ws)):
+        if ws[i:i + len(alvo)] == alvo and PAL[i][1] >= depois: return round(PAL[i][1], 3)
+    return None
+MARCAS = {k: quando(v) for k, v in {"nucleo": "do núcleo", "consc": "conscientização", "extrema": "extrema", "oxala": "oxalá", "pretas": "são pretas",
+          "institucional": "institucional", "casas": "das casas"}.items()}
 (RAIZ / "motor/cenas/corte-01-terreiro.tempos.js").write_text(
     "// GERADO por audio/corte-01-terreiro/montar.py\n"
-    f"window.TEMPOS = {json.dumps({'dur': DUR, 'blocos': BLOCOS, 'legendas': legendas(PAL)}, ensure_ascii=False)};\n")
-(AQUI / "edl.json").write_text(json.dumps({"dur": DUR, "cortes": edl}, indent=1))
+    f"window.TEMPOS = {json.dumps({'dur': DUR, 'blocos': BLOCOS, 'marcas': MARCAS, 'legendas': legendas(PAL)}, ensure_ascii=False)};\n")
+(AQUI / "edl.json").write_text(json.dumps({"dur": DUR, "xf": XF, "cortes": edl}, indent=1))
 
 # áudio montado (sem trilha: é fala de live), com microfades nas emendas
 N = int(DUR * SR); voz = np.zeros(N + SR, np.float32)
 for c in edl:
-    p = x[int((c["ini"] - T0) * SR):int((c["fim"] - T0) * SR)].copy(); g = min(int(0.008 * SR), len(p) // 2)
-    p[:g] *= np.linspace(0, 1, g); p[-g:] *= np.linspace(1, 0, g); soma(voz, p, c["t"])
+    p = x[int((c["ini"] - T0) * SR):int((c["fim"] - T0) * SR)].copy(); g = min(int(XF * SR), len(p) // 2)
+    p[:g] *= np.sqrt(np.linspace(0, 1, g)); p[-g:] *= np.sqrt(np.linspace(1, 0, g)); soma(voz, p, c["t"])   # fusão de som igual-potência
 voz = voz[:N]
 som.salvar_wav(str(AQUI / "mix.wav"), voz, voz)
 print(f"{DUR:.1f}s · {len(edl)} pedaços · {len(SEGMENTOS)} trechos")

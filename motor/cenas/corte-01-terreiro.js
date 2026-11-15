@@ -11,18 +11,19 @@ window.CENA = {
     // fotos de uso livre (Wikimedia Commons; créditos em midia/corte-01-terreiro/CREDITOS.md e na legenda do post)
     rio1: '../midia/corte-01-terreiro/umbanda-rio-1.jpg', rio2: '../midia/corte-01-terreiro/umbanda-rio-2.jpg', rio3: '../midia/corte-01-terreiro/umbanda-rio-3.jpg',
     pretoVelho: '../midia/corte-01-terreiro/preto-velho.jpg', caboclo: '../midia/corte-01-terreiro/caboclo.jpg',
-    candomble: '../midia/corte-01-terreiro/candomble-ritual.jpg', iemanja: '../midia/corte-01-terreiro/iemanja.jpg', casa: '../midia/corte-01-terreiro/terreiro-ayra.jpg',
+    candomble: '../midia/corte-01-terreiro/candomble-ritual.jpg', iemanja: '../midia/corte-01-terreiro/iemanja.jpg',
+    dana2: '../midia/corte-01-terreiro/dana-02.jpg', iem11: '../midia/corte-01-terreiro/iemanja-11.jpg', iem3: '../midia/corte-01-terreiro/iemanja-03.jpg',
   },
   desenhar(ctx, t, L) {
     const { COR, FONTE, seg, lerp, ease, clamp } = L, CX = 540, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
     const B = (window.TEMPOS || {}).blocos || [], bl = B.find(b => t >= b.t0 && t < b.t1) || B[B.length - 1] || { t0: 0, t1: 1, quem: 'leo', card: 'dia' };
-    const lt = t - bl.t0;
+    const lt = t - bl.t0, M = (window.TEMPOS || {}).marcas || {}, rel = x => (x ?? 0) - bl.t0;   // rel: marca (palavra) no tempo do bloco
     ctx.clearRect(0, 0, 1080, 1920);
 
     // painel de baixo (de ponta a ponta)
     ctx.save(); ctx.beginPath(); ctx.rect(0, P.baixoY, 1080, P.baixoH); ctx.clip(); ctx.translate(0, P.baixoY);
     const W = 1080, H = P.baixoH, cx = W / 2;
-    ({ dia, nucleo, direita, luiz, '2018': ano2018, '2026': ano2026, organizar, mapa })[bl.card]();
+    ({ nucleo, direita, luiz, importancia, mapa })[bl.card]();
     L.papel(ctx, t, 0.06);
     ctx.restore();
     // filete vermelho na emenda dos dois painéis
@@ -31,7 +32,7 @@ window.CENA = {
     // tarja com nome e @ de quem fala (canto de baixo do vídeo, à esquerda)
     const [nome, arroba] = PESSOAS[bl.quem];
     ctx.save(); ctx.globalAlpha = clamp(seg(lt, 0, 0.25) * 1.5);
-    const tx = 36, ty = P.cimaH - 200;
+    const tx = 90, ty = P.cimaH - 230;                                   // longe da borda (não corta no Reels)
     L.fonte(ctx, FONTE.bloco, 30, 400); const tw = Math.max(ctx.measureText(nome).width, 230) + 44;
     ctx.fillStyle = 'rgba(15,12,11,0.85)'; ctx.fillRect(tx, ty, tw, 80); ctx.fillStyle = AMA; ctx.fillRect(tx, ty, 7, 80);
     L.texto(ctx, nome, tx + 24, ty + 38, { familia: FONTE.bloco, peso: 400, tam: 30, cor: BEGE });
@@ -40,7 +41,7 @@ window.CENA = {
 
     // logo pequena do Coletivo Lufã, no alto (abaixo da barra do Instagram)
     const im = L.img.lufa, lw = 180, lh = lw * im.height / im.width;
-    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 16; ctx.drawImage(im, CX - lw / 2, 200, lw, lh); ctx.restore();
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 16; ctx.drawImage(im, 70, 205, lw, lh);                                  // canto superior esquerdo, sem encostar na borda ctx.restore();
 
     legenda();
 
@@ -77,17 +78,23 @@ window.CENA = {
     }
     function chip(txt, x, y, p, fundoC = TINTA, cor = BEGE, tam = 26) { if (p > 0) L.etiqueta(ctx, txt, x, y, p, { cor: fundoC, corTexto: cor, tam }); }
 
-    function dia() { fotoTarja('rio2', 0, '15 DE NOVEMBRO', 'DIA NACIONAL DA UMBANDA · Lei 12.644/2012'); }
     function nucleo() {
-      if (lt < 4.2) fotoTarja('rio1', 0, 'NÚCLEO DOS POVOS DE TERREIRO', 'COLETIVO LUFÃ · comandado por Luiz Gustavo');
-      else fotoTarja('rio3', 4.2, 'CONSCIENTIZAÇÃO · PROTEÇÃO · ACOLHIMENTO', 'Núcleo dos Povos de Terreiro', { dy: 60 });
+      if (lt < rel(M.nucleo) - 0.3) fotoTarja('rio2', 0, '15 DE NOVEMBRO', 'DIA NACIONAL DA UMBANDA · Lei 12.644/2012');
+      else if (lt < rel(M.consc) - 0.2) fotoTarja('rio1', rel(M.nucleo) - 0.3, 'NÚCLEO DOS POVOS DE TERREIRO', 'COLETIVO LUFÃ · comandado por Luiz Gustavo');
+      else fotoTarja('rio3', rel(M.consc) - 0.2, 'CONSCIENTIZAÇÃO · PROTEÇÃO · ACOLHIMENTO', 'Núcleo dos Povos de Terreiro', { dy: 60 });
     }
     function direita() {
-      if (lt < 13.7) fotoTarja('rio3', 0, lt < 7.5 ? 'SEM ACOLHIMENTO DA ESQUERDA' : 'TERREIRO VAI PRA EXTREMA DIREITA', lt < 7.5 ? 'por falta de alinhamento' : 'isso não pode acontecer', { dy: 60 });
-      else if (lt < 16.2) fotoTarja('pretoVelho', 13.7, 'AS ENTIDADES SÃO PRETAS', 'Preto Velho');
-      else fotoTarja('caboclo', 16.2, 'PRETAS E PERIFÉRICAS', 'Caboclo', { dy: 300 });
+      const ex = rel(M.extrema) - 1.2, ox = rel(M.oxala) - 0.2, pr = rel(M.pretas) - 0.2;
+      if (lt < ox) fotoTarja('rio3', 0, lt < ex ? 'SEM ACOLHIMENTO DA ESQUERDA' : 'TERREIRO VAI PRA EXTREMA DIREITA', lt < ex ? 'por falta de alinhamento' : 'isso não pode acontecer', { dy: 60 });
+      else if (lt < pr) fotoTarja('pretoVelho', ox, 'AS ENTIDADES SÃO PRETAS', 'Preto Velho');
+      else fotoTarja('caboclo', pr, 'PRETAS E PERIFÉRICAS', 'Caboclo', { dy: 300 });
     }
     function luiz() { fotoTarja('candomble', 0, 'LUIZ GUSTAVO · OGÃ DE CANDOMBLÉ', '@vamosinvestigar'); }
+    function importancia() {
+      const vi = rel(M.institucional) - 0.4;
+      if (lt < vi) fotoTarja('iem11', 0, 'ORGANIZAR OS POVOS DE TERREIRO', 'marxistas junto com o povo de axé');
+      else fotoTarja('iem3', vi, 'VIOLÊNCIA INSTITUCIONAL E BOLSONARISTA', 'contra os povos de terreiro');
+    }
     function linha(t2026) {                                          // linha do tempo 2018 → 2026
       const y = 330, x0 = 160, x1 = W - 160;
       ctx.fillStyle = TINTA; ctx.fillRect(x0, y - 3, (x1 - x0) * (t2026 ? 1 : ease.saida(seg(lt, 0.3, 1.2)) * 0.5), 6);
@@ -110,15 +117,18 @@ window.CENA = {
       linha(true);
     }
     function organizar() { fotoTarja('iemanja', 0, 'MARXISTAS + POVOS DE TERREIRO', 'ORGANIZAÇÃO!'); }
-    function mapa() {
-      foto('casa', 0);
-      const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(15,12,11,0.85)'); g.addColorStop(0.6, 'rgba(15,12,11,0.55)'); g.addColorStop(1, 'rgba(15,12,11,0.1)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      carimba('MAPEAMENTO DAS CASAS', 100, 0.3, BEGE, 60, FONTE.manchete);
-      ['CANDOMBLÉ', 'UMBANDA', 'QUIMBANDA'].forEach((s2, i) => chip(s2, 290 + i * 250, 170, seg(lt, 0.9 + i * 0.35, 1.2 + i * 0.35), VERM, BEGE, 28));
-      if (lt > 2.2) L.texto(ctx, L.datilografar('e outras religiões de matriz afro-brasileira', seg(lt, 2.2, 3.4)), cx, 250, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 36, cor: BEGE, alinhar: 'center' });
-      chip('RIO DE JANEIRO + OUTROS ESTADOS: AJUDE!', cx, 320, seg(lt, 4.0, 4.3), AMA, TINTA, 26);
-      if (lt > 5) L.texto(ctx, 'Siga @vamosinvestigar e @_ocamarada', cx, 395, { familia: FONTE.grotesca, peso: 700, tam: 26, cor: BEGE, alinhar: 'center' });
+    function mapa() {                                                // pessoas vestidas de santo (candomblé) + o mapeamento das casas de axé
+      foto('dana2', 0);
+      const ap = clamp(seg(lt, rel(M.casas) - 0.5, rel(M.casas)));   // o texto entra quando ele fala "das casas"
+      const g = ctx.createLinearGradient(0, 0, 0, 470); g.addColorStop(0, `rgba(15,12,11,${0.85 * ap})`); g.addColorStop(1, 'rgba(15,12,11,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 470);
+      const t0 = rel(M.casas) - 0.5;
+      if (lt < t0) { tarja(0, 'A IDEIA É FAZER O MAPEAMENTO', 'Luiz Gustavo · Núcleo dos Povos de Terreiro'); return; }
+      carimba('MAPEAMENTO DAS CASAS DE AXÉ', 100, t0, BEGE, 56, FONTE.manchete);
+      ['CANDOMBLÉ', 'UMBANDA', 'QUIMBANDA'].forEach((s2, i) => chip(s2, 290 + i * 250, 170, seg(lt, t0 + 0.5 + i * 0.35, t0 + 0.8 + i * 0.35), VERM, BEGE, 28));
+      if (lt > t0 + 1.7) L.texto(ctx, L.datilografar('e outras religiões de matriz afro-brasileira', seg(lt, t0 + 1.7, t0 + 2.9)), cx, 250, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 36, cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 2 });
+      chip('RIO DE JANEIRO + OUTROS ESTADOS: AJUDE!', cx, 320, seg(lt, t0 + 3.6, t0 + 3.9), AMA, TINTA, 26);
+      if (lt > t0 + 5) L.texto(ctx, 'Siga @vamosinvestigar e @_ocamarada', cx, 395, { familia: FONTE.grotesca, peso: 700, tam: 26, cor: BEGE, alinhar: 'center', erro: TINTA, desloc: 2 });
     }
     // legenda (nosso padrão, um pouco menor), na emenda dos painéis
     function legenda() {
