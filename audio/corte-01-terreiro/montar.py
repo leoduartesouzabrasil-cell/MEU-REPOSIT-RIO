@@ -17,12 +17,14 @@ SEGMENTOS = [
     (2482.76, 2487.12, "leo", "dia"),          # "Hoje, pra quem não sabe, é o Dia Nacional da Umbanda, né, dia 15 de novembro."
     (2518.92, 2527.05, "leo", "nucleo"),       # "Sobre a criação do Núcleo dos Povos de Terreiro, que vai ser comandado pelo Luiz ... acolhimento pra essa galera."
     (2546.66, 2565.55, "leo", "direita"),      # "Porque muitas vezes ... extrema direita, ao bolsonarismo. Isso não pode acontecer, porque hoje Oxalá é preto ... periféricas."
-    (2668.56, 2674.30, "luiz", "2018"),        # "(em 2018) todo mundo virou bolsonarista, então eu tive que fazer um trabalho de formiguinha dentro do meu terreiro."
+    (2622.28, 2623.66, "luiz", "luiz"),        # "Meu nome é Luiz Gustavo"            (só o nome e o "ogã de candomblé", pedido do autor)
+    (2634.77, 2635.75, "luiz", "luiz"),        # "sou ogã de candomblé"
+    (2668.56, 2674.53, "luiz", "2018"),        # "(em 2018) todo mundo virou bolsonarista, então eu tive que fazer um trabalho de formiguinha dentro do meu terreiro."
     (2685.10, 2691.40, "luiz", "2026"),        # "Graças a Oxalá, essa eleição todos votaram no PT."
     (2694.55, 2699.60, "luiz", "organizar"),   # "Mas é importante a gente, enquanto marxista, se organizar junto com essa galera."
-    (2759.50, 2765.75, "luiz", "mapa"),        # "Mapeamento das casas de candomblé do Rio de Janeiro e a galera que for dos outros estados ajudar a gente nesse trabalho."
+    (2759.51, 2765.75, "luiz", "mapa"),        # "Mapeamento das casas de candomblé do Rio de Janeiro e a galera que for dos outros estados ajudar a gente nesse trabalho."
 ]
-CORRECOES = [(["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "Oxalá"),
+CORRECOES = [(["Luz"], "Luiz"), (["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "Oxalá"),
              (["gante"], "ogã de"), (["ao", "xalá"], "a Oxalá,"), (["canoblé"], "candomblé"), (["quanto", "marxista"], "enquanto marxista,"),
              (["nacional"], "Nacional"), (["dia", "15"], "dia 15")]
 PAUSA_MAX, PAUSA_FICA = 0.7, 0.35
@@ -66,7 +68,7 @@ def corrigir(ws):
 
 edl, PAL, t, BLOCOS = [], [], 0.0, []
 for n, (a, b, quem, card) in enumerate(SEGMENTOS):
-    ini, fim = vale(a - 0.10, a + 0.04), vale(b - 0.10, b + 0.06)       # o silêncio entre as palavras
+    ini, fim = vale(a - 0.03, a + 0.03), vale(b - 0.04, b + 0.04)       # pontos de corte conferidos à mão no silêncio entre as palavras
     t_bloco = t
     peds = pausas(ini, fim); tp = []
     for p0, p1 in peds:
@@ -79,6 +81,12 @@ for n, (a, b, quem, card) in enumerate(SEGMENTOS):
         p0, p1, tt = next(((p0, p1, tt) for p0, p1, tt in tp if wa < p1), tp[-1])
         PAL.append([w, round(tt + max(0, wa - p0), 3), round(tt + min(wb, p1) - p0, 3)])
     BLOCOS.append({"t0": round(t_bloco, 3), "t1": round(t, 3), "quem": quem, "card": card})
+# blocos seguidos com o mesmo card viram um só (o card não reanima)
+_b = []
+for b in BLOCOS:
+    if _b and _b[-1]["card"] == b["card"] and _b[-1]["quem"] == b["quem"]: _b[-1]["t1"] = b["t1"]
+    else: _b.append(b)
+BLOCOS = _b
 DUR = round(t + 0.6, 2)
 
 def legendas(ps, max_car=26):

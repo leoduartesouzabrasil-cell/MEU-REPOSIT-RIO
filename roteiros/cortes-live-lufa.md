@@ -9,24 +9,31 @@ o painel de cima se divide meio a meio) · embaixo SEMPRE uma imagem ou manchete
 dos painéis · logo pequena do Coletivo Lufã no alto (y 205, longe da borda) · tarja com nome e @ de quem fala.
 Pessoas: Leonardo Duarte (@_ocamarada, janela "Coletivo Lufã") · Luiz Gustavo (@vamosinvestigar).
 
-## CORTE 01 · Núcleo dos Povos de Terreiro (41:24–46:16 → 1:31, pontos principais)
+## CORTE 01 · Núcleo dos Povos de Terreiro (41:24–46:16 → 57 s, só os pontos de mais força)
 Montagem: `audio/corte-01-terreiro/montar.py` → `base.py` → `node ferramentas/overlay.js corte-01-terreiro ...` (cena `motor/cenas/corte-01-terreiro.js`).
-Trechos e card de baixo:
-1. Léo (41:22): "Hoje, pra quem não sabe, o dia é Nacional da Umbanda, dia 15 de novembro." → card "15 DE NOVEMBRO · DIA NACIONAL DA UMBANDA · Lei 12.644/2012"
-2. Léo (41:49): criação do Núcleo dos Povos de Terreiro, comandado pelo Luiz: conscientização, proteção e acolhimento → card do Núcleo
-3. Léo (42:26): por falta de acolhimento da esquerda, gente de terreiro se alinha à extrema direita; "as entidades são pretas, são periféricas" → 2 cards
-4. Luiz (43:53): "sou de terreiro, sou ogã de candomblé..." → card "LUIZ GUSTAVO · OGÃ DE CANDOMBLÉ"
-5. Luiz (44:26): em 2018 o terreiro virou bolsonarista; trabalho de formiguinha → card 2018 + linha do tempo
-6. Luiz (44:45): "graças a Oxalá, essa eleição todos votaram no PT" (eleição de 2026) → card "2026: TODOS VOTARAM NO PT"
-7. Luiz (44:54): organizar junto, violência institucional e bolsonarista → card "POVOS DE TERREIRO SOB ATAQUE"
-8. Luiz (45:59): mapeamento das casas de candomblé do RJ e de outros estados → card do mapeamento + "Siga @vamosinvestigar e @_ocamarada"
-Fora: "de hoje hoje", "a mãe de santo votou no Bolsonaro / Flávio Bolsonário" (troca de nome), a apresentação longa (CAPS, dança na UFRJ), "a lutativa a gente fazia".
+Pedido do autor: 50–60 s, começar no Dia Nacional da Umbanda, nenhum corte em cima de palavra (bordas conferidas no vale de energia e por
+transcrição de cada trecho), rosto inteiro (enquadramento manual: Leonardo janela y 150–950, Luiz y 60–860; laterais com o vídeo desfocado),
+FOTOS embaixo ligadas ao que é dito (Commons, uso livre: créditos em `midia/corte-01-terreiro/CREDITOS.md` e na legenda do post).
+1. Léo: "Hoje, pra quem não sabe, é o Dia Nacional da Umbanda, dia 15 de novembro." → foto do altar (Agência Brasil) + "15 DE NOVEMBRO · Lei 12.644/2012"
+2. Léo: "Sobre a criação do Núcleo dos Povos de Terreiro, comandado pelo Luiz ... conscientização, proteção e acolhimento" → fotos do terreiro (Agência Brasil)
+3. Léo: "Porque muitas vezes ... falta de acolhimento à esquerda ... extrema direita ... Oxalá é preto, as entidades são pretas, periféricas." → filha de santo; estátuas de Preto Velho e Caboclo
+4. Luiz: "Meu nome é Luiz Gustavo" + "sou ogã de candomblé" → foto de ritual de candomblé
+5. Luiz: "(em 2018) todo mundo virou bolsonarista ... trabalho de formiguinha dentro do meu terreiro" → card 2018
+6. Luiz: "Graças a Oxalá, essa eleição todos votaram no PT" (eleição de 2026) → card 2026
+7. Luiz: "Mas é importante a gente, enquanto marxista, se organizar junto com essa galera" → foto da Festa de Iemanjá + "ORGANIZAÇÃO!"
+8. Luiz: "Mapeamento das casas de candomblé do Rio de Janeiro..." → foto de casa de candomblé + "MAPEAMENTO DAS CASAS: CANDOMBLÉ · UMBANDA · QUIMBANDA
+   e outras religiões de matriz afro-brasileira · RJ + outros estados: ajude!"
 Fato conferido: Dia Nacional da Umbanda = 15 de novembro, Lei 12.644/2012 (planalto.gov.br; Senado, PLC 187/2010).
+Layout v3 (pedido do autor): sem borda preta (vídeo 1080×1100 em cima e foto 1080×820 embaixo, de ponta a ponta, com filete vermelho na emenda);
+textos menores (tarja 40 px, subtítulo 26 px com fundo escuro, legenda 40 px, tarja do nome 30/22 px, logo 180 px); NADA importante abaixo de
+y ≈ 1550 (área do @, descrição e botões do Reels): todo texto do painel de baixo fica no alto dele.
 
 ### Legenda do post
 ```
-🔥 Hoje, 15 de novembro, Dia Nacional da Umbanda, o Coletivo Lufã cria o Núcleo dos Povos de Terreiro! Por falta de acolhimento da esquerda, muita gente de terreiro foi parar na extrema direita, e isso não pode acontecer: nossas entidades são pretas e periféricas. O Luiz Gustavo (@vamosinvestigar), ogã de candomblé, conta como fez trabalho de formiguinha no próprio terreiro e vai comandar o mapeamento das casas de axé. Tem casa de candomblé ou umbanda na sua região? Manda pra gente! ✊🏾
+🔥 Hoje, 15 de novembro, Dia Nacional da Umbanda, o Coletivo Lufã cria o Núcleo dos Povos de Terreiro! Por falta de acolhimento da esquerda, muita gente de terreiro foi parar na extrema direita, e isso não pode acontecer: nossas entidades são pretas e periféricas. O Luiz Gustavo (@vamosinvestigar), ogã de candomblé, conta como fez trabalho de formiguinha no próprio terreiro e vai comandar o mapeamento das casas de candomblé, umbanda, quimbanda e outras religiões de matriz afro-brasileira. Tem casa de axé na sua região? Manda pra gente! ✊🏾
 
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
+
+Fotos: Agência Brasil (CC BY 2.0) · André Koehne, M. R., SouDiana, Paul R. Burley e Centro Espírita N. Sra. da Guia (CC BY-SA 4.0), via Wikimedia Commons
 ```

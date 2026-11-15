@@ -1,144 +1,142 @@
-// CORTE 01 · live do Coletivo Lufã (15/11/2026): Núcleo dos Povos de Terreiro. Template v2 (corte-modelo.js): camada transparente
-// sobre saida/corte-01-terreiro-base.mp4. Em cima: quem fala (vídeo-base) + tarja com nome e @; embaixo: um card por ponto; legenda na emenda.
+// CORTE 01 · live do Coletivo Lufã (15/11/2026): Núcleo dos Povos de Terreiro. Camada transparente sobre saida/corte-01-terreiro-base.mp4.
+// Layout v3 (pedido do autor): SEM borda preta (vídeo em cima e foto embaixo de ponta a ponta), textos menores, e NADA importante na parte
+// de baixo (onde o Instagram põe o @, a descrição e os botões): tarjas, cards e chamadas ficam acima de y ≈ 1560; abaixo disso só foto.
 // Exportar: node ferramentas/overlay.js corte-01-terreiro saida/.corte01/overlay.mov
-const P = { x: 24, w: 1032, cimaY: 64, cimaH: 1076, baixoY: 1156, baixoH: 640, raio: 26 };
+const P = { cimaH: 1100, baixoY: 1100, baixoH: 820, util: 450 };   // util = altura do painel de baixo que pode ter texto (1100 → 1550)
 const PESSOAS = { leo: ['LEONARDO DUARTE', '@_ocamarada'], luiz: ['LUIZ GUSTAVO', '@vamosinvestigar'] };
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: (window.TEMPOS || {}).dur || 90,
-  imagens: { lufa: '../identidade/marca/coletivo-lufa-horizontal.png' },
+  imagens: {
+    lufa: '../identidade/marca/coletivo-lufa-horizontal.png',
+    // fotos de uso livre (Wikimedia Commons; créditos em midia/corte-01-terreiro/CREDITOS.md e na legenda do post)
+    rio1: '../midia/corte-01-terreiro/umbanda-rio-1.jpg', rio2: '../midia/corte-01-terreiro/umbanda-rio-2.jpg', rio3: '../midia/corte-01-terreiro/umbanda-rio-3.jpg',
+    pretoVelho: '../midia/corte-01-terreiro/preto-velho.jpg', caboclo: '../midia/corte-01-terreiro/caboclo.jpg',
+    candomble: '../midia/corte-01-terreiro/candomble-ritual.jpg', iemanja: '../midia/corte-01-terreiro/iemanja.jpg', casa: '../midia/corte-01-terreiro/terreiro-ayra.jpg',
+  },
   desenhar(ctx, t, L) {
     const { COR, FONTE, seg, lerp, ease, clamp } = L, CX = 540, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta;
     const B = (window.TEMPOS || {}).blocos || [], bl = B.find(b => t >= b.t0 && t < b.t1) || B[B.length - 1] || { t0: 0, t1: 1, quem: 'leo', card: 'dia' };
-    const lt = t - bl.t0, fr = clamp(lt / Math.max(0.1, bl.t1 - bl.t0));
+    const lt = t - bl.t0;
     ctx.clearRect(0, 0, 1080, 1920);
 
-    // fundo preto com o "buraco" arredondado do painel de cima (o vídeo aparece por ele)
-    ctx.save(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.rect(0, 0, 1080, 1920); arred(P.x, P.cimaY, P.w, P.cimaH, P.raio); ctx.fill('evenodd'); ctx.restore();
-
-    // painel de baixo: o card do ponto
-    ctx.save(); ctx.beginPath(); arred(P.x, P.baixoY, P.w, P.baixoH, P.raio); ctx.clip(); ctx.translate(P.x, P.baixoY);
-    const W = P.w, H = P.baixoH, cx = W / 2, entra = seg(lt, 0, 0.35);
-    ({ dia, nucleo, direita, luiz, '2018': ano2018, '2026': ano2026, violencia, mapa })[bl.card]();
-    L.papel(ctx, t, 0.07);
+    // painel de baixo (de ponta a ponta)
+    ctx.save(); ctx.beginPath(); ctx.rect(0, P.baixoY, 1080, P.baixoH); ctx.clip(); ctx.translate(0, P.baixoY);
+    const W = 1080, H = P.baixoH, cx = W / 2;
+    ({ dia, nucleo, direita, luiz, '2018': ano2018, '2026': ano2026, organizar, mapa })[bl.card]();
+    L.papel(ctx, t, 0.06);
     ctx.restore();
+    // filete vermelho na emenda dos dois painéis
+    ctx.fillStyle = VERM; ctx.fillRect(0, P.baixoY - 3, 1080, 6);
 
-    // tarja com nome e @ de quem fala (canto de baixo do painel de cima)
+    // tarja com nome e @ de quem fala (canto de baixo do vídeo, à esquerda)
     const [nome, arroba] = PESSOAS[bl.quem];
     ctx.save(); ctx.globalAlpha = clamp(seg(lt, 0, 0.25) * 1.5);
-    const tx = P.x + 26, ty = P.cimaY + P.cimaH - 190;
-    L.fonte(ctx, FONTE.bloco, 40, 400); const tw = Math.max(ctx.measureText(nome).width, 300) + 56;
-    ctx.fillStyle = 'rgba(15,12,11,0.88)'; ctx.fillRect(tx, ty, tw, 106); ctx.fillStyle = AMA; ctx.fillRect(tx, ty, 9, 106);
-    L.texto(ctx, nome, tx + 30, ty + 50, { familia: FONTE.bloco, peso: 400, tam: 40, cor: BEGE });
-    L.texto(ctx, arroba, tx + 30, ty + 88, { familia: FONTE.grotesca, peso: 700, tam: 28, cor: AMA });
+    const tx = 36, ty = P.cimaH - 200;
+    L.fonte(ctx, FONTE.bloco, 30, 400); const tw = Math.max(ctx.measureText(nome).width, 230) + 44;
+    ctx.fillStyle = 'rgba(15,12,11,0.85)'; ctx.fillRect(tx, ty, tw, 80); ctx.fillStyle = AMA; ctx.fillRect(tx, ty, 7, 80);
+    L.texto(ctx, nome, tx + 24, ty + 38, { familia: FONTE.bloco, peso: 400, tam: 30, cor: BEGE });
+    L.texto(ctx, arroba, tx + 24, ty + 66, { familia: FONTE.grotesca, peso: 700, tam: 22, cor: AMA });
     ctx.restore();
 
-    // logo pequena do Coletivo Lufã, no alto
-    const im = L.img.lufa, lw = 230, lh = lw * im.height / im.width;
-    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 18; ctx.drawImage(im, CX - lw / 2, 205, lw, lh); ctx.restore();
+    // logo pequena do Coletivo Lufã, no alto (abaixo da barra do Instagram)
+    const im = L.img.lufa, lw = 180, lh = lw * im.height / im.width;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 16; ctx.drawImage(im, CX - lw / 2, 200, lw, lh); ctx.restore();
 
     legenda();
 
-    // ================================================ cards (coordenadas dentro do painel de baixo: 1032 × 640)
-    function fundo(cor, raios = 'rgba(200,32,30,0.08)') { ctx.fillStyle = cor; ctx.fillRect(0, 0, W, H); L.raios(ctx, cx, H + 260, 1700, 22, -0.2 + L.emDois(t) * 0.03, raios); }
-    function carimba(txt, y, t0, cor, tam, fam = FONTE.bloco, larg = 940, seed = 1) {
+    // ================================================ painel de baixo (coordenadas locais: 1080 × 820; texto só até y ≈ 450)
+    function foto(img, t0, o = {}) {
+      const e = ease.saida(seg(lt, t0, t0 + 0.5));
+      ctx.save(); ctx.globalAlpha = clamp(seg(lt, t0, t0 + 0.3) * 1.2);
+      L.foto(ctx, L.img[img], 0, 0, W, H, { pb: false, retic: false, zoom: lerp(1.03, 1.10, seg(lt, t0, t0 + 8)), dy: o.dy || 0, dx: o.dx || 0, desfoque: (1 - e) * 6 });
+      ctx.restore();
+    }
+    // tarja com o texto-chave NO ALTO do painel de baixo (fora da área do @ e da descrição do Reels)
+    function tarja(t0, linha1, linha2) {
+      const g = ctx.createLinearGradient(0, 0, 0, 260); g.addColorStop(0, 'rgba(15,12,11,0.7)'); g.addColorStop(1, 'rgba(15,12,11,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 260);
+      L.aplicarCarimbo(ctx, seg(lt, t0 + 0.15, t0 + 0.45), cx, 120, () => {
+        const tam1 = Math.min(40, L.ajustar(ctx, linha1, FONTE.bloco, 860, 400));
+        L.fonte(ctx, FONTE.bloco, tam1, 400); const w1 = ctx.measureText(linha1).width + 44;
+        ctx.fillStyle = VERM; ctx.fillRect(cx - w1 / 2, 86, w1, tam1 * 1.5);
+        L.texto(ctx, linha1, cx, 86 + tam1 * 1.08, { familia: FONTE.bloco, peso: 400, tam: tam1, cor: BEGE, alinhar: 'center' });
+        if (linha2) {
+          const t2 = Math.min(26, L.ajustar(ctx, linha2, FONTE.grotesca, 860, 700)); L.fonte(ctx, FONTE.grotesca, t2, 700);
+          const w2 = ctx.measureText(linha2).width + 30, y2 = 86 + tam1 * 1.5 + 6;
+          ctx.fillStyle = 'rgba(15,12,11,0.85)'; ctx.fillRect(cx - w2 / 2, y2, w2, t2 + 18);
+          L.texto(ctx, linha2, cx, y2 + t2 + 4, { familia: FONTE.grotesca, peso: 700, tam: t2, cor: AMA, alinhar: 'center' });
+        }
+      }, 5);
+    }
+    function fotoTarja(img, t0, l1, l2, o) { foto(img, t0, o); tarja(t0, l1, l2); }
+    function fundo(cor, raios = 'rgba(200,32,30,0.08)') { ctx.fillStyle = cor; ctx.fillRect(0, 0, W, H); L.raios(ctx, cx, H, 1700, 22, -0.2 + L.emDois(t) * 0.03, raios); }
+    function carimba(txt, y, t0, cor, tam, fam = FONTE.bloco, larg = 860, seed = 1) {
       const peso = fam === FONTE.bloco ? 400 : 900;
       L.aplicarCarimbo(ctx, seg(lt, t0, t0 + 0.3), cx, y, () =>
-        L.texto(ctx, txt, cx, y, { familia: fam, peso, tam: Math.min(tam, L.ajustar(ctx, txt, fam, larg, peso)), cor, alinhar: 'center', erro: cor === TINTA ? VERM : TINTA, desloc: 4 }), seed);
+        L.texto(ctx, txt, cx, y, { familia: fam, peso, tam: Math.min(tam, L.ajustar(ctx, txt, fam, larg, peso)), cor, alinhar: 'center', erro: cor === TINTA ? VERM : TINTA, desloc: 3 }), seed);
     }
-    function chip(txt, x, y, p, fundoC = TINTA, cor = BEGE, tam = 32) { if (p > 0) { ctx.save(); L.etiqueta(ctx, txt, x, y, p, { cor: fundoC, corTexto: cor, tam }); ctx.restore(); } }
-    function dia() {
-      fundo(BEGE);
-      carimba('15 DE NOVEMBRO', 270, 0.1, VERM, 150);
-      carimba('DIA NACIONAL DA UMBANDA', 400, 0.6, TINTA, 84, FONTE.manchete);
-      if (lt > 1.2) L.texto(ctx, L.datilografar('Lei 12.644/2012', seg(lt, 1.2, 2.0)), cx, 500, { familia: FONTE.maquina, peso: 400, tam: 34, cor: TINTA, alinhar: 'center' });
-    }
+    function chip(txt, x, y, p, fundoC = TINTA, cor = BEGE, tam = 26) { if (p > 0) L.etiqueta(ctx, txt, x, y, p, { cor: fundoC, corTexto: cor, tam }); }
+
+    function dia() { fotoTarja('rio2', 0, '15 DE NOVEMBRO', 'DIA NACIONAL DA UMBANDA · Lei 12.644/2012'); }
     function nucleo() {
-      fundo(VERM, 'rgba(138,20,17,0.5)');
-      carimba('NÚCLEO DOS', 190, 0.1, BEGE, 90, FONTE.manchete);
-      carimba('POVOS DE TERREIRO', 300, 0.4, AMA, 96);
-      ['CONSCIENTIZAÇÃO', 'PROTEÇÃO', 'ACOLHIMENTO'].forEach((s, i) => chip(s, 190 + i * 326, 430, seg(lt, 14.6 + i * 0.8, 14.9 + i * 0.8), TINTA, BEGE, 34));
-      if (lt > 1.2) L.texto(ctx, 'COLETIVO LUFÃ · comandado por Luiz Gustavo', cx, 560, { familia: FONTE.grotesca, peso: 700, tam: 30, cor: BEGE, alinhar: 'center' });
+      if (lt < 4.2) fotoTarja('rio1', 0, 'NÚCLEO DOS POVOS DE TERREIRO', 'COLETIVO LUFÃ · comandado por Luiz Gustavo');
+      else fotoTarja('rio3', 4.2, 'CONSCIENTIZAÇÃO · PROTEÇÃO · ACOLHIMENTO', 'Núcleo dos Povos de Terreiro', { dy: 60 });
     }
     function direita() {
-      fundo(BEGE);
-      const virada = lt > 13.7;                                     // "porque hoje Oxalá é preto..."
-      if (!virada) {
-        carimba('SEM ACOLHIMENTO DA ESQUERDA', 190, 0.1, TINTA, 70, FONTE.manchete);
-        if (lt > 7.5) { ctx.fillStyle = VERM; ctx.beginPath(); ctx.moveTo(cx - 40, 250); ctx.lineTo(cx + 40, 250); ctx.lineTo(cx, 300); ctx.fill(); }
-        carimba('TERREIRO VAI PRA', 380, 7.5, VERM, 92);
-        carimba('EXTREMA DIREITA', 490, 8.2, VERM, 100);
-      } else {
-        carimba('AS ENTIDADES SÃO', 230, 13.7, TINTA, 90, FONTE.manchete);
-        carimba('PRETAS E PERIFÉRICAS', 360, 15.4, VERM, 92);
-      }
+      if (lt < 13.7) fotoTarja('rio3', 0, lt < 7.5 ? 'SEM ACOLHIMENTO DA ESQUERDA' : 'TERREIRO VAI PRA EXTREMA DIREITA', lt < 7.5 ? 'por falta de alinhamento' : 'isso não pode acontecer', { dy: 60 });
+      else if (lt < 16.2) fotoTarja('pretoVelho', 13.7, 'AS ENTIDADES SÃO PRETAS', 'Preto Velho');
+      else fotoTarja('caboclo', 16.2, 'PRETAS E PERIFÉRICAS', 'Caboclo', { dy: 300 });
     }
-    function luiz() {
-      fundo(TINTA, 'rgba(200,32,30,0.25)');
-      carimba('LUIZ GUSTAVO', 230, 0.1, BEGE, 120);
-      carimba('OGÃ DE CANDOMBLÉ', 350, 0.8, AMA, 80, FONTE.manchete);
-      if (lt > 1.6) L.texto(ctx, 'Núcleo dos Povos de Terreiro · Coletivo Lufã', cx, 470, { familia: FONTE.grotesca, peso: 700, tam: 30, cor: BEGE, alinhar: 'center' });
-    }
+    function luiz() { fotoTarja('candomble', 0, 'LUIZ GUSTAVO · OGÃ DE CANDOMBLÉ', '@vamosinvestigar'); }
     function linha(t2026) {                                          // linha do tempo 2018 → 2026
-      const y = 470, x0 = 120, x1 = W - 120;
-      ctx.fillStyle = TINTA; ctx.fillRect(x0, y - 4, (x1 - x0) * (t2026 ? 1 : ease.saida(seg(lt, 0.3, 1.2)) * 0.5), 8);
+      const y = 330, x0 = 160, x1 = W - 160;
+      ctx.fillStyle = TINTA; ctx.fillRect(x0, y - 3, (x1 - x0) * (t2026 ? 1 : ease.saida(seg(lt, 0.3, 1.2)) * 0.5), 6);
       [[x0, '2018', true], [x1, '2026', t2026]].forEach(([x, s, on]) => {
-        if (!on) return; ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill();
-        L.texto(ctx, s, x, y + 80, { familia: FONTE.bloco, peso: 400, tam: 48, cor: TINTA, alinhar: 'center' });
+        if (!on) return; ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(x, y, 16, 0, 7); ctx.fill();
+        L.texto(ctx, s, x, y + 56, { familia: FONTE.bloco, peso: 400, tam: 36, cor: TINTA, alinhar: 'center' });
       });
     }
     function ano2018() {
       fundo(BEGE);
-      carimba('2018: O TERREIRO', 170, 0.1, TINTA, 84, FONTE.manchete);
-      carimba('VIROU BOLSONARISTA', 280, 0.6, VERM, 92);
-      chip('TRABALHO DE FORMIGUINHA', cx, 380, seg(lt, 6.2, 6.5), TINTA, AMA, 36);
+      carimba('2018: O TERREIRO', 110, 0.1, TINTA, 62, FONTE.manchete);
+      carimba('VIROU BOLSONARISTA', 190, 0.6, VERM, 64);
+      chip('TRABALHO DE FORMIGUINHA', cx, 262, seg(lt, 4.2, 4.5), TINTA, AMA, 28);
       linha(false);
     }
     function ano2026() {
       fundo(BEGE);
-      carimba('2026: TODOS', 170, 0.1, TINTA, 90, FONTE.manchete);
-      carimba('VOTARAM NO PT', 290, 0.5, VERM, 100);
+      carimba('2026: TODOS', 110, 0.1, TINTA, 64, FONTE.manchete);
+      carimba('VOTARAM NO PT', 200, 0.5, VERM, 72);
       linha(true);
     }
-    function violencia() {
-      fundo('#5E0B0A', 'rgba(0,0,0,0.25)');
-      carimba('POVOS DE TERREIRO SOB ATAQUE', 140, 0.1, BEGE, 64, FONTE.manchete);
-      carimba('VIOLÊNCIA INSTITUCIONAL', 290, 10.4, AMA, 80);
-      carimba('VIOLÊNCIA BOLSONARISTA', 420, 12.9, AMA, 80);
-      if (lt > 2.0) L.texto(ctx, 'organizar junto com essa galera', cx, 560, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 40, cor: BEGE, alinhar: 'center' });
-    }
+    function organizar() { fotoTarja('iemanja', 0, 'MARXISTAS + POVOS DE TERREIRO', 'ORGANIZAÇÃO!'); }
     function mapa() {
-      fundo(BEGE);
-      // alfinete de mapa
-      const pin = ease.carimbo(seg(lt, 0.1, 0.5));
-      ctx.save(); ctx.translate(cx, 150); ctx.scale(pin, pin); ctx.fillStyle = VERM;
-      ctx.beginPath(); ctx.arc(0, -20, 48, Math.PI, 0); ctx.lineTo(0, 70); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = BEGE; ctx.beginPath(); ctx.arc(0, -20, 18, 0, 7); ctx.fill(); ctx.restore();
-      carimba('MAPEAMENTO DAS CASAS', 300, 0.4, TINTA, 84, FONTE.manchete);
-      carimba('DE CANDOMBLÉ', 400, 0.8, VERM, 92);
-      chip('RIO DE JANEIRO + OUTROS ESTADOS: AJUDE!', cx, 500, seg(lt, 4.0, 4.3), TINTA, AMA, 32);
-      if (lt > 7) L.texto(ctx, 'Siga @vamosinvestigar e @_ocamarada', cx, 590, { familia: FONTE.grotesca, peso: 700, tam: 32, cor: TINTA, alinhar: 'center' });
+      foto('casa', 0);
+      const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(15,12,11,0.85)'); g.addColorStop(0.6, 'rgba(15,12,11,0.55)'); g.addColorStop(1, 'rgba(15,12,11,0.1)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      carimba('MAPEAMENTO DAS CASAS', 100, 0.3, BEGE, 60, FONTE.manchete);
+      ['CANDOMBLÉ', 'UMBANDA', 'QUIMBANDA'].forEach((s2, i) => chip(s2, 290 + i * 250, 170, seg(lt, 0.9 + i * 0.35, 1.2 + i * 0.35), VERM, BEGE, 28));
+      if (lt > 2.2) L.texto(ctx, L.datilografar('e outras religiões de matriz afro-brasileira', seg(lt, 2.2, 3.4)), cx, 250, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 36, cor: BEGE, alinhar: 'center' });
+      chip('RIO DE JANEIRO + OUTROS ESTADOS: AJUDE!', cx, 320, seg(lt, 4.0, 4.3), AMA, TINTA, 26);
+      if (lt > 5) L.texto(ctx, 'Siga @vamosinvestigar e @_ocamarada', cx, 395, { familia: FONTE.grotesca, peso: 700, tam: 26, cor: BEGE, alinhar: 'center' });
     }
-    // legenda (nosso padrão), na emenda dos painéis
+    // legenda (nosso padrão, um pouco menor), na emenda dos painéis
     function legenda() {
       const LEG = (window.TEMPOS || {}).legendas || [], l = LEG.find(l => t >= l.t0 - 0.05 && t < l.t1);
       if (!l) return;
       const CH = /^(umbanda|terreiro|núcleo|acolhimento|extrema|bolsonarismo|oxalá|pretas|periféricas|ogã|candomblé|bolsonarista|formiguinha|pt|marxista|violência|mapeamento|militando)/i;
-      const pal = l.p.map(([w, t0]) => [w, t0 - 0.08]); L.fonte(ctx, FONTE.serifa, 48, 400, 'italic');
-      const esp = 48 * 0.28, larg = pal.map(([w]) => ctx.measureText(w).width), tot = larg.reduce((a, b) => a + b, 0) + esp * (pal.length - 1);
-      const tam = Math.min(48, 48 * 900 / tot), k = tam / 48, Wl = tot * k, x0 = CX - Wl / 2, Y = P.baixoY - 46;
+      const T0 = 40, pal = l.p.map(([w, t0]) => [w, t0 - 0.08]); L.fonte(ctx, FONTE.serifa, T0, 400, 'italic');
+      const esp = T0 * 0.28, larg = pal.map(([w]) => ctx.measureText(w).width), tot = larg.reduce((a, b) => a + b, 0) + esp * (pal.length - 1);
+      const tam = Math.min(T0, T0 * 860 / tot), k = tam / T0, Wl = tot * k, x0 = CX - Wl / 2, Y = P.baixoY - 34;
       ctx.save(); ctx.globalAlpha = clamp((l.t1 - t) / 0.15) * clamp((t - l.t0 + 0.05) / 0.12);
-      ctx.fillStyle = 'rgba(15,12,11,0.92)'; ctx.fillRect(x0 - 26, Y, Wl + 52, 76); ctx.fillStyle = VERM; ctx.fillRect(x0 - 26, Y, 7, 76);
+      ctx.fillStyle = 'rgba(15,12,11,0.92)'; ctx.fillRect(x0 - 22, Y, Wl + 44, 64); ctx.fillStyle = VERM; ctx.fillRect(x0 - 22, Y, 6, 64);
       let x = x0;
       pal.forEach(([w, t0], i) => {
         const a = seg(t, t0, t0 + 0.2);
-        if (a > 0) { ctx.save(); ctx.globalAlpha *= a; L.texto(ctx, w, x, Y + 51 + (1 - ease.saida(a)) * 8, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam, cor: CH.test(w) ? AMA : BEGE }); ctx.restore(); }
+        if (a > 0) { ctx.save(); ctx.globalAlpha *= a; L.texto(ctx, w, x, Y + 43 + (1 - ease.saida(a)) * 6, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam, cor: CH.test(w) ? AMA : BEGE }); ctx.restore(); }
         x += (larg[i] + esp) * k;
       });
       ctx.restore();
-    }
-    function arred(x, y, w, h, r) {
-      ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
     }
   },
 };

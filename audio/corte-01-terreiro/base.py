@@ -6,18 +6,22 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent; RAIZ = AQUI.parent.parent
 FONTE = RAIZ / "midia/cortes/fonte.mp4"; TMP = RAIZ / "saida/.corte01"; TMP.mkdir(parents=True, exist_ok=True)
 e = json.loads((AQUI / "edl.json").read_text())
-PW, PH = 1032, 1076
-ROSTO = {"leo": 0.47, "luiz": 0.42}          # altura do rosto na janela (fração) para centrar o recorte
-JX, JW, JH = 656, 607, 1080 - 60
+PW, PH = 1080, 1100                                   # v3: vídeo de ponta a ponta (sem borda preta)
+# enquadramento conferido à mão (grade sobre quadros de cada trecho): faixa vertical da janela que mostra o rosto INTEIRO (cabeça → ombros)
+#   Leonardo: topo da cabeça ~250, queixo ~800  → janela y 150–950 · Luiz: cabelo ~160, queixo ~690 → janela y 60–860
+FAIXA = {"leo": (150, 950), "luiz": (60, 860)}
+JX, JW = 656, 607
 lista = []
 for k, c in enumerate(e["cortes"]):
-    cw = JW; ch = round(cw * PH / PW)
-    cy = max(0, min(JH - ch, round(1080 * ROSTO[c["quem"]] - ch / 2)))
-    vf = (f"crop={cw}:{ch}:{JX}:{cy},scale={PW}:{PH}:flags=lanczos,eq=contrast=1.05:saturation=1.08,unsharp=5:5:0.6,"
-          f"pad=1080:1920:24:64:black,setsar=1,fps=30")
+    y0, y1 = FAIXA[c["quem"]]; ch = y1 - y0
+    fw = round(JW * PH / ch / 2) * 2                     # largura do vídeo no painel (altura cheia), ~816
+    fc = (f"[0:v]crop={JW}:{ch}:{JX}:{y0},split[a][b];"
+          f"[a]scale={PW}:{PH}:force_original_aspect_ratio=increase,crop={PW}:{PH},boxblur=30:2,eq=brightness=-0.12:saturation=0.8[fundo];"
+          f"[b]scale={fw}:{PH}:flags=lanczos,eq=contrast=1.05:saturation=1.08,unsharp=5:5:0.5[frente];"
+          f"[fundo][frente]overlay=({PW}-{fw})/2:0,pad=1080:1920:0:0:black,setsar=1,fps=30[v]")
     out = TMP / f"p{k:03d}.mp4"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(c["ini"]), "-t", str(c["fim"] - c["ini"]), "-i", str(FONTE), "-vf", vf,
-                    "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", str(out)], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(c["ini"]), "-t", str(c["fim"] - c["ini"]), "-i", str(FONTE), "-filter_complex", fc,
+                    "-map", "[v]", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", str(out)], check=True)
     lista.append(out)
 (TMP / "lista.txt").write_text("".join(f"file '{p}'\n" for p in lista))
 fim = e["dur"] - (e["cortes"][-1]["t"] + e["cortes"][-1]["dur"])
