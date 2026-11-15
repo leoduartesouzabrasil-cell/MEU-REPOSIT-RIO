@@ -35,5 +35,5 @@ y ≈ 1550 (área do @, descrição e botões do Reels): todo texto do painel de
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
 
-Fotos: Agência Brasil (CC BY 2.0) · André Koehne, M. R., SouDiana, Paul R. Burley e Centro Espírita N. Sra. da Guia (CC BY-SA 4.0), via Wikimedia Commons
+Fotos: Agência Brasil (CC BY 2.0) · André Koehne, M. R., SouDiana, Paul R. Burley e autor desconhecido (Preto Velho) (CC BY-SA 4.0), via Wikimedia Commons
 ```
