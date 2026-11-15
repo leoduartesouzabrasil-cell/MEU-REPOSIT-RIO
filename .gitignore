@@ -6,3 +6,7 @@ audio/*/mix*.wav
 # vídeos brutos do celular (grandes demais para o GitHub; ficam no Drive, link no roteiro)
 midia/fim-6x1-dino/leo-bruto.mov
 midia/fim-6x1-dino/leo-audio.wav
+
+# vídeo longo de onde saem os cortes (838 MB; fica no Drive)
+midia/cortes/fonte.mp4
+midia/cortes/fonte-audio.wav
