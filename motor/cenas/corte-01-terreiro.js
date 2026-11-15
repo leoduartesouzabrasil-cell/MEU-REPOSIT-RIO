@@ -87,7 +87,9 @@ window.CENA = {
       const ex = rel(M.extrema) - 1.2, ox = rel(M.oxala) - 0.2, pr = rel(M.pretas) - 0.2;
       if (lt < ox) fotoTarja('rio3', 0, lt < ex ? 'SEM ACOLHIMENTO DA ESQUERDA' : 'TERREIRO VAI PRA EXTREMA DIREITA', lt < ex ? 'por falta de alinhamento' : 'isso não pode acontecer', { dy: 60 });
       else if (lt < pr) fotoTarja('pretoVelho', ox, 'AS ENTIDADES SÃO PRETAS', 'Preto Velho');
-      else fotoTarja('caboclo', pr, 'PRETAS E PERIFÉRICAS', 'Caboclo', { dy: 300 });
+      else if (lt < rel(M.foram) - 0.2) fotoTarja('caboclo', pr, 'PRETAS E PERIFÉRICAS', 'Caboclo', { dy: 300 });
+      else if (lt < rel(M.chamada) - 0.2) fotoTarja('rio1', rel(M.foram) - 0.2, 'ANCESTRALIDADE E MEMÓRIA', 'pra gente aprender em vida');
+      else fotoTarja('candomble', rel(M.chamada) - 0.2, 'COM A PALAVRA: LUIZ GUSTAVO', 'a importância do Núcleo dos Povos de Terreiro');
     }
     function luiz() { fotoTarja('candomble', 0, 'LUIZ GUSTAVO · OGÃ DE CANDOMBLÉ', '@vamosinvestigar'); }
     function importancia() {

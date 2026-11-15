@@ -17,15 +17,15 @@ FONTE = RAIZ / "midia/cortes/fonte.mp4"
 # Luiz na ordem: nome + "ogã de candomblé" → a importância (organizar, violência) → o mapeamento das casas.
 SEGMENTOS = [
     (2509.90, 2527.05, "leo", "nucleo"),       # "Então hoje, no Dia Nacional ... da Umbanda, pra gente poder falar sobre a criação ... do Núcleo dos Povos de Terreiro ... acolhimento pra essa galera."
-    (2546.66, 2565.55, "leo", "direita"),      # "Porque muitas vezes ... extrema direita, ao bolsonarismo. Isso não pode acontecer, porque hoje Oxalá é preto ... periféricas."
+    (2546.66, 2577.62, "leo", "direita"),      # ... "são periféricas, foram em vida pessoas que sofreram ... pra que a gente possa aprender em vida, tá bom? Então, Luiz, fica à vontade de poder falar da importância da questão desse núcleo," (passagem natural para o Luiz)      # "Porque muitas vezes ... extrema direita, ao bolsonarismo. Isso não pode acontecer, porque hoje Oxalá é preto ... periféricas."
     (2622.28, 2623.66, "luiz", "luiz"),        # "Meu nome é Luiz Gustavo"
     (2634.77, 2635.75, "luiz", "luiz"),        # "sou ogã de candomblé"
     (2694.55, 2710.10, "luiz", "importancia"), # "Mas é importante a gente, enquanto marxista, se organizar junto com essa galera ... violência bolsonarista tá atacando muito essa galera, né."
     (2754.92, 2772.06, "luiz", "mapa"),        # "Eu acho que a ideia é fazer a iniciativa mesmo, né, a gente fazer esse mapeamento ... militando essas casas também."
 ]
-CORRECOES = [(["lutativa"], "iniciativa"), (["Luz"], "Luiz"), (["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "Oxalá"),
+CORRECOES = [(["lutativa"], "iniciativa"), (["Luz"], "Luiz"), (["um", "banda"], "Umbanda"), (["um", "banda,"], "Umbanda,"), (["comporância"], "concordância,"), (["o", "chá"], "o orixá"),
              (["gante"], "ogã de"), (["ao", "xalá"], "a Oxalá,"), (["canoblé"], "candomblé"), (["quanto", "marxista"], "enquanto marxista,"),
-             (["nacional"], "Nacional"), (["dia", "15"], "dia 15")]
+             (["nacional"], "Nacional"), (["Luiz"], "Luiz,"), (["Então", "Luiz"], "Então, Luiz,"), (["periféricas"], "periféricas,"), (["fica", "a", "vontade"], "fica à vontade"), (["dia", "15"], "dia 15")]
 PAUSA_MAX, PAUSA_FICA = 1.0, 0.45
 XF = 0.20                                   # transição suave (som e imagem) entre um trecho e outro
 
@@ -98,11 +98,13 @@ def legendas(ps, max_car=26):
             linhas.append({"t0": at[0][1], "t1": prox[1] if prox else p[2] + 0.6, "p": [[w, a] for w, a, _ in at]}); at = []
     return linhas
 def quando(txt, depois=0.0):
-    alvo = txt.lower().split(); ws = [w.lower().strip(".,?!") for w, _, _ in PAL]
-    for i in range(len(ws)):
-        if ws[i:i + len(alvo)] == alvo and PAL[i][1] >= depois: return round(PAL[i][1], 3)
+    """Primeiro instante em que a fala (legenda já corrigida) começa com o texto dado (compara o texto corrido, sem pontuação)."""
+    limpa = lambda w: w.lower().replace(",", "").replace(".", "").replace("?", "").replace("!", "")
+    for i in range(len(PAL)):
+        corrido = " ".join(limpa(w) for w, _, _ in PAL[i:i + 6])
+        if PAL[i][1] >= depois and (corrido + " ").startswith(txt.lower() + " "): return round(PAL[i][1], 3)
     return None
-MARCAS = {k: quando(v) for k, v in {"nucleo": "do núcleo", "consc": "conscientização", "extrema": "extrema", "oxala": "oxalá", "pretas": "são pretas",
+MARCAS = {k: quando(v) for k, v in {"nucleo": "do núcleo", "consc": "conscientização", "extrema": "extrema", "oxala": "o orixá", "foram": "foram em vida", "chamada": "então luiz", "pretas": "são pretas",
           "institucional": "institucional", "casas": "das casas"}.items()}
 (RAIZ / "motor/cenas/corte-01-terreiro.tempos.js").write_text(
     "// GERADO por audio/corte-01-terreiro/montar.py\n"
