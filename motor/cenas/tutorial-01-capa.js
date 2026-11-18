@@ -47,11 +47,11 @@ window.CENA = {
     L.imagem(ctx, L.img.lufa, 210, 960, 180);
     // subtítulo numa tarja preta, colado no título
     const SUB = ['O que é o coletivo, de onde viemos', 'e no que acreditamos'];
-    L.fonte(ctx, FONTE.serifa, 52, 400, 'italic');
-    const sw = Math.max(...SUB.map((l) => ctx.measureText(l).width)) + 64;
-    ctx.fillStyle = COR.tinta; ctx.fillRect(120, 690, sw, 150);
-    ctx.fillStyle = VERM; ctx.fillRect(120, 690, 10, 150);
-    SUB.forEach((l, i) => L.texto(ctx, l, 156, 754 + i * 60, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 52, cor: BEGE }));
+    L.fonte(ctx, FONTE.serifa, 36, 400, 'italic');
+    const sw = Math.max(...SUB.map((l) => ctx.measureText(l).width)) + 48;
+    ctx.fillStyle = COR.tinta; ctx.fillRect(120, 618, sw, 102);
+    ctx.fillStyle = VERM; ctx.fillRect(120, 618, 8, 102);
+    SUB.forEach((l, i) => L.texto(ctx, l, 146, 661 + i * 42, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 36, cor: BEGE }));
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.35);
   },
 };
