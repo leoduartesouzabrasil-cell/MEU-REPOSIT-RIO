@@ -44,8 +44,14 @@ window.CENA = {
     cubo('BEM-VINDO AO', 120, 300, 104, AMA, '#C4930B', VERM, 700);
     cubo('COLETIVO LUFÃ!', 120, 450, 160, '#FFFFFF', '#E2D6C2', '#CC2220', 880);
 
-    L.imagem(ctx, L.img.lufa, 230, 950, 210);
-    ['O que é o coletivo, de onde viemos', 'e no que acreditamos'].forEach((l, i) => L.texto(ctx, l, 124, 780 + i * 48, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 42, cor: BEGE }));
+    L.imagem(ctx, L.img.lufa, 210, 960, 180);
+    // subtítulo numa tarja preta, colado no título
+    const SUB = ['O que é o coletivo, de onde viemos', 'e no que acreditamos'];
+    L.fonte(ctx, FONTE.serifa, 52, 400, 'italic');
+    const sw = Math.max(...SUB.map((l) => ctx.measureText(l).width)) + 64;
+    ctx.fillStyle = COR.tinta; ctx.fillRect(120, 690, sw, 150);
+    ctx.fillStyle = VERM; ctx.fillRect(120, 690, 10, 150);
+    SUB.forEach((l, i) => L.texto(ctx, l, 156, 754 + i * 60, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 52, cor: BEGE }));
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.35);
   },
 };
