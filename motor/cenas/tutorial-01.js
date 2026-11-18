@@ -34,7 +34,7 @@ window.CENA = {
     ctx.save(); ctx.translate(dx, dy); fn(t - b0, t); ctx.restore();
 
     [[T.funda, BEGE, -24], [T.somos, VERM, 24], [T.exist, BEGE, -24], [T.base, BEGE, 24], [T.radical, VERM, -24], [T.apenas, BEGE, 24],
-      [T.popular, BEGE, -24], [T.comunica, VERM, 24], [T.proximo, AMA, -24], [T.logo, BEGE, 24]].forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
+      [T.popular, BEGE, -24], [T.comunica, VERM, 24], [T.proximo, AMA, -24], [T.logo, VESC, 24]].forEach(([X, cor, ang]) => L.corteDiagonal(ctx, seg(t, X - 0.4, X), cor, ang));
     if (arquivo) L.varredura(ctx, t, 0.07);
     IMP.forEach(X => L.flash(ctx, t, X, AMA, 0.25, 0.2));
     L.papel(ctx, t, 0.12); L.vinheta(ctx, 0.35);
@@ -420,16 +420,11 @@ window.CENA = {
 
     // ------------------------------------------------ K. logo e créditos
     function final(lt) {
-      L.fundo(ctx, BEGE); arquivo = false;
-      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 380, () => L.imagem(ctx, L.img.lufa, CX, 380, 520), 97);
-      ctx.save(); ctx.globalAlpha = seg(lt, 0.5, 1.0);
-      L.texto(ctx, 'SÉRIE PARA NOVOS MEMBROS · EP. 1 · BEM-VINDO AO COLETIVO LUFÃ!', CX, 720, { familia: FONTE.sub, peso: 600, tam: 40, cor: VERM, alinhar: 'center', tracking: 3 });
-      ctx.restore();
-      ctx.save(); ctx.globalAlpha = seg(lt, 0.8, 1.4);
-      ['Narração: Léo Duarte · Fotos de Léo Duarte e Eduarda Prado: acervo do Coletivo Lufã',
-        'Karl Marx (J. J. E. Mayall, 1875) · Lênin (1920) · capa do Manifesto Comunista (Londres, 1848): Wikimedia Commons, domínio público',
-        'Citação: Manifesto Comunista, capítulo I (Marx e Engels, 1848) · Trilha e efeitos originais'].forEach((s2, i) =>
-        L.texto(ctx, s2, CX, 810 + i * 46, { familia: FONTE.maquina, peso: 400, tam: tamMax(s2, FONTE.maquina, 26, 400, 1700), cor: TINTA, alinhar: 'center' }));
+      arquivo = false;
+      sol(1300);
+      L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 430, () => L.imagem(ctx, L.img.lufa, CX, 430, 600), 97);
+      ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.1);
+      L.texto(ctx, 'NARRAÇÃO: EDUARDA PRADO', CX, 880, { familia: FONTE.sub, peso: 600, tam: 46, cor: BEGE, alinhar: 'center', tracking: 4 });
       ctx.restore();
     }
   },
