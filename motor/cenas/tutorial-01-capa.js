@@ -11,7 +11,8 @@ window.CENA = {
     L.fundo(ctx, VERM);
     L.raios(ctx, 1450, 1250, 2800, 26, -0.3, 'rgba(237,224,196,0.12)');
     ctx.fillStyle = VESC; ctx.beginPath(); ctx.arc(1450, 1250, 470, Math.PI, 0); ctx.fill();
-    ctx.save(); ctx.globalAlpha = 0.16; L.foiceMartelo(ctx, 1450, 330, 380, VESC); ctx.restore();
+    // o logo do coletivo, grande e meio transparente, atrás de Marx e Engels
+    L.imagem(ctx, L.img.lufa, 1430, 360, 760, 0.3);
 
     // a figura da capa: Marx e Engels, grandes, saindo da borda de baixo (cada episódio terá uma figura importante)
     const img = L.img.marxEngels, fw = 1180, fh = fw * img.height / img.width;
@@ -38,20 +39,21 @@ window.CENA = {
         cx += cw;
       }
       ctx.fontStretch = 'normal';
+      return yb + h + D;
     }
 
-    L.texto(ctx, 'FORMAÇÃO PARA NOVOS MILITANTES · EP. 1', 120, 250, { familia: FONTE.sub, peso: 600, tam: 44, cor: BEGE, tracking: 4 });
-    cubo('BEM-VINDO AO', 120, 300, 104, AMA, '#C4930B', VERM, 700);
-    cubo('COLETIVO LUFÃ!', 120, 450, 160, '#FFFFFF', '#E2D6C2', '#CC2220', 880);
-
-    L.imagem(ctx, L.img.lufa, 210, 960, 180);
-    // subtítulo numa tarja preta, colado no título
-    const SUB = ['O que é o coletivo, de onde viemos', 'e no que acreditamos'];
-    L.fonte(ctx, FONTE.serifa, 36, 400, 'italic');
-    const sw = Math.max(...SUB.map((l) => ctx.measureText(l).width)) + 48;
-    ctx.fillStyle = COR.tinta; ctx.fillRect(120, 618, sw, 102);
-    ctx.fillStyle = VERM; ctx.fillRect(120, 618, 8, 102);
-    SUB.forEach((l, i) => L.texto(ctx, l, 146, 661 + i * 42, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 36, cor: BEGE }));
+    L.texto(ctx, 'FORMAÇÃO PARA NOVOS MILITANTES · EP. 1', 120, 360, { familia: FONTE.sub, peso: 600, tam: 44, cor: BEGE, tracking: 4 });
+    const y1 = cubo('BEM-VINDO AO', 120, 400, 104, AMA, '#C4930B', VERM, 700);
+    const y2 = cubo('COLETIVO LUFÃ!', 120, y1 + 16, 160, '#FFFFFF', '#E2D6C2', '#CC2220', 880);
+    // subtítulo em UMA linha, numa tarja preta logo abaixo do título
+    const SUB = 'O que é o coletivo, de onde viemos e no que acreditamos';
+    let ts = 40; L.fonte(ctx, FONTE.serifa, ts, 400, 'italic');
+    const lw = ctx.measureText(SUB).width; if (lw > 900) { ts *= 900 / lw; }
+    L.fonte(ctx, FONTE.serifa, ts, 400, 'italic');
+    const sw = ctx.measureText(SUB).width + 60, sy = y2 + 18, sh = ts * 1.9;
+    ctx.fillStyle = COR.tinta; ctx.fillRect(120, sy, sw, sh);
+    ctx.fillStyle = VERM; ctx.fillRect(120, sy, 9, sh);
+    L.texto(ctx, SUB, 152, sy + sh / 2 + ts * 0.32, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: ts, cor: BEGE });
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.35);
   },
 };
