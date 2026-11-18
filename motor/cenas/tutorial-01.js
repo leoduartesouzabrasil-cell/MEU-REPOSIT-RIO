@@ -57,25 +57,37 @@ window.CENA = {
       ctx.restore();
     }
     function tamMax(txt, familia, tam, peso = 700, larg = 1500) { return Math.min(tam, L.ajustar(ctx, txt, familia, larg, peso)); }
-    // título no CUBO do Coletivo Lufã (o bloco branco do logo, com a lateral em relevo), RETO, sem inclinação
+    // título no CUBO do Coletivo Lufã: igual ao bloco "LUFÃ" do logo (face branca, letra vermelha larga e pesada,
+    // relevo chapado à direita e embaixo), mas RETO, sem inclinação. Todo "I" ganha a estrelinha do logo no lugar do pingo.
+    function fonteCubo(tam) { L.fonte(ctx, FONTE.grotesca, tam, 900); ctx.fontStretch = 'expanded'; }
+    function largCubo(txt, tam) { fonteCubo(tam); const w = [...txt].reduce((s, c) => s + (c === 'I' ? Math.max(ctx.measureText(c).width, tam * 0.5) : ctx.measureText(c).width), 0); ctx.fontStretch = 'normal'; return w; }
+    function textoCubo(txt, x, yb, tam, cor) {
+      fonteCubo(tam); ctx.fillStyle = cor; ctx.textBaseline = 'alphabetic';
+      for (const c of txt) {
+        const cw = c === 'I' ? Math.max(ctx.measureText(c).width, tam * 0.5) : ctx.measureText(c).width;
+        if (c === 'I') {   // "i" do logo: haste mais baixa que as maiúsculas e a estrela no lugar do pingo
+          const hw = tam * 0.22, hh = tam * 0.5, cx = x + cw / 2;
+          ctx.fillRect(cx - hw / 2, yb - hh, hw, hh);
+          L.estrela(ctx, cx, yb - hh - tam * 0.15, tam * 0.3, 0, cor);
+        } else ctx.fillText(c, x, yb);
+        x += cw;
+      }
+      ctx.fontStretch = 'normal';
+    }
     function titulo(txt, p) {
       if (p <= 0) return;
-      const tam = tamMax(txt, FONTE.grotesca, 54, 900, 1400), D = 12;
-      L.fonte(ctx, FONTE.grotesca, tam, 900); ctx.letterSpacing = '1px';
-      const tw = ctx.measureText(txt).width; ctx.letterSpacing = '0px';
-      const w = tw + 64, h = tam + 30, x = CX - w / 2, y = 112 - tam * 0.36 - h / 2 - 2 + tam * 0.36 * 0;
-      const yb = 72;   // topo da face
+      let tam = 54; const lw = largCubo(txt, tam); if (lw > 1400) tam *= 1400 / lw;
+      const tw = largCubo(txt, tam), w = tw + tam * 1.1, h = tam * 1.6, D = Math.round(h * 0.2), x = CX - w / 2, yb = 60;
+      const n = Math.floor(txt.length * clamp(p * 1.6 - 0.2));
       L.aplicarCarimbo(ctx, ease.saida(clamp(p * 2.5)), CX, yb + h / 2, () => {
-        ctx.fillStyle = 'rgba(28,23,20,0.22)'; ctx.fillRect(x + D + 6, yb + D + 6, w, h);     // sombra no papel
-        ctx.fillStyle = '#D9CBAE';                                                             // lateral direita e base (relevo)
+                ctx.fillStyle = '#C2AE88';                                                           // relevo chapado (como no logo)
         ctx.beginPath(); ctx.moveTo(x + w, yb); ctx.lineTo(x + w + D, yb + D); ctx.lineTo(x + w + D, yb + h + D); ctx.lineTo(x + D, yb + h + D);
         ctx.lineTo(x, yb + h); ctx.lineTo(x + w, yb + h); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#C9B994'; ctx.beginPath(); ctx.moveTo(x + w, yb); ctx.lineTo(x + w + D, yb + D); ctx.lineTo(x + w + D, yb + h + D); ctx.lineTo(x + w, yb + h); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x, yb, w, h);                                 // face
-        L.texto(ctx, L.datilografar(txt, clamp(p * 1.6 - 0.2)).replace(/\|$/, ''), x + 32, yb + h / 2 + tam * 0.36, { familia: FONTE.grotesca, peso: 900, tam, cor: VERM, tracking: 1 });
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x, yb, w, h);                               // face
+        textoCubo(txt.slice(0, n), x + (w - tw) / 2, yb + h / 2 + tam * 0.37, tam, '#CC2220');
       }, 77);
     }
-    function cred(txt, p, cor = TINTA, y = 186, x = CX, alinhar = 'center') {
+    function cred(txt, p, cor = TINTA, y = 194, x = CX, alinhar = 'center') {
       if (p <= 0) return;
       L.texto(ctx, L.datilografar(txt, p * 2), x, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 24, 400), cor, alinhar });
     }
