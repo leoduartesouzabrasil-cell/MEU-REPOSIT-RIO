@@ -199,9 +199,9 @@ window.CENA = {
       ctx.restore();
       // os dois fundadores, em moldura dourada, com estrela
       retrato('leo', 1000, 270, 310, 350, T.leo, 'LÉO DUARTE', { estrela: true });
-      retrato('duda', 1440, 270, 310, 350, T.duda, 'EDUARDA PRADO', { estrela: true, cargo: 'COFUNDADORA E ASSESSORA DO COLETIVO' });
-      if (t > T.duda + 0.6) cred('fotos: acervo do Coletivo Lufã', seg(t, T.duda + 0.6, T.duda + 1.2), TINTA, 802, 1375);
-      faixa('OS FUNDADORES', 1375, 866, T.uniao + 0.4, 600, VERM, BEGE, 46, 8);
+      retrato('duda', 1440, 270, 310, 350, T.duda, 'EDUARDA PRADO', { estrela: true });
+      if (t > T.duda + 0.6) cred('fotos: acervo do Coletivo Lufã', seg(t, T.duda + 0.6, T.duda + 1.2), TINTA, 752, 1375);
+      faixa('OS FUNDADORES', 1375, 840, T.uniao + 0.4, 600, VERM, BEGE, 46, 8);
     }
 
     // ------------------------------------------------ C. marxista e de esquerda radical (CARTAZ)
