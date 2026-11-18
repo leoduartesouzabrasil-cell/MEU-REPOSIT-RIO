@@ -14,11 +14,6 @@ window.CENA = {
     // o logo do coletivo, grande e meio transparente, atrás de Marx e Engels
     L.imagem(ctx, L.img.lufa, 1430, 360, 760, 0.3);
 
-    // a figura da capa: Marx e Engels, grandes, saindo da borda de baixo (cada episódio terá uma figura importante)
-    const img = L.img.marxEngels, fw = 1180, fh = fw * img.height / img.width;
-    ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.45)'; ctx.shadowOffsetX = 14; ctx.shadowOffsetY = 0; ctx.shadowBlur = 0;
-    ctx.drawImage(img, 1920 - fw + 90, 1080 - fh + 10, fw, fh); ctx.restore();
-
     // cubo do logo, reto, com a estrela no lugar do pingo do "i"
     function cubo(txt, x, yb, tam, face, lado, cor, maxW = 920) {
       L.fonte(ctx, FONTE.grotesca, tam, 900); ctx.fontStretch = 'expanded';
@@ -54,6 +49,11 @@ window.CENA = {
     ctx.fillStyle = COR.tinta; ctx.fillRect(120, sy, sw, sh);
     ctx.fillStyle = VERM; ctx.fillRect(120, sy, 9, sh);
     L.texto(ctx, SUB, 152, sy + sh / 2 + ts * 0.32, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: ts, cor: BEGE });
+    // a figura da capa: Marx e Engels, grandes, saindo da borda de baixo, NA FRENTE das caixas de texto (cada episódio terá uma figura importante)
+    const img = L.img.marxEngels, fw = 1180, fh = fw * img.height / img.width;
+    ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.45)'; ctx.shadowOffsetX = 14; ctx.shadowOffsetY = 0; ctx.shadowBlur = 0;
+    ctx.drawImage(img, 1920 - fw + 90, 1080 - fh + 10, fw, fh); ctx.restore();
+
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.35);
   },
 };
