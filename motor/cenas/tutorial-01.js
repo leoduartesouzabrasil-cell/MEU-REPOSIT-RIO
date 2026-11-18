@@ -66,9 +66,9 @@ window.CENA = {
       for (const c of txt) {
         const cw = c === 'I' ? Math.max(ctx.measureText(c).width, tam * 0.5) : ctx.measureText(c).width;
         if (c === 'I') {   // "i" do logo: haste mais baixa que as maiúsculas e a estrela no lugar do pingo
-          const hw = tam * 0.22, hh = tam * 0.5, cx = x + cw / 2;
+          const hw = tam * 0.18, hh = tam * 0.44, cx = x + cw / 2;   // haste menor, como no logo
           ctx.fillRect(cx - hw / 2, yb - hh, hw, hh);
-          L.estrela(ctx, cx, yb - hh - tam * 0.15, tam * 0.3, 0, cor);
+          L.estrela(ctx, cx, yb - tam * 0.68, tam * 0.22, 0, cor);   // estrela solta, com um respiro acima da haste
         } else ctx.fillText(c, x, yb);
         x += cw;
       }
