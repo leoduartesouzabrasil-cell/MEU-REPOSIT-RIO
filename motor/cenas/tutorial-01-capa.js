@@ -2,17 +2,21 @@
 window.CENA = {
   w: 1920, h: 1080, fps: 30, dur: 2,
   imagens: {
-    leo: '../midia/tutorial-01/leo-duarte.jpg',
-    duda: '../midia/tutorial-01/eduarda-prado.jpg',
+    marxEngels: '../midia/tutorial-01/marx-engels-recorte.png',   // arte do autor da página (Marx e Engels, sem fundo)
     lufa: '../midia/tutorial-01/logo-lufa-empilhado.png',
   },
   desenhar(ctx, t, L) {
     const { COR, FONTE } = L;
     const VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, VESC = COR.vermelhoEscuro;
     L.fundo(ctx, VERM);
-    L.raios(ctx, 1380, 1250, 2800, 26, -0.3, 'rgba(237,224,196,0.12)');
-    ctx.fillStyle = VESC; ctx.beginPath(); ctx.arc(1380, 1250, 470, Math.PI, 0); ctx.fill();
-    ctx.save(); ctx.globalAlpha = 0.16; L.foiceMartelo(ctx, 1390, 470, 420, VESC); ctx.restore();
+    L.raios(ctx, 1450, 1250, 2800, 26, -0.3, 'rgba(237,224,196,0.12)');
+    ctx.fillStyle = VESC; ctx.beginPath(); ctx.arc(1450, 1250, 470, Math.PI, 0); ctx.fill();
+    ctx.save(); ctx.globalAlpha = 0.16; L.foiceMartelo(ctx, 1450, 330, 380, VESC); ctx.restore();
+
+    // a figura da capa: Marx e Engels, grandes, saindo da borda de baixo (cada episódio terá uma figura importante)
+    const img = L.img.marxEngels, fw = 1180, fh = fw * img.height / img.width;
+    ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.45)'; ctx.shadowOffsetX = 14; ctx.shadowOffsetY = 0; ctx.shadowBlur = 0;
+    ctx.drawImage(img, 1920 - fw + 90, 1080 - fh + 10, fw, fh); ctx.restore();
 
     // cubo do logo, reto, com a estrela no lugar do pingo do "i"
     function cubo(txt, x, yb, tam, face, lado, cor, maxW = 920) {
@@ -37,18 +41,11 @@ window.CENA = {
     }
 
     L.texto(ctx, 'FORMAÇÃO PARA NOVOS MILITANTES · EP. 1', 120, 250, { familia: FONTE.sub, peso: 600, tam: 44, cor: BEGE, tracking: 4 });
-    cubo('BEM-VINDO AO', 120, 300, 104, AMA, '#C4930B', VERM, 760);
-    cubo('COLETIVO LUFÃ!', 120, 450, 160, '#FFFFFF', '#E2D6C2', '#CC2220', 960);
+    cubo('BEM-VINDO AO', 120, 300, 104, AMA, '#C4930B', VERM, 700);
+    cubo('COLETIVO LUFÃ!', 120, 450, 160, '#FFFFFF', '#E2D6C2', '#CC2220', 880);
 
-    // os fundadores em moldura dourada
-    [['leo', 1250, 330, 'LÉO DUARTE'], ['duda', 1580, 330, 'EDUARDA PRADO']].forEach(([k, x, y, nome]) => {
-      L.moldura(ctx, x, y, 270, 320, 26);
-      L.foto(ctx, L.img[k], x, y, 270, 320, { pb: true });
-      L.estrela(ctx, x + 135, y - 26, 28, 0, AMA);
-      L.etiqueta(ctx, nome, x + 135, y + 320 + 64, 1, { cor: COR.tinta, tam: 30 });
-    });
-    L.imagem(ctx, L.img.lufa, 260, 860, 260);
-    L.texto(ctx, 'O que é o coletivo, de onde viemos e no que acreditamos', 430, 880, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 40, cor: BEGE });
+    L.imagem(ctx, L.img.lufa, 230, 950, 210);
+    ['O que é o coletivo, de onde viemos', 'e no que acreditamos'].forEach((l, i) => L.texto(ctx, l, 124, 780 + i * 48, { familia: FONTE.serifa, estilo: 'italic', peso: 400, tam: 42, cor: BEGE }));
     L.papel(ctx, 1, 0.12); L.vinheta(ctx, 0.35);
   },
 };
