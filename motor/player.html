@@ -36,7 +36,7 @@
       tela.width = cena.w; tela.height = cena.h;
       const ctx = tela.getContext('2d');
       await Promise.all(['900 10px "Big Shoulders Display"', '10px "Russo One"', '600 10px "Oswald"', '10px "Special Elite"',
-        'italic 400 10px "Instrument Serif"', '400 10px "Instrument Serif"', '700 10px "Archivo"']
+        'italic 400 10px "Instrument Serif"', '400 10px "Instrument Serif"', '700 10px "Archivo"', '900 10px "Archivo"']
         .map(f => document.fonts.load(f)));
       // imagens da cena: CENA.imagens = { nome: 'caminho relativo a motor/' } → L.img.nome
       await Promise.all(Object.entries(cena.imagens || {}).map(([nome, src]) => new Promise((ok2, erro) => {

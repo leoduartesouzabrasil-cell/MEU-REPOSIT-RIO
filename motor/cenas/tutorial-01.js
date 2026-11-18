@@ -57,10 +57,25 @@ window.CENA = {
       ctx.restore();
     }
     function tamMax(txt, familia, tam, peso = 700, larg = 1500) { return Math.min(tam, L.ajustar(ctx, txt, familia, larg, peso)); }
-    function titulo(txt, p, cor = TINTA) {
-      L.texto(ctx, L.datilografar(txt, p), CX, 120, { familia: FONTE.grotesca, peso: 700, tam: tamMax(txt, FONTE.grotesca, 50), cor, alinhar: 'center', rgb: 1.5 });
+    // título no CUBO do Coletivo Lufã (o bloco branco do logo, com a lateral em relevo), RETO, sem inclinação
+    function titulo(txt, p) {
+      if (p <= 0) return;
+      const tam = tamMax(txt, FONTE.grotesca, 54, 900, 1400), D = 12;
+      L.fonte(ctx, FONTE.grotesca, tam, 900); ctx.letterSpacing = '1px';
+      const tw = ctx.measureText(txt).width; ctx.letterSpacing = '0px';
+      const w = tw + 64, h = tam + 30, x = CX - w / 2, y = 112 - tam * 0.36 - h / 2 - 2 + tam * 0.36 * 0;
+      const yb = 72;   // topo da face
+      L.aplicarCarimbo(ctx, ease.saida(clamp(p * 2.5)), CX, yb + h / 2, () => {
+        ctx.fillStyle = 'rgba(28,23,20,0.22)'; ctx.fillRect(x + D + 6, yb + D + 6, w, h);     // sombra no papel
+        ctx.fillStyle = '#D9CBAE';                                                             // lateral direita e base (relevo)
+        ctx.beginPath(); ctx.moveTo(x + w, yb); ctx.lineTo(x + w + D, yb + D); ctx.lineTo(x + w + D, yb + h + D); ctx.lineTo(x + D, yb + h + D);
+        ctx.lineTo(x, yb + h); ctx.lineTo(x + w, yb + h); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#C9B994'; ctx.beginPath(); ctx.moveTo(x + w, yb); ctx.lineTo(x + w + D, yb + D); ctx.lineTo(x + w + D, yb + h + D); ctx.lineTo(x + w, yb + h); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x, yb, w, h);                                 // face
+        L.texto(ctx, L.datilografar(txt, clamp(p * 1.6 - 0.2)).replace(/\|$/, ''), x + 32, yb + h / 2 + tam * 0.36, { familia: FONTE.grotesca, peso: 900, tam, cor: VERM, tracking: 1 });
+      }, 77);
     }
-    function cred(txt, p, cor = TINTA, y = 166, x = CX, alinhar = 'center') {
+    function cred(txt, p, cor = TINTA, y = 186, x = CX, alinhar = 'center') {
       if (p <= 0) return;
       L.texto(ctx, L.datilografar(txt, p * 2), x, y, { familia: FONTE.maquina, peso: 400, tam: tamMax(txt, FONTE.maquina, 24, 400), cor, alinhar });
     }
@@ -94,6 +109,7 @@ window.CENA = {
       L.foto(ctx, L.img[k], x, y, w, h, { pb: o.pb ?? true, desfoque: (1 - seg(t, t0, t0 + 0.7)) * 9, zoom: lerp(1.0, 1.06, seg(t, t0, t0 + 6)) });
       if (o.estrela) L.estrela(ctx, x + w / 2, y - (o.esp || 30), 30, 0, AMA);
       L.etiqueta(ctx, nome, x + w / 2, y + h + (o.esp || 30) + 40, seg(t, t0 + 0.3, t0 + 0.6), { cor: VERM, tam: o.tamNome || 32 });
+      if (o.cargo) L.etiqueta(ctx, o.cargo, x + w / 2, y + h + (o.esp || 30) + 96, seg(t, t0 + 0.6, t0 + 0.9), { cor: TINTA, tam: 22 });
       ctx.restore();
     }
     function check(x, y, p, cor = VERM, s = 1) {
@@ -170,10 +186,10 @@ window.CENA = {
       L.texto(ctx, L.datilografar('UNIÃO COLETIVA', seg(t, T.uniao - 0.3, T.uniao + 0.2)), 180, 800, { familia: FONTE.bloco, peso: 400, tam: 54, cor: VERM });
       ctx.restore();
       // os dois fundadores, em moldura dourada, com estrela
-      retrato('leo', 1000, 260, 330, 400, T.leo, 'LÉO DUARTE', { estrela: true });
-      retrato('duda', 1440, 260, 330, 400, T.duda, 'EDUARDA PRADO', { estrela: true });
-      if (t > T.duda + 0.6) cred('fotos: acervo do Coletivo Lufã', seg(t, T.duda + 0.6, T.duda + 1.2), TINTA, 800, 1385);
-      faixa('OS FUNDADORES', 1385, 870 - 4, T.uniao + 0.4, 600, VERM, BEGE, 46, 8);
+      retrato('leo', 1000, 270, 310, 350, T.leo, 'LÉO DUARTE', { estrela: true });
+      retrato('duda', 1440, 270, 310, 350, T.duda, 'EDUARDA PRADO', { estrela: true, cargo: 'COFUNDADORA E ASSESSORA DO COLETIVO' });
+      if (t > T.duda + 0.6) cred('fotos: acervo do Coletivo Lufã', seg(t, T.duda + 0.6, T.duda + 1.2), TINTA, 802, 1375);
+      faixa('OS FUNDADORES', 1375, 866, T.uniao + 0.4, 600, VERM, BEGE, 46, 8);
     }
 
     // ------------------------------------------------ C. marxista e de esquerda radical (CARTAZ)
