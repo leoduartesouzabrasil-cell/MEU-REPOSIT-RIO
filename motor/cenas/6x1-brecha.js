@@ -6,7 +6,7 @@ const T = Object.assign({ quebra: 8.2, fim6x1: 10, dezembro: 12.4, duas: 14.5, s
   (window.TEMPOS || {}).marcas || {});
 window.CENA = {
   w: 1080, h: 1920, fps: 30, dur: T.dur,
-  imagens: { leo: '../identidade/marca/leo-duarte-silhueta-vermelha.png' },
+  imagens: { leo: '../identidade/marca/leo-duarte-silhueta-vermelha.png', leoOriginal: '../identidade/marca/leo-duarte.png' },   // fim: logo original do autor
   desenhar(ctx, t, L) {
     const { COR, FONTE, seg, lerp, ease, clamp } = L, CX = 540, VERM = COR.vermelho, AMA = COR.amarelo, BEGE = COR.bege, TINTA = COR.tinta, CARVAO = COR.carvao;
     const VOLTA = T.quebra + 0.85;                                   // fim da tela preta
@@ -219,8 +219,11 @@ window.CENA = {
     }
     function final() {
       L.fundo(ctx, BEGE); L.raios(ctx, CX, 1100, 2600, 22, -0.25, 'rgba(200,32,30,0.07)');
-      const im = L.img.leo, w = 520, h = w * im.height / im.width;
-      L.aplicarCarimbo(ctx, seg(t, T.logo, T.logo + 0.3), CX, 880, () => ctx.drawImage(im, CX - w / 2, 880 - h / 2, w, h), 41);
+      const im = L.img.leoOriginal, w = 600, h = w * im.height / im.width;     // a logo original (não a silhueta), grande e carimbada
+      L.aplicarCarimbo(ctx, seg(t, T.logo, T.logo + 0.3), CX, 860, () => {
+        ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.25)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
+        ctx.drawImage(im, CX - w / 2, 860 - h / 2, w, h); ctx.restore();
+      }, 41);
     }
     function logo() {                                                   // logo Léo Duarte, pequena, no alto à esquerda (fora da área do Reels)
       const im = L.img.leo, w = 120, h = w * im.height / im.width;
