@@ -100,7 +100,7 @@ Q = M["quebra"]
 # GANCHO: drone grave + ostinato entrando + tímpano em crescendo até a quebra
 o(0.05, "contrabass", "D2", Q - 0.05, 0.55, 0, 0.9); o(0.05, "cellos", "D3", Q - 0.05, 0.4, -0.3, 0.7)
 ostinato(0.9, Q - 0.1, vel=0.55)
-stab(EVT["slam"][0], 0.7, ("D3", "F3"), ("D2",))
+stab(0.02, 0.8, ("D3", "F3", "A3"), ("D2",)); stab(q("os empresários"), 0.7, ("D3", "F3"), ("D2",)); golpe(q("briga"), 0.6)
 for k in range(int((Q - M["escr"] + 2.0) / B)): o(M["escr"] - 2.0 + k * B, "bass_drum", None, None, 0.5, 0)
 rufo_timp(M["escr"] - 1.0, Q - 0.02, 0.25, 0.95)
 o(M["escr"], "trombone", "D2", Q - M["escr"], 0.7, 0, 0.8); o(M["escr"], "horn", "A2", Q - M["escr"], 0.6, -0.2, 0.7)
