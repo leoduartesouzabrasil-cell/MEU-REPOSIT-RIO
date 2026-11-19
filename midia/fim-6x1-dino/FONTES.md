@@ -17,3 +17,11 @@
 | dino.png | Flávio Dino, ministro do STF (22/02/2024) | CanalGov (Brasil em Dia) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Fl%C3%A1vio_Dino,_ministro_do_STF.png |
 | rick-azevedo.mp4 (5 s, 3:21) | trecho do vídeo do Rick Azevedo | Rick Azevedo | enviado pelo autor | — |
 O autor pediu o vídeo SEM créditos na tela: o crédito da foto do Dino (CC BY exige atribuição) vai na legenda do post.
+
+## Atualização 19/11/2026 (roteiro 6x1-brecha-folgas)
+| Afirmação | Fontes |
+|---|---|
+| Destaque de Fux (14/11) suspende o julgamento virtual; 4 votos zerados; plenário presencial sem data; liminar segue | [CNN, 14/11](https://www.cnnbrasil.com.br/politica/apos-criticas-dino-defende-decisao-sobre-6x1-texto-perfeito-nao-existe/) · [Correio Braziliense (JUS Braziliense)](https://blogs.correiobraziliense.com.br/jusbraziliense/2026/11/12/liminar-stf-escala-6x1/) · [Revista Fórum](https://revistaforum.com.br/politica/fim-da-escala-6x1-dino/) |
+| Dino afastou os limites semanal e mensal das folgas, por acordo/convenção coletiva | [CNN, 13/11](https://www.cnnbrasil.com.br/politica/stf-dino-fim-da-6x1/) · Agência Brasil (12/11) |
+| "NÃO impõe exceções nem autoriza negociação INDIVIDUAL..." (Dino, 14/11) | CNN, 14/11 |
+| Câmara e Senado contestam a flexibilização das folgas | CNN, 13/11 e 14/11 |
