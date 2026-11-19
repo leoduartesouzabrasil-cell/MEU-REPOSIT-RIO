@@ -53,3 +53,19 @@ NA TELA: chip "CÂMARA E SENADO: DERRUBA A BRECHA" · "STF: JULGAMENTO NO PLENÁ
 - "O patrão vai fazer de tudo pra empurrar a folga" é a denúncia do risco (opinião), apoiada no que a Câmara e o Senado disseram ao STF: os limites
   existiam "para garantir a periodicidade do descanso".
 - O julgamento está suspenso (destaque do Fux em 14/11) e vai ao plenário presencial, sem data. Se for marcado ou decidido antes da postagem, trocar a frase.
+
+## Produção (narração do autor, gravação 58 · md5 aaf5a81b…, não repete áudios antigos)
+- Voz: `audio/6x1-brecha/tratar_voz.py` (redução de ruído suavizada a partir da pausa 9,05–9,75 s; graves preservados; expansor nas pausas):
+  ruído nas pausas -37 → -80 dB, espectro da fala sem "buracos" (sem som metalizado).
+- Montagem: `audio/6x1-brecha/montar.py` (voz 1,15×, pausas > 0,4 s viram respiro de 0,22 s, 1 s de silêncio depois de "escravidão" para a corrente
+  quebrar + tela preta; trilha 22 dB e efeitos 20 dB abaixo da voz, com ducking) → 55,7 s (a leitura completa; sem cortar frases).
+- Cena: `motor/cenas/6x1-brecha.js` (gancho escuro com a corrente que quebra no TUM → tela preta → explicação bege → denúncia escura → chamada bege → logo).
+- Render: `node motor/render.js 6x1-brecha saida/6x1-brecha.mp4 --audio audio/6x1-brecha/mix.wav` → `-crf 24 -tune grain` → `saida/6x1-brecha-FINAL.mp4`.
+
+## Legenda do post
+```
+🚨 Enquanto a esquerda briga entre si, os patrões trabalham pra esvaziar o fim da 6x1! O fim da escala começa dia 16 de dezembro, com duas folgas por semana, mas uma liminar no STF abriu brecha: com acordo coletivo, as suas folgas não precisam mais cair na mesma semana, nem no mesmo mês. A gente lutou muito por essas duas folgas pra elas virarem "quando o patrão deixar". Até a Câmara e o Senado pediram pro STF derrubar essa brecha, e o caso vai pro plenário. Compartilha e marca o seu sindicato: folga é toda semana! ✊🏾🔥
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```
