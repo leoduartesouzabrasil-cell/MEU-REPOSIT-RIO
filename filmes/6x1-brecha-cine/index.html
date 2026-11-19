@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>6x1 · a brecha (cine)</title>
+<style>
+@font-face{font-family:"Big Shoulders Display";src:url(fonts/BigShouldersDisplay.ttf);font-weight:100 900}
+@font-face{font-family:"Russo One";src:url(fonts/RussoOne.ttf)}
+@font-face{font-family:"Oswald";src:url(fonts/Oswald.ttf);font-weight:200 700}
+@font-face{font-family:"Special Elite";src:url(fonts/SpecialElite.ttf)}
+@font-face{font-family:"Instrument Serif";font-style:italic;src:url(fonts/InstrumentSerif-italic.ttf)}
+@font-face{font-family:"Archivo";src:url(fonts/Archivo.ttf);font-weight:100 900}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:100vw;height:100vh}
+</style></head><body><canvas id="c"></canvas>
+<script type="module">
+// 6x1: a brecha que empurra a sua folga — versão cinematográfica.
+// Gramática: estilo "Constructivist Montage" (lemo-opuscar). Identidade: Construtivismo Tropical (paleta, fontes, legenda, logo).
+// Página determinística: render(t) desenha o quadro do segundo t; EV = eventos de som (lidos pelo mix.py).
+import { clamp, lerp, seg, ss, eio, eo, ei, back, mulberry, hash, vnoise } from '/core/lib.js';
+const W = 1080, H = 1920, CX = W / 2;
+const cv = document.getElementById('c'); cv.width = W; cv.height = H; const ctx = cv.getContext('2d');
+const BEGE = '#EDE0C4', PAPEL = '#F3EAD3', VERM = '#C8201E', AMA = '#EBB52A', TINTA = '#1C1714', AZUL = '#1F3A5F';
+const F = { man: '"Big Shoulders Display"', bloco: '"Russo One"', kick: 'Oswald', maq: '"Special Elite"', ser: '"Instrument Serif"', rot: 'Archivo' };
+const EIXO = -18 * Math.PI / 180;
+
+// ---------------------------------------------------------------- carga
+const pal = await (await fetch('audio/palavras.json')).json();
+const P = pal.palavras, FIM_FALA = pal.fim_fala;
+const IMGS = { faixa: 'ato-faixa', lute: 'ato-lute', predios: 'ato-predios', bandeiras: 'ato-bandeiras', avenida: 'ato-avenida', rua2: 'ato-rua2',
+  rostos: 'ato-rostos', senado: 'senado-placar', stf: 'stf', estatua: 'stf-estatua' };
+const carregar = src => new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = src; });
+const IMG = {};
+await Promise.all(Object.entries(IMGS).map(async ([k, f]) => { IMG[k] = await carregar(`img/${f}.jpg`); }));
+const LOGO = await carregar('img/leo-duarte.png');
+await Promise.all(['900 80px "Big Shoulders Display"', '80px "Russo One"', '600 80px Oswald', '80px "Special Elite"', 'italic 80px "Instrument Serif"', '700 80px Archivo']
+  .map(f => document.fonts.load(f)));
+
+// gradação de impressão do estilo: luminância → estica percentis → curva S → tinta→papel (uma vez por foto)
+function imprimir(im, s = 0.32, maxW = 2000, lo = 0.8, hi = 99.4) {
+  const k = Math.min(1, maxW / im.width), w = Math.round(im.width * k), h = Math.round(im.height * k);
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); g.drawImage(im, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h), px = d.data, n = w * h, L = new Float32Array(n), hist = new Uint32Array(256);
+  for (let i = 0; i < n; i++) { const y = 0.2126 * px[4 * i] + 0.7152 * px[4 * i + 1] + 0.0722 * px[4 * i + 2]; L[i] = y; hist[y | 0]++; }
+  const pct = p => { let a = 0; for (let v = 0; v < 256; v++) { a += hist[v]; if (a >= n * p / 100) return v; } return 255; };
+  const a = pct(lo), b = Math.max(a + 1, pct(hi)), I = [28, 23, 20], Pp = [240, 229, 203];
+  for (let i = 0; i < n; i++) {
+    let x = clamp((L[i] - a) / (b - a)); x = x + s * (x - 0.5) * (1 - Math.abs(2 * x - 1)) * 2; x = clamp(x);
+    for (let c2 = 0; c2 < 3; c2++) px[4 * i + c2] = I[c2] + (Pp[c2] - I[c2]) * x;
+  }
+  g.putImageData(d, 0, 0); return c;
+}
+const G = {}; for (const k in IMG) G[k] = imprimir(IMG[k], k === 'senado' ? 0.18 : 0.32);
+
+// textura de papel (fixa, semeada) — desenhada com deslocamento que "ferve" a 12 qps
+const TEX = (() => { const c = document.createElement('canvas'); c.width = 540; c.height = 960; const g = c.getContext('2d'), d = g.createImageData(540, 960), r = mulberry(7);
+  for (let i = 0; i < 540 * 960; i++) { const v = 200 + r() * 55 - (r() < 0.012 ? 90 : 0); d.data[4 * i] = v; d.data[4 * i + 1] = v * 0.97; d.data[4 * i + 2] = v * 0.9; d.data[4 * i + 3] = 255; }
+  g.putImageData(d, 0, 0); return c; })();
+
+// ---------------------------------------------------------------- marcas (das palavras faladas)
+const limpa = w => w.toLowerCase().replace(/[.,?!:]/g, '');
+function q(txt, depois = 0, fim = false) {
+  for (let k = 0; k < P.length; k++) {
+    const corrido = P.slice(k, k + 7).map(p => limpa(p[0])).join(' ') + ' ';
+    if (P[k][1] >= depois && corrido.startsWith(txt.toLowerCase() + ' ')) {
+      if (!fim) return P[k][1];
+      const n = txt.split(' ').length; let j = k, acc = 0; while (acc < n) { acc += P[j][0].split(' ').length; j++; } return P[j - 1][2];
+    }
+  }
+  throw new Error('marca não achada: ' + txt);
+}
+const M = {
+  enquanto: q('enquanto'), briga: q('briga'), empresarios: q('os empresários'), trazer: q('trazer'), escr: q('escravidão'), escrFim: q('escravidão', 0, true),
+  fim: q('o fim da'), x61: q('escala 6x1'), garant: q('garantido'), dia: q('dia 16'), duas: q('duas folgas por'), folgas1: q('folgas por'), semana1: q('semana', 11),
+  so: q('só que'), stf: q('stf abriram'), brecha: q('brecha'), acordo: q('com um acordo'), suas: q('as suas duas'), nao: q('não precisam'),
+  mesma: q('mesma semana'), semana2: q('semana', 19.5), nem: q('e nem no'), mes: q('mês'),
+  lutou: q('a gente lutou'), conquistar: q('conquistar'), dfolgas: q('duas folgas', 24), agora: q('e agora o'), patrao: q('patrão', 25),
+  empurrar: q('empurrar'), sua: q('sua folga'), sabese: q('sabe-se'), quando: q('quando', 29.9),
+  ouseja: q('ou seja'), voce: q('você trabalha'), jeito: q('do jeito'), descansa: q('descansa'), deixar: q('deixar'),
+  ate: q('até a câmara'), camara: q('câmara'), senado: q('senado'), pediram: q('pediram'), derrubar: q('derrubar'), julg: q('e o julgamento'), plen: q('ao plenário'),
+  comp: q('compartilhe'), marca: q('marca o seu'), sind: q('sindicato'), folga: q('folga toda'), toda: q('toda semana'), semana3: q('semana e não'), naoq: q('e não quando'), quiser: q('quiser'),
+};
+M.quebra = M.escrFim + 0.10; M.logo = FIM_FALA + 0.35; const DUR = +(M.logo + 3.0).toFixed(2);
+// cenas: [início, fim)
+const S = { gancho: [0, M.quebra], quebra: [M.quebra, M.fim - 0.10], conquista: [M.fim - 0.10, M.so - 0.06], brecha: [M.so - 0.06, M.acordo - 0.12],
+  calendario: [M.acordo - 0.12, M.lutou - 0.15], luta: [M.lutou - 0.15, M.agora - 0.06], empurra: [M.agora - 0.06, M.ouseja - 0.10],
+  ouseja: [M.ouseja - 0.10, M.ate - 0.12], camara: [M.ate - 0.12, M.comp - 0.12], chamado: [M.comp - 0.12, M.logo], logo: [M.logo, DUR + 1] };
+
+// ---------------------------------------------------------------- eventos de som (para o mix)
+const EV = []; const ev = (t, type, o = {}) => EV.push({ t: +t.toFixed(3), type, ...o });
+ev(0.15, 'drone'); ev(M.briga, 'racha', { g: 0.6 }); ev(M.briga + 0.32, 'baque', { g: 0.5 }); ev(M.briga + 0.62, 'baque', { g: 0.45 });
+ev(M.empresarios - 0.02, 'slam'); ev(M.trazer, 'corrente'); ev(M.escr, 'carimbo', { g: 1 }); ev(M.escr - 0.25, 'zoom');
+ev(M.quebra, 'quebra'); ev(M.fim - 0.10, 'wipe'); ev(M.x61 + 0.35, 'risco'); ev(M.garant, 'carimbo', { g: 0.9 }); ev(M.dia, 'slam');
+ev(M.duas - 0.05, 'slam'); ev(M.folgas1, 'clique'); ev(M.folgas1 + 0.28, 'clique');
+ev(M.so - 0.06, 'corte'); ev(M.stf, 'slam'); ev(M.brecha, 'rachadura');
+ev(M.acordo - 0.12, 'flash'); ev(M.acordo + 0.05, 'papel'); ev(M.acordo + 0.5, 'marcador'); ev(M.nao, 'rachadura', { g: 0.5 });
+ev(M.semana2, 'queda'); ev(M.mes - 0.3, 'puxa'); ev(M.mes + 0.15, 'queda', { g: 0.7 });
+ev(M.lutou - 0.15, 'wipe');
+ev(M.agora - 0.06, 'slam'); ev(M.empurrar - 0.12, 'arrasto'); ev(M.sabese - 0.4, 'relogio'); ev(M.quando, 'carimbo', { g: 0.8 });
+ev(M.ouseja - 0.10, 'corte'); ev(M.voce, 'slam'); ev(M.descansa, 'slam', { g: 0.6 }); ev(M.deixar + 0.05, 'cadeado');
+ev(M.ate - 0.12, 'wipe'); ev(M.camara, 'slam'); ev(M.senado, 'slam'); ev(M.pediram + 0.2, 'marcador'); ev(M.derrubar, 'carimbo', { g: 1 });
+ev(M.julg - 0.08, 'slam'); ev(M.plen + 0.1, 'carimbo', { g: 0.8 });
+ev(M.comp - 0.12, 'iris'); ev(M.folga, 'fecha'); ev(M.folga, 'carimbo', { g: 1 }); ev(M.toda, 'carimbo', { g: 0.8 }); ev(M.semana3, 'carimbo', { g: 1 });
+ev(M.quiser, 'golpe'); ev(M.logo, 'logo');
+// golpes que tremem a câmera: [t, amplitude px]
+const TREMOR = [[M.briga, 10], [M.briga + 0.32, 8], [M.escr, 16], [M.quebra, 26], [M.garant, 12], [M.dia, 6], [M.stf, 6], [M.brecha, 22], [M.semana2, 8],
+  [M.empurrar + 0.1, 10], [M.quando, 12], [M.deixar + 0.05, 8], [M.derrubar, 14], [M.plen + 0.1, 10], [M.folga, 14], [M.toda, 10], [M.semana3, 14], [M.quiser, 24], [M.logo, 12]];
+
+// ---------------------------------------------------------------- ferramentas de desenho
+const fonte = (f, px, peso = 400, est = '') => { ctx.font = `${est} ${peso} ${px}px ${f}`; };
+function txt(s, x, y, o = {}) {
+  const { f = F.bloco, px = 80, peso = 400, cor = TINTA, al = 'left', track = 0, est = '', base = 'alphabetic', a = 1 } = o;
+  fonte(f, px, peso, est); ctx.fillStyle = cor; ctx.textBaseline = base; ctx.globalAlpha *= a;
+  if (track) { ctx.letterSpacing = track + 'px'; }
+  ctx.textAlign = al; ctx.fillText(s, x, y); ctx.letterSpacing = '0px'; ctx.globalAlpha /= a; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+const larg = (s, f, px, peso = 400, track = 0) => { fonte(f, px, peso); ctx.letterSpacing = track + 'px'; const w = ctx.measureText(s).width; ctx.letterSpacing = '0px'; return w; };
+function fundo(c) { ctx.fillStyle = c; ctx.fillRect(-200, -200, W + 400, H + 400); }
+function cover(img, x, y, w, h, fx = 0.5, fy = 0.5, zoom = 1) {   // cobre o retângulo, centrado no ponto de foco
+  const k = Math.max(w / img.width, h / img.height) * zoom, sw = w / k, sh = h / k;
+  const sx = clamp(fx * img.width - sw / 2, 0, img.width - sw), sy = clamp(fy * img.height - sh / 2, 0, img.height - sh);
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+function janela(x, y, w, h, ang, desenho, o = {}) {           // janela (retângulo girado) com borda de tinta e foto dentro
+  const { borda = 8, corBorda = TINTA, skew = 0, sombra = true } = o;
+  ctx.save(); ctx.translate(x + w / 2, y + h / 2); ctx.rotate(ang); ctx.transform(1, 0, skew, 1, 0, 0);
+  if (sombra) { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 18; ctx.fillStyle = corBorda; ctx.fillRect(-w / 2 - borda, -h / 2 - borda, w + 2 * borda, h + 2 * borda); ctx.restore(); }
+  else { ctx.fillStyle = corBorda; ctx.fillRect(-w / 2 - borda, -h / 2 - borda, w + 2 * borda, h + 2 * borda); }
+  ctx.beginPath(); ctx.rect(-w / 2, -h / 2, w, h); ctx.clip(); desenho(-w / 2, -h / 2, w, h);
+  // varredura de TV discreta nas fotos de arquivo
+  ctx.globalAlpha = 0.07; ctx.fillStyle = '#000'; for (let yy = -h / 2; yy < h / 2; yy += 6) ctx.fillRect(-w / 2, yy, w, 2); ctx.globalAlpha = 1;
+  ctx.restore();
+}
+function bloco(s, x, y, o = {}) {                              // bloco de texto (palavra-bloco num retângulo cheio)
+  const { f = F.bloco, px = 90, cor = BEGE, fundoC = VERM, pad = 26, ang = 0, al = 'left', peso = 400, track = 0, esc = 1, a = 1 } = o;
+  const w = larg(s, f, px, peso, track), h = px * 1.12;
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x, y); ctx.rotate(ang); ctx.scale(esc, esc);
+  const x0 = al === 'center' ? -w / 2 - pad : al === 'right' ? -w - 2 * pad : 0;
+  ctx.fillStyle = fundoC; ctx.fillRect(x0, -h * 0.82, w + 2 * pad, h * 1.04);
+  txt(s, x0 + pad, 0, { f, px, cor, peso, track }); ctx.restore(); return w + 2 * pad;
+}
+// carimbo: entra grande e transparente, bate (escala 1.5→1 com retorno), tremor curto; borda gasta
+function carimbo(p, x, y, ang, desenho) {
+  if (p <= 0) return; const e = back(clamp(p * 1.25), 2.4), s = lerp(1.7, 1, e), a = clamp(p * 4);
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x, y); ctx.rotate(ang); ctx.scale(s, s); desenho(); ctx.restore();
+}
+// faixa ao longo do eixo (passa pelo ponto x,y); texto no centro da faixa
+function faixa(x, y, esp, cor, ang = EIXO, comp = 3000) { ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.fillStyle = cor; ctx.fillRect(-comp / 2, -esp / 2, comp, esp); ctx.restore(); }
+function raios(cx, cy, n, rot, cor, r = 2600) {
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.fillStyle = cor;
+  for (let i = 0; i < n; i++) { const a0 = (i / n) * Math.PI * 2, a1 = a0 + Math.PI / n; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a0) * r, Math.sin(a0) * r); ctx.lineTo(Math.cos(a1) * r, Math.sin(a1) * r); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+}
+// rachadura: polilinha serrilhada semeada de A a B, com ramos; p = quanto já rachou
+function rachadura(seed, ax, ay, bx, by, p, o = {}) {
+  const { cor = VERM, esp = 7, brilho = true, n = 22 } = o; if (p <= 0) return;
+  const r = mulberry(seed), pts = [];
+  for (let i = 0; i <= n; i++) { const u = i / n, j = (i === 0 || i === n) ? 0 : (r() - 0.5) * 70; const nx = -(by - ay), ny = bx - ax, L = Math.hypot(nx, ny);
+    pts.push([lerp(ax, bx, u) + nx / L * j, lerp(ay, by, u) + ny / L * j]); }
+  const k = p * n, desenha = (lw, c, blur) => {
+    ctx.save(); ctx.strokeStyle = c; ctx.lineWidth = lw; ctx.lineJoin = 'miter'; ctx.lineCap = 'round'; if (blur) ctx.filter = `blur(${blur}px)`;
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i <= Math.ceil(k); i++) { const u = Math.min(1, k - (i - 1)); ctx.lineTo(lerp(pts[i - 1][0], pts[i][0], u), lerp(pts[i - 1][1], pts[i][1], u)); }
+    ctx.stroke();
+    const r2 = mulberry(seed + 9);                              // ramos
+    for (let i = 3; i < Math.min(n, k); i += 4) { const [x, y] = pts[i], a = Math.atan2(by - ay, bx - ax) + (r2() < 0.5 ? 1 : -1) * (0.6 + r2() * 0.5), L = 40 + r2() * 70;
+      ctx.lineWidth = lw * 0.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * L, y + Math.sin(a) * L); ctx.stroke(); }
+    ctx.restore();
+  };
+  if (brilho) { desenha(esp * 4, 'rgba(235,90,40,0.45)', 14); }
+  desenha(esp, cor, 0);
+}
+// corrente: elos ao longo de um ângulo; quebra = índice do elo partido (abre um buraco)
+function corrente(x, y, ang, n, elo, desloc, o = {}) {
+  const { cor = '#A39A8E', luz = BEGE, esp = 15, quebra = -1, abre = 0 } = o;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  for (let i = 0; i < n; i++) {
+    let px = i * elo * 0.78 - desloc; if (quebra >= 0) px += (i > quebra ? 1 : -1) * abre;
+    const lado = i % 2 === 1; ctx.save(); ctx.translate(px, 0);
+    if (quebra >= 0) ctx.rotate((i > quebra ? 1 : -1) * abre * 0.0016 * (Math.abs(i - quebra) + 1));
+    if (lado) { ctx.fillStyle = cor; ctx.fillRect(-elo * 0.5, -esp * 0.42, elo, esp * 0.84); ctx.fillStyle = luz; ctx.globalAlpha = 0.5; ctx.fillRect(-elo * 0.42, -esp * 0.3, elo * 0.84, esp * 0.18); }
+    else { ctx.strokeStyle = cor; ctx.lineWidth = esp; ctx.beginPath(); ctx.ellipse(0, 0, elo * 0.5, elo * 0.3, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = luz; ctx.globalAlpha = 0.55; ctx.lineWidth = esp * 0.22; ctx.beginPath(); ctx.ellipse(0, -2, elo * 0.5, elo * 0.3, 0, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke(); }
+    ctx.restore();
+  }
+  ctx.restore();
+}
+// patrão: recorte de cartaz (cartola, charuto, barriga) com borda de papel; pose 0 = de pé, 1 = empurrando (inclinado), braço = ângulo
+function patrao(x, y, h, o = {}) {
+  const { incl = 0, braco = 0.2, cor = TINTA, borda = BEGE, brasa = VERM } = o, k = h / 1000;
+  ctx.save(); ctx.translate(x, y); ctx.scale(k, k); ctx.rotate(incl);
+  const corpo = () => {
+    ctx.beginPath();
+    ctx.rect(-95, -1000, 190, 210); ctx.rect(-160, -800, 320, 30);                       // cartola
+    ctx.moveTo(85, -650); ctx.arc(0, -650, 85, 0, Math.PI * 2);                           // cabeça
+    ctx.moveTo(-210, -520); ctx.quadraticCurveTo(-260, -200, -170, 0); ctx.lineTo(170, 0); ctx.quadraticCurveTo(300, -260, 210, -520); ctx.quadraticCurveTo(0, -590, -210, -520); // tronco + barriga
+    ctx.rect(-150, 0, 120, 380); ctx.rect(30, 0, 120, 380); ctx.rect(-175, 360, 160, 40); ctx.rect(15, 360, 175, 40);   // pernas e sapatos
+  };
+  const braco_ = () => { ctx.save(); ctx.translate(180, -470); ctx.rotate(braco); ctx.beginPath(); ctx.roundRect(-40, -40, 360, 80, 40); ctx.arc(330, 0, 55, 0, Math.PI * 2); ctx.restore(); };
+  ctx.lineJoin = 'round';
+  for (const [c, lw] of [[borda, 26], [cor, 0]]) {
+    ctx.fillStyle = c; ctx.strokeStyle = c; ctx.lineWidth = lw;
+    corpo(); if (lw) ctx.stroke(); ctx.fill(); braco_(); if (lw) ctx.stroke(); ctx.fill();
+  }
+  ctx.fillStyle = BEGE; ctx.beginPath(); ctx.moveTo(-20, -520); ctx.lineTo(20, -520); ctx.lineTo(0, -380); ctx.closePath(); ctx.fill();   // gravata (papel)
+  ctx.fillStyle = brasa; ctx.beginPath(); ctx.moveTo(-14, -520); ctx.lineTo(14, -520); ctx.lineTo(0, -400); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = cor; ctx.save(); ctx.translate(70, -610); ctx.rotate(-0.2); ctx.fillRect(0, -9, 120, 18); ctx.fillStyle = brasa; ctx.fillRect(116, -9, 18, 18); ctx.restore(); // charuto
+  ctx.fillStyle = BEGE; ctx.fillRect(-95, -830, 190, 26);   // fita da cartola
+  ctx.restore();
+}
+// operário (pictograma) com ferramenta; fase = passo
+function operario(x, y, h, fase, cor = BEGE) {
+  const k = h / 300; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); ctx.fillStyle = cor; ctx.strokeStyle = cor; ctx.lineCap = 'round';
+  const s = Math.sin(fase * Math.PI * 2);
+  ctx.beginPath(); ctx.arc(0, -262, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-40, -220, 80, 120, 18); ctx.fill();
+  ctx.lineWidth = 26; ctx.beginPath(); ctx.moveTo(-20, -104); ctx.lineTo(-20 + s * 30, 0); ctx.moveTo(20, -104); ctx.lineTo(20 - s * 30, 0); ctx.stroke();
+  ctx.lineWidth = 22; ctx.beginPath(); ctx.moveTo(30, -200); ctx.lineTo(80, -150 - s * 40); ctx.stroke();
+  ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(80, -150 - s * 40); ctx.lineTo(80 + 30, -230 - s * 40); ctx.stroke();       // martelo
+  ctx.fillRect(92, -258 - s * 40, 50, 24);
+  ctx.restore();
+}
+function cadeado(x, y, s, fechado) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.strokeStyle = TINTA; ctx.lineWidth = 16; ctx.beginPath();
+  ctx.arc(0, -40 - (1 - fechado) * 26, 34, Math.PI, 0); ctx.lineTo(34, -40 + fechado * 0 - (1 - fechado) * 26 + 20); ctx.moveTo(-34, -40 - (1 - fechado) * 26); ctx.lineTo(-34, -20); ctx.stroke();
+  ctx.fillStyle = VERM; ctx.beginPath(); ctx.roundRect(-52, -30, 104, 84, 10); ctx.fill(); ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(0, 4, 10, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(-4, 4, 8, 24);
+  ctx.restore();
+}
+function relogio(x, y, r, vel, t) {
+  ctx.save(); ctx.translate(x, y); ctx.fillStyle = PAPEL; ctx.strokeStyle = TINTA; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  for (let i = 0; i < 12; i++) { ctx.save(); ctx.rotate(i * Math.PI / 6); ctx.fillStyle = TINTA; ctx.fillRect(-4, -r + 12, 8, i % 3 ? 14 : 26); ctx.restore(); }
+  ctx.lineCap = 'round'; ctx.save(); ctx.rotate(t * vel); ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -r * 0.55); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.rotate(t * vel * 12); ctx.strokeStyle = VERM; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(0, 12); ctx.lineTo(0, -r * 0.82); ctx.stroke(); ctx.restore();
+  ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+}
+// calendário: casa
+const DIAS = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
+function casa(x, y, w, h, rot, num, verm, a = 1) {
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x + w / 2, y + h / 2); ctx.rotate(rot);
+  ctx.fillStyle = verm ? VERM : PAPEL; ctx.fillRect(-w / 2, -h / 2, w, h); ctx.strokeStyle = TINTA; ctx.lineWidth = 5; ctx.strokeRect(-w / 2, -h / 2, w, h);
+  if (rot === 0 || verm) txt(String(num), -w / 2 + 14, -h / 2 + 52, { f: F.man, px: 52, peso: 800, cor: verm ? BEGE : TINTA });
+  if (verm) txt('FOLGA', 0, h / 2 - 16, { f: F.rot, px: 22, peso: 700, cor: BEGE, al: 'center', track: 2 });
+  ctx.restore();
+}
+function papel(a = 0.32, t = 0) {               // papel com grão "fervendo" (troca o deslocamento a 12 qps)
+  const f = Math.floor(t * 12), ox = hash(f) * 200, oy = hash(f + 11) * 300;
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = a; ctx.drawImage(TEX, -ox, -oy, W * 1.25 + 200, H * 1.25 + 300); ctx.restore();
+}
+function vinheta(a = 0.55) { const g = ctx.createRadialGradient(CX, H * 0.46, H * 0.28, CX, H * 0.5, H * 0.78); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(10,6,4,${a})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function flash(t, t0, cor = AMA, dur = 0.12, a = 0.85) { const p = seg(t, t0, t0 + dur); if (t >= t0 && p < 1) { ctx.save(); ctx.globalAlpha = a * (1 - p); ctx.fillStyle = cor; ctx.fillRect(0, 0, W, H); ctx.restore(); } }
+
+// câmera: centro (x,y) no "set" de 1080×1920, escala s, rotação r; + câmera na mão e tremor dos golpes
+function camera(t, c, mao = 1) {
+  let dx = (vnoise(t * 0.7 + 3) - 0.5) * 10 * mao, dy = (vnoise(t * 0.6 + 17) - 0.5) * 10 * mao, dr = (vnoise(t * 0.4 + 40) - 0.5) * 0.006 * mao;
+  for (const [th, amp] of TREMOR) if (t >= th && t < th + 0.6) { const e = Math.exp(-14 * (t - th)); dx += Math.sin((t - th) * 95) * amp * e; dy += Math.cos((t - th) * 83) * amp * 0.8 * e; }
+  ctx.translate(CX + dx, H / 2 + dy); ctx.rotate((c.r || 0) + dr); ctx.scale(c.s || 1, c.s || 1); ctx.translate(-(c.x ?? CX), -(c.y ?? H / 2));
+}
+// interpolação de câmera por chaves [t, {x,y,s,r}] com eio
+function chaves(t, ks) {
+  if (t <= ks[0][0]) return ks[0][1]; for (let i = 1; i < ks.length; i++) if (t < ks[i][0]) { const [t0, a] = ks[i - 1], [t1, b] = ks[i], u = eio(seg(t, t0, t1)), o = {};
+    for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) o[k] = lerp(a[k] ?? b[k], b[k] ?? a[k], u); return o; }
+  return ks[ks.length - 1][1];
+}
+const desfoque = px => { ctx.filter = px > 0.3 ? `blur(${px.toFixed(1)}px)` : 'none'; };
+
+// ================================================================ CENAS
+function gancho(t) {
+  fundo(TINTA);
+  const glow = ctx.createRadialGradient(CX, 1000, 50, CX, 1000, 1100); glow.addColorStop(0, 'rgba(200,32,30,0.30)'); glow.addColorStop(1, 'rgba(200,32,30,0)'); ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  ctx.save();
+  if (t < M.empresarios - 0.02) {
+    // A: "a esquerda briga entre si" — o bloco vermelho racha e as metades se batem
+    camera(t, chaves(t, [[0, { x: CX, y: 920, s: 0.94, r: -0.05 }], [M.empresarios, { x: CX, y: 900, s: 1.08, r: -0.02 }]]));
+    const ent = eo(seg(t, 0.45, 0.85)), abre = seg(t, M.briga, M.briga + 0.12), bate = Math.sin(seg(t, M.briga + 0.12, M.briga + 0.95) * Math.PI * 2.5) * (1 - seg(t, M.briga + 0.12, M.briga + 0.95));
+    const sep = abre * 26 + Math.max(0, bate) * -20 + seg(t, M.briga + 0.95, M.empresarios) * 40;
+    ctx.save(); ctx.translate(CX, 900 - (1 - ent) * 400); ctx.rotate(EIXO * 0.5); ctx.globalAlpha = ent;
+    for (const lado of [-1, 1]) {
+      ctx.save(); ctx.translate(lado * sep, lado * sep * 0.2); ctx.rotate(lado * abre * 0.05);
+      ctx.beginPath(); const r = mulberry(5); ctx.moveTo(0, -330);                 // recorte serrilhado pela rachadura
+      for (let i = 1; i <= 10; i++) ctx.lineTo((r() - 0.5) * 50, -330 + i * 66);
+      ctx.lineTo(lado * 460, 330); ctx.lineTo(lado * 460, -330); ctx.closePath(); ctx.clip();
+      ctx.fillStyle = VERM; ctx.fillRect(-460, -330, 920, 660);
+      txt('ESQUERDA', 0, 40, { f: F.bloco, px: 150, cor: BEGE, al: 'center' });
+      txt('BRIGANDO ENTRE SI', 0, 150, { f: F.kick, px: 52, peso: 600, cor: TINTA, al: 'center', track: 6 });
+      ctx.restore();
+    }
+    ctx.restore();
+    if (abre > 0) { ctx.save(); ctx.translate(CX, 900); ctx.rotate(EIXO * 0.5); ctx.globalAlpha = 0.9 * (1 - seg(t, M.briga + 0.2, M.briga + 0.6)); ctx.fillStyle = AMA;
+      for (let i = 0; i < 9; i++) { const r = mulberry(30 + i), a = r() * Math.PI * 2, d = 80 + seg(t, M.briga, M.briga + 0.5) * (200 + r() * 200); ctx.fillRect(Math.cos(a) * d, -300 + r() * 600 + Math.sin(a) * d * 0.3, 10, 10); } ctx.restore(); }
+  } else {
+    // B: o patrão em contra-plongée puxando a corrente; foco passa da corrente para o patrão e volta
+    const u = seg(t, M.empresarios, M.quebra);
+    const cam = chaves(t, [[M.empresarios, { x: CX, y: 1250, s: 1.05, r: 0.03 }], [M.escr - 0.05, { x: CX, y: 860, s: 1.0, r: 0.0 }], [M.escr + 0.15, { x: CX, y: 760, s: 1.32, r: -0.03 }], [M.quebra, { x: CX, y: 760, s: 1.36, r: -0.03 }]]);
+    const entra = eo(seg(t, M.empresarios - 0.02, M.empresarios + 0.18));
+    ctx.translate((1 - entra) * 700, -(1 - entra) * 230);
+    camera(t, cam);
+    raios(CX, 760, 18, t * 0.05, 'rgba(200,32,30,0.38)');
+    ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(CX, 760, 330, 0, Math.PI * 2); ctx.fill();
+    const foco = seg(t, M.empresarios + 0.35, M.empresarios + 0.8) - seg(t, M.trazer - 0.1, M.trazer + 0.2);   // 1 = foco no patrão
+    desfoque((1 - foco) * 7); patrao(CX - 40, 1250, 900, { braco: 0.35 + Math.sin(t * 3) * 0.03 - seg(t, M.trazer, M.escr) * 0.25 }); desfoque(0);
+    // a corrente atravessa o quadro no eixo, puxada para o patrão
+    const puxa = eio(seg(t, M.trazer, M.escr + 0.2)) * 180 + t * 20;
+    desfoque(foco * 5); corrente(-200, 1520, EIXO, 30, 120, puxa, { esp: 18 }); desfoque(0);
+    corrente(-150, 1650, EIXO, 30, 150, puxa * 1.3, { esp: 24, cor: '#6b625a' });   // elo do primeiro plano (parallax)
+    // ESCRAVIDÃO carimbado
+    carimbo(seg(t, M.escr, M.escr + 0.3), CX, 990, -0.06, () => {
+      bloco('ESCRAVIDÃO', 0, 0, { px: 118, cor: BEGE, fundoC: TINTA, al: 'center', pad: 30 });
+    });
+  }
+  ctx.restore();
+  flash(t, M.briga, AMA, 0.1, 0.5); flash(t, M.escr, AMA, 0.12, 0.7);
+  vinheta(0.7);
+}
+function quebra(t) {
+  fundo(TINTA);
+  const u = t - M.quebra, lento = u < 0.75 ? u * 0.35 : 0;              // câmera lenta durante os estilhaços
+  if (u < 0.75) {
+    ctx.save(); camera(t, { x: CX, y: 820, s: 1.36 + u * 0.1, r: -0.03 });
+    const abre = 40 + lento * 900;
+    corrente(-200, 1520, EIXO, 30, 120, 180 + M.quebra * 20, { esp: 18, quebra: 11, abre });
+    for (let i = 0; i < 14; i++) { const r = mulberry(70 + i), a = r() * Math.PI * 2, d = lento * (500 + r() * 900);
+      ctx.save(); ctx.translate(700 + Math.cos(a) * d, 1260 + Math.sin(a) * d); ctx.rotate(lento * (r() - 0.5) * 20); ctx.fillStyle = r() < 0.3 ? AMA : '#A39A8E'; ctx.fillRect(-12, -6, 24 + r() * 20, 12); ctx.restore(); }
+    ctx.restore();
+    ctx.save(); ctx.globalAlpha = 1 - seg(u, 0.45, 0.75); ctx.globalCompositeOperation = 'source-over'; ctx.restore();
+    ctx.fillStyle = `rgba(28,23,20,${seg(u, 0.4, 0.75)})`; ctx.fillRect(0, 0, W, H);
+  } else {                                                               // meio compasso de silêncio: um rebite vermelho
+    const p = 1 + Math.sin((u - 0.75) * 9) * 0.06; ctx.fillStyle = VERM; ctx.beginPath(); ctx.arc(CX, 900, 20 * p, 0, Math.PI * 2); ctx.fill();
+  }
+  flash(t, M.quebra, AMA, 0.14, 0.95); flash(t, M.quebra + 0.06, '#FFFFFF', 0.06, 0.6);
+  vinheta(0.6);
+}
+function conquista(t) {
+  fundo(BEGE); papel(0.25, t);
+  ctx.save();
+  const cam = chaves(t, [[S.conquista[0], { x: CX, y: 900, s: 1.08, r: 0.012 }], [M.dia, { x: CX, y: 880, s: 1.0, r: 0 }], [M.duas, { x: CX, y: 940, s: 1.02, r: 0 }], [S.conquista[1], { x: CX, y: 960, s: 1.07, r: -0.01 }]]);
+  camera(t, cam);
+  // janela com a foto do ato (faixa PELO FIM DA ESCALA), pan lento sobre a faixa
+  const u = seg(t, S.conquista[0], S.conquista[1]);
+  janela(50, 380, 980, 700, -0.035, (x, y, w, h) => cover(G.faixa, x, y, w, h, lerp(0.40, 0.58, u), lerp(0.55, 0.62, u), lerp(1.25, 1.42, u)));
+  // "ESCALA 6x1" riscado → sai quando a data entra
+  const sai = eio(seg(t, M.dia - 0.1, M.dia + 0.2));
+  if (t >= M.x61 - 0.05 && sai < 1) {
+    ctx.save(); ctx.translate(-sai * 1200, 0);
+    const e = eo(seg(t, M.x61 - 0.05, M.x61 + 0.15));
+    ctx.translate((1 - e) * 900, 0);
+    bloco('ESCALA 6x1', 90, 1260, { px: 110, f: F.bloco, cor: BEGE, fundoC: TINTA, ang: EIXO * 0.4 });
+    const r1 = seg(t, M.x61 + 0.35, M.x61 + 0.5), r2 = seg(t, M.x61 + 0.5, M.x61 + 0.65);
+    ctx.save(); ctx.translate(90, 1260); ctx.rotate(EIXO * 0.4); ctx.strokeStyle = VERM; ctx.lineWidth = 22; ctx.lineCap = 'round';
+    const w0 = larg('ESCALA 6x1', F.bloco, 110) + 52, x0 = w0 * 0.62;
+    ctx.beginPath(); ctx.moveTo(x0, -110); ctx.lineTo(x0 + (w0 - x0) * r1, -110 + 130 * r1); ctx.stroke();
+    if (r2 > 0) { ctx.beginPath(); ctx.moveTo(w0, -110); ctx.lineTo(w0 - (w0 - x0) * r2, -110 + 130 * r2); ctx.stroke(); }
+    ctx.restore(); ctx.restore();
+  }
+  // GARANTIDO carimbado sobre a foto
+  carimbo(seg(t, M.garant, M.garant + 0.3), 690, 930, -0.12, () => {
+    const w = larg('GARANTIDO!', F.bloco, 92) + 50; ctx.fillStyle = PAPEL; ctx.fillRect(-w / 2, -82, w, 112); ctx.strokeStyle = VERM; ctx.lineWidth = 10; ctx.strokeRect(-w / 2, -82, w, 112);
+    txt('GARANTIDO!', 0, 0, { f: F.bloco, px: 92, cor: VERM, al: 'center' });
+  });
+  // data na viga: faixa vermelha cruzando a foto
+  const ent = eo(seg(t, M.dia - 0.05, M.dia + 0.13));
+  if (ent > 0) {
+    ctx.save(); ctx.translate((1 - ent) * -1400, (1 - ent) * 455);
+    faixa(CX, 760, 150, VERM); ctx.save(); ctx.translate(CX, 760); ctx.rotate(EIXO);
+    txt('16 DE DEZEMBRO', 0, 34, { f: F.bloco, px: 92, cor: BEGE, al: 'center' }); ctx.restore();
+    ctx.restore();
+  }
+  // a semana: 7 casas batem em cena; SÁB e DOM acendem uma por batida
+  const ws = eo(seg(t, M.duas - 0.05, M.duas + 0.15));
+  if (ws > 0) {
+    ctx.save(); ctx.translate((1 - ws) * 1200, 0);
+    const x0 = 60, y0 = 1160, cw = 137, ch = 150;
+    ctx.fillStyle = TINTA; ctx.fillRect(x0 - 8, y0 - 54, cw * 7 + 16, ch + 62);
+    DIAS.forEach((d, i) => {
+      txt(d, x0 + i * cw + cw / 2, y0 - 14, { f: F.rot, px: 26, peso: 700, cor: BEGE, al: 'center', track: 2 });
+      const on = (i === 5 && t >= M.folgas1) || (i === 6 && t >= M.folgas1 + 0.28);
+      casa(x0 + i * cw, y0, cw - 6, ch, 0, 8 + i, on);
+    });
+    ctx.restore();
+    const lb = eo(seg(t, M.folgas1 + 0.3, M.folgas1 + 0.5));
+    if (lb > 0) bloco('2 FOLGAS POR SEMANA', CX, 1395, { px: 46, f: F.kick, peso: 700, cor: BEGE, fundoC: VERM, al: 'center', pad: 20, track: 3, a: lb });
+  }
+  ctx.restore();
+  flash(t, M.garant, AMA, 0.1, 0.4);
+  vinheta(0.32);
+}
+function brecha(t) {
+  fundo(TINTA);
+  ctx.save();
+  const u = seg(t, S.brecha[0], S.brecha[1]);
+  camera(t, chaves(t, [[S.brecha[0], { x: CX, y: 980, s: 1.12, r: 0.02 }], [M.brecha, { x: CX, y: 900, s: 1.0, r: 0 }], [S.brecha[1], { x: CX, y: 900, s: 0.96, r: -0.02 }]]));
+  const rach = eo(seg(t, M.brecha, M.brecha + 0.22)), afasta = rach * 18;
+  // janela alta e inclinada com a estátua da Justiça; câmera sobe (crane)
+  const fy = lerp(0.82, 0.42, eio(u)), z = lerp(1.35, 1.12, u);
+  const metade = (lado) => {
+    ctx.save();
+    if (rach > 0) { ctx.beginPath(); const r = mulberry(11); ctx.moveTo(160, 300);   // recorte pela rachadura (diagonal)
+      const pts = []; for (let i = 0; i <= 22; i++) { const v = i / 22, j = (i === 0 || i === 22) ? 0 : (mulberry(11 + i)() - 0.5) * 70; pts.push([lerp(150, 940, v) + j * 0.95, lerp(330, 1330, v) + j * 0.3]); }
+      if (lado < 0) { ctx.moveTo(-100, -100); ctx.lineTo(1300, -100); ctx.lineTo(pts[22][0] + 400, pts[22][1]); for (let i = 22; i >= 0; i--) ctx.lineTo(...pts[i]); ctx.lineTo(-100, pts[0][1]); }
+      else { ctx.moveTo(-100, 2100); ctx.lineTo(1300, 2100); ctx.lineTo(1300, pts[22][1]); for (let i = 22; i >= 0; i--) ctx.lineTo(...pts[i]); ctx.lineTo(-100, pts[0][1] - 400); }
+      ctx.closePath(); ctx.clip(); ctx.translate(lado * afasta, lado * afasta * 0.6); }
+    janela(180, 300, 720, 1040, -0.04, (x, y, w, h) => cover(G.estatua, x, y, w, h, 0.52, fy, z), { skew: -0.08 });
+    ctx.restore();
+  };
+  metade(-1); if (rach > 0) metade(1);
+  if (rach > 0) rachadura(11, 150, 330, 940, 1330, rach, { esp: 8 });
+  // etiquetas
+  const e1 = eo(seg(t, M.stf, M.stf + 0.16));
+  if (e1 > 0) bloco('SUPREMO TRIBUNAL FEDERAL', 60 - (1 - e1) * 900, 330, { px: 40, f: F.rot, peso: 800, cor: BEGE, fundoC: VERM, pad: 18, track: 3 });
+  const e2 = eo(seg(t, M.stf + 0.4, M.stf + 0.56));
+  if (e2 > 0) bloco('LIMINAR', 60 - (1 - e2) * 900, 400, { px: 40, f: F.rot, peso: 800, cor: TINTA, fundoC: BEGE, pad: 18, track: 3 });
+  carimbo(seg(t, M.brecha + 0.05, M.brecha + 0.35), CX, 1300, -0.05, () => bloco('A BRECHA', 0, 0, { px: 130, cor: BEGE, fundoC: VERM, al: 'center', pad: 30 }));
+  ctx.restore();
+  flash(t, M.brecha, '#FFFFFF', 0.08, 0.5);
+  vinheta(0.75);
+}
+// mês: 5 linhas × 7 colunas; a semana da brecha é a linha 1 (dias 8–14)
+const CAL = { x0: 75, y0: 760, cw: 133, ch: 118 };
+function calendario(t) {
+  fundo(BEGE); papel(0.25, t);
+  // plano-assinatura: documento → semana (desce) → mês (puxa para trás), uma tomada só
+  const cam = chaves(t, [[S.calendario[0], { x: CX, y: 230, s: 1.15, r: -0.02 }], [M.suas - 0.15, { x: CX, y: 250, s: 1.12, r: -0.01 }],
+    [M.suas + 0.55, { x: CX, y: CAL.y0 + CAL.ch * 1.5, s: 1.5, r: 0 }], [M.mes - 0.45, { x: CX, y: CAL.y0 + CAL.ch * 1.5, s: 1.45, r: 0.01 }],
+    [M.mes + 0.35, { x: CX, y: CAL.y0 + CAL.ch * 2.4, s: 0.86, r: 0 }], [S.calendario[1], { x: CX, y: CAL.y0 + CAL.ch * 2.5, s: 0.82, r: -0.01 }]]);
+  ctx.save(); camera(t, cam);
+  // documento ACORDO COLETIVO (linhas ilegíveis; só o título é legível)
+  const ent = eo(seg(t, S.calendario[0] + 0.02, S.calendario[0] + 0.22));
+  ctx.save(); ctx.translate(CX, 220 - (1 - ent) * 500); ctx.rotate(-0.05);
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 12; ctx.fillStyle = PAPEL; ctx.fillRect(-400, -330, 800, 620); ctx.restore();
+  txt('ACORDO COLETIVO', -340, -220, { f: F.maq, px: 64, cor: TINTA });
+  ctx.fillStyle = 'rgba(28,23,20,0.55)'; const r = mulberry(4);
+  for (let i = 0; i < 9; i++) ctx.fillRect(-340, -130 + i * 46, 560 + r() * 120, 12);
+  const mk = eo(seg(t, M.acordo + 0.45, M.acordo + 0.75));                   // marca-texto vermelho no título
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(200,32,30,0.55)'; ctx.fillRect(-350, -275, 650 * mk, 72); ctx.restore();
+  ctx.restore();
+  // rachadura que vem da Justiça atravessa a semana
+  const cr = eo(seg(t, M.nao - 0.05, M.nao + 0.35));
+  // mês
+  const mesA = seg(t, M.mes - 0.45, M.mes + 0.1);
+  for (let row = 0; row < 5; row++) for (let col = 0; col < 7; col++) {
+    const num = row * 7 + col + 1; if (num > 31) continue;
+    const isSemana = row === 1, folga = isSemana && col >= 5;
+    if (folga) continue;
+    if (!isSemana && mesA <= 0) continue;
+    casa(CAL.x0 + col * CAL.cw, CAL.y0 + row * CAL.ch, CAL.cw - 6, CAL.ch - 6, 0, num, false, isSemana ? 1 : mesA);
+  }
+  ctx.fillStyle = TINTA; ctx.globalAlpha = Math.max(1 - mesA, 0); ctx.fillRect(CAL.x0 - 6, CAL.y0 + CAL.ch - 48, CAL.cw * 7 + 6, 44); ctx.globalAlpha = 1;
+  DIAS.forEach((d, i) => { txt(d, CAL.x0 + i * CAL.cw + CAL.cw / 2 - 3, CAL.y0 + CAL.ch - 16 - mesA * (CAL.ch - 30), { f: F.rot, px: 24, peso: 700, cor: mesA > 0.5 ? TINTA : BEGE, al: 'center', track: 2 }); });
+  if (cr > 0) rachadura(23, CAL.x0 - 40, CAL.y0 + CAL.ch * 1.15, CAL.x0 + CAL.cw * 7 + 40, CAL.y0 + CAL.ch * 1.9, cr, { esp: 6 });
+  // as duas folgas caem pela rachadura: primeiro saem da semana, depois do mês
+  [5, 6].forEach((col, k) => {
+    const t0 = M.semana2 + k * 0.15, q1 = seg(t, t0, t0 + 1.0), q2 = seg(t, M.mes + 0.1, M.mes + 1.4);
+    const x = CAL.x0 + col * CAL.cw, y = CAL.y0 + CAL.ch;
+    const dx = q1 * (k ? 140 : 60) + ei(q2) * (k ? 260 : 120), dy = ei(q1) * 210 + ei(q2) * 1400, rot = q1 * (k ? 0.5 : -0.4) + q2 * (k ? 2 : -1.6);
+    desfoque(q2 * 4); casa(x + dx, y + dy, CAL.cw - 6, CAL.ch - 6, rot, 13 + k, true); desfoque(0);
+  });
+  ctx.restore();
+  // títulos em tela (y 330, acima de tudo)
+  const a1 = eo(seg(t, M.mesma - 0.1, M.mesma + 0.12)), a2 = eo(seg(t, M.nem - 0.05, M.nem + 0.15));
+  if (a1 > 0 && a2 < 1) bloco('NEM NA MESMA SEMANA', CX, 330, { px: 64, f: F.bloco, cor: BEGE, fundoC: TINTA, al: 'center', pad: 24, esc: lerp(1.25, 1, a1), a: a1 * (1 - a2) });
+  if (a2 > 0) bloco('NEM NO MESMO MÊS', CX, 330, { px: 72, f: F.bloco, cor: BEGE, fundoC: VERM, al: 'center', pad: 26, esc: lerp(1.25, 1, a2), a: a2 });
+  flash(t, S.calendario[0], PAPEL, 0.08, 0.7);
+  vinheta(0.3);
+}
+function luta(t) {
+  // aceleração: fotos dos atos em janelas inclinadas, fundo alternando vermelho / tinta, cortes cada vez mais curtos
+  const lista = ['lute', 'predios', 'bandeiras', 'avenida', 'rua2', 'rostos', 'faixa', 'predios'];
+  const durs = [0.62, 0.52, 0.44, 0.36, 0.3, 0.26, 0.24, 9];
+  let t0 = S.luta[0], k = 0; while (k < durs.length - 1 && t >= t0 + durs[k]) { t0 += durs[k]; k++; }
+  const verm = k % 2 === 0; fundo(verm ? VERM : TINTA);
+  const u = seg(t, t0, t0 + durs[k]);
+  ctx.save(); camera(t, { x: CX, y: 900, s: 1 + u * 0.05, r: 0 }, 1.6);
+  const ang = (k % 2 ? 1 : -1) * 0.075, slam = eo(seg(t, t0, t0 + 0.09));
+  ctx.translate((k % 2 ? -1 : 1) * (1 - slam) * 500, 0);
+  janela(70, 520, 940, 760, ang, (x, y, w, h) => cover(G[lista[k]], x, y, w, h, 0.5, 0.5, 1.12 + u * 0.12), { corBorda: verm ? TINTA : BEGE });
+  ctx.restore();
+  // contador de atos (gráfico) → texto mantido em bloco
+  const c1 = eo(seg(t, M.lutou - 0.05, M.lutou + 0.12));
+  bloco('A GENTE LUTOU', CX, 330, { px: 96, cor: verm ? BEGE : TINTA, fundoC: verm ? TINTA : BEGE, al: 'center', pad: 28, esc: lerp(1.3, 1, c1), a: c1 });
+  const c2 = eo(seg(t, M.conquistar - 0.05, M.conquistar + 0.12));
+  if (c2 > 0) bloco('PELAS 2 FOLGAS', CX, 1400, { px: 70, cor: verm ? TINTA : BEGE, fundoC: verm ? BEGE : VERM, al: 'center', pad: 24, esc: lerp(1.3, 1, c2), a: c2 });
+  flash(t, t0, PAPEL, 0.05, 0.5);
+  vinheta(0.45);
+}
+function empurra(t) {
+  fundo(BEGE); raios(CX, 1250, 22, -0.3 + t * 0.04, 'rgba(200,32,30,0.10)'); papel(0.25, t);
+  const u = seg(t, S.empurra[0], S.empurra[1]);
+  ctx.save(); camera(t, chaves(t, [[S.empurra[0], { x: 560, y: 1000, s: 1.15, r: -0.02 }], [M.empurrar, { x: 600, y: 960, s: 1.0, r: 0.0 }], [M.sabese, { x: 700, y: 900, s: 0.96, r: 0.03 }], [S.empurra[1], { x: 720, y: 880, s: 1.02, r: 0.04 }]]));
+  // fundo (parallax lento): folhas de calendário longe e desfocadas
+  desfoque(3); for (let i = 0; i < 9; i++) { const r = mulberry(200 + i), x = r() * 1200 - 60 - u * 80, y = 300 + r() * 600; casa(x, y, 90, 80, (r() - 0.5) * 0.6, 1 + (i * 7) % 31, false, 0.35); } desfoque(0);
+  // chão
+  ctx.fillStyle = TINTA; ctx.fillRect(-400, 1360, 2000, 14);
+  // o bloco FOLGA vai sendo empurrado pelo eixo até sumir no fundo
+  const pu = seg(t, M.empurrar, M.sabese + 0.4), dist = ei(pu) * 0.6 + eo(pu) * 0.4;
+  const bx = lerp(640, 1180, dist), by = lerp(1360, 760, dist), bs = lerp(1, 0.25, dist);
+  ctx.save(); ctx.translate(bx, by); ctx.scale(bs, bs); ctx.rotate(dist * -0.15);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fillRect(-10, -10, 370, 20);
+  ctx.fillStyle = VERM; ctx.fillRect(0, -230, 360, 230); ctx.strokeStyle = TINTA; ctx.lineWidth = 8; ctx.strokeRect(0, -230, 360, 230);
+  txt('FOLGA', 180, -92, { f: F.bloco, px: 84, cor: BEGE, al: 'center' }); ctx.restore();
+  // o patrão: antecipação (inclina pra trás), empurrão, acompanhamento
+  const ant = seg(t, M.empurrar - 0.35, M.empurrar), acao = seg(t, M.empurrar, M.empurrar + 0.3);
+  const incl = -0.1 * ss(ant) + 0.32 * eo(acao), px_ = lerp(300, 420, eo(acao)) + ei(seg(t, M.empurrar + 0.3, M.sabese + 0.4)) * 200;
+  patrao(px_, 1365, 720 * lerp(1, 0.85, ei(seg(t, M.empurrar + 0.3, M.sabese + 0.4))), { incl, braco: lerp(0.2, -0.05, eo(acao)) });
+  ctx.restore();
+  // primeiro plano: folhas voando perto da câmera (desfocadas)
+  for (let i = 0; i < 6; i++) { const r = mulberry(300 + i), v = seg(t, M.empurrar + i * 0.25, M.empurrar + i * 0.25 + 1.4); if (v <= 0 || v >= 1) continue;
+    desfoque(6); casa(-200 + v * 1500, 1700 - v * 1500 + r() * 200, 220, 190, v * 4 * (r() - 0.5), 1 + i * 5, false); desfoque(0); }
+  // "sabe-se lá quando": relógio girando + ? vermelho
+  const rl = eo(seg(t, M.sabese - 0.45, M.sabese - 0.2));
+  if (rl > 0) { ctx.save(); ctx.globalAlpha = rl; relogio(820, 520, 140 * lerp(0.6, 1, rl), lerp(2, 14, seg(t, M.sabese, M.quando)), t); ctx.restore(); }
+  carimbo(seg(t, M.quando, M.quando + 0.3), 330, 600, -0.12, () => txt('?', 0, 160, { f: F.bloco, px: 440, cor: VERM, al: 'center' }));
+  const e1 = eo(seg(t, M.agora - 0.1, M.agora + 0.1));
+  bloco('O PATRÃO', 60 - (1 - e1) * 800, 330, { px: 64, cor: BEGE, fundoC: TINTA, pad: 22 });
+  const e2 = eo(seg(t, M.empurrar - 0.05, M.empurrar + 0.12));
+  if (e2 > 0) bloco('EMPURRA A SUA FOLGA', 60 - (1 - e2) * 900, 410, { px: 52, f: F.kick, peso: 700, cor: BEGE, fundoC: VERM, pad: 20, track: 2 });
+  vinheta(0.3);
+}
+function ouseja(t) {
+  fundo(TINTA);
+  ctx.save(); camera(t, chaves(t, [[S.ouseja[0], { x: CX, y: 960, s: 1.1, r: 0.02 }], [M.descansa, { x: CX, y: 960, s: 1.0, r: 0 }], [S.ouseja[1], { x: CX, y: 1000, s: 1.06, r: -0.02 }]]));
+  // faixa de cima: TRABALHA — operários em ritmo de máquina, rolando
+  const e1 = eo(seg(t, M.voce - 0.05, M.voce + 0.15));
+  ctx.save(); ctx.translate((1 - e1) * 1400, 0);
+  faixa(CX, 720, 420, VERM);
+  ctx.save(); ctx.translate(CX, 720); ctx.rotate(EIXO); ctx.beginPath(); ctx.rect(-1500, -210, 3000, 420); ctx.clip();
+  for (let i = -8; i < 9; i++) operario(i * 170 - ((t * 420) % 170), 150, 290, t * 2.2 + i * 0.13, TINTA);
+  ctx.restore();
+  ctx.save(); ctx.translate(CX, 720); ctx.rotate(EIXO); bloco('VOCÊ TRABALHA', -470, -110, { px: 84, cor: BEGE, fundoC: TINTA, pad: 22 }); ctx.restore();
+  ctx.restore();
+  const e2 = eo(seg(t, M.jeito - 0.05, M.jeito + 0.12));
+  if (e2 > 0) { ctx.save(); ctx.globalAlpha = e2; txt('DO JEITO QUE O PATRÃO QUER', CX, 1080, { f: F.kick, px: 50, peso: 600, cor: BEGE, al: 'center', track: 3 }); ctx.restore(); }
+  // embaixo: DESCANSA pequeno, preso no cadeado
+  const e3 = eo(seg(t, M.descansa - 0.05, M.descansa + 0.15));
+  if (e3 > 0) {
+    ctx.save(); ctx.translate(-(1 - e3) * 1200, 0);
+    ctx.save(); ctx.translate(CX, 1250); ctx.rotate(0.04); ctx.fillStyle = PAPEL; ctx.fillRect(-250, -80, 500, 140);
+    txt('DESCANSA', -10, 30, { f: F.bloco, px: 72, cor: TINTA, al: 'center' }); ctx.restore();
+    corrente(CX - 330, 1270, 0.05, 9, 92, 0, { esp: 12, cor: '#8f867b' });
+    cadeado(CX + 290, 1210, 1.1, ss(seg(t, M.deixar, M.deixar + 0.12)));
+    ctx.restore();
+  }
+  ctx.restore();
+  const e4 = eo(seg(t, M.quando2 ?? M.descansa + 0.5, (M.quando2 ?? M.descansa + 0.5) + 0.12));
+  if (e4 > 0) bloco('QUANDO O PATRÃO DEIXAR', CX, 1405, { px: 46, f: F.kick, peso: 700, cor: BEGE, fundoC: VERM, al: 'center', pad: 18, track: 2, a: e4 });
+  const e0 = eo(seg(t, M.ouseja - 0.08, M.ouseja + 0.1));
+  bloco('OU SEJA:', 60, 330, { px: 60, f: F.bloco, cor: TINTA, fundoC: AMA, pad: 20, a: e0 });
+  vinheta(0.7);
+}
+function camara(t) {
+  fundo(BEGE); papel(0.25, t);
+  const v = t < M.julg - 0.08;
+  ctx.save();
+  if (v) {
+    camera(t, chaves(t, [[S.camara[0], { x: CX, y: 860, s: 1.0, r: 0.02 }], [M.derrubar, { x: 470, y: 800, s: 1.18, r: 0 }], [M.julg, { x: 470, y: 800, s: 1.22, r: -0.01 }]]));
+    const en = eo(seg(t, S.camara[0], S.camara[0] + 0.2));
+    ctx.translate(-(1 - en) * 1200, 0);
+    janela(60, 470, 960, 640, 0.03, (x, y, w, h) => cover(G.senado, x, y, w, h, 0.36, 0.42, 1.25));
+    // elipse vermelha desenhada à mão em volta do placar
+    const el = seg(t, M.pediram + 0.15, M.pediram + 0.6);
+    if (el > 0) { ctx.save(); ctx.strokeStyle = VERM; ctx.lineWidth = 12; ctx.lineCap = 'round'; ctx.beginPath();
+      for (let i = 0; i <= 60 * el; i++) { const a = -2.2 + i / 60 * Math.PI * 2.15, rr = 1 + Math.sin(i * 0.5) * 0.02; ctx.lineTo(420 + Math.cos(a) * 260 * rr, 760 + Math.sin(a) * 190 * rr); } ctx.stroke(); ctx.restore(); }
+  } else {
+    // STF em plano aberto, câmera puxando para trás
+    camera(t, chaves(t, [[M.julg - 0.08, { x: CX, y: 860, s: 1.25, r: 0 }], [S.camara[1], { x: CX, y: 880, s: 1.0, r: 0.01 }]]));
+    const en = eo(seg(t, M.julg - 0.08, M.julg + 0.12)); ctx.translate((1 - en) * 1200, 0);
+    janela(50, 480, 980, 760, -0.025, (x, y, w, h) => cover(G.stf, x, y, w, h, 0.55, 0.55, 1.05 + seg(t, M.julg, S.camara[1]) * 0.08));
+  }
+  ctx.restore();
+  // blocos: CÂMARA / SENADO / PEDIRAM AO STF: → DERRUBA A BRECHA!
+  if (v) {
+    const b1 = eo(seg(t, M.camara - 0.05, M.camara + 0.12)), b2 = eo(seg(t, M.senado - 0.05, M.senado + 0.12));
+    if (b1 > 0) bloco('CÂMARA', 60 - (1 - b1) * 700, 330, { px: 76, cor: BEGE, fundoC: TINTA, pad: 22 });
+    if (b2 > 0) bloco('SENADO', 560 + (1 - b2) * 700, 330, { px: 76, cor: BEGE, fundoC: AZUL, pad: 22 });
+    carimbo(seg(t, M.derrubar, M.derrubar + 0.3), CX, 1300, -0.06, () => bloco('DERRUBA A BRECHA!', 0, 0, { px: 92, cor: BEGE, fundoC: VERM, al: 'center', pad: 26 }));
+  } else {
+    const b3 = eo(seg(t, M.julg - 0.05, M.julg + 0.12));
+    bloco('JULGAMENTO NO PLENÁRIO', 60 - (1 - b3) * 900, 330, { px: 60, cor: BEGE, fundoC: TINTA, pad: 22 });
+    carimbo(seg(t, M.plen + 0.1, M.plen + 0.4), 720, 1330, -0.1, () => {
+      ctx.strokeStyle = VERM; ctx.lineWidth = 10; const w = larg('SEM DATA', F.bloco, 86) + 50; ctx.fillStyle = PAPEL; ctx.fillRect(-w / 2, -80, w, 108); ctx.strokeRect(-w / 2, -80, w, 108);
+      txt('SEM DATA', 0, 0, { f: F.bloco, px: 86, cor: VERM, al: 'center' }); });
+  }
+  flash(t, M.derrubar, AMA, 0.1, 0.45);
+  vinheta(0.3);
+}
+// torre de fotos: andares batem alternando os lados; câmera sobe com eles
+const ANDARES = ['predios', 'bandeiras', 'faixa', 'avenida', 'rua2', 'lute', 'rostos', 'predios'];
+function chamado(t) {
+  fundo(BEGE); raios(CX, 1100, 24, t * 0.06, 'rgba(200,32,30,0.13)'); papel(0.25, t);
+  const t0 = S.chamado[0], passo = 0.36, n = Math.min(ANDARES.length, Math.max(0, Math.floor((t - t0) / passo) + 1));
+  const alt = 300, base = 1340;
+  const subida = Math.min(ANDARES.length - 1, Math.max(0, (t - t0) / passo - 0.3));
+  const fecha = seg(t, M.folga - 0.1, M.folga + 0.25);
+  ctx.save(); camera(t, { x: CX, y: lerp(base - 300, base - alt * 3.2, eio(clamp(subida / (ANDARES.length - 1)))) - fecha * 40, s: lerp(1.1, 0.55, eio(clamp(subida / (ANDARES.length - 1)))), r: 0.01 });
+  for (let i = 0; i < n; i++) {
+    const ta = t0 + i * passo, e = eo(seg(t, ta, ta + 0.12)), lado = i % 2 ? -1 : 1, y = base - i * alt;
+    ctx.save(); ctx.translate(lado * (1 - e) * 1300, 0);
+    janela(70, y - alt + 18, 940, alt - 30, lado * 0.012, (x, yy, w, h) => cover(G[ANDARES[i]], x, yy, w, h, 0.5, 0.5, 1.15), { borda: 6, sombra: false });
+    ctx.fillStyle = TINTA; ctx.fillRect(40, y - 10, 1000, 22);               // viga embaixo de cada andar
+    ctx.restore();
+  }
+  // a rachadura (a brecha) fecha: costura vermelha que encolhe
+  if (t < M.folga + 0.3) rachadura(11, 60, base - alt * 5.5, 1020, base - alt * 1.5, 1 - fecha, { esp: 10 });
+  ctx.restore();
+  // chamado em tela
+  const c1 = eo(seg(t, M.comp - 0.05, M.comp + 0.12)), c2 = eo(seg(t, M.marca - 0.05, M.marca + 0.12)), fim = seg(t, M.folga - 0.1, M.folga + 0.1);
+  if (c1 > 0 && fim < 1) bloco('COMPARTILHA', CX, 330, { px: 88, cor: BEGE, fundoC: VERM, al: 'center', pad: 26, esc: lerp(1.3, 1, c1), a: c1 * (1 - fim) });
+  if (c2 > 0 && fim < 1) bloco('E MARCA SEU SINDICATO', CX, 440, { px: 54, f: F.kick, peso: 700, cor: BEGE, fundoC: TINTA, al: 'center', pad: 20, track: 3, a: c2 * (1 - fim) });
+  // FOLGA / TODA / SEMANA! empilhado, palavra por palavra
+  const pal3 = [['FOLGA', M.folga], ['TODA', M.toda], ['SEMANA!', M.semana3]];
+  pal3.forEach(([s, tt], i) => carimbo(seg(t, tt, tt + 0.28), CX, 560 + i * 200, -0.04, () => bloco(s, 0, 0, { px: 170, cor: BEGE, fundoC: i === 2 ? VERM : TINTA, al: 'center', pad: 34 })));
+  const nq = eo(seg(t, M.naoq - 0.05, M.naoq + 0.15));
+  if (nq > 0) bloco('E NÃO QUANDO O PATRÃO QUISER', CX, 1180, { px: 44, f: F.kick, peso: 700, cor: TINTA, fundoC: AMA, al: 'center', pad: 18, track: 2, a: nq });
+  flash(t, M.folga, AMA, 0.1, 0.5); flash(t, M.quiser, '#FFFFFF', 0.08, 0.5);
+  vinheta(0.3);
+}
+function logo(t) {
+  fundo(BEGE); raios(CX, 1100, 22, -0.25 + t * 0.03, 'rgba(200,32,30,0.08)'); papel(0.22, t);
+  ctx.save(); camera(t, { x: CX, y: H / 2, s: 1 + seg(t, M.logo, DUR) * 0.04 }, 0.5);
+  const w = 600, h = w * LOGO.height / LOGO.width;
+  carimbo(seg(t, M.logo, M.logo + 0.3), CX, 860, 0, () => { ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.25)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10; ctx.drawImage(LOGO, -w / 2, -h / 2, w, h); ctx.restore(); });
+  ctx.restore(); vinheta(0.25);
+}
+
+// ---------------------------------------------------------------- legenda (padrão da casa)
+const CHAVE = /^(escravid|garantid|brecha|folga|semana|mês|lutou|empurrar|patrão|derrubar|plenário|compartilhe|sindicato|quiser|stf|dezembro|6x1)/i;
+const LEG = (() => {
+  const linhas = []; let at = [];
+  P.forEach((p, k) => { at.push(p); const s = at.map(x => x[0]).join(' '), prox = P[k + 1];
+    if (/[.,?!:]$/.test(p[0]) || !prox || s.length + 1 + prox[0].length > 24 || prox[1] - p[2] > 0.6) { linhas.push({ t0: at[0][1], t1: prox ? prox[1] : p[2] + 0.6, p: at.map(x => [x[0], x[1]]) }); at = []; } });
+  return linhas;
+})();
+function legenda(t) {
+  const L = LEG.find(l => t >= l.t0 - 0.02 && t < l.t1); if (!L) return;
+  const px = 48; fonte(F.ser, px, 400, 'italic'); const esp = px * 0.28, ws = L.p.map(([w]) => ctx.measureText(w).width), Wt = ws.reduce((a, b) => a + b, 0) + esp * (ws.length - 1);
+  const x0 = CX - Wt / 2, Y = 1466;
+  ctx.fillStyle = 'rgba(15,12,11,0.92)'; ctx.fillRect(x0 - 26, Y, Wt + 52, 76); ctx.fillStyle = VERM; ctx.fillRect(x0 - 26, Y, 7, 76);
+  let x = x0; L.p.forEach(([w, ta], i) => { const a = t >= ta - 0.03 ? 1 : 0.0; if (a) txt(w, x, Y + 53, { f: F.ser, est: 'italic', px, cor: CHAVE.test(w) ? AMA : BEGE }); x += ws[i] + esp; });
+}
+
+// ---------------------------------------------------------------- transições no meio (faixa vermelha a 72°, íris)
+function wipe(t, t0, A, B, dur = 0.28) {
+  const p = seg(t, t0, t0 + dur); if (p <= 0) return A(t); if (p >= 1) return B(t);
+  A(t); const u = lerp(-1500, 1500, eio(p)), th = 18 * Math.PI / 180;
+  ctx.save(); ctx.translate(CX, H / 2); ctx.rotate(th); ctx.beginPath(); ctx.rect(-3000, -3000, 3000 + u - 130, 6000); ctx.clip(); ctx.rotate(-th); ctx.translate(-CX, -H / 2); B(t); ctx.restore();
+  ctx.save(); ctx.translate(CX, H / 2); ctx.rotate(th); ctx.fillStyle = VERM; ctx.fillRect(u - 130, -3000, 260, 6000); ctx.restore();
+}
+function iris(t, t0, A, B, dur = 0.45) {
+  const p = seg(t, t0, t0 + dur); if (p <= 0) return A(t); if (p >= 1) return B(t);
+  A(t); const r = lerp(0, 1300, ei(p)) + 1; ctx.save(); ctx.beginPath(); ctx.arc(CX, 900, r, 0, Math.PI * 2); ctx.clip(); B(t); ctx.restore();
+  ctx.save(); ctx.strokeStyle = VERM; ctx.lineWidth = 26; ctx.beginPath(); ctx.arc(CX, 900, r, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+}
+
+function render(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
+  if (t < S.gancho[1]) gancho(t);
+  else if (t < S.quebra[1]) quebra(t);
+  else if (t < S.conquista[1]) wipe(t, S.conquista[0] - 0.06, quebra, conquista);
+  else if (t < S.brecha[1]) brecha(t);
+  else if (t < S.calendario[1]) calendario(t);
+  else if (t < S.luta[1]) wipe(t, S.luta[0] - 0.08, calendario, luta);
+  else if (t < S.empurra[1]) empurra(t);
+  else if (t < S.ouseja[1]) ouseja(t);
+  else if (t < S.camara[1]) wipe(t, S.camara[0] - 0.08, ouseja, camara);
+  else if (t < S.chamado[1]) iris(t, S.chamado[0] - 0.05, camara, chamado);
+  else logo(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
+  if (t < M.logo - 0.05) legenda(t);
+  flash(t, M.logo, AMA, 0.12, 0.6);
+  // fade de entrada (25 ms do primeiro quadro) e respiro final
+  if (t > DUR - 0.35) { ctx.fillStyle = `rgba(237,224,196,${seg(t, DUR - 0.35, DUR) * 0.0})`; ctx.fillRect(0, 0, W, H); }
+}
+M.quando2 = q('quando o patrão deixar', 33.5);
+window.M = M; window.S = S; window.EV = EV; window.DUR = DUR; window.render = render;
+render(0); window.READY = true;
+</script></body></html>

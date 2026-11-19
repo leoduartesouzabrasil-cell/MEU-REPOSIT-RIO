@@ -69,3 +69,18 @@ NA TELA: chip "CÂMARA E SENADO: DERRUBA A BRECHA" · "STF: JULGAMENTO NO PLENÁ
 🚩Narrador: Léo Duarte
 VÍDEOS NOVOS TODOS OS DIAS!
 ```
+
+## Versão cinematográfica (plugin lemo-opuscar) — `filmes/6x1-brecha-cine/`
+Mesma narração (gravação 58), agora cortada só na fala (60,9 s → 49 s), com montagem no estilo "Constructivist Montage" e a identidade da casa.
+Trilha com instrumentos reais amostrados (bateria, baixo, guitarra distorcida, cordas, metais, tímpanos, gongo) e foley sincronizado com cada quadro.
+Saída: `saida/6x1-brecha-cine-FINAL.mp4` (52,3 s). Refazer: `sh filmes/6x1-brecha-cine/build.sh`.
+
+### Legenda do post (versão cine)
+```
+🚨 Enquanto a esquerda briga entre si, os patrões trabalham pra esvaziar o fim da 6x1! O fim da escala começa dia 16 de dezembro, com duas folgas por semana, mas uma liminar no STF abriu brecha: com acordo coletivo, as suas folgas não precisam mais cair na mesma semana, nem no mesmo mês. A gente lutou muito por essas duas folgas pra elas virarem "quando o patrão deixar". Até a Câmara e o Senado pediram pro STF derrubar essa brecha, e o caso vai pro plenário. Compartilha e marca o seu sindicato: folga é toda semana! ✊🏾🔥
+
+📸 Fotos: Romerito Pontes (CC BY 2.0), Ton Molina/Agência Senado, Limesa143 e Dasfour2022 (CC BY-SA 4.0), via Wikimedia Commons.
+
+🚩Narrador: Léo Duarte
+VÍDEOS NOVOS TODOS OS DIAS!
+```
