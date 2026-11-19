@@ -209,7 +209,9 @@ function desenharPainel() {
   el.innerHTML = `<div class="ph"><h2>${S.aba === 'estado' && S.uf ? esc(estadoUF(S.uf).nome) : TITULOS[S.aba]}</h2><button class="x" aria-label="Fechar painel">×</button></div><div class="pc">${PAINEIS[S.aba]()}</div>`;
   el.scrollTop = topo;
   el.querySelector('.x').onclick = () => el.classList.add('fechado');
-  el.querySelectorAll('[data-j]').forEach(b => b.onclick = () => { if (b.dataset.confirma && !confirm(b.dataset.confirma)) return; jogar(JSON.parse(b.dataset.j)); });
+  el.querySelectorAll('[data-j]').forEach(b => b.onclick = () => {
+    if (b.dataset.confirma && !b.dataset.ok) { b.dataset.ok = '1'; b.textContent = b.dataset.confirma; return; } // confirmação em dois cliques
+    jogar(JSON.parse(b.dataset.j)); });
   el.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => { const [a, x] = b.dataset.ir.split('|'); S.aba = a; if (a === 'estado') S.uf = x; if (a === 'congresso' && x) S.casa = x; desenhar(); });
   const fp = el.querySelector('#fProj');
   if (fp) {
@@ -263,7 +265,7 @@ function pPerfil() {
   if (j.cargo && !souPres) {
     h += `<div class="bloco"><h3>Mandato</h3><div class="acoes">${ACOES_MANDATO.filter(a => !a.cargos || a.cargos.includes(j.cargo.cargo)).map(a => `<button class="acao" data-j="${J({ tipo: 'mandato', acao: a.id })}" ${j.pc < a.pc ? 'disabled' : ''}><b>${a.nome}</b><span class="cust">${a.pc} capital</span><small>${esc(a.desc)}</small></button>`).join('')}
       <button class="acao" data-ir="congresso|${j.cargo.cargo === 'dep_est' ? 'ale:' + j.cargo.uf : j.cargo.cargo === 'senador' ? 'senado' : 'camara'}"><b>Ir para o plenário</b><small>Votar e propor projetos</small></button></div>
-      <button class="bt fino" style="margin-top:.6rem" data-j="${J({ tipo: 'renunciar' })}" data-confirma="Renunciar ao mandato?">Renunciar</button></div>`;
+      <button class="bt fino" style="margin-top:.6rem" data-j="${J({ tipo: 'renunciar' })}" data-confirma="Clique de novo para confirmar a renúncia">Renunciar</button></div>`;
   }
   h += `<div class="bloco"><h3>Simpatia do eleitorado · ${uf}</h3>${SEGMENTOS.map(s => { const v = j.simp[uf]?.[s.id] || 0;
     return `<div class="seg"><span>${esc(s.nome)}</span><div class="simp"><b style="${v >= 0 ? `left:50%;width:${v / 40 * 50}%;background:#6fae69` : `left:${50 + v / 40 * 50}%;width:${-v / 40 * 50}%;background:#c85a4e`}"></b></div><span class="num pq">${v > 0 ? '+' : ''}${Math.round(v)}</span></div>`; }).join('')}
