@@ -250,7 +250,7 @@ window.CENA = {
         ['n_povos', 'POVOS ORIGINÁRIOS'], ['n_terreiro', 'POVOS DE TERREIRO'], ['n_cultural', 'CULTURAL'], ['n_estudantil', 'ESTUDANTIL']];
       N.forEach(([k, nome], i) => {
         const t0 = T[k] - 0.2; if (t < t0) return;
-        const x = 140 + (i % 4) * 250, y = 300 + Math.floor(i / 4) * 255, s = 190;
+        const x = 150 + (i % 4) * 240, y = 370 + Math.floor(i / 4) * 222, s = 164;
         L.aplicarCarimbo(ctx, seg(t, t0, t0 + 0.3), x + s / 2, y + s / 2, () => {
           ctx.fillStyle = 'rgba(28,23,20,0.3)'; ctx.fillRect(x + 10, y + 10, s, s);
           ctx.drawImage(L.img[k], x, y, s, s);
@@ -258,7 +258,7 @@ window.CENA = {
           L.texto(ctx, nome, x + s / 2, y + s + 40, { familia: FONTE.grotesca, peso: 700, tam: tamMax(nome, FONTE.grotesca, 24, 700, 220), cor: TINTA, alinhar: 'center' });
         }, 30 + i);
       });
-      L.etiqueta(ctx, 'DE TODOS', 235, 300, seg(t, T.todos + 0.4, T.todos + 0.7), { cor: VERM, tam: 30 });
+      L.etiqueta(ctx, 'DE TODOS', 232, 370, seg(t, T.todos + 0.4, T.todos + 0.7), { cor: VERM, tam: 30 });
       if (t >= T.escolher) {
         const e = ease.saida(seg(t, T.escolher, T.escolher + 0.4));
         faixa('OS OUTROS, VOCÊ ESCOLHE NO CADASTRO', 140, 870, T.escolher, 960, TINTA, AMA, 36, 41);
@@ -431,7 +431,7 @@ window.CENA = {
       arquivo = false; sol(1300);
       L.aplicarCarimbo(ctx, seg(lt, 0, 0.3), CX, 430, () => L.imagem(ctx, L.img.lufa, CX, 430, 600), 97);
       ctx.save(); ctx.globalAlpha = seg(lt, 0.6, 1.1);
-      L.texto(ctx, 'NARRAÇÃO: EDUARDA PRADO', CX, 880, { familia: FONTE.sub, peso: 600, tam: 46, cor: BEGE, alinhar: 'center', tracking: 4 });
+      L.texto(ctx, 'NARRAÇÃO: LÉO DUARTE', CX, 880, { familia: FONTE.sub, peso: 600, tam: 46, cor: BEGE, alinhar: 'center', tracking: 4 });
       ctx.restore();
     }
 

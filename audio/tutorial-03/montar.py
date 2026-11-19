@@ -13,7 +13,8 @@ import som  # noqa: E402
 from som import SR, soma  # noqa: E402
 
 O = 0.8                       # a voz entra 0,8 s depois do começo do vídeo
-CORTES = [(163.14, 167.46)]   # "vai pedir que um líder do seu núcleo" (a frase foi dita duas vezes)
+CORTES = [(163.14, 167.46),   # "vai pedir que um líder do seu núcleo" (a frase foi dita duas vezes)
+          (208.04, 210.85)]   # "e quem junta mais pon…" errado; fica a fala certa, que começa em 210,9 s
 PAUSA_MAX = 0.6               # pausas maiores que isso são encurtadas
 
 pal = json.load(open(AQUI / "palavras.json"))
