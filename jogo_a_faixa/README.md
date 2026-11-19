@@ -36,3 +36,7 @@ Os dados foram consultados em novembro de 2026:
 - Calendário: posse em 5 de janeiro (EC 111/2021), aposentadorias compulsórias no STF aos 75 anos e mandato do presidente do BC até o fim de 2028.
 
 As pessoas citadas são figuras públicas reais. As descrições usam fatos conhecidos até 2026. Suas falas e decisões dentro do jogo são ficção.
+
+## Versão online: Concerto das Nações
+
+A evolução multijogador da A Faixa está em [`../concerto/`](../concerto/README.md): servidores com vários jogadores, candidaturas a deputado(a) e senador(a), campanha e votações no Congresso.
