@@ -29,6 +29,8 @@ const carregar = src => new Promise((ok, erro) => { const i = new Image(); i.onl
 const IMG = {};
 await Promise.all(Object.entries(IMGS).map(async ([k, f]) => { IMG[k] = await carregar(`img/${f}.jpg`); }));
 const LOGO = await carregar('img/leo-duarte.png');
+const CAPA = location.search.includes('capa=1');
+const LG = CAPA ? { cam: await carregar('img/o-camarada-h-silhueta-vermelha.png'), leo: await carregar('img/leo-duarte-silhueta-vermelha.png') } : {};
 await Promise.all(['900 80px "Big Shoulders Display"', '80px "Russo One"', '600 80px Oswald', '80px "Special Elite"', 'italic 80px "Instrument Serif"', '700 80px Archivo']
   .map(f => document.fonts.load(f)));
 
@@ -678,6 +680,44 @@ function logo(t) {
   ctx.restore();
 }
 
+
+// ================================================================ CAPA do Reels (?capa=1): modelo das capas da casa (fundo amarelo com raios,
+// logos vermelhos no topo, manchete + tarja, arte em baixo dentro do grid 3:4 y 240–1680), com a arte feita aqui em fotomontagem
+function capa() {
+  fundo(AMA); raios(CX, 1350, 24, -0.2, 'rgba(214,120,20,0.24)');
+  // logos O Camarada | Léo Duarte em silhueta vermelha
+  const hc = 64, wc = hc * LG.cam.width / LG.cam.height, hl = 100, wl = hl * LG.leo.width / LG.leo.height, gap = 60, x0 = CX - (wc + gap + wl) / 2, yl = 400;
+  ctx.drawImage(LG.cam, x0, yl - hc / 2, wc, hc); ctx.drawImage(LG.leo, x0 + wc + gap, yl - hl / 2, wl, hl);
+  // manchete
+  fonte(F.bloco, 150); const tit = 'FIM DA 6x1:', wt = ctx.measureText(tit).width, px = Math.min(150, 150 * 900 / wt);
+  txt(tit, CX + 9, 640 + 9, { f: F.bloco, px, cor: TINTA, al: 'center' }); txt(tit, CX, 640, { f: F.bloco, px, cor: VERM, al: 'center' });
+  bloco('O STF ABRIU UMA BRECHA!', CX, 760, { px: 62, f: F.bloco, cor: BEGE, fundoC: TINTA, al: 'center', pad: 26, ang: -0.02 });
+  // ---- arte (y ~860–1680)
+  // povo: faixa de fotos do ato em impressão tinta→papel, inclinada, na base
+  janela(70, 1330, 940, 330, -0.03, (x, y, w, h) => cover(G.predios, x, y, w, h, 0.5, 0.62, 1.15), { borda: 8 });
+  // calendário (folha do mês) com a rachadura e as casas das folgas vazias
+  ctx.save(); ctx.translate(420, 1110); ctx.rotate(-0.06); const cs = 0.9; ctx.scale(cs, cs);
+  ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.45)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 16; ctx.fillStyle = PAPEL; ctx.fillRect(-330, -250, 660, 470); ctx.restore();
+  ctx.fillStyle = VERM; ctx.fillRect(-330, -250, 660, 80); txt('DEZEMBRO', 0, -192, { f: F.bloco, px: 50, cor: BEGE, al: 'center' });
+  const cw = 88, ch = 70, gx = -330 + (660 - 7 * cw) / 2;
+  DIAS.forEach((d, i) => txt(d, gx + i * cw + cw / 2, -142, { f: F.rot, px: 18, peso: 800, cor: TINTA, al: 'center', track: 1 }));
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 7; c++) { const n = r * 7 + c + 1; if (n > 31) continue;
+    if (r === 2 && c >= 5) { ctx.setLineDash([8, 8]); ctx.strokeStyle = VERM; ctx.lineWidth = 3; ctx.strokeRect(gx + c * cw + 3, -128 + r * ch, cw - 6, ch - 6); ctx.setLineDash([]); continue; }
+    ctx.strokeStyle = TINTA; ctx.lineWidth = 3; ctx.strokeRect(gx + c * cw + 3, -128 + r * ch, cw - 6, ch - 6);
+    txt(String(n), gx + c * cw + 12, -128 + r * ch + 34, { f: F.man, px: 30, peso: 800, cor: n === 16 ? VERM : TINTA }); }
+  rachadura(23, -340, -30, 340, 110, 1, { esp: 7 });
+  ctx.restore();
+  // o patrão (recorte de cartaz) arrancando as duas folgas do calendário com a mão erguida
+  const PX = 850, PY = 1450, PH = 580, br = -1.05, k = PH / 1000;
+  const hx = PX - k * (180 + 330 * Math.cos(br)), hy = PY + k * (-470 + 330 * Math.sin(br));
+  ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.35)'; ctx.shadowBlur = 24; ctx.shadowOffsetX = -10; ctx.shadowOffsetY = 12;
+  ctx.save(); ctx.translate(PX, PY); ctx.scale(-1, 1); patrao(0, 0, PH, { incl: -0.05, braco: br }); ctx.restore(); ctx.restore();
+  [[hx - 150, hy - 150, -0.2], [hx - 60, hy - 120, 0.18]].forEach(([x, y, r], j) => { ctx.save(); ctx.shadowColor = 'rgba(28,23,20,0.4)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 10;
+    casa(x, y, 110, 92, r, 20 + j, true); ctx.restore(); });
+  bloco('A FOLGA É TODA SEMANA!', CX, 1560, { px: 54, f: F.bloco, cor: TINTA, fundoC: AMA, al: 'center', pad: 20, ang: -0.02 });
+  papel(0.22, 0); vinheta(0.28);
+}
+
 // ---------------------------------------------------------------- legenda (padrão da casa)
 const CHAVE = /^(escravid|garantid|brecha|folga|semana|mês|lutou|empurrar|patrão|derrubar|plenário|compartilhe|sindicato|quiser|stf|dezembro|6x1)/i;
 const LEG = (() => {
@@ -709,6 +749,7 @@ function iris(t, t0, A, B, dur = 0.45) {
 
 function render(t) {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
+  if (CAPA) { capa(); if (location.search.includes('guia=1')) { ctx.strokeStyle = '#00d0ff'; ctx.lineWidth = 4; ctx.strokeRect(0, 240, W, 1440); } return; }
   if (t < S.gancho[1]) gancho(t);
   else if (t < S.quebra[1]) quebra(t);
   else if (t < S.conquista[1]) wipe(t, S.conquista[0] - 0.06, quebra, conquista);
