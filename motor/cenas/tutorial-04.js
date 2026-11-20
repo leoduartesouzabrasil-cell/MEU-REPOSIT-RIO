@@ -9,6 +9,10 @@ const T = Object.assign({}, (window.TEMPOS || {}).marcas || {});
 window.CENA = {
   w: 1920, h: 1080, fps: 30, dur: (window.TEMPOS || {}).dur || 315,
   imagens: {
+    "kapital": "../midia/tutorial-04/das-kapital-1867.jpg",
+    "valongo": "../midia/tutorial-04/valongo-debret.jpg",
+    "botocudos": "../midia/tutorial-04/botocudos-debret.jpg",
+    "cafezal": "../midia/tutorial-04/cafezal-ferrez.jpg",
     "oxalufa": "../midia/tutorial-04/oxalufa.png",
     "oxaguia": "../midia/tutorial-04/oxaguia.png",
     "lufa": "../midia/tutorial-03/logo-lufa-empilhado.png",
@@ -554,7 +558,7 @@ window.CENA = {
       livro(1490 + 0, 660, 210, 300, 'O ESTADO\nE A\nREVOLUÇÃO', 'V. I. LÊNIN', '1917', AZUL, T.com + 2.1, 0.03);
       quadro('manifesto', 1040, 670, 150, 220, T.com + 2.6, null, null, { pb: false });
       quadro('kapital', 1270, 670, 160, 220, T.com + 3.0, null, null, { pb: false });
-      if (t > T.com + 3.2) L.texto(ctx, 'livros: desenho nosso dos títulos em português · embaixo, as 1ªs edições (1848 e 1867), domínio público', 1360, 1000 - 70, { familia: FONTE.maquina, peso: 400, tam: 16, cor: TINTA, alinhar: 'center' });
+      if (t > T.com + 3.2) L.texto(ctx, 'livros: desenho nosso dos títulos em português · embaixo, as 1ªs edições (1848 e 1867), domínio público', 960, 1050, { familia: FONTE.maquina, peso: 400, tam: 16, cor: TINTA, alinhar: 'center' });
     }
 
     // ------------------------------------------------ 6. comunismo popular (ARQUIVO)
