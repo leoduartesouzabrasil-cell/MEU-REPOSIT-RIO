@@ -9,6 +9,8 @@ const T = Object.assign({}, (window.TEMPOS || {}).marcas || {});
 window.CENA = {
   w: 1920, h: 1080, fps: 30, dur: (window.TEMPOS || {}).dur || 315,
   imagens: {
+    "oxalufa": "../midia/tutorial-04/oxalufa.png",
+    "oxaguia": "../midia/tutorial-04/oxaguia.png",
     "lufa": "../midia/tutorial-03/logo-lufa-empilhado.png",
     "pomba": "../midia/tutorial-04/pomba.png",
     "marx": "../midia/tutorial-01/marx.jpg",
@@ -278,70 +280,18 @@ window.CENA = {
         ctx.save(); ctx.translate(bx, by); ctx.rotate(ang); ctx.fillStyle = PRATA; tra(2.5 * s); ctx.fillRect(-7 * s, -17 * s * esp, 14 * s, 34 * s * esp); ctx.strokeRect(-7 * s, -17 * s * esp, 14 * s, 34 * s * esp); ctx.restore(); });
       ctx.fillStyle = PELE; tra(2.5 * s); ctx.beginPath(); ctx.arc(x1, y1, 15 * s * esp, 0, 7); ctx.fill(); ctx.stroke();
     }
-    function oxalufa(x, y, s = 1, balanca = 0) {   // o velho: corpo grande, curvado, apoiado no opaxorô (pés em x, y)
-      ctx.save(); ctx.translate(x, y); ctx.rotate(Math.sin(balanca) * 0.012);
-      opaxoro(-150 * s, 0, -520 * s, s);
-      // a saia rodada, larga, com babado
-      saia(10 * s, -230 * s, 0, 360 * s, s, 70);
-      // o avental de renda com dois medalhões (rosáceas)
-      tra(3 * s); ctx.fillStyle = '#FBF8F1'; ctx.beginPath(); ctx.moveTo(-34 * s, -228 * s); ctx.lineTo(34 * s, -228 * s); ctx.lineTo(52 * s, -30 * s); ctx.lineTo(-52 * s, -30 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      [[-170, 30], [-85, 34]].forEach(([dy, r]) => { ctx.strokeStyle = PRATA2; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.arc(0, dy * s, r * s, 0, 7); ctx.stroke();
-        for (let k = 0; k < 8; k++) { ctx.beginPath(); ctx.ellipse(Math.cos(k * Math.PI / 4) * r * 0.5 * s, dy * s + Math.sin(k * Math.PI / 4) * r * 0.5 * s, 7 * s, 4 * s, k * Math.PI / 4, 0, 7); ctx.stroke(); }
-        ctx.beginPath(); ctx.arc(0, dy * s, 6 * s, 0, 7); ctx.stroke(); });
-      // o tronco largo, curvado para a frente
-      ctx.save(); ctx.translate(0, -225 * s); ctx.rotate(-0.09);
-      tra(4 * s); ctx.fillStyle = BRANCO;
-      ctx.beginPath(); ctx.moveTo(-70 * s, 0); ctx.bezierCurveTo(-96 * s, -60 * s, -84 * s, -150 * s, -30 * s, -160 * s); ctx.lineTo(30 * s, -160 * s);
-      ctx.bezierCurveTo(84 * s, -150 * s, 96 * s, -60 * s, 70 * s, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = SOMBRA; ctx.beginPath(); ctx.moveTo(30 * s, -150 * s); ctx.bezierCurveTo(110 * s, -120 * s, 120 * s, -20 * s, 90 * s, 40 * s); ctx.lineTo(60 * s, 0); ctx.bezierCurveTo(88 * s, -60 * s, 76 * s, -130 * s, 30 * s, -150 * s); ctx.fill(); ctx.stroke();   // o pano pelas costas
-      bracoForte(-66 * s, -128 * s, -134 * s, -46 * s, s, 1.1);   // o braço que segura o opaxorô
-      bracoForte(66 * s, -128 * s, 78 * s, -30 * s, s, 1.1);
-      cabeca(-6 * s, -222 * s, s, { longa: true });
-      ctx.restore(); ctx.restore();
+    // as ilustrações finais (desenho próprio em alta resolução, motor/cenas/orixas-ilustracao.js, com acabamento de pintura)
+    function figura(img, x, y, alt, rot = 0) {   // pés em (x, y), altura alt
+      if (!img) return;
+      const w = img.width * alt / img.height;
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      ctx.fillStyle = 'rgba(28,23,20,0.18)'; ctx.beginPath(); ctx.ellipse(0, 0, w * 0.42, alt * 0.025, 0, 0, 7); ctx.fill();
+      ctx.drawImage(img, -w / 2, -alt, w, alt); ctx.restore();
     }
-    function oxaguia(x, y, s = 1, brilho = 0) {   // o jovem guerreiro, musculoso: espada de metal e o atori; branco com detalhes azuis
-      ctx.save(); ctx.translate(x, y);
-      // o atori (vara longa e fina), na mão esquerda
-      tra(3 * s); ctx.save(); ctx.translate(-110 * s, -330 * s); ctx.rotate(-0.38); ctx.fillStyle = '#FAFAFA'; ctx.fillRect(-4 * s, -230 * s, 8 * s, 420 * s); ctx.strokeRect(-4 * s, -230 * s, 8 * s, 420 * s); ctx.restore();
-      // a saia longa, branca, com renda e bordado azul na barra
-      saia(0, -250 * s, 0, 300 * s, s, 52);
-      ctx.fillStyle = '#2E7FB8'; for (let i = -5; i <= 5; i++) { const bx = i * 26 * s, byy = -30 * s;
-        ctx.beginPath(); ctx.moveTo(bx, byy - 26 * s); ctx.bezierCurveTo(bx + 12 * s, byy - 10 * s, bx + 8 * s, byy + 4 * s, bx, byy + 4 * s); ctx.bezierCurveTo(bx - 8 * s, byy + 4 * s, bx - 12 * s, byy - 10 * s, bx, byy - 26 * s); ctx.fill();
-        ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(bx, byy - 6 * s, 3 * s, 0, 7); ctx.fill(); ctx.fillStyle = '#2E7FB8'; }
-      ctx.strokeStyle = '#8EC5EA'; ctx.lineWidth = 3 * s; ctx.setLineDash([3 * s, 5 * s]); ctx.beginPath(); ctx.moveTo(-120 * s, -80 * s); ctx.quadraticCurveTo(0, -60 * s, 120 * s, -80 * s); ctx.stroke(); ctx.setLineDash([]);
-      // o tronco musculoso, de pele, com um ombro de fora
-      tra(4 * s); ctx.fillStyle = PELE;
-      ctx.beginPath(); ctx.moveTo(-56 * s, -250 * s); ctx.bezierCurveTo(-74 * s, -320 * s, -84 * s, -380 * s, -40 * s, -400 * s); ctx.lineTo(40 * s, -400 * s);
-      ctx.bezierCurveTo(84 * s, -380 * s, 74 * s, -320 * s, 56 * s, -250 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.moveTo(-30 * s, -350 * s); ctx.quadraticCurveTo(0, -335 * s, 30 * s, -350 * s); ctx.stroke();   // o peitoral
-      // o pano branco cruzado (do ombro direito ao quadril), com borda de contas azuis
-      tra(3.5 * s); ctx.fillStyle = BRANCO;
-      ctx.beginPath(); ctx.moveTo(10 * s, -404 * s); ctx.lineTo(58 * s, -396 * s); ctx.lineTo(60 * s, -250 * s); ctx.lineTo(-56 * s, -250 * s); ctx.lineTo(-58 * s, -290 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#2E7FB8'; for (let q = 0; q <= 1; q += 0.08) { ctx.beginPath(); ctx.arc(lerp(10, -58, q) * s, lerp(-404, -290, q) * s, 2.6 * s, 0, 7); ctx.fill(); }
-      ctx.fillStyle = PRATA; ctx.fillRect(-60 * s, -262 * s, 120 * s, 14 * s); ctx.strokeRect(-60 * s, -262 * s, 120 * s, 14 * s);   // o cinto de prata
-      // fio de contas vermelho e branco, longo
-      for (let q = 0; q <= 1; q += 0.04) { const a2 = Math.PI * (0.15 + q * 0.7); ctx.fillStyle = Math.floor(q * 25) % 2 ? VERM : BRANCO; ctx.beginPath(); ctx.arc(Math.cos(a2) * 40 * s, -380 * s + Math.sin(a2) * 90 * s, 3 * s, 0, 7); ctx.fill(); }
-      // braços fortes: o esquerdo segura o atori; o direito ergue a espada
-      bracoForte(-52 * s, -380 * s, -110 * s, -300 * s, s, 1.15);
-      bracoForte(52 * s, -380 * s, 112 * s, -330 * s, s, 1.15);
-      ctx.save(); ctx.translate(112 * s, -330 * s); ctx.rotate(-0.12);   // a espada de metal, reta
-      tra(3 * s); ctx.fillStyle = PRATA; ctx.beginPath(); ctx.moveTo(-12 * s, -16 * s); ctx.lineTo(-10 * s, -190 * s); ctx.lineTo(0, -222 * s); ctx.lineTo(10 * s, -190 * s); ctx.lineTo(12 * s, -16 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.strokeStyle = PRATA2; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.moveTo(0, -24 * s); ctx.lineTo(0, -200 * s); ctx.stroke();
-      ctx.fillStyle = PRATA; tra(3 * s); ctx.beginPath(); ctx.roundRect(-30 * s, -20 * s, 60 * s, 10 * s, 4 * s); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#2E7FB8'; ctx.beginPath(); ctx.roundRect(-7 * s, -10 * s, 14 * s, 34 * s, 4 * s); ctx.fill(); ctx.stroke();
-      if (brilho > 0) { ctx.globalAlpha = brilho; L.estrela(ctx, 0, -222 * s, 24 * s, 0, '#FFFFFF'); ctx.globalAlpha = 1; }
-      ctx.restore();
-      cabeca(0, -470 * s, s, { alto: true });
-      ctx.restore();
-    }
-    function oxala(x, y, s = 1) {   // Oxalá na criação: de branco, ereto, com o adê
-      ctx.save(); ctx.translate(x, y);
-      saia(0, -190 * s, 0, 230 * s, s);
-      tronco(0, -310 * s, -190 * s, s); oja(0, -284 * s, s, false); colares(0, -292 * s, s);
-      bracoIde(-38 * s, -290 * s, -60 * s, -210 * s, s); bracoIde(38 * s, -290 * s, 70 * s, -230 * s, s);
-      cabeca(0, -392 * s, s, {});
-      ctx.restore();
-    }
+    function oxalufa(x, y, s = 1, balanca = 0) { figura(L.img.oxalufa, x, y, 640 * s, Math.sin(balanca) * 0.01); }
+    function oxaguia(x, y, s = 1, brilho = 0) { figura(L.img.oxaguia, x, y, 680 * s, 0);
+      if (brilho > 0) { ctx.save(); ctx.globalAlpha = brilho; L.estrela(ctx, x - 150 * s, y - 610 * s, 30 * s, 0, '#FFFFFF'); ctx.restore(); } }
+    function oxala(x, y, s = 1) { figura(L.img.oxalufa, x, y, 560 * s, 0); }
     function galinha(x, y, s = 1, passo = 0) {   // galinha-d'angola: cinza com pintas brancas, cabeça azulada, barbela vermelha
       ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
       const p = Math.sin(passo * Math.PI * 2) * 6;
@@ -484,7 +434,7 @@ window.CENA = {
       ctx.fillStyle = 'rgba(31,58,95,0.06)'; ctx.fillRect(960, 0, 960, 1080);
       ctx.fillStyle = TINTA; ctx.fillRect(957, 220, 6, 700);
       const pl = ease.saida(seg(t, T.lufa_face - 0.2, T.lufa_face + 0.6));
-      if (pl > 0) { ctx.save(); ctx.globalAlpha = pl; oxalufa(480, 920, 1.04, t * 1.2); if (L.img.pomba) L.imagem(ctx, L.img.pomba, 760 + Math.sin(t * 2) * 10, 640 + Math.sin(t * 3) * 12, 130); ctx.restore();
+      if (pl > 0) { ctx.save(); ctx.globalAlpha = pl; oxalufa(480, 920, 1.04, t * 1.2); ctx.restore();
         cubo('OXALUFÃ', 120, 180, 64, seg(t, T.lufa_face, T.lufa_face + 0.6), { maxW: 600 });
         etq('O VELHO SÁBIO', 760, 420, T.lufa_face + 1.4, TINTA, 28); etq('O OPAXORÔ', 770, 340, T.opaxoro, TINTA, 28); etq('TRAZ A PAZ', 760, 500, T.opaxoro + 1.1, AZUL, 32); }
       const pr = ease.saida(seg(t, T.guia - 0.2, T.guia + 0.6));
