@@ -8,7 +8,7 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 
 — Conta uma das histórias iorubás que, no começo, só existiam o céu e as águas. Olorum, o senhor do céu, entregou a Oxalá a tarefa de criar o mundo.
 
-— Oxalá desceu do céu com um pouco de terra e uma galinha. A terra caiu sobre as águas, a galinha ciscou e espalhou o chão por todo lado. Assim nasceu a terra firme.
+— Oxalá desceu do céu com um pouco de terra e uma galinha especial: uma galinha de cinco dedos em cada pé, e não de quatro, como as galinhas comuns. A terra caiu sobre as águas, a galinha ciscou com os seus cinco dedos e espalhou o chão por todo lado. Assim nasceu a terra firme.
 
 — Depois, foi Oxalá quem modelou os seres humanos com o barro, para que Olorum lhes desse o sopro da vida. Por isso, nos terreiros, Oxalá é o pai da criação, vestido de branco e ligado à paz.
 
@@ -35,7 +35,7 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 — Paz como objetivo, luta como caminho. Esse é o Coletivo Lufã. Seja bem-vindo, seja bem-vinda. Paz entre nós, guerra aos senhores!
 
 ## Na tela (mesmo estilo dos outros episódios)
-1. Abertura lúdica em 2D: céu e águas, Olorum como luz no alto; Oxalá descendo com a terra e a galinha; a terra se espalhando; o barro virando gente.
+1. Abertura lúdica em 2D: céu e águas, Olorum como luz no alto; Oxalá descendo com a terra e a galinha de cinco dedos (close no pé, contando os dedos); a terra se espalhando; o barro virando gente.
 2. Oxalá de branco, com a pomba (a mesma do nosso logo); "PAI DA CRIAÇÃO · PAZ".
 3. Duas metades: OXALUFÃ (velho, cajado, branco, "PAZ") × OXAGUIÃ (jovem, espada, "LUTA QUANDO É PRECISO").
 4. "LUFÃ ← OXALUFÃ" e o logo do coletivo; "BUSCAR A PAZ SEM NEGAR A LUTA".
@@ -46,8 +46,11 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 
 ## Notas de precisão
 - Criação do mundo: há várias versões do itan. Na mais conhecida, Olorum (Olodumare) encarrega Obatalá/Oxalá de criar a terra sobre as águas,
-  com um pouco de terra e uma galinha que a espalha; em algumas versões, Oduduwa cria a terra enquanto Oxalá dorme depois de beber vinho de palma,
+  com um pouco de terra e uma galinha de CINCO DEDOS (adìẹ elẹ́sẹ̀ márùn-ún, em iorubá) que a espalha; em algumas versões, Oduduwa cria a terra enquanto Oxalá dorme depois de beber vinho de palma,
   e Oxalá fica com a tarefa de modelar os seres humanos no barro. O roteiro usa a versão mais simples e diz "uma das histórias".
+  A galinha de cinco dedos aparece nas versões do mito em português e em inglês (ex.: Marta Moreno Vega, sobre a tradição iorubá em Cuba);
+  algumas versões populares no Brasil a chamam de galinha-d'angola, mas isso não foi confirmado em fonte acadêmica, por isso o roteiro não usa.
+  As galinhas comuns têm quatro dedos em cada pé.
   Fontes: Luiz L. Marins, "Òrìsà dídá ayé: Òbátálá e a criação do mundo iorubá", revista África (USP), 2012; Reginaldo Prandi, Mitologia dos Orixás (2001).
 - Oxalufã (o velho, com o cajado opaxorô) e Oxaguiã (o jovem guerreiro, com espada) como as duas formas de Oxalá: Pierre Verger, Orixás; Prandi, Mitologia dos Orixás.
   Os detalhes variam entre as casas; vale pedir para o Núcleo dos Povos de Terreiro revisar o texto antes de gravar.
