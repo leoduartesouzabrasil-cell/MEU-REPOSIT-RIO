@@ -178,31 +178,33 @@ window.CENA = {
       { roupa: AMA, pele: '#C68E5E' }, { roupa: TINTA, pele: '#8A5A3A', chapeu: 'bone' }, { roupa: VERDE, pele: '#5E3B26' }];
 
     // ================================================ ILUSTRAÇÕES (2D, sem fotos): Oxalá, Oxalufã, Oxaguiã, a galinha-d'angola
-    // Iconografia (Verger, Orixás; Prandi, Mitologia dos Orixás): branco; Oxalufã, o velho, curvado, com o opaxorô (cajado de metal com
-    // discos, sininhos e um pássaro no alto); Oxaguiã, o jovem guerreiro, com espada, escudo e o pilão (do inhame pilado). Os dois com o
-    // adê (coroa) com franja de contas cobrindo o rosto, como nas representações dos terreiros.
+    // Seguindo as referências enviadas pelo autor: Oxalufã, velho, corpo grande e curvado, todo de branco, coroa de pontas, idés de prata,
+    // avental de renda e o opaxorô (cajado com três "guarda-chuvas" de contas e o pássaro no alto), com a pomba por perto; Oxaguiã, jovem e
+    // musculoso, um ombro de fora, branco com detalhes azuis, coroa alta com a pomba no medalhão azul, espada de metal e o atori.
     const BRANCO = '#F7F3EA', SOMBRA = '#D8D0BF', PRATA = '#C9CED6', PRATA2 = '#8E959F', PELE = '#5E3B26';
     // ---- partes do corpo, desenhadas com curvas (traço de tinta de cartaz)
     function tra(w = 4) { ctx.strokeStyle = TINTA; ctx.lineWidth = w; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; }
-    function adê(cx, cy, s, o = {}) {   // a coroa (adê): cúpula em camadas, com a franja de contas (filá) cobrindo o rosto
-      tra(3 * s);
-      ctx.fillStyle = PRATA;
-      ctx.beginPath(); ctx.moveTo(cx - 40 * s, cy); ctx.bezierCurveTo(cx - 42 * s, cy - 40 * s, cx - 22 * s, cy - 74 * s, cx, cy - 76 * s);
-      ctx.bezierCurveTo(cx + 22 * s, cy - 74 * s, cx + 42 * s, cy - 40 * s, cx + 40 * s, cy); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = PRATA2; [[-6, 34], [-30, 26]].forEach(([dy, r]) => { ctx.beginPath(); ctx.ellipse(cx, cy + dy * s, (r + 8) * s, 6 * s, 0, 0, 7); ctx.fill(); ctx.stroke(); });
-      ctx.fillStyle = BRANCO; for (let i = -3; i <= 3; i++) { ctx.beginPath(); ctx.arc(cx + i * 10 * s, cy - 18 * s, 3 * s, 0, 7); ctx.fill(); }
-      if (o.pomba) {   // a pombinha no alto do adê de Oxalufã
-        ctx.fillStyle = BRANCO; tra(2.5 * s); ctx.beginPath(); ctx.ellipse(cx, cy - 86 * s, 14 * s, 9 * s, 0, 0, 7); ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.arc(cx + 12 * s, cy - 94 * s, 6 * s, 0, 7); ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(cx - 4 * s, cy - 90 * s); ctx.quadraticCurveTo(cx - 20 * s, cy - 112 * s, cx - 2 * s, cy - 104 * s); ctx.fill(); ctx.stroke();
+    function adê(cx, cy, s, o = {}) {   // a coroa (adê) com a franja de contas (filá) cobrindo o rosto
+      tra(3 * s); ctx.fillStyle = PRATA;
+      if (o.alto) {   // Oxaguiã: coroa alta, de topo reto, com o medalhão azul e a pomba
+        ctx.beginPath(); ctx.moveTo(cx - 36 * s, cy); ctx.lineTo(cx - 52 * s, cy - 104 * s); ctx.lineTo(cx + 52 * s, cy - 104 * s); ctx.lineTo(cx + 36 * s, cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = PRATA2; ctx.fillRect(cx - 38 * s, cy - 10 * s, 76 * s, 10 * s); ctx.strokeRect(cx - 38 * s, cy - 10 * s, 76 * s, 10 * s);
+        ctx.fillStyle = '#8EC5EA'; ctx.beginPath(); ctx.arc(cx, cy - 56 * s, 24 * s, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = BRANCO; ctx.beginPath(); ctx.ellipse(cx - 2 * s, cy - 54 * s, 11 * s, 6 * s, -0.2, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(cx - 4 * s, cy - 56 * s); ctx.quadraticCurveTo(cx - 18 * s, cy - 74 * s, cx + 4 * s, cy - 66 * s); ctx.fill(); ctx.beginPath(); ctx.arc(cx + 9 * s, cy - 58 * s, 4 * s, 0, 7); ctx.fill();
+        ctx.fillStyle = '#2E7FB8'; ctx.beginPath(); ctx.arc(cx, cy - 18 * s, 4 * s, 0, 7); ctx.fill();
+      } else {   // Oxalufã: coroa de pontas
+        ctx.beginPath(); ctx.moveTo(cx - 40 * s, cy); ctx.lineTo(cx - 44 * s, cy - 50 * s);
+        for (let i = 0; i < 6; i++) { const x0 = cx - 44 * s + (88 * s * i) / 6; ctx.lineTo(x0 + 7 * s, cy - 76 * s); ctx.lineTo(x0 + 14.6 * s, cy - 50 * s); }
+        ctx.lineTo(cx + 40 * s, cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = PRATA2; ctx.fillRect(cx - 42 * s, cy - 14 * s, 84 * s, 10 * s);
+        ctx.fillStyle = BRANCO; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(cx - 37 * s + i * 14.6 * s, cy - 70 * s, 3 * s, 0, 7); ctx.fill(); }
       }
-      if (o.pluma) { ctx.fillStyle = BRANCO; tra(2.5 * s); ctx.beginPath(); ctx.moveTo(cx, cy - 74 * s); ctx.bezierCurveTo(cx + 30 * s, cy - 120 * s, cx + 10 * s, cy - 140 * s, cx - 4 * s, cy - 150 * s);
-        ctx.bezierCurveTo(cx + 2 * s, cy - 120 * s, cx - 14 * s, cy - 100 * s, cx, cy - 74 * s); ctx.fill(); ctx.stroke(); }
-      // a franja de contas (filá)
-      for (let i = -6; i <= 6; i++) {
-        const x = cx + i * 6.2 * s, comp = (54 - Math.abs(i) * 2.2) * s;
+      const azul = !!o.alto, longa = o.longa ? 1.6 : 1;
+      for (let i = -6; i <= 6; i++) {   // a franja de contas (filá)
+        const x = cx + i * 6.2 * s, comp = (54 - Math.abs(i) * 2.2) * s * longa;
         ctx.strokeStyle = 'rgba(28,23,20,0.35)'; ctx.lineWidth = 1 * s; ctx.beginPath(); ctx.moveTo(x, cy); ctx.lineTo(x, cy + comp); ctx.stroke();
-        ctx.fillStyle = i % 2 ? BRANCO : '#EDEDED'; for (let k = 5 * s; k < comp; k += 6.5 * s) { ctx.beginPath(); ctx.arc(x, cy + k, 2.6 * s, 0, 7); ctx.fill(); }
+        let k2 = 0; for (let k = 5 * s; k < comp; k += 6.5 * s, k2++) { ctx.fillStyle = azul && (k2 + i) % 4 === 0 ? '#2E7FB8' : (i % 2 ? BRANCO : '#EDEDED'); ctx.beginPath(); ctx.arc(x, cy + k, 2.6 * s, 0, 7); ctx.fill(); }
       }
     }
     function cabeca(cx, cy, s, o = {}) {   // rosto coberto pelo filá; só o queixo e o pescoço aparecem
@@ -246,63 +248,90 @@ window.CENA = {
       ctx.beginPath(); ctx.moveTo(cx - 50 * s, y); ctx.quadraticCurveTo(cx, y + 14 * s, cx + 50 * s, y); ctx.lineTo(cx + 48 * s, y + 26 * s); ctx.quadraticCurveTo(cx, y + 40 * s, cx - 48 * s, y + 26 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
       if (laco) { ctx.beginPath(); ctx.ellipse(cx + 40 * s, y + 10 * s, 22 * s, 13 * s, -0.4, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(cx + 40 * s, y + 30 * s, 20 * s, 12 * s, 0.5, 0, 7); ctx.fill(); ctx.stroke(); }
     }
-    function opaxoro(x, y0, y1, s) {   // o opaxorô: cajado de metal com discos, sininhos pendurados e o pássaro no alto
+    function opaxoro(x, y0, y1, s) {   // o opaxorô: cajado de metal com três "guarda-chuvas" com franja de contas e o pássaro no alto
       tra(3 * s); ctx.fillStyle = PRATA;
       ctx.fillRect(x - 5 * s, y1, 10 * s, y0 - y1); ctx.strokeRect(x - 5 * s, y1, 10 * s, y0 - y1);
-      [[150, 48], [100, 40], [55, 30]].forEach(([dy, r]) => {
+      [[200, 62], [110, 52], [30, 40]].forEach(([dy, r]) => {
         const yy = y1 + dy * s;
-        ctx.fillStyle = PRATA; tra(3 * s); ctx.beginPath(); ctx.moveTo(x - r * s, yy); ctx.quadraticCurveTo(x, yy - 26 * s, x + r * s, yy); ctx.closePath(); ctx.fill(); ctx.stroke();
-        for (let k = -r + 8; k <= r - 8; k += 10) { const yb = yy + (12 + Math.abs(k) * 0.1) * s;
-          ctx.strokeStyle = PRATA2; ctx.lineWidth = 1.6 * s; ctx.beginPath(); ctx.moveTo(x + k * s, yy - 2 * s); ctx.lineTo(x + k * s, yb); ctx.stroke();
-          ctx.fillStyle = PRATA; ctx.strokeStyle = TINTA; ctx.lineWidth = 1.2 * s; ctx.beginPath(); ctx.moveTo(x + (k - 3.5) * s, yb + 7 * s); ctx.lineTo(x + k * s, yb); ctx.lineTo(x + (k + 3.5) * s, yb + 7 * s); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+        for (let k = -r + 4; k <= r - 4; k += 7) {   // a franja de contas pendurada
+          const comp = (26 + (Math.abs(k) % 3) * 3) * s;
+          ctx.strokeStyle = PRATA2; ctx.lineWidth = 1.2 * s; ctx.beginPath(); ctx.moveTo(x + k * s, yy); ctx.lineTo(x + k * s, yy + comp); ctx.stroke();
+          ctx.fillStyle = BRANCO; for (let q = 6 * s; q <= comp; q += 6 * s) { ctx.beginPath(); ctx.arc(x + k * s, yy + q, 2 * s, 0, 7); ctx.fill(); }
+        }
+        ctx.fillStyle = PRATA; tra(3 * s); ctx.beginPath(); ctx.moveTo(x - r * s, yy); ctx.bezierCurveTo(x - r * 0.7 * s, yy - 34 * s, x + r * 0.7 * s, yy - 34 * s, x + r * s, yy); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = PRATA2; ctx.fillRect(x - r * s, yy - 3 * s, 2 * r * s, 6 * s);
       });
-      const by = y1 + 6 * s;   // o pássaro
+      const by = y1 - 12 * s;   // o pássaro
       ctx.fillStyle = BRANCO; tra(2.5 * s); ctx.beginPath(); ctx.ellipse(x, by, 18 * s, 11 * s, 0, 0, 7); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.arc(x + 15 * s, by - 9 * s, 8 * s, 0, 7); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(x - 6 * s, by - 4 * s); ctx.quadraticCurveTo(x - 26 * s, by - 30 * s, x - 2 * s, by - 20 * s); ctx.fill(); ctx.stroke();
       ctx.fillStyle = AMA; ctx.beginPath(); ctx.moveTo(x + 22 * s, by - 10 * s); ctx.lineTo(x + 31 * s, by - 7 * s); ctx.lineTo(x + 22 * s, by - 5 * s); ctx.fill();
-      ctx.fillStyle = TINTA; ctx.beginPath(); ctx.arc(x + 17 * s, by - 11 * s, 1.6 * s, 0, 7); ctx.fill();
     }
-    function oxalufa(x, y, s = 1, balanca = 0) {   // o velho: curvado, devagar, apoiado no opaxorô (pés em x, y)
-      ctx.save(); ctx.translate(x, y); ctx.rotate(Math.sin(balanca) * 0.015);
-      opaxoro(95 * s, 0, -440 * s, s);
-      saia(0, -200 * s, 0, 260 * s, s);
-      ctx.save(); ctx.translate(-6 * s, -200 * s); ctx.rotate(-0.16);   // o tronco curvado do velho
-      tronco(0, -120 * s, 0, s); oja(0, -92 * s, s, true); colares(0, -100 * s, s);
-      bracoIde(36 * s, -100 * s, 92 * s, -60 * s, s);      // segura o opaxorô
-      bracoIde(-36 * s, -100 * s, -40 * s, -30 * s, s);
-      cabeca(4 * s, -200 * s, s, { pomba: true });
+    function bracoForte(x0, y0, x1, y1, s, esp = 1) {   // braço de pele (forte), com idé no braço e no pulso
+      tra(3 * s);
+      const mx = lerp(x0, x1, 0.48), my = lerp(y0, y1, 0.48);
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 34 * s * esp; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(mx, my); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.strokeStyle = PELE; ctx.lineWidth = 27 * s * esp; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(mx, my); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 8 * s; ctx.beginPath(); ctx.moveTo(lerp(x0, mx, 0.2), lerp(y0, my, 0.2) - 6 * s); ctx.lineTo(lerp(x0, mx, 0.8), lerp(y0, my, 0.8) - 6 * s); ctx.stroke();
+      const ang = Math.atan2(y1 - y0, x1 - x0);
+      [[lerp(x0, mx, 0.55), lerp(y0, my, 0.55)], [lerp(mx, x1, 0.8), lerp(my, y1, 0.8)]].forEach(([bx, by]) => {
+        ctx.save(); ctx.translate(bx, by); ctx.rotate(ang); ctx.fillStyle = PRATA; tra(2.5 * s); ctx.fillRect(-7 * s, -17 * s * esp, 14 * s, 34 * s * esp); ctx.strokeRect(-7 * s, -17 * s * esp, 14 * s, 34 * s * esp); ctx.restore(); });
+      ctx.fillStyle = PELE; tra(2.5 * s); ctx.beginPath(); ctx.arc(x1, y1, 15 * s * esp, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    function oxalufa(x, y, s = 1, balanca = 0) {   // o velho: corpo grande, curvado, apoiado no opaxorô (pés em x, y)
+      ctx.save(); ctx.translate(x, y); ctx.rotate(Math.sin(balanca) * 0.012);
+      opaxoro(-150 * s, 0, -520 * s, s);
+      // a saia rodada, larga, com babado
+      saia(10 * s, -230 * s, 0, 360 * s, s, 70);
+      // o avental de renda com dois medalhões (rosáceas)
+      tra(3 * s); ctx.fillStyle = '#FBF8F1'; ctx.beginPath(); ctx.moveTo(-34 * s, -228 * s); ctx.lineTo(34 * s, -228 * s); ctx.lineTo(52 * s, -30 * s); ctx.lineTo(-52 * s, -30 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+      [[-170, 30], [-85, 34]].forEach(([dy, r]) => { ctx.strokeStyle = PRATA2; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.arc(0, dy * s, r * s, 0, 7); ctx.stroke();
+        for (let k = 0; k < 8; k++) { ctx.beginPath(); ctx.ellipse(Math.cos(k * Math.PI / 4) * r * 0.5 * s, dy * s + Math.sin(k * Math.PI / 4) * r * 0.5 * s, 7 * s, 4 * s, k * Math.PI / 4, 0, 7); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(0, dy * s, 6 * s, 0, 7); ctx.stroke(); });
+      // o tronco largo, curvado para a frente
+      ctx.save(); ctx.translate(0, -225 * s); ctx.rotate(-0.09);
+      tra(4 * s); ctx.fillStyle = BRANCO;
+      ctx.beginPath(); ctx.moveTo(-70 * s, 0); ctx.bezierCurveTo(-96 * s, -60 * s, -84 * s, -150 * s, -30 * s, -160 * s); ctx.lineTo(30 * s, -160 * s);
+      ctx.bezierCurveTo(84 * s, -150 * s, 96 * s, -60 * s, 70 * s, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = SOMBRA; ctx.beginPath(); ctx.moveTo(30 * s, -150 * s); ctx.bezierCurveTo(110 * s, -120 * s, 120 * s, -20 * s, 90 * s, 40 * s); ctx.lineTo(60 * s, 0); ctx.bezierCurveTo(88 * s, -60 * s, 76 * s, -130 * s, 30 * s, -150 * s); ctx.fill(); ctx.stroke();   // o pano pelas costas
+      bracoForte(-66 * s, -128 * s, -134 * s, -46 * s, s, 1.1);   // o braço que segura o opaxorô
+      bracoForte(66 * s, -128 * s, 78 * s, -30 * s, s, 1.1);
+      cabeca(-6 * s, -222 * s, s, { longa: true });
       ctx.restore(); ctx.restore();
     }
-    function oxaguia(x, y, s = 1, brilho = 0) {   // o jovem guerreiro: ereto, espada erguida, escudo e o pilão no chão
+    function oxaguia(x, y, s = 1, brilho = 0) {   // o jovem guerreiro, musculoso: espada de metal e o atori; branco com detalhes azuis
       ctx.save(); ctx.translate(x, y);
-      // o pilão com a mão de pilão
-      tra(3 * s); ctx.fillStyle = '#7A5230';
-      ctx.beginPath(); ctx.moveTo(-190 * s, 0); ctx.bezierCurveTo(-200 * s, -40 * s, -180 * s, -60 * s, -186 * s, -84 * s); ctx.lineTo(-114 * s, -84 * s); ctx.bezierCurveTo(-120 * s, -60 * s, -100 * s, -40 * s, -110 * s, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#5A3C22'; ctx.beginPath(); ctx.ellipse(-150 * s, -84 * s, 36 * s, 8 * s, 0, 0, 7); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#9A6B3E'; ctx.save(); ctx.translate(-150 * s, -84 * s); ctx.rotate(0.25); ctx.beginPath(); ctx.roundRect(-7 * s, -110 * s, 14 * s, 112 * s, 6 * s); ctx.fill(); ctx.stroke(); ctx.restore();
-      // pernas firmes, calça branca, saia curta (o "saiote") e a faixa azul
-      ctx.fillStyle = BRANCO; tra(4 * s);
-      ctx.beginPath(); ctx.moveTo(-40 * s, -120 * s); ctx.lineTo(-58 * s, 0); ctx.lineTo(-22 * s, 0); ctx.lineTo(-6 * s, -110 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(40 * s, -120 * s); ctx.lineTo(58 * s, 0); ctx.lineTo(22 * s, 0); ctx.lineTo(6 * s, -110 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = PELE; ctx.beginPath(); ctx.ellipse(-40 * s, 2 * s, 22 * s, 8 * s, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(40 * s, 2 * s, 22 * s, 8 * s, 0, 0, 7); ctx.fill();
-      saia(0, -210 * s, -100 * s, 190 * s, s, 44);
-      ctx.fillStyle = AZUL; tra(3 * s); ctx.beginPath(); ctx.roundRect(-50 * s, -222 * s, 100 * s, 20 * s, 6 * s); ctx.fill(); ctx.stroke();
-      tronco(0, -340 * s, -210 * s, s, 46); colares(0, -318 * s, s, 3);
-      // escudo (braço esquerdo), redondo de metal com espelho no centro
-      bracoIde(-38 * s, -320 * s, -90 * s, -250 * s, s);
-      ctx.fillStyle = PRATA; tra(4 * s); ctx.beginPath(); ctx.arc(-104 * s, -252 * s, 62 * s, 0, 7); ctx.fill(); ctx.stroke();
-      ctx.strokeStyle = PRATA2; ctx.lineWidth = 3 * s; for (let r = 50; r > 20; r -= 12) { ctx.beginPath(); ctx.arc(-104 * s, -252 * s, r * s, 0, 7); ctx.stroke(); }
-      ctx.fillStyle = '#E9F1F7'; tra(2 * s); ctx.beginPath(); ctx.arc(-104 * s, -252 * s, 16 * s, 0, 7); ctx.fill(); ctx.stroke();
-      // a espada (alfanje) erguida na mão direita
-      bracoIde(38 * s, -320 * s, 100 * s, -410 * s, s);
-      ctx.save(); ctx.translate(100 * s, -410 * s); ctx.rotate(0.3);
-      ctx.fillStyle = PRATA; tra(3 * s);
-      ctx.beginPath(); ctx.moveTo(-6 * s, -6 * s); ctx.bezierCurveTo(-26 * s, -90 * s, 8 * s, -170 * s, 30 * s, -200 * s); ctx.bezierCurveTo(22 * s, -150 * s, 14 * s, -80 * s, 8 * s, -6 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = AMA; ctx.beginPath(); ctx.roundRect(-22 * s, -10 * s, 44 * s, 10 * s, 4 * s); ctx.fill(); ctx.stroke(); ctx.fillStyle = PRATA2; ctx.fillRect(-5 * s, 0, 10 * s, 26 * s);
-      if (brilho > 0) { ctx.globalAlpha = brilho; ctx.fillStyle = '#fff'; L.estrela(ctx, 28 * s, -196 * s, 22 * s, 0, '#FFFFFF'); ctx.globalAlpha = 1; }
+      // o atori (vara longa e fina), na mão esquerda
+      tra(3 * s); ctx.save(); ctx.translate(-110 * s, -330 * s); ctx.rotate(-0.38); ctx.fillStyle = '#FAFAFA'; ctx.fillRect(-4 * s, -230 * s, 8 * s, 420 * s); ctx.strokeRect(-4 * s, -230 * s, 8 * s, 420 * s); ctx.restore();
+      // a saia longa, branca, com renda e bordado azul na barra
+      saia(0, -250 * s, 0, 300 * s, s, 52);
+      ctx.fillStyle = '#2E7FB8'; for (let i = -5; i <= 5; i++) { const bx = i * 26 * s, byy = -30 * s;
+        ctx.beginPath(); ctx.moveTo(bx, byy - 26 * s); ctx.bezierCurveTo(bx + 12 * s, byy - 10 * s, bx + 8 * s, byy + 4 * s, bx, byy + 4 * s); ctx.bezierCurveTo(bx - 8 * s, byy + 4 * s, bx - 12 * s, byy - 10 * s, bx, byy - 26 * s); ctx.fill();
+        ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(bx, byy - 6 * s, 3 * s, 0, 7); ctx.fill(); ctx.fillStyle = '#2E7FB8'; }
+      ctx.strokeStyle = '#8EC5EA'; ctx.lineWidth = 3 * s; ctx.setLineDash([3 * s, 5 * s]); ctx.beginPath(); ctx.moveTo(-120 * s, -80 * s); ctx.quadraticCurveTo(0, -60 * s, 120 * s, -80 * s); ctx.stroke(); ctx.setLineDash([]);
+      // o tronco musculoso, de pele, com um ombro de fora
+      tra(4 * s); ctx.fillStyle = PELE;
+      ctx.beginPath(); ctx.moveTo(-56 * s, -250 * s); ctx.bezierCurveTo(-74 * s, -320 * s, -84 * s, -380 * s, -40 * s, -400 * s); ctx.lineTo(40 * s, -400 * s);
+      ctx.bezierCurveTo(84 * s, -380 * s, 74 * s, -320 * s, 56 * s, -250 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.moveTo(-30 * s, -350 * s); ctx.quadraticCurveTo(0, -335 * s, 30 * s, -350 * s); ctx.stroke();   // o peitoral
+      // o pano branco cruzado (do ombro direito ao quadril), com borda de contas azuis
+      tra(3.5 * s); ctx.fillStyle = BRANCO;
+      ctx.beginPath(); ctx.moveTo(10 * s, -404 * s); ctx.lineTo(58 * s, -396 * s); ctx.lineTo(60 * s, -250 * s); ctx.lineTo(-56 * s, -250 * s); ctx.lineTo(-58 * s, -290 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#2E7FB8'; for (let q = 0; q <= 1; q += 0.08) { ctx.beginPath(); ctx.arc(lerp(10, -58, q) * s, lerp(-404, -290, q) * s, 2.6 * s, 0, 7); ctx.fill(); }
+      ctx.fillStyle = PRATA; ctx.fillRect(-60 * s, -262 * s, 120 * s, 14 * s); ctx.strokeRect(-60 * s, -262 * s, 120 * s, 14 * s);   // o cinto de prata
+      // fio de contas vermelho e branco, longo
+      for (let q = 0; q <= 1; q += 0.04) { const a2 = Math.PI * (0.15 + q * 0.7); ctx.fillStyle = Math.floor(q * 25) % 2 ? VERM : BRANCO; ctx.beginPath(); ctx.arc(Math.cos(a2) * 40 * s, -380 * s + Math.sin(a2) * 90 * s, 3 * s, 0, 7); ctx.fill(); }
+      // braços fortes: o esquerdo segura o atori; o direito ergue a espada
+      bracoForte(-52 * s, -380 * s, -110 * s, -300 * s, s, 1.15);
+      bracoForte(52 * s, -380 * s, 112 * s, -330 * s, s, 1.15);
+      ctx.save(); ctx.translate(112 * s, -330 * s); ctx.rotate(-0.12);   // a espada de metal, reta
+      tra(3 * s); ctx.fillStyle = PRATA; ctx.beginPath(); ctx.moveTo(-12 * s, -16 * s); ctx.lineTo(-10 * s, -190 * s); ctx.lineTo(0, -222 * s); ctx.lineTo(10 * s, -190 * s); ctx.lineTo(12 * s, -16 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = PRATA2; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.moveTo(0, -24 * s); ctx.lineTo(0, -200 * s); ctx.stroke();
+      ctx.fillStyle = PRATA; tra(3 * s); ctx.beginPath(); ctx.roundRect(-30 * s, -20 * s, 60 * s, 10 * s, 4 * s); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#2E7FB8'; ctx.beginPath(); ctx.roundRect(-7 * s, -10 * s, 14 * s, 34 * s, 4 * s); ctx.fill(); ctx.stroke();
+      if (brilho > 0) { ctx.globalAlpha = brilho; L.estrela(ctx, 0, -222 * s, 24 * s, 0, '#FFFFFF'); ctx.globalAlpha = 1; }
       ctx.restore();
-      cabeca(0, -430 * s, s, { pluma: true });
+      cabeca(0, -470 * s, s, { alto: true });
       ctx.restore();
     }
     function oxala(x, y, s = 1) {   // Oxalá na criação: de branco, ereto, com o adê
@@ -455,14 +484,14 @@ window.CENA = {
       ctx.fillStyle = 'rgba(31,58,95,0.06)'; ctx.fillRect(960, 0, 960, 1080);
       ctx.fillStyle = TINTA; ctx.fillRect(957, 220, 6, 700);
       const pl = ease.saida(seg(t, T.lufa_face - 0.2, T.lufa_face + 0.6));
-      if (pl > 0) { ctx.save(); ctx.globalAlpha = pl; oxalufa(440, 910, 1.35, t * 1.2); ctx.restore();
+      if (pl > 0) { ctx.save(); ctx.globalAlpha = pl; oxalufa(480, 920, 1.04, t * 1.2); if (L.img.pomba) L.imagem(ctx, L.img.pomba, 760 + Math.sin(t * 2) * 10, 640 + Math.sin(t * 3) * 12, 130); ctx.restore();
         cubo('OXALUFÃ', 120, 180, 64, seg(t, T.lufa_face, T.lufa_face + 0.6), { maxW: 600 });
         etq('O VELHO SÁBIO', 760, 420, T.lufa_face + 1.4, TINTA, 28); etq('O OPAXORÔ', 770, 340, T.opaxoro, TINTA, 28); etq('TRAZ A PAZ', 760, 500, T.opaxoro + 1.1, AZUL, 32); }
       const pr = ease.saida(seg(t, T.guia - 0.2, T.guia + 0.6));
-      if (pr > 0) { ctx.save(); ctx.globalAlpha = pr; oxaguia(1480, 910, 1.3, seg(t, T.espada, T.espada + 0.4) * (1 - seg(t, T.espada + 0.4, T.espada + 0.9))); ctx.restore();
+      if (pr > 0) { ctx.save(); ctx.globalAlpha = pr; oxaguia(1460, 920, 1.05, seg(t, T.espada, T.espada + 0.4) * (1 - seg(t, T.espada + 0.4, T.espada + 0.9))); ctx.restore();
         cubo('OXAGUIÃ', 1040, 180, 64, seg(t, T.guia, T.guia + 0.6), { maxW: 600 });
-        etq('O JOVEM GUERREIRO', 1180, 340, T.guia + 1.0, TINTA, 28); etq('ESPADA, ESCUDO E PILÃO', 1760, 420, T.espada, TINTA, 24); etq('LUTA QUANDO É PRECISO', 1180, 420, T.luta1, VERM, 28); }
-      if (t > T.guia + 1) L.texto(ctx, 'ilustração · iconografia segundo Pierre Verger (Orixás) e Reginaldo Prandi (Mitologia dos Orixás)', 960, 925, { familia: FONTE.maquina, peso: 400, tam: 18, cor: TINTA, alinhar: 'center' });
+        etq('O JOVEM GUERREIRO', 1180, 340, T.guia + 1.0, TINTA, 28); etq('ESPADA DE METAL E ATORI', 1740, 500, T.espada, TINTA, 24); etq('LUTA QUANDO É PRECISO', 1180, 420, T.luta1, VERM, 28); }
+      if (t > T.guia + 1) L.texto(ctx, 'ilustração · iconografia segundo Pierre Verger (Orixás) e Reginaldo Prandi (Mitologia dos Orixás)', 960, 1050, { familia: FONTE.maquina, peso: 400, tam: 18, cor: TINTA, alinhar: 'center' });
     }
 
     // ------------------------------------------------ 3. o nome (CARTAZ)
@@ -652,7 +681,7 @@ window.CENA = {
       if (!luta) {
         kicker('A FACE DE OXALUFÃ', 120, 150, seg(lt, 0.1, 0.5));
         const yb = cubo('A PAZ QUE BUSCAMOS', 120, 180, 70, seg(lt, 0.1, 0.8), { maxW: 900 });
-        oxalufa(1460, 920, 1.3, t * 1.2);
+        oxalufa(1500, 930, 1.15, t * 1.2);
         [['IGUALDADE E EQUIDADE', T.igualdade], ['NINGUÉM EXPLORA NINGUÉM', T.igualdade + 1.8], ['O CAPITAL FORA DO CENTRO', T.capital_centro]].forEach(([s2, t0], i) => {
           const e = ease.saida(seg(t, t0, t0 + 0.4)); if (e <= 0) return;
           ctx.save(); ctx.globalAlpha = e; ctx.fillStyle = i === 2 ? VERM : TINTA; ctx.fillRect(120, yb + 60 + i * 96, 820, 72);
@@ -663,7 +692,7 @@ window.CENA = {
       }
       kicker('A FACE DE OXAGUIÃ', 1000, 150, seg(t, T.lutas - 0.6, T.lutas));
       const yb = cubo('A LUTA NÃO SE NEGA', 1000, 180, 66, seg(t, T.lutas - 0.6, T.lutas + 0.2), { maxW: 860 });
-      oxaguia(480, 940, 1.25, seg(t, T.oxaguia2, T.oxaguia2 + 0.4) * (1 - seg(t, T.oxaguia2 + 0.4, T.oxaguia2 + 0.9)));
+      oxaguia(480, 950, 1.1, seg(t, T.oxaguia2, T.oxaguia2 + 0.4) * (1 - seg(t, T.oxaguia2 + 0.4, T.oxaguia2 + 0.9)));
       if (t >= T.nao_violencia - 1.2) { L.aplicarCarimbo(ctx, seg(t, T.nao_violencia - 1.2, T.nao_violencia - 0.9), 1420, yb + 90, () => {
         ctx.fillStyle = TINTA; ctx.fillRect(1000, yb + 40, 840, 96); L.texto(ctx, 'LUTAR NÃO É VIOLÊNCIA', 1420, yb + 108, { familia: FONTE.bloco, peso: 400, tam: 54, cor: BEGE, alinhar: 'center' }); }, 92); }
       [['É SE FORMAR', T.formar - 0.4], ['ESTUDAR', T.formar + 0.6], ['ORGANIZAR', T.formar + 1.2]].forEach(([s2, t0], i) => etq(s2, 1130 + i * 290, yb + 210, t0, [VERM, AZUL, VERDE][i], 32));
@@ -689,7 +718,7 @@ window.CENA = {
     // ------------------------------------------------ 12. fim (CARTAZ)
     function fim(lt) {
       arquivo = false; sol(1300);
-      ctx.save(); ctx.globalAlpha = ease.saida(seg(lt, 0, 0.8)); oxalufa(220, 1000, 0.75, t); oxaguia(1720, 1000, 0.72, 0); ctx.restore();
+      ctx.save(); ctx.globalAlpha = ease.saida(seg(lt, 0, 0.8)); oxalufa(240, 1010, 0.66, t); oxaguia(1690, 1010, 0.62, 0); ctx.restore();
       carimbar('PAZ COMO OBJETIVO', 960, 250, T.fim + 0.2, BEGE, 100, FONTE.manchete, 111, { larg: 1100 });
       carimbar('LUTA COMO CAMINHO', 960, 390, T.caminho - 0.3, AMA, 120, FONTE.manchete, 112, { larg: 1100, erro: VESC, desloc: 6 });
       if (t >= T.parabens) L.aplicarCarimbo(ctx, seg(t, T.parabens, T.parabens + 0.3), 960, 560, () => {
