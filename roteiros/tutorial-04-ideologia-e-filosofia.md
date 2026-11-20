@@ -1,4 +1,4 @@
-# Formação para novos militantes · EP. 4: Ideologia e filosofia dentro do coletivo (horizontal 1920×1080, cerca de 3 min)
+# Formação para novos militantes · EP. 4: Ideologia e filosofia dentro do coletivo (horizontal 1920×1080, cerca de 4 a 5 min)
 
 Pedido do autor: abrir de forma lúdica com a criação do mundo na tradição iorubá, com Oxalá; explicar capitalismo,
 socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de Oxalufã) às duas faces de Oxalá
@@ -16,6 +16,10 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 
 — É daí que vem o nosso nome: Lufã, de Oxalufã. E é essa a nossa filosofia: buscar a paz, sem negar a luta quando ela é necessária.
 
+— Mas essa escolha não foi apenas religiosa. O nome Lufã lembra a resistência dos povos africanos em terras brasileiras. Pessoas escravizadas foram vendidas e usadas como mercadoria.
+
+— Lembra também a resistência indígena, de povos que foram despidos da sua humanidade. Lembra a resistência dos povos de terreiro e dos mais pobres. Muita gente que nunca teve sequer a chance de sonhar com outra vida. E tudo isso em nome de quê? Do poder e do lucro.
+
 — Mas que paz é essa? Para entender, precisamos falar de três palavras: capitalismo, socialismo e comunismo.
 
 — No capitalismo, poucos são donos das fábricas, das terras e das empresas, e a maioria vende o seu trabalho por um salário. O lucro fica com o dono, e o capital vira o centro de tudo: até a moradia, a comida e a saúde viram mercadoria.
@@ -24,13 +28,25 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 
 — E o comunismo é onde queremos chegar: uma sociedade sem classes, sem a exploração do homem pelo homem, em que cada um contribui como pode e recebe de acordo com o que precisa.
 
-— Aqui no coletivo, a gente trabalha com o comunismo popular. Quem não tem moradia digna, emprego digno ou comida no prato nunca vai se importar em ler Marx, mas vai concordar com boa parte do que ele dizia. Então a gente leva essas ideias para a vida real, com a linguagem do povo.
+— Aqui no coletivo, a gente trabalha com o comunismo popular. Quem vive na desigualdade, em extrema vulnerabilidade, muitas vezes não vai poder ler Marx. Até porque o Brasil ainda tem mais de oito milhões de pessoas que não sabem ler nem escrever.
+
+— Mas essas pessoas querem, sim, moradia digna, comida e educação. Sonham com um bom trabalho e uma boa casa. Querem viver sem repressão policial e ter lazer, que também é um direito. E esses sonhos se ligam direto à resistência dos povos originários desta terra e ao nosso dia a dia.
+
+— Por isso, a gente não pode falar de comunismo e de socialismo só com purismo acadêmico. O purismo afasta. As pessoas precisam se sentir identificadas.
+
+— Porque existem, sim, socialistas pretos. Existem comunistas pobres. Existe gente que luta contra o capitalismo e contra o fascismo e que é da classe trabalhadora, estudante, mulher. Mulheres que criam os filhos sozinhas, que passam pela violência.
+
+— São também as pessoas LGBTQIA+, no país que mais mata pessoas trans no mundo, e que mesmo assim vivem em resistência todos os dias. Porque viver é um ato revolucionário.
+
+— Mas só viver não basta. Precisamos estar vivos e fazer da nossa vida uma resistência ativa, uma forma de mudar todo esse sistema.
 
 — Essa é a face de Oxalufã: a paz que buscamos. Um sistema com igualdade e equidade, em que ninguém explora ninguém e o capital não está no centro de tudo.
 
 — Mas a gente sabe que essa paz não cai do céu. Para chegar lá, existem lutas que não podem ser negadas. Essa é a face de Oxaguiã.
 
 — E lutar não é usar de violência. Lutar é se formar, estudar e organizar. É chegar em quem ainda não foi alcançado pela esquerda, e nem sequer pelas políticas públicas, para mostrar que a direita e a extrema direita não são a salvação.
+
+— E enquanto muita gente ainda está perdendo a esperança, a gente vem lembrar: ainda há muita luz e muita luta pela frente. Houve antes, e ainda haverá agora.
 
 — Paz como objetivo, luta como caminho. Esse é o Coletivo Lufã. Seja bem-vindo, seja bem-vinda. Paz entre nós, guerra aos senhores!
 
@@ -39,10 +55,17 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 2. Oxalá de branco, com a pomba (a mesma do nosso logo); "PAI DA CRIAÇÃO · PAZ".
 3. Duas metades: OXALUFÃ (velho, cajado, branco, "PAZ") × OXAGUIÃ (jovem, espada, "LUTA QUANDO É PRECISO").
 4. "LUFÃ ← OXALUFÃ" e o logo do coletivo; "BUSCAR A PAZ SEM NEGAR A LUTA".
+4b. ARQUIVO: "NÃO FOI SÓ UMA ESCOLHA RELIGIOSA" e a linha do tempo da resistência (povos africanos escravizados, povos indígenas, povos de terreiro,
+    os mais pobres), com gravuras de época em moldura dourada, de uso livre e com crédito (a pesquisar em Wikimedia Commons / Brasiliana).
 5. Três cartazes: CAPITALISMO (pirâmide: dono no topo, trabalhadores embaixo; o lucro subindo), SOCIALISMO (a fábrica com a bandeira, a riqueza voltando), COMUNISMO ("sem classes"; a frase de Marx datilografada).
-6. Comunismo popular: casa, emprego e prato (como no EP. 1) e "linguagem do povo".
+6. Comunismo popular: contador "8,4 MILHÕES" (IBGE, 2025) de pessoas que não sabem ler; depois os sonhos entrando como etiquetas:
+   MORADIA DIGNA · COMIDA · EDUCAÇÃO · BOM TRABALHO · VIVER SEM REPRESSÃO · LAZER (É DIREITO).
+6b. "PURISMO ACADÊMICO AFASTA" (livro grosso fechado × gente conversando); retratos de cartaz (bonecos) de quem é o povo que luta:
+   socialistas pretos, comunistas pobres, estudantes, mães solo, pessoas LGBTQIA+; "18 ANOS SEGUIDOS" (ANTRA, 2026).
+6c. CARTAZ: "VIVER É UM ATO REVOLUCIONÁRIO" → "MAS SÓ VIVER NÃO BASTA" → "RESISTÊNCIA ATIVA".
 7. A balança/caminho: "PAZ COMO OBJETIVO" × "LUTA COMO CAMINHO"; lutar = formar, estudar, organizar, alcançar (bonecos chegando).
-8. CARTAZ final: "PAZ ENTRE NÓS, GUERRA AOS SENHORES!"; tela final vermelha com o logo e a narração.
+8. "AINDA HÁ MUITA LUZ E MUITA LUTA PELA FRENTE" (sol nascendo).
+9. CARTAZ final: "PAZ ENTRE NÓS, GUERRA AOS SENHORES!"; tela final vermelha com o logo e a narração.
 
 ## Notas de precisão
 - Criação do mundo: há várias versões do itan. Na mais conhecida, Olorum (Olodumare) encarrega Obatalá/Oxalá de criar a terra sobre as águas,
@@ -58,3 +81,9 @@ socialismo, comunismo e o comunismo popular; ligar o nome do coletivo (Lufã, de
 - "De cada um segundo as suas capacidades, a cada um segundo as suas necessidades": Marx, Crítica do Programa de Gotha (1875).
 - Socialismo como fase de transição para o comunismo: Lênin, O Estado e a Revolução (1917).
 - Comunismo popular: a ideia de Léo Duarte já apresentada no EP. 1.
+- Analfabetismo: IBGE, PNAD Contínua Educação. 2024: 5,3% das pessoas de 15 anos ou mais (9,1 milhões); 2025: 4,9% (8,4 milhões),
+  o menor da série. Entre pessoas pretas ou pardas a taxa é mais que o dobro da de pessoas brancas (6,9% × 3,1% em 2024).
+  A fala diz "mais de oito milhões", que vale para o dado mais recente.
+- Lazer como direito: Constituição Federal, art. 6º (direitos sociais: educação, saúde, alimentação, trabalho, moradia, transporte, lazer…).
+- Brasil, o país que mais mata pessoas trans no mundo pelo 18º ano seguido: dossiê da ANTRA divulgado em janeiro de 2026
+  (dados de 2025: 80 assassinatos); o Brasil concentra cerca de 30% dos casos registrados no mundo pela Transgender Europe (TGEU).
